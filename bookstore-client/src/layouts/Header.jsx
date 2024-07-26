@@ -6,8 +6,11 @@ import { CiHeart, CiUser } from "react-icons/ci";
 import { BiPhoneCall } from "react-icons/bi";
 import axios from "axios"; // Import axios for API calls
 import "../index.css";
+import { useSelector } from "react-redux";
 
 const Header = () => {
+  const cartItems = useSelector((state) => state.cart.items);
+  const cartCount = cartItems.reduce((count, item) => count + Number(item.quantity), 0);
   const navigate = useNavigate(); // Initialize useNavigate
   const [isSticky, setIsSticky] = useState(false);
   const [searchTerm, setSearchTerm] = useState(""); // State to store the search term
@@ -62,18 +65,23 @@ const Header = () => {
     <>
       <header className="border-b max-md:hidden max-lg:hidden">
         <div className="container">
-          <div className="flex justify-between p-3">
+          <div className="flex justify-between p-4">
             <div className="flex items-center gap-2">
               <BiPhoneCall className="w-6 h-6" />
               <p>0123 456 789</p>
             </div>
             <div className="flex items-center gap-8">
-              <CiHeart className="w-7 h-6 hover:text-mainDark cursor-pointer" />
+              <CiHeart className="w-7 h-7 hover:text-mainDark cursor-pointer" />
               <Link to="/sign-in">
-                <CiUser className="w-7 h-6 hover:text-mainDark cursor-pointer" />
+                <CiUser className="w-7 h-7 hover:text-mainDark cursor-pointer" />
               </Link>
               <Link to="/cart">
-                <BsBag className="w-5 h-6 hover:text-mainDark cursor-pointer" />
+                <div className="relative">
+                  <BsBag className="w-6 h-6 hover:text-mainDark cursor-pointer" />
+                  <div className="absolute -top-3 -right-3 w-5 h-5 rounded-full bg-mainDark flex items-center justify-center text-white p-2">
+                    {cartCount}
+                  </div>
+                </div>
               </Link>
             </div>
           </div>

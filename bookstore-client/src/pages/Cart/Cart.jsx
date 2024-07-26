@@ -1,11 +1,50 @@
-import React from "react";
+import React, { useMemo } from "react";
+import Swal from "sweetalert2";
 import { FaMinus, FaPlus, FaRegTrashAlt } from "react-icons/fa";
 import Button from "../../components/Button/Button";
 import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { updateCartItemQuantity, removeFromCart } from "../../redux/slices/cartslide"; // Đảm bảo đường dẫn đúng
 
-const Cart = ({ items = [] }) => {
-  // Kiểm tra xem giỏ hàng có sản phẩm không
-  const hasItems = items.length > 0;
+const Cart = () => {
+  const cartItems = useSelector((state) => state.cart?.items) || [];
+  const dispatch = useDispatch();
+
+  const total = useMemo(
+    () => cartItems.reduce((total, item) => total + item.price2 * item.quantity, 0),
+    [cartItems]
+  );
+
+  const handleIncreaseQuantity = (itemId) => {
+    dispatch(updateCartItemQuantity({ id: itemId, quantity: 1 }));
+  };
+
+  const handleDecreaseQuantity = (itemId) => {
+    dispatch(updateCartItemQuantity({ id: itemId, quantity: -1 }));
+  };
+
+  const handleRemoveItem = (itemId) => {
+    Swal.fire({
+      title: "Bạn có chắc chắn?",
+      text: "Bạn sẽ không thể hoàn tác hành động này!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#166534",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Có, xóa nó!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        dispatch(removeFromCart(itemId));
+        Swal.fire({
+          title: "Đã xóa!",
+          text: "Sản phẩm đã được xóa khỏi giỏ hàng.",
+          icon: "success",
+        });
+      }
+    });
+  };
+
+  const hasItems = cartItems.length > 0;
 
   return (
     <div className="py-10 screen">
@@ -22,7 +61,7 @@ const Cart = ({ items = [] }) => {
         <div className="flex justify-between gap-11">
           <div className="max-w-[800px] w-full">
             {hasItems ? (
-              <div className="">
+              <div>
                 <table className="w-full table bg-white rounded-lg">
                   <thead className="border rounded-lg text-[16px] text-text font-semibold">
                     <tr>
@@ -34,82 +73,55 @@ const Cart = ({ items = [] }) => {
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td className="flex items-center gap-3 py-6">
-                        <img
-                          src="./images/sach1 1.png"
-                          className="w-[100px] h-[100px] rounded-lg"
-                          alt="Product"
-                        />
-                        <div>
-                          <h3 className="font-semibold leading-normal text-text">
-                            Đám trẻ ở đại dương đen
-                          </h3>
-                          <div className="">Tác giả:</div>
-                          <div className="text-gray-500">Tiểu thuyết</div>
-                        </div>
-                      </td>
-                      <td className="py-4 px-5 text-gray-700 text-center">79.000đ</td>
-                      <td className="py-4 px-5">
-                        <div className="flex items-center justify-center">
-                          <div className="flex items-center border border-gray-300 rounded-lg">
-                            <button className="px-3 py-2 text-gray-600 hover:text-gray-800 focus:outline-none">
-                              <FaMinus />
-                            </button>
-                            <input
-                              type="text"
-                              className="w-8 text-center border-0 focus:ring-0"
-                              defaultValue="1"
-                            />
-                            <button className="px-3 py-2 text-gray-600 hover:text-gray-800 focus:outline-none">
-                              <FaPlus />
-                            </button>
+                    {cartItems.map((item) => (
+                      <tr key={item._id}>
+                        <td className="flex items-center gap-3 py-6">
+                          <img
+                            src={`http://localhost:3000/images/${item.image1}`}
+                            className="w-[100px] h-[100px] rounded-lg"
+                            alt="Product"
+                          />
+                          <div>
+                            <h3 className="font-semibold leading-normal text-text">{item.name}</h3>
+                            <div className="">Tác giả: {item.author.authorName}</div>
+                            <div className="text-gray-500">{item.category.categoryName}</div>
                           </div>
-                        </div>
-                      </td>
-                      <td className="py-4 px-5 text-gray-700 text-center">79.000đ</td>
-                      <td className="py-4 px-5 text-mainDark">
-                        <FaRegTrashAlt className="w-5 h-5 cursor-pointer"></FaRegTrashAlt>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td className="flex items-center gap-3 py-6">
-                        <img
-                          src="./images/sach1 1.png"
-                          className="w-[100px] h-[100px] rounded-lg"
-                          alt="Product"
-                        />
-                        <div>
-                          <h3 className="font-semibold leading-normal text-text">
-                            Đám trẻ ở đại dương đen
-                          </h3>
-                          <div className="">Tác giả:</div>
-                          <div className="text-gray-500">Tiểu thuyết</div>
-                        </div>
-                      </td>
-                      <td className="py-4 px-5 text-gray-700 text-center">79.000đ</td>
-                      <td className="py-4 px-5">
-                        <div className="flex items-center justify-center">
-                          <div className="flex items-center border border-gray-300 rounded-lg">
-                            <button className="px-3 py-2 text-gray-600 hover:text-gray-800 focus:outline-none">
-                              <FaMinus />
-                            </button>
-                            <input
-                              type="text"
-                              className="w-8 text-center border-0 focus:ring-0"
-                              defaultValue="1"
-                            />
-                            <button className="px-3 py-2 text-gray-600 hover:text-gray-800 focus:outline-none">
-                              <FaPlus />
-                            </button>
+                        </td>
+                        <td className="py-4 px-5 text-gray-700 text-center">{item.price2}đ</td>
+                        <td className="py-4 px-5">
+                          <div className="flex items-center justify-center">
+                            <div className="flex items-center border border-gray-300 rounded-lg">
+                              <button
+                                className="px-3 py-2 text-gray-600 hover:text-gray-800 focus:outline-none"
+                                onClick={() => handleDecreaseQuantity(item._id)}
+                                disabled={item.quantity <= 1}>
+                                <FaMinus />
+                              </button>
+                              <input
+                                type="text"
+                                className="w-8 text-center border-0 focus:ring-0"
+                                value={item.quantity}
+                                readOnly
+                              />
+                              <button
+                                className="px-3 py-2 text-gray-600 hover:text-gray-800 focus:outline-none"
+                                onClick={() => handleIncreaseQuantity(item._id)}>
+                                <FaPlus />
+                              </button>
+                            </div>
                           </div>
-                        </div>
-                      </td>
-                      <td className="py-4 px-5 text-gray-700 text-center">79.000đ</td>
-                      <td className="py-4 px-5 text-mainDark">
-                        <FaRegTrashAlt className="w-5 h-5 cursor-pointer"></FaRegTrashAlt>
-                      </td>
-                    </tr>
+                        </td>
+                        <td className="py-4 px-5 text-gray-700 text-center">
+                          {item.price2 * item.quantity}đ
+                        </td>
+                        <td className="py-4 px-5 text-mainDark">
+                          <FaRegTrashAlt
+                            className="w-8 h-8 cursor-pointer"
+                            onClick={() => handleRemoveItem(item._id)}
+                          />
+                        </td>
+                      </tr>
+                    ))}
                   </tbody>
                 </table>
                 <div className="border-t">
@@ -142,7 +154,7 @@ const Cart = ({ items = [] }) => {
               </h2>
               <div className="flex justify-between mb-3 border-b pb-5">
                 <span className="text-text font-normal leading-normal">Tổng tiền:</span>
-                <span className="text-mainDark font-semibold leading-normal">221.400đ</span>
+                <span className="text-mainDark font-semibold leading-normal">{total}đ</span>
               </div>
               <div className="flex justify-between my-5">
                 <span className="text-text font-normal leading-normal">Giảm giá</span>
@@ -156,7 +168,7 @@ const Cart = ({ items = [] }) => {
               </div>
               <div className="flex justify-between font-semibold text-lg mb-3">
                 <span>Tổng cộng:</span>
-                <span>79.000đ</span>
+                <span>{total}đ</span>
               </div>
               <Button className="w-full rounded-[5px] mt-5">
                 <Link to="/checkout">Thanh toán</Link>

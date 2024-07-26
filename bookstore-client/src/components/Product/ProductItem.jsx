@@ -1,14 +1,32 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { FaEye, FaShoppingBag } from "react-icons/fa";
 import "../../index.css";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { addToCart } from "../../redux/slices/cartslide";
+import Swal from "sweetalert2";
+import "./Product.css";
 const ProductItem = ({ className = "", item }) => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const handleAddToCart = () => {
+    Swal.fire({
+      position: "top-end",
+      icon: "success",
+      title: "Thêm sản phẩm thành công",
+      showConfirmButton: false,
+      timer: 1500,
+    });
+    dispatch(addToCart({ item, quantity: 1 }));
+  };
+
   if (!item) {
     return null; // Hoặc bạn có thể hiển thị một thông báo lỗi hoặc một component trống
   }
-  const navigate = useNavigate();
+
   const isHorizontal = className.includes("horizontal");
   const { name, image1, price1, price2, author } = item;
+
   return (
     <div className="py-4 max-md:py-0">
       <div
@@ -26,7 +44,7 @@ const ProductItem = ({ className = "", item }) => {
               isHorizontal ? "w-[100px] h-[100px]" : "w-[190px] h-[190px] cursor-pointer"
             }`}
             onClick={() => navigate(`/product-detail/${item._id}`)}
-            alt=""
+            alt={name}
           />
           <div>
             <div
@@ -57,8 +75,14 @@ const ProductItem = ({ className = "", item }) => {
               ? " flex flex-col top-20 gap-1 right-0 transform -translate-y-1/2"
               : "bottom-32 right-0  flex flex-col items-end justify-center"
           } gap-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pr-2`}>
-          <FaEye className="text-main w-10 h-10 text-2xl bg-white border bg-opacity-50 p-2 rounded-full transform translate-x-full group-hover:translate-x-0 transition-transform duration-300" />
-          <FaShoppingBag className="text-main w-10 h-10 text-2xl bg-white border bg-opacity-50 p-2 rounded-full transform translate-x-full group-hover:translate-x-0 transition-transform duration-300" />
+          <FaEye
+            onClick={() => navigate(`/product-detail/${item._id}`)}
+            className="text-main w-10 h-10 text-2xl bg-white border bg-opacity-50 p-2 rounded-full transform translate-x-full group-hover:translate-x-0 transition-transform duration-300"
+          />
+          <FaShoppingBag
+            onClick={handleAddToCart}
+            className="text-main w-10 h-10 text-2xl bg-white border bg-opacity-50 p-2 rounded-full transform translate-x-full group-hover:translate-x-0 transition-transform duration-300"
+          />
         </div>
       </div>
     </div>
