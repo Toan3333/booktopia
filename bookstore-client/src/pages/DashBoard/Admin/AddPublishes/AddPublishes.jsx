@@ -1,0 +1,137 @@
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { Sidebar, Menu, MenuItem, SubMenu } from "react-pro-sidebar";
+import { FaBook, FaClipboardList, FaRegEdit, FaUser } from "react-icons/fa";
+import { MdLogout } from "react-icons/md";
+import { AiFillDashboard, AiOutlineBars } from "react-icons/ai";
+import "../DashBoard.css";
+import PageTitle from "../../../../components/PageTitle/PageTitle";
+import HeaderAdmin from "../../../../components/HeaderAdmin/HeaderAdmin";
+import Button from "../../../../components/Button/Button";
+import { useForm } from "react-hook-form";
+import axios from "axios";
+import Swal from "sweetalert2";
+
+const AddPublishes = () => {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    navigate("/");
+  };
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
+  const onSubmit = async (data) => {
+    try {
+      const response = await axios.post("http://localhost:3000/publishes", data);
+
+      Swal.fire({
+        position: "top-end",
+        icon: "success",
+        title: "Thêm nhà xuất bản thành công",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+      console.log("Product created:", response.data);
+      navigate("/dashboard/manage-publishes");
+    } catch (error) {
+      console.error("Error creating product:", error);
+    }
+  };
+
+  return (
+    <div>
+      <div className="flex min-h-screen border">
+        <Sidebar className="relative border p-3 bg-white" width="270px">
+          <Menu className="bg-white">
+            <div className="flex items-center justify-center mb-6">
+              <img src="./images/logo.png" alt="Logo" />
+            </div>
+            <MenuItem component={<Link to="/dashboard" />}>
+              <div className="flex items-center gap-4">
+                <AiFillDashboard className="w-5 h-5" />
+                Dashboard
+              </div>
+            </MenuItem>
+
+            <SubMenu label="Quản lý danh mục" icon={<AiOutlineBars className="w-5 h-5" />}>
+              <MenuItem component={<Link to="/dashboard/manage-category" />}>
+                Danh sách danh mục
+              </MenuItem>
+              <MenuItem component={<Link to="/dashboard/add-category" />}>Thêm danh mục</MenuItem>
+            </SubMenu>
+            <SubMenu label="Quản lý sản phẩm" icon={<FaBook className="w-5 h-5" />}>
+              <MenuItem component={<Link to="/dashboard/manage-product" />}>
+                Danh sách sản phẩm
+              </MenuItem>
+              <MenuItem component={<Link to="/dashboard/add-product" />}>Thêm sản phẩm</MenuItem>
+            </SubMenu>
+            <MenuItem component={<Link to="/dashboard/manage-items" />}>
+              <div className="flex items-center gap-4">
+                <FaClipboardList className="w-5 h-5" />
+                Quản lý đơn hàng
+              </div>
+            </MenuItem>
+            <MenuItem component={<Link to="/dashboard/manage-user" />}>
+              <div className="flex items-center gap-4">
+                <FaUser />
+                Quản lý tài khoản
+              </div>
+            </MenuItem>
+            <SubMenu label="Quản lý bài viết" icon={<FaRegEdit className="w-5 h-5" />}>
+              <MenuItem component={<Link to="/dashboard/manage-blog" />}>
+                Danh sách bài viết
+              </MenuItem>
+              <MenuItem component={<Link to="/dashboard/add-blog" />}>Thêm bài viết</MenuItem>
+            </SubMenu>
+            <MenuItem onClick={handleLogout}>
+              <div className="flex items-center gap-4">
+                <MdLogout />
+                Logout
+              </div>
+            </MenuItem>
+          </Menu>
+        </Sidebar>
+        <div className="flex-1 p-6">
+          <HeaderAdmin />
+          <div className="flex items-center justify-between pb-8 border-b">
+            <PageTitle title="Thêm nhà xuất bản" className="text-mainDark" />
+          </div>
+          <div className="border rounded-[10px] py-8 px-5 mt-7">
+            <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
+              <div className="w-full flex flex-col gap-2">
+                <label htmlFor="name">*Tên nhà xuất bản</label>
+                <input
+                  type="text"
+                  {...register("name", { required: true })}
+                  id="name"
+                  className="input input-bordered w-full"
+                />
+                {errors.name && <span className="text-red">Product Name is required</span>}
+              </div>
+              <div className="w-full flex flex-col gap-2">
+                <label htmlFor="publisher">Mô tả</label>
+                <textarea
+                  type="text"
+                  {...register("description")}
+                  id="publisher"
+                  className="input input-bordered w-full h-32"
+                />
+                {errors.name && <span className="text-red">Product Name is required</span>}
+              </div>
+              <div className="flex items-center gap-3">
+                <Button>Lưu</Button>
+                <Button className="bg-secondary">Hủy</Button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default AddPublishes;

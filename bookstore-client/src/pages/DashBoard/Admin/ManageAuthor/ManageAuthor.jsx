@@ -18,7 +18,7 @@ import HeaderAdmin from "../../../../components/HeaderAdmin/HeaderAdmin";
 import axios from "axios";
 import Swal from "sweetalert2";
 
-const ManageProduct = () => {
+const ManageAuthor = () => {
   const isAdmin = true;
   const navigate = useNavigate();
   const handleLogout = () => {
@@ -27,24 +27,23 @@ const ManageProduct = () => {
     navigate("/");
   };
 
-  const [allProductList, setAllProductList] = useState([]);
-
+  const [listAuthor, setListAuthor] = useState([]);
   useEffect(() => {
-    const fetchProductList = async () => {
+    const fetchListAuthor = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/products");
-        const data = response.data.Product;
-        setAllProductList(data);
+        const response = await axios.get("http://localhost:3000/authors");
+        const data = response.data;
+        setListAuthor(data);
       } catch (error) {
         console.log(error);
       }
     };
-    fetchProductList();
+    fetchListAuthor();
   }, []);
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:3000/products/${id}`);
+      await axios.delete(`http://localhost:3000/authors/delete/${id}`);
       Swal.fire({
         title: "Are you sure?",
         text: "You won't be able to revert this!",
@@ -89,13 +88,13 @@ const ManageProduct = () => {
               <MenuItem component={<Link to="/dashboard/manage-category" />}>
                 Danh sách danh mục
               </MenuItem>
+              <MenuItem component={<Link to="/dashboard/add-category" />}>Thêm danh mục</MenuItem>
             </SubMenu>
             <SubMenu label="Quản lý sản phẩm" icon={<FaBook className="w-5 h-5" />}>
               <MenuItem component={<Link to="/dashboard/manage-product" />}>
                 Danh sách sản phẩm
               </MenuItem>
-              <MenuItem component={<Link to="/dashboard/add-product" />}>Tác giả</MenuItem>{" "}
-              <MenuItem component={<Link to="/dashboard/add-product" />}>Nhà xuất bản</MenuItem>
+              <MenuItem component={<Link to="/dashboard/add-product" />}>Thêm sản phẩm</MenuItem>
             </SubMenu>
             <MenuItem component={<Link to="/dashboard/manage-items" />}>
               <div className="flex items-center gap-4">
@@ -127,11 +126,11 @@ const ManageProduct = () => {
         <div className="flex-1 p-6">
           <HeaderAdmin />
           <div className="flex items-center justify-between pb-8 border-b">
-            <PageTitle title="Danh sách sản phẩm" className="text-mainDark" />
-            <div className="flex items-center">
-              <Link to="/dashboard/add-product">
+            <PageTitle title="Danh sách tác giả" className="text-mainDark" />
+            <div>
+              <Link to="/dashboard/add-author">
                 <button className="flex items-center gap-2 bg-mainDark py-3 px-5 text-white font-semibold leading-normal rounded-[10px]">
-                  <FaPlus /> Thêm
+                  <FaPlus></FaPlus>Thêm
                 </button>
               </Link>
             </div>
@@ -141,46 +140,26 @@ const ManageProduct = () => {
               <thead className="text-[16px] font-semibold text-black">
                 <tr>
                   <th>#</th>
-                  <th>Hình ảnh</th>
-                  <th>Tên sách</th>
-                  <th>Tác giả</th>
-                  <th>Danh mục</th>
-                  <th>Nhà xuất bản</th>
-                  <th className="text-center">Giá</th>
-                  <th>Số lượng</th>
+                  <th>Tên tác giả</th>
                   <th className="text-center">Thao tác</th>
                 </tr>
               </thead>
               <tbody>
-                {allProductList.map((item, index) => (
+                {listAuthor.map((item, index) => (
                   <tr key={item._id}>
                     <td>{index + 1}</td>
-                    <td>
-                      <img
-                        src={`http://localhost:3000/images/${item.image1}`}
-                        className="w-20 h-20"
-                        alt={item.name}
-                      />
-                    </td>
                     <td>{item.name}</td>
-                    <td>{item.author?.authorName || "Chưa có"}</td>
-                    <td>{item.category?.categoryName || "Chưa có"}</td>
-                    <td>{item.publish?.publishName || "Chưa có"}</td>
-                    <td>
-                      <div className="flex items-center justify-center gap-4">
-                        <div>{item.price1}</div>
-                        <div className="text-red">{item.price2}</div>
-                      </div>
-                    </td>
-                    <td className="px-3 text-center">{item.quantity}</td>
                     <td>
                       <div className="flex items-center justify-center gap-3">
-                        <Link to={`/dashboard/edit-product/${item._id}`}>
+                        <Link to="/dashboard/edit-product">
                           <FaUserEdit className="w-5 h-5 text-main" />
                         </Link>
-                        <button onClick={(e) => handleDelete(item._id)}>
-                          <FaTrashAlt className="w-5 h-4 text-red" />
-                        </button>
+                        <div>
+                          <FaTrashAlt
+                            onClick={(e) => handleDelete(item._id)}
+                            className="w-5 h-4 text-red cursor-pointer"
+                          />
+                        </div>
                       </div>
                     </td>
                   </tr>
@@ -188,10 +167,11 @@ const ManageProduct = () => {
               </tbody>
             </table>
           </div>
+          {/* Content goes here */}
         </div>
       </div>
     </div>
   );
 };
 
-export default ManageProduct;
+export default ManageAuthor;

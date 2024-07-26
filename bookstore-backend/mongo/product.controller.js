@@ -58,7 +58,6 @@ async function insert(body) {
     // Tạo đối tượng sản phẩm mới
     const proNew = new productModel({
       name,
-
       image1,
       image2,
       image3,
@@ -96,7 +95,7 @@ async function insert(body) {
 //Hiển thị tất cả sản phẩm
 async function gettAll() {
   try {
-    const result = await productModel.find().limit(16);
+    const result = await productModel.find();
     return result;
   } catch (error) {
     console.log("Thêm sản phẩm không thành công", error);

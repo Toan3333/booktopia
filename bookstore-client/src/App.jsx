@@ -27,6 +27,10 @@ import EditCategory from "./pages/DashBoard/Admin/EditCategory/EditCategory";
 import ManageUser from "./pages/DashBoard/Admin/ManageUser/ManageUser";
 import ManageBlog from "./pages/DashBoard/Admin/ManageBlog/ManageBlog";
 import AddBlog from "./pages/DashBoard/Admin/AddBlog/AddBlog";
+import ManageAuthor from "./pages/DashBoard/Admin/ManageAuthor/ManageAuthor";
+import AddAuthor from "./pages/DashBoard/Admin/AddAuthor/AddAuthor";
+import ManagePublishes from "./pages/DashBoard/Admin/ManagePublishes/ManagePublishes";
+import AddPublishes from "./pages/DashBoard/Admin/AddPublishes/AddPublishes";
 function App() {
   return (
     <Fragment>
@@ -55,6 +59,12 @@ function App() {
           element={<ManageCategory></ManageCategory>}></Route>
         <Route path="/dashboard/manage-user" element={<ManageUser></ManageUser>}></Route>
         <Route path="/dashboard/manage-blog" element={<ManageBlog></ManageBlog>}></Route>
+        <Route path="/dashboard/manage-author" element={<ManageAuthor></ManageAuthor>}></Route>
+        <Route
+          path="/dashboard/manage-publishes"
+          element={<ManagePublishes></ManagePublishes>}></Route>
+        <Route path="/dashboard/add-author" element={<AddAuthor></AddAuthor>}></Route>
+        <Route path="/dashboard/add-publishes" element={<AddPublishes></AddPublishes>}></Route>
         <Route path="/dashboard/add-product" element={<AddProduct></AddProduct>}></Route>
         <Route path="/dashboard/add-category" element={<AddCategory></AddCategory>}></Route>
         <Route path="/dashboard/add-blog" element={<AddBlog></AddBlog>}></Route>
