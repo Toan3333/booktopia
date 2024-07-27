@@ -110,6 +110,7 @@ async function updateById(id, body) {
     if (!pro) {
       throw new Error("Không tìm thấy sản phẩm");
     }
+
     const {
       name,
       publish,
@@ -125,11 +126,29 @@ async function updateById(id, body) {
       category,
     } = body;
 
+    // Kiểm tra và lấy thông tin của nhà xuất bản, tác giả và danh mục nếu có
     let cateFind = null;
+    let pubFind = null;
+    let authFind = null;
+
     if (category) {
       cateFind = await categoryModel.findById(category);
       if (!cateFind) {
         throw new Error("Không tìm thấy danh mục");
+      }
+    }
+
+    if (publish) {
+      pubFind = await publishModel.findById(publish);
+      if (!pubFind) {
+        throw new Error("Không tìm thấy nhà xuất bản");
+      }
+    }
+
+    if (author) {
+      authFind = await authorModel.findById(author);
+      if (!authFind) {
+        throw new Error("Không tìm thấy tác giả");
       }
     }
 
@@ -140,12 +159,26 @@ async function updateById(id, body) {
         }
       : pro.category;
 
+    const pubUpdate = pubFind
+      ? {
+          publishId: pubFind._id,
+          publishName: pubFind.name,
+        }
+      : pro.publish;
+
+    const authUpdate = authFind
+      ? {
+          authorId: authFind._id,
+          authorName: authFind.name,
+        }
+      : pro.author;
+
     const result = await productModel.findByIdAndUpdate(
       id,
       {
         name,
-        publish,
-        author,
+        publish: pubUpdate,
+        author: authUpdate,
         image1,
         image2,
         image3,
@@ -158,6 +191,7 @@ async function updateById(id, body) {
       },
       { new: true }
     );
+
     return result;
   } catch (error) {
     console.log("Sửa sản phẩm không thành công", error);

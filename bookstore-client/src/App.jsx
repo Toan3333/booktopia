@@ -68,7 +68,7 @@ function App() {
         <Route path="/dashboard/add-product" element={<AddProduct></AddProduct>}></Route>
         <Route path="/dashboard/add-category" element={<AddCategory></AddCategory>}></Route>
         <Route path="/dashboard/add-blog" element={<AddBlog></AddBlog>}></Route>
-        <Route path="/dashboard/edit-product" element={<EditProduct></EditProduct>}></Route>
+        <Route path="/dashboard/edit-product/:id" element={<EditProduct></EditProduct>}></Route>
         <Route path="/dashboard/edit-category" element={<EditCategory></EditCategory>}></Route>
       </Routes>
     </Fragment>

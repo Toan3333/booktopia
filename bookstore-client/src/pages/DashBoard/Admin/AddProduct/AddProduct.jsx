@@ -60,10 +60,14 @@ const AddProduct = () => {
 
   const handleImageChange = (e) => {
     const { id, files } = e.target;
-    if (files) {
+    if (files && files[0]) {
+      const fileURL = URL.createObjectURL(files[0]);
       setSelectedImages((prevImages) => ({
         ...prevImages,
-        [id]: files[0], // Chỉ lấy file đầu tiên nếu có nhiều file
+        [id]: {
+          file: files[0],
+          preview: fileURL,
+        },
       }));
     }
   };
@@ -86,11 +90,12 @@ const AddProduct = () => {
       formData.append("publish", data.publish);
       formData.append("quantity", data.quantity);
 
-      // Thêm các hình ảnh vào FormData
-      formData.append("image1", selectedImages["image1"]);
-      formData.append("image2", selectedImages["image2"] || "");
-      formData.append("image3", selectedImages["image3"] || "");
-      formData.append("image4", selectedImages["image4"] || "");
+      // Append images to FormData
+      ["image1", "image2", "image3", "image4"].forEach((imageKey) => {
+        if (selectedImages[imageKey]) {
+          formData.append(imageKey, selectedImages[imageKey].file);
+        }
+      });
 
       const response = await axios.post("http://localhost:3000/products", formData, {
         headers: {
@@ -105,7 +110,7 @@ const AddProduct = () => {
         showConfirmButton: false,
         timer: 1500,
       });
-      console.log("Product created:", response.data);
+      console.log("Product created:", response.data.ProductUpdate);
       navigate("/dashboard/manage-product");
     } catch (error) {
       console.error("Error creating product:", error);
@@ -204,6 +209,13 @@ const AddProduct = () => {
               {["image1", "image2", "image3", "image4"].map((image, index) => (
                 <div key={image} className="w-full flex flex-col gap-2">
                   <label htmlFor={image}>*Hình ảnh {index + 1}</label>
+                  {selectedImages[image]?.preview && (
+                    <img
+                      src={selectedImages[image].preview}
+                      alt={`Preview ${image}`}
+                      className="mt-2 max-h-32 w-40 object-cover"
+                    />
+                  )}
                   <input
                     type="file"
                     id={image}
@@ -215,7 +227,29 @@ const AddProduct = () => {
             </div>
             <div className="flex gap-10 items-center">
               <div className="w-full flex flex-col gap-2">
-                <label htmlFor="category">*Danh mục</label>
+                <label htmlFor="price1">*Giá tiền nhập</label>
+                <input
+                  type="number"
+                  {...register("price1", { required: true })}
+                  id="price1"
+                  className={`input input-bordered w-full ${errors.price1 ? "border-red-500" : ""}`}
+                />
+                {errors.price1 && <span className="text-red">Giá tiền nhập là bắt buộc</span>}
+              </div>
+              <div className="w-full flex flex-col gap-2">
+                <label htmlFor="price2">*Giá tiền bán</label>
+                <input
+                  type="number"
+                  {...register("price2", { required: true })}
+                  id="price2"
+                  className={`input input-bordered w-full ${errors.price2 ? "border-red-500" : ""}`}
+                />
+                {errors.price2 && <span className="text-red">Giá tiền bán là bắt buộc</span>}
+              </div>
+            </div>
+            <div className="flex gap-10 items-center">
+              <div className="w-full flex flex-col gap-2">
+                <label htmlFor="category">Danh mục</label>
                 <select
                   className="select select-bordered w-full"
                   {...register("category", { required: true })}>
@@ -238,57 +272,32 @@ const AddProduct = () => {
                     </option>
                   ))}
                 </select>
+                {errors.publish && <span className="text-red">Nhà xuất bản là bắt buộc</span>}
               </div>
             </div>
             <div className="w-full flex flex-col gap-2">
-              <label htmlFor="price1">Giá gốc</label>
-              <input
-                type="text"
-                {...register("price1", { required: true })}
-                id="price1"
-                className={`input input-bordered w-full ${errors.price1 ? "border-red-500" : ""}`}
-              />
-              {errors.price1 && <span className="text-red">Giá sản phẩm là bắt buộc</span>}
-            </div>
-            <div className="flex gap-10 items-center">
-              <div className="w-full flex flex-col gap-2">
-                <label htmlFor="price1">Giá giảm</label>
-                <input
-                  type="text"
-                  {...register("price2", { required: true })}
-                  id="price1"
-                  className={`input input-bordered w-full ${errors.price1 ? "border-red-500" : ""}`}
-                />
-                {errors.price1 && <span className="text-red">Giá sản phẩm là bắt buộc</span>}
-              </div>
-              <div className="w-full flex flex-col gap-2">
-                <label htmlFor="quantity">Số lượng</label>
-                <input
-                  type="text"
-                  {...register("quantity", { required: true })}
-                  id="quantity"
-                  className={`input input-bordered w-full ${
-                    errors.quantity ? "border-red-500" : ""
-                  }`}
-                />
-                {errors.quantity && <span className="text-red">Số lượng là bắt buộc</span>}
-              </div>
-            </div>
-            <div className="w-full flex flex-col gap-2">
-              <label htmlFor="description">Mô tả</label>
+              <label htmlFor="description">*Mô tả</label>
               <textarea
                 id="description"
-                {...register("description", { required: true })}
-                className={`input input-bordered w-full h-32 ${
+                className={`textarea textarea-bordered w-full ${
                   errors.description ? "border-red-500" : ""
                 }`}
-              />
+                {...register("description", { required: true })}></textarea>
               {errors.description && <span className="text-red">Mô tả là bắt buộc</span>}
             </div>
-            <div className="flex items-center gap-3">
-              <Button type="submit">Lưu</Button>
-              <Button type="button" className="bg-secondary">
-                Hủy
+            <div className="w-full flex flex-col gap-2">
+              <label htmlFor="quantity">*Số lượng</label>
+              <input
+                type="number"
+                {...register("quantity", { required: true })}
+                id="quantity"
+                className={`input input-bordered w-full ${errors.quantity ? "border-red-500" : ""}`}
+              />
+              {errors.quantity && <span className="text-red">Số lượng là bắt buộc</span>}
+            </div>
+            <div className="flex items-center justify-center">
+              <Button primary="true" className="py-2 px-10">
+                Thêm sản phẩm
               </Button>
             </div>
           </form>
