@@ -13,7 +13,7 @@ const SellingProduct = () => {
           </div>
           <div className="w-2/5 max-lg:w-full max-md:hidden max-xl:w-full">
             <img
-              src="./images/banchay.png"
+              src="./images/banner nhỏ.jpg"
               alt=""
               className="w-full h-full object-contain -mr-10 rounded-2xl max-lg:w-full"
             />

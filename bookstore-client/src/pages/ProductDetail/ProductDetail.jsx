@@ -60,9 +60,9 @@ const ProductDetail = () => {
             {name}
           </a>
         </nav>
-        <div className="flex justify-between py-10 max-md:flex-col">
+        <div className="flex justify-between py-10 gap-10 max-md:flex-col">
           <div className="w-[65%] max-xl:w-3/5 max-md:w-full">
-            <div className="flex gap-2 items-center">
+            <div className="flex gap-10 items-center">
               <div className="max-w-[130px] w-full max-xl:hidden">
                 <div className="flex flex-col gap-10">
                   {[image1, image2, image3, image4].map((img, index) =>
@@ -90,7 +90,7 @@ const ProductDetail = () => {
             </div>
           </div>
           <div className="w-[45%] max-md:w-full">
-            <PageTitle title={name} className="mb-5 leading-9 max-xl:text-xl" />
+            <PageTitle title={name} className="mb-5 max-xl:text-xl text-2xl leading-8" />
             <div className="flex items-center gap-8 max-md:gap-2">
               <div className="text-red">{price1}</div>
               <div className="flex items-center gap-10">
