@@ -32,7 +32,7 @@ const FlashSale = () => {
   }, [minutes, hours]);
 
   return (
-    <div>
+    <div className="py-5">
       <div className="bg-greenLight p-12 max-md:p-4">
         <div className="container">
           <div className="rounded-lg py-3 px-4 bg-white">

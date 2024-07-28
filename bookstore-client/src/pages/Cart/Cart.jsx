@@ -2,13 +2,14 @@ import React, { useMemo } from "react";
 import Swal from "sweetalert2";
 import { FaMinus, FaPlus, FaRegTrashAlt } from "react-icons/fa";
 import Button from "../../components/Button/Button";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { updateCartItemQuantity, removeFromCart } from "../../redux/slices/cartslide"; // Đảm bảo đường dẫn đúng
+import { updateCartItemQuantity, removeFromCart, clearCart } from "../../redux/slices/cartslide"; // Đảm bảo đường dẫn đúng
 
 const Cart = () => {
   const cartItems = useSelector((state) => state.cart?.items) || [];
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const total = useMemo(
     () => cartItems.reduce((total, item) => total + item.price2 * item.quantity, 0),
@@ -37,6 +38,27 @@ const Cart = () => {
         dispatch(removeFromCart(itemId));
         Swal.fire({
           title: "Đã xóa!",
+          text: "Sản phẩm đã được xóa khỏi giỏ hàng.",
+          icon: "success",
+        });
+      }
+    });
+  };
+
+  const handleClearItem = () => {
+    Swal.fire({
+      title: "Bạn có chắc chắn?",
+      text: "Bạn sẽ không thể hoàn tác hành động này!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#166534",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Có, xóa nó!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        dispatch(clearCart());
+        Swal.fire({
+          title: "Đã xóa tất cả!",
           text: "Sản phẩm đã được xóa khỏi giỏ hàng.",
           icon: "success",
         });
@@ -73,18 +95,19 @@ const Cart = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {cartItems.map((item) => (
+                    {cartItems.map((item, index) => (
                       <tr key={item._id}>
-                        <td className="flex items-center gap-3 py-6">
+                        <td className="flex items-center gap-3 py-6 cursor-pointer">
                           <img
+                            onClick={() => navigate(`/product-detail/${item._id}`)}
                             src={`http://localhost:3000/images/${item.image1}`}
-                            className="w-[100px] h-[100px] rounded-lg"
+                            className="w-[100px] h-[100px] rounded-lg cursor-pointer"
                             alt="Product"
                           />
                           <div>
-                            <h3 className="font-semibold leading-normal text-text">{item.name}</h3>
-                            <div className="">Tác giả: {item.author.authorName}</div>
-                            <div className="text-gray-500">{item.category.categoryName}</div>
+                            <h3 className="font-semibold leading-normal text-text">{item?.name}</h3>
+                            <div className="">Tác giả: {item.author?.authorName || "Chưa có"}</div>
+                            <div className="text-gray-500">{item.category?.categoryName}</div>
                           </div>
                         </td>
                         <td className="py-4 px-5 text-gray-700 text-center">{item.price2}đ</td>
@@ -132,7 +155,11 @@ const Cart = () => {
                       </Button>
                     </div>
                     <div>
-                      <Button className="rounded-[5px] bg-white button-add">Xóa tất cả</Button>
+                      <Button
+                        className="rounded-[5px] bg-white button-add"
+                        onClick={handleClearItem}>
+                        Xóa tất cả
+                      </Button>
                     </div>
                   </div>
                 </div>
@@ -175,10 +202,10 @@ const Cart = () => {
               </Button>
               <div className="text-center my-5">Hỗ trợ thanh toán với</div>
               <div className="flex items-center justify-center gap-5">
-                <img src="./images/visa.png" alt="" />
-                <img src="./images/napas.png" alt="" />
-                <img src="./images/momo.png" alt="" />
-                <img src="./images/zalopay.png" alt="" />
+                <img src="./images/visa.png" alt="Visa" />
+                <img src="./images/napas.png" alt="Napas" />
+                <img src="./images/momo.png" alt="Momo" />
+                <img src="./images/zalopay.png" alt="ZaloPay" />
               </div>
             </div>
           </div>

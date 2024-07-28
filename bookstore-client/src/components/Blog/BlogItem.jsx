@@ -2,6 +2,10 @@ import React from "react";
 
 const BlogItem = ({ item }) => {
   const { name, date, image, content } = item;
+
+  // Chuyển đổi chuỗi ngày tháng thành định dạng ngày, tháng, năm
+  const formattedDate = new Date(date).toLocaleDateString();
+
   return (
     <div>
       <div className="">
@@ -13,7 +17,7 @@ const BlogItem = ({ item }) => {
           />
         </a>
         <div className="mt-2 flex flex-col gap-1">
-          <p className="text-gray-400 font-light text-sm">{date}</p>
+          <p className="text-gray-400 font-light text-sm">{formattedDate}</p>
           <h3 className="font-semibold leading-normal max-md:leading-none max-md:text-sm max-md:line-clamp-2">
             <a href="#" className="cursor-pointer hover:text-mainDark max-md:text-sm line-clamp-1">
               {name}

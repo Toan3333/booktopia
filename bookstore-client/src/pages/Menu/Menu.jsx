@@ -77,11 +77,13 @@ const Menu = () => {
         </nav>
         <div className="py-8">
           <div className="flex justify-between gap-5 mt-12">
-            <div className="max-w-[275px] w-full border rounded-[30px] py-14 px-12">
-              <div className="flex flex-col gap-9">
-                <CategoryItem title="Danh mục" items={categories} />
-                <CategoryItem title="Tác giả" items={authors} />
-                <CategoryItem title="Nhà xuất bản" items={publishers} />
+            <div className="max-w-[275px] w-full">
+              <div className="w-full border rounded-[30px] py-14 px-12">
+                <div className="flex flex-col gap-9">
+                  <CategoryItem title="Danh mục" items={categories} />
+                  <CategoryItem title="Tác giả" items={authors} />
+                  <CategoryItem title="Nhà xuất bản" items={publishers} />
+                </div>
               </div>
             </div>
             <div className="w-full">

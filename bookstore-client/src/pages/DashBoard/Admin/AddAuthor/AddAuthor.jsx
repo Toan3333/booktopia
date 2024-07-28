@@ -112,16 +112,7 @@ const AddAuthor = () => {
                 />
                 {errors.name && <span className="text-red">Product Name is required</span>}
               </div>
-              <div className="w-full flex flex-col gap-2">
-                <label htmlFor="publisher">Mô tả</label>
-                <textarea
-                  type="text"
-                  {...register("description")}
-                  id="publisher"
-                  className="input input-bordered w-full h-32"
-                />
-                {errors.name && <span className="text-red">Product Name is required</span>}
-              </div>
+
               <div className="flex items-center gap-3">
                 <Button>Lưu</Button>
                 <Button className="bg-secondary">Hủy</Button>

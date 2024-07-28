@@ -88,13 +88,15 @@ const ManageAuthor = () => {
               <MenuItem component={<Link to="/dashboard/manage-category" />}>
                 Danh sách danh mục
               </MenuItem>
-              <MenuItem component={<Link to="/dashboard/add-category" />}>Thêm danh mục</MenuItem>
             </SubMenu>
             <SubMenu label="Quản lý sản phẩm" icon={<FaBook className="w-5 h-5" />}>
               <MenuItem component={<Link to="/dashboard/manage-product" />}>
                 Danh sách sản phẩm
               </MenuItem>
-              <MenuItem component={<Link to="/dashboard/add-product" />}>Thêm sản phẩm</MenuItem>
+              <MenuItem component={<Link to="/dashboard/manage-author" />}>Tác giả</MenuItem>
+              <MenuItem component={<Link to="/dashboard/manage-publishes" />}>
+                Nhà xuất bản
+              </MenuItem>
             </SubMenu>
             <MenuItem component={<Link to="/dashboard/manage-items" />}>
               <div className="flex items-center gap-4">
@@ -151,9 +153,6 @@ const ManageAuthor = () => {
                     <td>{item.name}</td>
                     <td>
                       <div className="flex items-center justify-center gap-3">
-                        <Link to="/dashboard/edit-product">
-                          <FaUserEdit className="w-5 h-5 text-main" />
-                        </Link>
                         <div>
                           <FaTrashAlt
                             onClick={(e) => handleDelete(item._id)}

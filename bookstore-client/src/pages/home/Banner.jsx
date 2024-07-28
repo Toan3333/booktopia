@@ -7,6 +7,11 @@ import "slick-carousel/slick/slick-theme.css";
 const Banner = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const sliderRef = useRef(null);
+  const listBanner = [
+    { id: 1, image: "./images/banner1.jpg" },
+    { id: 2, image: "./images/banner2.jpg" },
+    { id: 3, image: "./images/banner3.jpg" },
+  ];
 
   const SampleNextArrow = ({ onClick }) => (
     <div
@@ -52,9 +57,37 @@ const Banner = () => {
     autoplaySpeed: 2000,
     nextArrow: <SampleNextArrow />,
     prevArrow: <SamplePrevArrow />,
+    responsive: [
+      {
+        breakpoint: 1024,
+        settings: {
+          slidesToShow: 3,
+          slidesToScroll: 3,
+          infinite: true,
+          dots: true,
+        },
+      },
+      {
+        breakpoint: 600,
+        settings: {
+          slidesToShow: 2,
+          slidesToScroll: 2,
+          initialSlide: 2,
+        },
+      },
+      {
+        breakpoint: 480,
+        settings: {
+          slidesToShow: 1,
+          nextArrow: false,
+          prevArrow: false,
+          slidesToScroll: 1,
+        },
+      },
+    ],
     appendDots: (dots) => (
       <div className="dots-container">
-        <ul className="flex justify-center space-x-2">{dots}</ul>
+        <ul className="flex justify-center space-x-2 -mt-14">{dots}</ul>
       </div>
     ),
     customPaging: (i) => (
@@ -69,29 +102,17 @@ const Banner = () => {
 
   return (
     <div className="relative mt-[1px]">
-      <div className="slider-container overflow-hidden pb-10">
+      <div className="slider-container overflow-hidden pb-5 max-md:pb-2">
         <Slider ref={sliderRef} {...settings}>
-          <div className="w-full">
-            <img
-              src="./images/banner1.jpg"
-              className="w-full h-[520px] cursor-pointer max-lg:h-48 max-md:h-44 max-xl:h-56 object-cover"
-              alt="Banner 1"
-            />
-          </div>
-          <div className="w-full">
-            <img
-              src="./images/banner2.jpg"
-              className="w-full h-[520px] cursor-pointer max-lg:h-48 max-md:h-44 max-xl:h-56 object-cover"
-              alt="Banner 2"
-            />
-          </div>
-          <div className="w-full">
-            <img
-              src="./images/banner3.jpg"
-              className="w-full h-[520px] cursor-pointer max-lg:h-48 max-md:h-44 max-xl:h-56 object-cover"
-              alt="Banner 3"
-            />
-          </div>
+          {listBanner.map((item) => (
+            <div className="w-full" key={item.id}>
+              <img
+                src={item.image}
+                className="w-full h-[520px] cursor-pointer max-lg:h-48 max-md:h-44 max-xl:h-56 object-cover"
+                alt="Banner 1"
+              />
+            </div>
+          ))}
         </Slider>
       </div>
     </div>

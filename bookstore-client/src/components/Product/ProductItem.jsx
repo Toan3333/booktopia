@@ -28,19 +28,19 @@ const ProductItem = ({ className = "", item }) => {
   const { name, image1, price1, price2, author } = item;
 
   return (
-    <div className="py-4 max-md:py-0">
+    <div className={`py-4 max-md:py-0 ${isHorizontal ? "py-0" : ""}`}>
       <div
         className={`p-2 cursor-pointer z-10 relative group overflow-hidden rounded-[30px] hover:shadow-lg hover:bg-white max-md:mr-0`}>
         <div
           className={`flex ${
             isHorizontal ? "flex-row justify-start max-lg:flex-col" : "flex-col"
           } items-center gap-4 text-center cursor-pointer py-6 px-3 relative max-md:py-2 max-md:px-0`}>
-          <div className="w-10 h-10 rounded-full bg-yellow flex items-center justify-center text-white absolute left-0 top-0">
+          <div className="w-10 h-10 rounded-full bg-yellow-400 flex items-center justify-center text-white absolute left-0 top-0 ">
             20%
           </div>
           <img
             src={`http://localhost:3000/images/${image1}`}
-            className={`object-contain product-image ${
+            className={`object-contain product-image cursor-pointer max-lg:w-[190px] max-lg:h-[190px] ${
               isHorizontal ? "w-[100px] h-[100px]" : "w-[190px] h-[190px] cursor-pointer"
             }`}
             onClick={() => navigate(`/product-detail/${item._id}`)}
@@ -53,7 +53,7 @@ const ProductItem = ({ className = "", item }) => {
                   ? "flex-col text-left items-start"
                   : "flex-col text-center items-center"
               } gap-1`}>
-              <h3 className="text-sm text-text leading-normal font-semibold cursor-pointer hover:text-mainDark max-md:text-sm line-clamp-1">
+              <h3 className="text-sm text-text leading-normal font-semibold cursor-pointer hover:text-mainDark hover:font-semibold max-md:text-sm line-clamp-1">
                 {name}
               </h3>
               <p className="text-sm font-normal text-grayText line-clamp-1 leading-normal ">

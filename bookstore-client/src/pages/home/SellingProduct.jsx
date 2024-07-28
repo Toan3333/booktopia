@@ -4,10 +4,10 @@ import ProductList from "../../components/Product/ProductList";
 
 const SellingProduct = () => {
   return (
-    <div className="py-10 md:py-5">
+    <div className="py-5 max-md:py-2">
       <div className="container">
         <Title>Bán chạy</Title>
-        <div className="flex justify-between gap-10 py-10 max-lg:flex-col max-lg:py-5 max-lg:gap-5 max-xl:flex-col">
+        <div className="flex justify-between gap-10 py-5 max-lg:flex-col max-lg:py-5 max-lg:gap-5 max-xl:flex-col">
           <div className="w-3/5 max-lg:w-full max-xl:w-full">
             <ProductList customThreeItem={true} type="hot"></ProductList>
           </div>
