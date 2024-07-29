@@ -239,7 +239,9 @@ const ProductDetail = () => {
             <CommentList />
           </div>
         )}
-        <ProductRelated id={id} />
+        <div>
+          <ProductRelated id={id} />
+        </div>
       </div>
     </div>
   );
@@ -257,7 +259,6 @@ const ProductRelated = ({ id }) => {
         console.error("Failed to fetch related products:", error);
       }
     };
-
     fetchProductListRelated();
   }, [id]);
 
@@ -267,10 +268,10 @@ const ProductRelated = ({ id }) => {
 
   return (
     <div className="mt-10">
-      <Title title="Sản phẩm liên quan" className="text-mainDark" />
+      <Title children="Sản phẩm liên quan" className="text-mainDark" />
       <div className="grid grid-cols-5 max-lg:grid-cols-4 max-md:grid-cols-2 gap-10 mt-5">
-        {productListRelated.map((product) => (
-          <ProductItem key={product._id} product={product} />
+        {productListRelated.map((item) => (
+          <ProductItem key={item._id} item={item} />
         ))}
       </div>
     </div>
