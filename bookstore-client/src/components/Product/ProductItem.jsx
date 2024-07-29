@@ -2,12 +2,14 @@ import React, { useEffect } from "react";
 import { FaEye, FaShoppingBag } from "react-icons/fa";
 import "../../index.css";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from "../../redux/slices/cartslide";
 import Swal from "sweetalert2";
 import "./Product.css";
 const ProductItem = ({ className = "", item }) => {
   const dispatch = useDispatch();
+  const cartItems = useSelector((state) => state.cart?.items) || []; // Truy xuất các sản phẩm trong giỏ hàng hoặc một mảng rỗng nếu không có sản phẩm nào
+
   const navigate = useNavigate();
   const handleAddToCart = () => {
     Swal.fire({
@@ -18,6 +20,7 @@ const ProductItem = ({ className = "", item }) => {
       timer: 1500,
     });
     dispatch(addToCart({ item, quantity: 1 }));
+    console.log("Cart Items:", cartItems); // Log các sản phẩm trong giỏ hàng
   };
 
   if (!item) {
