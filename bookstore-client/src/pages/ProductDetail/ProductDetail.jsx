@@ -13,6 +13,15 @@ import axios from "axios";
 import ProductItem from "../../components/Product/ProductItem";
 import { useDispatch } from "react-redux";
 import { addToCart, updateCartItemQuantity } from "../../redux/slices/cartslide";
+import LightGallery from "lightgallery/react";
+// import styles
+import "lightgallery/css/lightgallery.css";
+import "lightgallery/css/lg-zoom.css";
+import "lightgallery/css/lg-thumbnail.css";
+
+// import plugins if you need
+import lgThumbnail from "lightgallery/plugins/thumbnail";
+import lgZoom from "lightgallery/plugins/zoom";
 
 const ProductDetail = () => {
   const [activeTab, setActiveTab] = useState("info");
@@ -111,11 +120,32 @@ const ProductDetail = () => {
                   {[image1, image2, image3, image4].map((img, index) =>
                     img ? (
                       <div key={index} className="w-full">
-                        <img
-                          src={`http://localhost:3000/images/${img}`}
-                          alt={`product-detail-img-${index}`}
-                          className="w-full h-[120px]"
-                        />
+                        <LightGallery
+                          plugins={[lgZoom, lgThumbnail]}
+                          mode="lg-fade"
+                          thumbnail={true}
+                          elementClassNames={"gallery"}>
+                          <a href={`http://localhost:3000/images/${img}`}>
+                            <img
+                              src={`http://localhost:3000/images/${img}`}
+                              alt={`product-detail-img-${index}`}
+                              className="w-full h-[120px]"
+                            />
+                          </a>
+                          {/* Đoạn mã này lặp qua các ảnh còn lại (image2, image3, image4) và nếu có
+                          ảnh tồn tại (img ? ... : null), nó sẽ tạo các liên kết tới các ảnh này. */}
+                          {[image2, image3, image4].map((img, index) =>
+                            img ? (
+                              <a key={index} href={`http://localhost:3000/images/${img}`}>
+                                <img
+                                  src={`http://localhost:3000/images/${img}`}
+                                  alt={`product-detail-img-${index}`}
+                                  className="hidden"
+                                />
+                              </a>
+                            ) : null
+                          )}
+                        </LightGallery>
                       </div>
                     ) : null
                   )}
@@ -123,11 +153,30 @@ const ProductDetail = () => {
               </div>
               {image1 && (
                 <div className="w-full">
-                  <img
-                    src={`http://localhost:3000/images/${image1}`}
-                    alt="product-detail-img-main"
-                    className="w-full h-[500px] object-cover max-md:h-[400px]"
-                  />
+                  <LightGallery
+                    plugins={[lgZoom, lgThumbnail]}
+                    mode="lg-fade"
+                    elementClassNames={"gallery"}
+                    thumbnail={true}>
+                    <a href={`http://localhost:3000/images/${image1}`}>
+                      <img
+                        src={`http://localhost:3000/images/${image1}`}
+                        alt="product-detail-img-main"
+                        className="w-full h-[500px] object-cover max-md:h-[400px]"
+                      />
+                    </a>
+                    {[image2, image3, image4].map((img, index) =>
+                      img ? (
+                        <a key={index} href={`http://localhost:3000/images/${img}`}>
+                          <img
+                            src={`http://localhost:3000/images/${img}`}
+                            alt={`product-detail-img-${index}`}
+                            className="hidden"
+                          />
+                        </a>
+                      ) : null
+                    )}
+                  </LightGallery>
                 </div>
               )}
             </div>
@@ -265,7 +314,6 @@ const ProductRelated = ({ id }) => {
   if (!productListRelated) {
     return <div>Loading...</div>;
   }
-
   return (
     <div className="mt-10">
       <Title children="Sản phẩm liên quan" className="text-mainDark" />
