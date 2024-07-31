@@ -80,11 +80,11 @@ const ProductItem = ({ className = "", item }) => {
           } gap-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pr-2`}>
           <FaEye
             onClick={() => navigate(`/product-detail/${item._id}`)}
-            className="text-main w-10 h-10 text-2xl bg-white border bg-opacity-50 p-2 rounded-full transform translate-x-full group-hover:translate-x-0 transition-transform duration-300 hover:bg-grayText hover:text-white hover:cursor-pointer"
+            className="text-mainDark w-10 h-10 text-2xl bg-white border bg-opacity-50 p-2 rounded-full transform translate-x-full group-hover:translate-x-0 transition-transform duration-300 hover:bg-grayText hover:text-white hover:cursor-pointer"
           />
           <FaShoppingBag
             onClick={handleAddToCart}
-            className="text-main w-10 h-10 text-2xl bg-white border bg-opacity-50 p-2 rounded-full transform translate-x-full group-hover:translate-x-0 transition-transform duration-300 hover:bg-grayText hover:text-white cursor-pointer"
+            className="text-mainDark w-10 h-10 text-2xl bg-white border bg-opacity-50 p-2 rounded-full transform translate-x-full group-hover:translate-x-0 transition-transform duration-300 hover:bg-grayText hover:text-white cursor-pointer"
           />
         </div>
       </div>
