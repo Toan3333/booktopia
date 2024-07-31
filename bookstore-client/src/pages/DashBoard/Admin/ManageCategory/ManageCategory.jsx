@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Sidebar, Menu, MenuItem, SubMenu } from "react-pro-sidebar";
 import {
@@ -15,6 +15,8 @@ import { AiFillDashboard, AiOutlineBars } from "react-icons/ai";
 import "../DashBoard.css";
 import PageTitle from "../../../../components/PageTitle/PageTitle";
 import HeaderAdmin from "../../../../components/HeaderAdmin/HeaderAdmin";
+import axios from "axios";
+import Swal from "sweetalert2";
 
 const ManageCategory = () => {
   const isAdmin = true;
@@ -25,6 +27,46 @@ const ManageCategory = () => {
     navigate("/");
   };
 
+  const [listCategory, setListCategory] = useState([]);
+  useEffect(() => {
+    const fetchCategory = async () => {
+      try {
+        const response = await axios.get("http://localhost:3000/category");
+        const data = response.data;
+        setListCategory(data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchCategory();
+  }, []);
+
+  const handleDelete = async (id) => {
+    try {
+      await axios.delete(`http://localhost:3000/category/delete/${id}`);
+      Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          Swal.fire({
+            title: "Deleted!",
+            text: "Your product has been deleted.",
+            icon: "success",
+          }).then(() => {
+            window.location.reload(); // Reload the page after deleting
+          });
+        }
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <div>
       <div className="flex min-h-screen border">
@@ -41,16 +83,24 @@ const ManageCategory = () => {
               </div>
             </MenuItem>
 
-            <SubMenu label="Quản lý danh mục" icon={<AiOutlineBars className="w-5 h-5" />}>
+            <SubMenu
+              label="Quản lý danh mục"
+              icon={<AiOutlineBars className="w-5 h-5" />}
+            >
               <MenuItem component={<Link to="/dashboard/manage-category" />}>
                 Danh sách danh mục
               </MenuItem>
             </SubMenu>
-            <SubMenu label="Quản lý sản phẩm" icon={<FaBook className="w-5 h-5" />}>
+            <SubMenu
+              label="Quản lý sản phẩm"
+              icon={<FaBook className="w-5 h-5" />}
+            >
               <MenuItem component={<Link to="/dashboard/manage-product" />}>
                 Danh sách sản phẩm
               </MenuItem>
-              <MenuItem component={<Link to="/dashboard/manage-author" />}>Tác giả</MenuItem>
+              <MenuItem component={<Link to="/dashboard/manage-author" />}>
+                Tác giả
+              </MenuItem>
               <MenuItem component={<Link to="/dashboard/manage-publishes" />}>
                 Nhà xuất bản
               </MenuItem>
@@ -67,11 +117,16 @@ const ManageCategory = () => {
                 Quản lý tài khoản
               </div>
             </MenuItem>
-            <SubMenu label="Quản lý bài viết" icon={<FaRegEdit className="w-5 h-5" />}>
+            <SubMenu
+              label="Quản lý bài viết"
+              icon={<FaRegEdit className="w-5 h-5" />}
+            >
               <MenuItem component={<Link to="/dashboard/manage-blog" />}>
                 Danh sách bài viết
               </MenuItem>
-              <MenuItem component={<Link to="/dashboard/add-blog" />}>Thêm bài viết</MenuItem>
+              <MenuItem component={<Link to="/dashboard/add-blog" />}>
+                Thêm bài viết
+              </MenuItem>
             </SubMenu>
             <MenuItem onClick={handleLogout}>
               <div className="flex items-center gap-4">
@@ -87,9 +142,11 @@ const ManageCategory = () => {
           <div className="flex items-center justify-between pb-8 border-b pt-3">
             <PageTitle title="Quản lý danh mục" className="text-mainDark" />
             <div>
-              <button className="flex items-center gap-2 bg-mainDark py-3 px-5 text-white font-semibold leading-normal rounded-[10px]">
-                <FaPlus></FaPlus>Thêm
-              </button>
+              <Link to="/dashboard/add-category">
+                <button className="flex items-center gap-2 bg-mainDark py-3 px-5 text-white font-semibold leading-normal rounded-[10px]">
+                  <FaPlus></FaPlus>Thêm
+                </button>
+              </Link>
             </div>
           </div>
           <div className="mt-6 border rounded-[30px] p-5">
@@ -103,66 +160,23 @@ const ManageCategory = () => {
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>1</td>
-                  <td>Văn học</td>
-                  <td className="max-w-[300px]">
-                    Văn học là một lĩnh vực nghệ thuật sử dụng ngôn từ để biểu đạt tư tưởng, cảm xúc
-                    và phản ánh hiện thực xã hội. Nó bao gồm nhiều thể loại như tiểu thuyết, thơ,
-                    kịch và truyện ngắn, mang đến cho người đọc những trải nghiệm tinh thần sâu sắc
-                    và phong phú.
-                  </td>
-                  <td>
-                    <div className="flex items-center justify-center gap-3">
-                      <Link to="/dashboard/edit-category">
-                        <FaUserEdit className="w-5 h-5 text-main" />
-                      </Link>
-                      <a href="#">
-                        <FaTrashAlt className="w-5 h-4 text-red" />
-                      </a>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td>1</td>
-                  <td>Văn học</td>
-                  <td className="max-w-[300px]">
-                    Văn học là một lĩnh vực nghệ thuật sử dụng ngôn từ để biểu đạt tư tưởng, cảm xúc
-                    và phản ánh hiện thực xã hội. Nó bao gồm nhiều thể loại như tiểu thuyết, thơ,
-                    kịch và truyện ngắn, mang đến cho người đọc những trải nghiệm tinh thần sâu sắc
-                    và phong phú.
-                  </td>
-                  <td>
-                    <div className="flex items-center justify-center gap-3">
-                      <Link to="/dashboard/edit-product">
-                        <FaUserEdit className="w-5 h-5 text-main" />
-                      </Link>
-                      <a href="#">
-                        <FaTrashAlt className="w-5 h-4 text-red" />
-                      </a>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td>1</td>
-                  <td>Văn học</td>
-                  <td className="max-w-[300px]">
-                    Văn học là một lĩnh vực nghệ thuật sử dụng ngôn từ để biểu đạt tư tưởng, cảm xúc
-                    và phản ánh hiện thực xã hội. Nó bao gồm nhiều thể loại như tiểu thuyết, thơ,
-                    kịch và truyện ngắn, mang đến cho người đọc những trải nghiệm tinh thần sâu sắc
-                    và phong phú.
-                  </td>
-                  <td>
-                    <div className="flex items-center justify-center gap-3">
-                      <Link to="/dashboard/edit-product">
-                        <FaUserEdit className="w-5 h-5 text-main" />
-                      </Link>
-                      <a href="#">
-                        <FaTrashAlt className="w-5 h-4 text-red" />
-                      </a>
-                    </div>
-                  </td>
-                </tr>
+                {listCategory.map((item, index) => (
+                  <tr key={item._id}>
+                    <td>{index + 1}</td>
+                    <td>{item.name}</td>
+                    <td className="max-w-[300px]">{item.description}</td>
+                    <td>
+                      <div className="flex items-center justify-center gap-3">
+                        <Link to="/dashboard/edit-category">
+                          <FaUserEdit className="w-5 h-5 text-main" />
+                        </Link>
+                        <button onClick={(e) => handleDelete(item._id)}>
+                          <FaTrashAlt className="w-5 h-4 text-red" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>
