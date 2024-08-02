@@ -58,47 +58,35 @@ const ProductList = ({
 
   const SampleNextArrow = ({ onClick }) => (
     <div
-      className="custom-arrow cursor-pointer hover:bg-blue"
+      className="custom-arrow cursor-pointer flex items-center justify-center bg-white rounded-full border-2 border-gray-300 hover:bg-mainDark hover:text-white"
       style={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        background: "white",
-        borderRadius: "50%",
         width: "50px",
         height: "50px",
         zIndex: "1",
-        border: "2px solid #ccc",
         position: "absolute",
         top: "50%",
         right: "-30px",
         transform: "translateY(-50%)",
       }}
       onClick={onClick}>
-      <FaAngleRight style={{ color: "black", fontSize: "20px" }} />
+      <FaAngleRight style={{ fontSize: "20px" }} />
     </div>
   );
 
   const SamplePrevArrow = ({ onClick }) => (
     <div
-      className="custom-arrow cursor-pointer"
+      className="custom-arrow cursor-pointer flex items-center justify-center bg-white rounded-full border-2 border-gray-300 hover:bg-mainDark hover:text-white"
       style={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        background: "white",
-        borderRadius: "50%",
         width: "50px",
         height: "50px",
-        zIndex: 1,
-        border: "2px solid #ccc",
+        zIndex: "1",
         position: "absolute",
         top: "50%",
         left: "-30px",
         transform: "translateY(-50%)",
       }}
       onClick={onClick}>
-      <FaAngleLeft style={{ color: "black", fontSize: "20px" }} />
+      <FaAngleLeft style={{ fontSize: "20px" }} />
     </div>
   );
 
@@ -176,7 +164,7 @@ const ProductList = ({
         </>
       ) : customItem ? (
         <div className="grid grid-cols-4 gap-4">
-          {AllProductList.map((item) => (
+          {AllProductList.slice(0, 16).map((item) => (
             <ProductItem key={item._id} item={item} />
           ))}
         </div>

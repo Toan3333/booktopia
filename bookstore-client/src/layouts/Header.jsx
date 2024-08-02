@@ -4,14 +4,17 @@ import { Link, NavLink, useNavigate } from "react-router-dom";
 import { BsBag } from "react-icons/bs";
 import { CiHeart, CiUser } from "react-icons/ci";
 import { BiPhoneCall } from "react-icons/bi";
-import axios from "axios"; // Import axios for API calls
+import axios from "axios";
 import "../index.css";
+import { useSelector } from "react-redux";
 
 const Header = () => {
-  const navigate = useNavigate(); // Initialize useNavigate
+  const cartItems = useSelector((state) => state.cart.items);
+  const cartCount = cartItems.reduce((count, item) => count + Number(item.quantity), 0);
+  const navigate = useNavigate();
   const [isSticky, setIsSticky] = useState(false);
-  const [searchTerm, setSearchTerm] = useState(""); // State to store the search term
-  const [searchResults, setSearchResults] = useState([]); // State to store the search results
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -30,15 +33,11 @@ const Header = () => {
 
   const handleSearch = async () => {
     try {
-      const url = searchTerm.trim()
-        ? `http://localhost:3000/products/search/${searchTerm.trim()}`
-        : "http://localhost:3000/products";
-
-      const response = await axios.get(url);
+      const response = await axios.get(
+        `http://localhost:3000/products/search/${searchTerm.trim()}`
+      );
       setSearchResults(response.data);
-      // console.log(response.data);
       navigate(`/menu?search=${searchTerm}`);
-      window.location.reload();
     } catch (error) {
       console.error("Lỗi tìm kiếm sản phẩm", error);
     }
@@ -62,18 +61,23 @@ const Header = () => {
     <>
       <header className="border-b max-md:hidden max-lg:hidden">
         <div className="container">
-          <div className="flex justify-between p-3">
+          <div className="flex justify-between p-4">
             <div className="flex items-center gap-2">
               <BiPhoneCall className="w-6 h-6" />
               <p>0123 456 789</p>
             </div>
             <div className="flex items-center gap-8">
-              <CiHeart className="w-7 h-6 hover:text-mainDark cursor-pointer" />
+              <CiHeart className="w-7 h-7 hover:text-mainDark cursor-pointer" />
               <Link to="/sign-in">
-                <CiUser className="w-7 h-6 hover:text-mainDark cursor-pointer" />
+                <CiUser className="w-7 h-7 hover:text-mainDark cursor-pointer" />
               </Link>
               <Link to="/cart">
-                <BsBag className="w-5 h-6 hover:text-mainDark cursor-pointer" />
+                <div className="relative">
+                  <BsBag className="w-6 h-6 hover:text-mainDark cursor-pointer" />
+                  <div className="absolute -top-3 -right-3 w-5 h-5 rounded-full bg-mainDark flex items-center justify-center text-white p-2">
+                    {cartCount}
+                  </div>
+                </div>
               </Link>
             </div>
           </div>
@@ -84,7 +88,7 @@ const Header = () => {
           isSticky ? "fixed top-0 left-0 w-full shadow-custom z-50 bg-white" : "shadow-custom"
         }`}>
         <div className="container">
-          <div className="navbar py-2 justify-between flex max-md:flex-col max-md:py-5 max-lg:flex-col max-lg:py-5">
+          <div className="navbar py-3 justify-between flex max-md:flex-col max-md:py-5 max-lg:flex-col max-lg:py-5">
             <div>
               <a href="/">
                 <img
@@ -101,7 +105,9 @@ const Header = () => {
                     <NavLink
                       to={item.link}
                       className={({ isActive }) =>
-                        isActive ? "text-mainDark" : "hover:text-mainDark"
+                        isActive
+                          ? "text-mainDark font-semibold"
+                          : "hover:text-mainDark hover:font-semibold"
                       }>
                       {item.name}
                     </NavLink>
@@ -120,12 +126,9 @@ const Header = () => {
                   className="grow max-md:w-[245px] max-md:h-10 max-lg:w-[485px] max-sm:w-[200px]"
                   placeholder="Tìm kiếm"
                   value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)} // Update search term state
-                  onKeyDown={handleKeyDown} // Handle Enter key press
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  onKeyDown={handleKeyDown}
                 />
-                <button onClick={handleSearch} className="px-3 py-2 bg-mainDark text-white">
-                  Tìm kiếm
-                </button>
               </label>
               <div className="flex items-center gap-2">
                 <FaShoppingBag className="w-8 h-8" />
@@ -139,8 +142,8 @@ const Header = () => {
                 className="grow max-md:w-[245px] h-full max-md:h-10"
                 placeholder="Tìm kiếm"
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)} // Update search term state
-                onKeyDown={handleKeyDown} // Handle Enter key press
+                onChange={(e) => setSearchTerm(e.target.value)}
+                onKeyDown={handleKeyDown}
               />
             </label>
           </div>

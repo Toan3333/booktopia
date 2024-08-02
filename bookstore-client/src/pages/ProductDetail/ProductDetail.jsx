@@ -7,14 +7,31 @@ import { HiOutlineShoppingBag } from "react-icons/hi2";
 import "../../index.css";
 import CommentList from "../../components/Comment/CommentList";
 import Title from "../../components/Title/Title";
-import { useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 import axios from "axios";
 import ProductItem from "../../components/Product/ProductItem";
+import { useDispatch } from "react-redux";
+import { addToCart, updateCartItemQuantity } from "../../redux/slices/cartslide";
+import LightGallery from "lightgallery/react";
+// import styles
+import "lightgallery/css/lightgallery.css";
+import "lightgallery/css/lg-zoom.css";
+import "lightgallery/css/lg-thumbnail.css";
+
+// import plugins if you need
+import lgThumbnail from "lightgallery/plugins/thumbnail";
+import lgZoom from "lightgallery/plugins/zoom";
 
 const ProductDetail = () => {
   const [activeTab, setActiveTab] = useState("info");
   const { id } = useParams();
   const [productDetailData, setProductDetailData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [quantityDetail, setQuantityDetail] = useState(1);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProductDetail = async () => {
@@ -22,15 +39,50 @@ const ProductDetail = () => {
         const response = await axios.get(`http://localhost:3000/products/${id}`);
         setProductDetailData(response.data);
       } catch (error) {
-        console.log(error);
+        setError("Unable to fetch product details. Please try again later.");
+      } finally {
+        setLoading(false);
       }
     };
+
     fetchProductDetail();
   }, [id]);
 
-  if (!productDetailData) {
+  if (loading) {
     return <div>Loading...</div>;
   }
+
+  if (error) {
+    return <div>{error}</div>;
+  }
+
+  const handleAddToCart = () => {
+    Swal.fire({
+      position: "top-end",
+      icon: "success",
+      title: "Thêm sản phẩm thành công",
+      showConfirmButton: false,
+      timer: 1500,
+    });
+    dispatch(addToCart({ item: productDetailData, quantity: quantityDetail }));
+  };
+
+  const handleIncreaseQuantity = () => {
+    const newQuantity = quantityDetail + 1;
+    setQuantityDetail(newQuantity);
+    dispatch(updateCartItemQuantity({ id: productDetailData._id, quantity: newQuantity }));
+  };
+
+  const handleDecreaseQuantity = () => {
+    const newQuantity = Math.max(quantityDetail - 1, 1); // Đảm bảo số lượng không nhỏ hơn 1
+    setQuantityDetail(newQuantity);
+    dispatch(updateCartItemQuantity({ id: productDetailData._id, quantity: newQuantity }));
+  };
+
+  const handleBuyNow = () => {
+    dispatch(addToCart({ item: productDetailData, quantity: quantityDetail }));
+    navigate("/cart");
+  };
 
   const {
     name,
@@ -52,27 +104,48 @@ const ProductDetail = () => {
     <div className="py-10">
       <div className="container">
         <nav>
-          <a href="#" className="text-gray-500">
+          <Link to="/" className="text-gray-500">
             Sản phẩm
-          </a>
+          </Link>
           <span className="text-gray-500"> / </span>
-          <a href="#" className="text-mainDark font-semibold leading-normal">
+          <Link to="#" className="text-mainDark font-semibold leading-normal">
             {name}
-          </a>
+          </Link>
         </nav>
-        <div className="flex justify-between py-10 max-md:flex-col">
+        <div className="flex justify-between py-10 gap-10 max-md:flex-col">
           <div className="w-[65%] max-xl:w-3/5 max-md:w-full">
-            <div className="flex gap-2 items-center">
+            <div className="flex gap-10 items-center">
               <div className="max-w-[130px] w-full max-xl:hidden">
                 <div className="flex flex-col gap-10">
                   {[image1, image2, image3, image4].map((img, index) =>
                     img ? (
                       <div key={index} className="w-full">
-                        <img
-                          src={`http://localhost:3000/images/${img}`}
-                          alt={`product-detail-img-${index}`}
-                          className="w-full h-[120px]"
-                        />
+                        <LightGallery
+                          plugins={[lgZoom, lgThumbnail]}
+                          mode="lg-fade"
+                          thumbnail={true}
+                          elementClassNames={"gallery"}>
+                          <a href={`http://localhost:3000/images/${img}`}>
+                            <img
+                              src={`http://localhost:3000/images/${img}`}
+                              alt={`product-detail-img-${index}`}
+                              className="w-full h-[120px]"
+                            />
+                          </a>
+                          {/* Đoạn mã này lặp qua các ảnh còn lại (image2, image3, image4) và nếu có
+                          ảnh tồn tại (img ? ... : null), nó sẽ tạo các liên kết tới các ảnh này. */}
+                          {[image2, image3, image4].map((img, index) =>
+                            img ? (
+                              <a key={index} href={`http://localhost:3000/images/${img}`}>
+                                <img
+                                  src={`http://localhost:3000/images/${img}`}
+                                  alt={`product-detail-img-${index}`}
+                                  className="hidden"
+                                />
+                              </a>
+                            ) : null
+                          )}
+                        </LightGallery>
                       </div>
                     ) : null
                   )}
@@ -80,17 +153,36 @@ const ProductDetail = () => {
               </div>
               {image1 && (
                 <div className="w-full">
-                  <img
-                    src={`http://localhost:3000/images/${image1}`}
-                    alt="product-detail-img-main"
-                    className="w-full h-[500px] object-cover max-md:h-[400px]"
-                  />
+                  <LightGallery
+                    plugins={[lgZoom, lgThumbnail]}
+                    mode="lg-fade"
+                    elementClassNames={"gallery"}
+                    thumbnail={true}>
+                    <a href={`http://localhost:3000/images/${image1}`}>
+                      <img
+                        src={`http://localhost:3000/images/${image1}`}
+                        alt="product-detail-img-main"
+                        className="w-full h-[500px] object-cover max-md:h-[400px]"
+                      />
+                    </a>
+                    {[image2, image3, image4].map((img, index) =>
+                      img ? (
+                        <a key={index} href={`http://localhost:3000/images/${img}`}>
+                          <img
+                            src={`http://localhost:3000/images/${img}`}
+                            alt={`product-detail-img-${index}`}
+                            className="hidden"
+                          />
+                        </a>
+                      ) : null
+                    )}
+                  </LightGallery>
                 </div>
               )}
             </div>
           </div>
           <div className="w-[45%] max-md:w-full">
-            <PageTitle title={name} className="mb-5 leading-9 max-xl:text-xl" />
+            <PageTitle title={name} className="mb-5 max-xl:text-xl text-2xl leading-8" />
             <div className="flex items-center gap-8 max-md:gap-2">
               <div className="text-red">{price1}</div>
               <div className="flex items-center gap-10">
@@ -125,15 +217,16 @@ const ProductDetail = () => {
             <div className="flex items-center mt-5">
               <div className="py-2 px-5 flex items-center border border-gray-300 rounded-xl">
                 <button className="px-3 py-1">
-                  <FaMinus />
+                  <FaMinus onClick={handleDecreaseQuantity} />
                 </button>
                 <input
                   type="text"
                   className="quantity-input w-12 text-center border-0 focus:ring-0"
-                  defaultValue="1"
+                  value={quantityDetail}
+                  readOnly
                 />
                 <button className="px-3 py-1">
-                  <FaPlus />
+                  <FaPlus onClick={handleIncreaseQuantity} />
                 </button>
               </div>
               <div className="flex items-center gap-2 ml-4 text-text font-normal">
@@ -142,8 +235,12 @@ const ProductDetail = () => {
               </div>
             </div>
             <div className="flex flex-col gap-5 mt-10">
-              <Button children="Mua ngay" className="rounded-md w-full" />
-              <Button className="rounded-md button-add w-full bg-white flex items-center justify-center gap-2">
+              <Button onClick={handleBuyNow} className="rounded-md w-full">
+                Mua ngay
+              </Button>
+              <Button
+                onClick={handleAddToCart}
+                className="rounded-md button-add w-full bg-white flex items-center justify-center gap-2">
                 <HiOutlineShoppingBag />
                 Thêm vào giỏ hàng
               </Button>
@@ -184,14 +281,16 @@ const ProductDetail = () => {
                   />
                 </div>
                 <div>
-                  <Button children="Bình luận" />
+                  <Button>Bình luận</Button>
                 </div>
               </div>
             </form>
             <CommentList />
           </div>
         )}
-        <ProductRelated id={id}></ProductRelated>
+        <div>
+          <ProductRelated id={id} />
+        </div>
       </div>
     </div>
   );
@@ -199,31 +298,29 @@ const ProductDetail = () => {
 
 const ProductRelated = ({ id }) => {
   const [productListRelated, setProductListRelated] = useState(null);
+
   useEffect(() => {
     const fetchProductListRelated = async () => {
       try {
         const response = await axios.get(`http://localhost:3000/products/related/${id}/related`);
-        const data = response.data;
-        setProductListRelated(data);
-        console.log(data);
+        setProductListRelated(response.data);
       } catch (error) {
-        console.log(error);
+        console.error("Failed to fetch related products:", error);
       }
     };
     fetchProductListRelated();
   }, [id]);
+
+  if (!productListRelated) {
+    return <div>Loading...</div>;
+  }
   return (
-    <div>
-      <div className="container">
-        <div className="mt-10">
-          <Title children="Sản phẩm liên quan" />
-          <div className="grid grid-cols-5 max-lg:grid-cols-2">
-            {productListRelated &&
-              productListRelated.map((item) => (
-                <ProductItem item={item} key={item._id}></ProductItem>
-              ))}
-          </div>
-        </div>
+    <div className="mt-10">
+      <Title children="Sản phẩm liên quan" className="text-mainDark" />
+      <div className="grid grid-cols-5 max-lg:grid-cols-4 max-md:grid-cols-2 gap-10 mt-5">
+        {productListRelated.map((item) => (
+          <ProductItem key={item._id} item={item} />
+        ))}
       </div>
     </div>
   );

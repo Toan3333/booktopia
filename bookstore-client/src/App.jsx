@@ -27,6 +27,10 @@ import EditCategory from "./pages/DashBoard/Admin/EditCategory/EditCategory";
 import ManageUser from "./pages/DashBoard/Admin/ManageUser/ManageUser";
 import ManageBlog from "./pages/DashBoard/Admin/ManageBlog/ManageBlog";
 import AddBlog from "./pages/DashBoard/Admin/AddBlog/AddBlog";
+import ManageAuthor from "./pages/DashBoard/Admin/ManageAuthor/ManageAuthor";
+import AddAuthor from "./pages/DashBoard/Admin/AddAuthor/AddAuthor";
+import ManagePublishes from "./pages/DashBoard/Admin/ManagePublishes/ManagePublishes";
+import AddPublishes from "./pages/DashBoard/Admin/AddPublishes/AddPublishes";
 function App() {
   return (
     <Fragment>
@@ -37,7 +41,7 @@ function App() {
           <Route path="/about-us" element={<About></About>}></Route>
           <Route path="/contact-us" element={<Contact></Contact>}></Route>
           <Route path="/blog" element={<Blog></Blog>}></Route>
-          <Route path="/blog-detail" element={<BlogDetail></BlogDetail>}></Route>
+          <Route path="/blog-detail/:id" element={<BlogDetail></BlogDetail>}></Route>
           <Route path="/sign-in" element={<SignInPage></SignInPage>}></Route>
           <Route path="/sign-up" element={<SignUpPage></SignUpPage>}></Route>
           <Route path="/cart" element={<Cart></Cart>}></Route>
@@ -55,11 +59,17 @@ function App() {
           element={<ManageCategory></ManageCategory>}></Route>
         <Route path="/dashboard/manage-user" element={<ManageUser></ManageUser>}></Route>
         <Route path="/dashboard/manage-blog" element={<ManageBlog></ManageBlog>}></Route>
+        <Route path="/dashboard/manage-author" element={<ManageAuthor></ManageAuthor>}></Route>
+        <Route
+          path="/dashboard/manage-publishes"
+          element={<ManagePublishes></ManagePublishes>}></Route>
+        <Route path="/dashboard/add-author" element={<AddAuthor></AddAuthor>}></Route>
+        <Route path="/dashboard/add-publishes" element={<AddPublishes></AddPublishes>}></Route>
         <Route path="/dashboard/add-product" element={<AddProduct></AddProduct>}></Route>
         <Route path="/dashboard/add-category" element={<AddCategory></AddCategory>}></Route>
         <Route path="/dashboard/add-blog" element={<AddBlog></AddBlog>}></Route>
-        <Route path="/dashboard/edit-product" element={<EditProduct></EditProduct>}></Route>
-        <Route path="/dashboard/edit-category" element={<EditCategory></EditCategory>}></Route>
+        <Route path="/dashboard/edit-product/:id" element={<EditProduct></EditProduct>}></Route>
+        <Route path="/dashboard/edit-category/:id" element={<EditCategory></EditCategory>}></Route>
       </Routes>
     </Fragment>
   );

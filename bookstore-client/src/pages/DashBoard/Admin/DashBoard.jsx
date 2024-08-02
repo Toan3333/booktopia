@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Sidebar, Menu, MenuItem, SubMenu } from "react-pro-sidebar";
 import {
   FaBook,
   FaClipboardList,
+  FaMoneyBill,
+  FaProductHunt,
   FaRegEdit,
   FaShoppingBag,
   FaTrashAlt,
@@ -13,10 +15,12 @@ import {
 } from "react-icons/fa";
 import { MdLogout } from "react-icons/md";
 import { AiFillDashboard, AiOutlineBars } from "react-icons/ai";
+import { BiSolidCategoryAlt } from "react-icons/bi";
 import "./DashBoard.css";
 import HeaderAdmin from "../../../components/HeaderAdmin/HeaderAdmin";
 import PageTitle from "../../../components/PageTitle/PageTitle";
 import SellProductAdminList from "../../../layouts/components/SellProductAdmin/SellProductAdminList";
+import axios from "axios";
 
 const DashBoard = () => {
   const isAdmin = true;
@@ -26,6 +30,24 @@ const DashBoard = () => {
     // Then navigate to the home page
     navigate("/");
   };
+  const [totalProducts, setTotalProducts] = useState(0);
+  const [totalCategory, setTotalCategory] = useState(0);
+
+  useEffect(() => {
+    const getTotalProduct = async () => {
+      try {
+        const [getTotalProduct, getTotalCategory] = await axios.all([
+          axios.get("http://localhost:3000/products"),
+          axios.get("http://localhost:3000/category"),
+        ]);
+        setTotalProducts(getTotalProduct.data.Product.length);
+        setTotalCategory(getTotalCategory.data.length);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getTotalProduct();
+  }, []);
 
   return (
     <div>
@@ -47,13 +69,15 @@ const DashBoard = () => {
               <MenuItem component={<Link to="/dashboard/manage-category" />}>
                 Danh sách danh mục
               </MenuItem>
-              <MenuItem component={<Link to="/dashboard/add-category" />}>Thêm danh mục</MenuItem>
             </SubMenu>
             <SubMenu label="Quản lý sản phẩm" icon={<FaBook className="w-5 h-5" />}>
               <MenuItem component={<Link to="/dashboard/manage-product" />}>
                 Danh sách sản phẩm
               </MenuItem>
-              <MenuItem component={<Link to="/dashboard/add-product" />}>Thêm sản phẩm</MenuItem>
+              <MenuItem component={<Link to="/dashboard/manage-author" />}>Tác giả</MenuItem>
+              <MenuItem component={<Link to="/dashboard/manage-publishes" />}>
+                Nhà xuất bản
+              </MenuItem>
             </SubMenu>
             <MenuItem component={<Link to="/dashboard/manage-items" />}>
               <div className="flex items-center gap-4">
@@ -91,10 +115,34 @@ const DashBoard = () => {
               <div className="flex items-center justify-between">
                 <div className="">
                   <PageTitle title="89,935" />
+                  {/* Tổng doanh thu của các đơn hàng */}
+                  {/* Đơn hàng: Thống kê số lượng đơn hàng đã hoàn thành và đơn hàng đang chờ xử lý. */}
                   <div className="">Doanh thu</div>
                 </div>
                 <div className="w-10 h-10 rounded-md border flex items-center justify-center text-mainDark">
-                  <FaUsers className="w-7 h-7" />
+                  <FaMoneyBill className="w-7 h-7" />
+                </div>
+              </div>
+            </div>
+            <div className="bg-white p-4 border rounded-lg shadow py-5 px-6">
+              <div className="flex items-center justify-between">
+                <div className="">
+                  <PageTitle title={totalProducts} />
+                  <div className="">Sản phẩm</div>
+                </div>
+                <div className="w-10 h-10 rounded-md border flex items-center justify-center text-mainDark">
+                  <FaProductHunt className="w-7 h-7" />
+                </div>
+              </div>
+            </div>
+            <div className="bg-white p-4 border rounded-lg shadow py-5 px-6">
+              <div className="flex items-center justify-between">
+                <div className="">
+                  <PageTitle title={totalCategory} />
+                  <div className="">Danh mục</div>
+                </div>
+                <div className="w-10 h-10 rounded-md border flex items-center justify-center text-mainDark">
+                  <BiSolidCategoryAlt className="w-7 h-7" />
                 </div>
               </div>
             </div>
@@ -102,29 +150,7 @@ const DashBoard = () => {
               <div className="flex items-center justify-between">
                 <div className="">
                   <PageTitle title="89,935" />
-                  <div className="">Doanh thu</div>
-                </div>
-                <div className="w-10 h-10 rounded-md border flex items-center justify-center text-mainDark">
-                  <FaUsers className="w-7 h-7" />
-                </div>
-              </div>
-            </div>
-            <div className="bg-white p-4 border rounded-lg shadow py-5 px-6">
-              <div className="flex items-center justify-between">
-                <div className="">
-                  <PageTitle title="89,935" />
-                  <div className="">Doanh thu</div>
-                </div>
-                <div className="w-10 h-10 rounded-md border flex items-center justify-center text-mainDark">
-                  <FaUsers className="w-7 h-7" />
-                </div>
-              </div>
-            </div>
-            <div className="bg-white p-4 border rounded-lg shadow py-5 px-6">
-              <div className="flex items-center justify-between">
-                <div className="">
-                  <PageTitle title="89,935" />
-                  <div className="">Doanh thu</div>
+                  <div className="">Người dùng</div>
                 </div>
                 <div className="w-10 h-10 rounded-md border flex items-center justify-center text-mainDark">
                   <FaUsers className="w-7 h-7" />

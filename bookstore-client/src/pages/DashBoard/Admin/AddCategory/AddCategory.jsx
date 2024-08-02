@@ -8,7 +8,9 @@ import "../DashBoard.css";
 import PageTitle from "../../../../components/PageTitle/PageTitle";
 import HeaderAdmin from "../../../../components/HeaderAdmin/HeaderAdmin";
 import Button from "../../../../components/Button/Button";
-
+import { useForm } from "react-hook-form";
+import axios from "axios";
+import Swal from "sweetalert2";
 const AddCategory = () => {
   const [selectedImage, setSelectedImage] = useState(null);
   const navigate = useNavigate();
@@ -21,6 +23,37 @@ const AddCategory = () => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
       setSelectedImage(URL.createObjectURL(file));
+    }
+  };
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
+  const onSubmit = async (data) => {
+    try {
+      const response = await axios.post("http://localhost:3000/category", data);
+
+      Swal.fire({
+        position: "top-end",
+        icon: "success",
+        title: "Danh mục đã được thêm thành công!",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+      console.log("Category created:", response.data);
+      navigate("/dashboard/manage-category");
+    } catch (error) {
+      console.error("Error creating cate:", error);
+      Swal.fire({
+        position: "top-end",
+        icon: "error",
+        title: "Có lỗi xảy ra!",
+        text: error.message,
+        showConfirmButton: true,
+      });
     }
   };
 
@@ -39,17 +72,27 @@ const AddCategory = () => {
               </div>
             </MenuItem>
 
-            <SubMenu label="Quản lý danh mục" icon={<AiOutlineBars className="w-5 h-5" />}>
+            <SubMenu
+              label="Quản lý danh mục"
+              icon={<AiOutlineBars className="w-5 h-5" />}
+            >
               <MenuItem component={<Link to="/dashboard/manage-category" />}>
                 Danh sách danh mục
               </MenuItem>
-              <MenuItem component={<Link to="/dashboard/add-category" />}>Thêm danh mục</MenuItem>
+              <MenuItem component={<Link to="/dashboard/add-category" />}>
+                Thêm danh mục
+              </MenuItem>
             </SubMenu>
-            <SubMenu label="Quản lý sản phẩm" icon={<FaBook className="w-5 h-5" />}>
+            <SubMenu
+              label="Quản lý sản phẩm"
+              icon={<FaBook className="w-5 h-5" />}
+            >
               <MenuItem component={<Link to="/dashboard/manage-product" />}>
                 Danh sách sản phẩm
               </MenuItem>
-              <MenuItem component={<Link to="/dashboard/add-product" />}>Thêm sản phẩm</MenuItem>
+              <MenuItem component={<Link to="/dashboard/add-product" />}>
+                Thêm sản phẩm
+              </MenuItem>
             </SubMenu>
             <MenuItem component={<Link to="/dashboard/manage-items" />}>
               <div className="flex items-center gap-4">
@@ -63,11 +106,16 @@ const AddCategory = () => {
                 Quản lý tài khoản
               </div>
             </MenuItem>
-            <SubMenu label="Quản lý bài viết" icon={<FaRegEdit className="w-5 h-5" />}>
+            <SubMenu
+              label="Quản lý bài viết"
+              icon={<FaRegEdit className="w-5 h-5" />}
+            >
               <MenuItem component={<Link to="/dashboard/manage-blog" />}>
                 Danh sách bài viết
               </MenuItem>
-              <MenuItem component={<Link to="/dashboard/add-blog" />}>Thêm bài viết</MenuItem>
+              <MenuItem component={<Link to="/dashboard/add-blog" />}>
+                Thêm bài viết
+              </MenuItem>
             </SubMenu>
             <MenuItem onClick={handleLogout}>
               <div className="flex items-center gap-4">
@@ -83,14 +131,27 @@ const AddCategory = () => {
             <PageTitle title="Thêm danh mục" className="text-mainDark" />
           </div>
           <div className="border rounded-[10px] py-8 px-5 mt-7">
-            <form action="" className="flex flex-col gap-6">
+            <form
+              onSubmit={handleSubmit(onSubmit)}
+              className="flex flex-col gap-6"
+            >
               <div className="w-full flex flex-col gap-2">
                 <label htmlFor="category">*Danh mục</label>
-                <input type="text" id="category" className="input input-bordered w-full" />
+                <input
+                  {...register("name", { required: true })}
+                  type="text"
+                  id="category"
+                  className="input input-bordered w-full"
+                />
               </div>
               <div className="w-full flex flex-col gap-2">
                 <label htmlFor="publisher">Mô tả</label>
-                <textarea type="text" id="publisher" className="input input-bordered w-full h-32" />
+                <textarea
+                  {...register("description", { required: true })}
+                  type="text"
+                  id="publisher"
+                  className="input input-bordered w-full h-32"
+                />
               </div>
               <div className="flex items-center gap-3">
                 <Button>Lưu</Button>

@@ -4,13 +4,13 @@ import ProductList from "../../components/Product/ProductList";
 
 const ViewProduct = () => {
   return (
-    <div>
+    <div className="py-5">
       <div className="container">
         <Title>Nhiều lượt xem</Title>
-        <div className="flex items-center justify-between gap-8 py-10 max-lg:flex-col max-lg:gap-5 max-lg:py-5">
+        <div className="flex items-center justify-between gap-8 py-5 max-lg:flex-col max-lg:gap-5 max-lg:py-5">
           <div className="w-3/5 max-lg:w-full max-md:hidden">
             <img
-              src="./images/view.png"
+              src="./images/bannerview.jpg"
               className="w-full h-[580px] object-cover rounded-2xl max-lg:h-[380px] max-lg:w-full"
               alt=""
             />

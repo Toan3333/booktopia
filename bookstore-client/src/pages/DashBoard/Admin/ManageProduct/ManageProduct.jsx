@@ -16,6 +16,7 @@ import "../DashBoard.css";
 import PageTitle from "../../../../components/PageTitle/PageTitle";
 import HeaderAdmin from "../../../../components/HeaderAdmin/HeaderAdmin";
 import axios from "axios";
+import Swal from "sweetalert2";
 
 const ManageProduct = () => {
   const isAdmin = true;
@@ -27,6 +28,7 @@ const ManageProduct = () => {
   };
 
   const [allProductList, setAllProductList] = useState([]);
+
   useEffect(() => {
     const fetchProductList = async () => {
       try {
@@ -38,7 +40,35 @@ const ManageProduct = () => {
       }
     };
     fetchProductList();
-  });
+  }, []);
+
+  const handleDelete = async (id) => {
+    try {
+      await axios.delete(`http://localhost:3000/products/${id}`);
+      Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          Swal.fire({
+            title: "Deleted!",
+            text: "Your product has been deleted.",
+            icon: "success",
+          }).then(() => {
+            window.location.reload(); // Reload the page after deleting
+          });
+        }
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div>
       <div className="flex min-h-screen border">
@@ -101,7 +131,7 @@ const ManageProduct = () => {
             <div className="flex items-center">
               <Link to="/dashboard/add-product">
                 <button className="flex items-center gap-2 bg-mainDark py-3 px-5 text-white font-semibold leading-normal rounded-[10px]">
-                  <FaPlus></FaPlus>Thêm
+                  <FaPlus /> Thêm
                 </button>
               </Link>
             </div>
@@ -116,7 +146,7 @@ const ManageProduct = () => {
                   <th>Tác giả</th>
                   <th>Danh mục</th>
                   <th>Nhà xuất bản</th>
-                  <th>Giá</th>
+                  <th className="text-center">Giá</th>
                   <th>Số lượng</th>
                   <th className="text-center">Thao tác</th>
                 </tr>
@@ -129,23 +159,38 @@ const ManageProduct = () => {
                       <img
                         src={`http://localhost:3000/images/${item.image1}`}
                         className="w-20 h-20"
-                        alt=""
+                        alt={item.name}
                       />
                     </td>
                     <td>{item.name}</td>
-                    <td>{item.publish.publishName}</td>
-                    <td>{item.category.categoryName}</td>
-                    <td>{item.author.authorName}</td>
-                    <td>{item.price2}</td>
+                    <td>{item.author?.authorName || "Chưa có"}</td>
+                    <td>{item.category?.categoryName || "Chưa có"}</td>
+                    <td>{item.publish?.publishName || "Chưa có"}</td>
+                    <td>
+                      <div className="flex items-center justify-center gap-4">
+                        <div>
+                          {item.price1.toLocaleString("vi-VN", {
+                            style: "currency",
+                            currency: "VND",
+                          })}
+                        </div>
+                        <div className="text-red">
+                          {item.price2?.toLocaleString("vi-VN", {
+                            style: "currency",
+                            currency: "VND",
+                          }) || "chưa có"}
+                        </div>
+                      </div>
+                    </td>
                     <td className="px-3 text-center">{item.quantity}</td>
                     <td>
                       <div className="flex items-center justify-center gap-3">
-                        <Link to="/dashboard/edit-product">
+                        <Link to={`/dashboard/edit-product/${item._id}`}>
                           <FaUserEdit className="w-5 h-5 text-main" />
                         </Link>
-                        <a href="#">
+                        <button onClick={(e) => handleDelete(item._id)}>
                           <FaTrashAlt className="w-5 h-4 text-red" />
-                        </a>
+                        </button>
                       </div>
                     </td>
                   </tr>
@@ -153,7 +198,6 @@ const ManageProduct = () => {
               </tbody>
             </table>
           </div>
-          {/* Content goes here */}
         </div>
       </div>
     </div>

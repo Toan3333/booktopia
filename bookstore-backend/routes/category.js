@@ -55,6 +55,20 @@ router.put("/:id", async (req, res) => {
   }
 });
 
+// chi tiết category
+
+router.get("/:id", async (req, res) => {
+  try {
+    const { id } = req.params; // lấy được cái id mà người dùng gửi lên
+    const pro = await categoryController.getCategoryById(id);
+    // return pro
+    return res.status(200).json(pro);
+  } catch (error) {
+    console.log("lỗi lay chi tiet sp", error);
+    return res.status(500).json({ mess: error });
+  }
+});
+
 //Xóa danh mục theo id
 router.delete("/delete/:id", async (req, res) => {
   try {
