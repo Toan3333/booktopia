@@ -45,19 +45,19 @@ const ManageCategory = () => {
     try {
       await axios.delete(`http://localhost:3000/category/delete/${id}`);
       Swal.fire({
-        title: "Are you sure?",
-        text: "You won't be able to revert this!",
-        icon: "warning",
-        showCancelButton: true,
+        title: "Bạn có muốn xóa?",
+        text: "Đã xóa không thể khôi phục",
+        icon: "Cảnh báo",
+        showCancelButton: "Hủy",
         confirmButtonColor: "#3085d6",
         cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, delete it!",
+        confirmButtonText: "Xóa thành công",
       }).then((result) => {
         if (result.isConfirmed) {
           Swal.fire({
             title: "Deleted!",
-            text: "Your product has been deleted.",
-            icon: "success",
+            text: "Danh mục của bạn đã được xóa.",
+            icon: "Thành công",
           }).then(() => {
             window.location.reload(); // Reload the page after deleting
           });
@@ -167,7 +167,7 @@ const ManageCategory = () => {
                     <td className="max-w-[300px]">{item.description}</td>
                     <td>
                       <div className="flex items-center justify-center gap-3">
-                        <Link to="/dashboard/edit-category">
+                        <Link to={`/dashboard/edit-category/${item._id}`}>
                           <FaUserEdit className="w-5 h-5 text-main" />
                         </Link>
                         <button onClick={(e) => handleDelete(item._id)}>

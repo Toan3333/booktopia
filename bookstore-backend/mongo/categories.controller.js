@@ -7,7 +7,7 @@ module.exports = {
   getByCategory,
   getCategoryByName,
   deleteCate,
-  getById,
+  getCategoryById
 };
 
 // Show tất cả danh mục
@@ -97,7 +97,9 @@ async function deleteCate(id) {
   }
 }
 
-async function getById(id) {
+// chi tiết category
+
+async function getCategoryById(id) {
   try {
     const proId = await categoryModel.findById(id);
     return proId;
