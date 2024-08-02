@@ -19,13 +19,6 @@ const AddCategory = () => {
     navigate("/");
   };
 
-  const handleImageChange = (e) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
-      setSelectedImage(URL.createObjectURL(file));
-    }
-  };
-
   const {
     register,
     handleSubmit,
@@ -57,6 +50,10 @@ const AddCategory = () => {
     }
   };
 
+  const handleCancel = () => {
+    navigate("/dashboard/manage-category");
+  };
+
   return (
     <div>
       <div className="flex min-h-screen border">
@@ -72,27 +69,17 @@ const AddCategory = () => {
               </div>
             </MenuItem>
 
-            <SubMenu
-              label="Quản lý danh mục"
-              icon={<AiOutlineBars className="w-5 h-5" />}
-            >
+            <SubMenu label="Quản lý danh mục" icon={<AiOutlineBars className="w-5 h-5" />}>
               <MenuItem component={<Link to="/dashboard/manage-category" />}>
                 Danh sách danh mục
               </MenuItem>
-              <MenuItem component={<Link to="/dashboard/add-category" />}>
-                Thêm danh mục
-              </MenuItem>
+              <MenuItem component={<Link to="/dashboard/add-category" />}>Thêm danh mục</MenuItem>
             </SubMenu>
-            <SubMenu
-              label="Quản lý sản phẩm"
-              icon={<FaBook className="w-5 h-5" />}
-            >
+            <SubMenu label="Quản lý sản phẩm" icon={<FaBook className="w-5 h-5" />}>
               <MenuItem component={<Link to="/dashboard/manage-product" />}>
                 Danh sách sản phẩm
               </MenuItem>
-              <MenuItem component={<Link to="/dashboard/add-product" />}>
-                Thêm sản phẩm
-              </MenuItem>
+              <MenuItem component={<Link to="/dashboard/add-product" />}>Thêm sản phẩm</MenuItem>
             </SubMenu>
             <MenuItem component={<Link to="/dashboard/manage-items" />}>
               <div className="flex items-center gap-4">
@@ -106,16 +93,11 @@ const AddCategory = () => {
                 Quản lý tài khoản
               </div>
             </MenuItem>
-            <SubMenu
-              label="Quản lý bài viết"
-              icon={<FaRegEdit className="w-5 h-5" />}
-            >
+            <SubMenu label="Quản lý bài viết" icon={<FaRegEdit className="w-5 h-5" />}>
               <MenuItem component={<Link to="/dashboard/manage-blog" />}>
                 Danh sách bài viết
               </MenuItem>
-              <MenuItem component={<Link to="/dashboard/add-blog" />}>
-                Thêm bài viết
-              </MenuItem>
+              <MenuItem component={<Link to="/dashboard/add-blog" />}>Thêm bài viết</MenuItem>
             </SubMenu>
             <MenuItem onClick={handleLogout}>
               <div className="flex items-center gap-4">
@@ -131,10 +113,7 @@ const AddCategory = () => {
             <PageTitle title="Thêm danh mục" className="text-mainDark" />
           </div>
           <div className="border rounded-[10px] py-8 px-5 mt-7">
-            <form
-              onSubmit={handleSubmit(onSubmit)}
-              className="flex flex-col gap-6"
-            >
+            <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
               <div className="w-full flex flex-col gap-2">
                 <label htmlFor="category">*Danh mục</label>
                 <input
@@ -155,7 +134,9 @@ const AddCategory = () => {
               </div>
               <div className="flex items-center gap-3">
                 <Button>Lưu</Button>
-                <Button className="bg-secondary">Hủy</Button>
+                <Button className="bg-secondary" onClick={handleCancel}>
+                  Hủy
+                </Button>
               </div>
             </form>
           </div>

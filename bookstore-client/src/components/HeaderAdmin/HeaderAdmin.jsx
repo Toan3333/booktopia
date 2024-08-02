@@ -3,7 +3,7 @@ import { FaRegBell, FaSearch } from "react-icons/fa";
 import { IoChatbubbleEllipsesOutline } from "react-icons/io5";
 const HeaderAdmin = () => {
   return (
-    <div className="my-3">
+    <div className="mb-5">
       <div className="bg-mainDark rounded-[10px] p-5">
         <div className="flex items-center justify-between">
           <div>

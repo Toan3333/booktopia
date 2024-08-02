@@ -43,7 +43,6 @@ const EditProduct = () => {
       try {
         const response = await axios.get("http://localhost:3000/publishes");
         setListPublishes(response.data);
-        console.log("List of publishes:", response.data);
       } catch (error) {
         console.log(error);
       }

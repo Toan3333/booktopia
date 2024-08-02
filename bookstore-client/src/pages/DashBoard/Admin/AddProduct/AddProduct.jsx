@@ -124,6 +124,10 @@ const AddProduct = () => {
     }
   };
 
+  const handleCancel = () => {
+    navigate("/dashboard/manage-product");
+  };
+
   return (
     <div className="flex min-h-screen border">
       <Sidebar className="relative border p-3 bg-white" width="270px">
@@ -137,17 +141,18 @@ const AddProduct = () => {
               Dashboard
             </div>
           </MenuItem>
+
           <SubMenu label="Quản lý danh mục" icon={<AiOutlineBars className="w-5 h-5" />}>
             <MenuItem component={<Link to="/dashboard/manage-category" />}>
               Danh sách danh mục
             </MenuItem>
-            <MenuItem component={<Link to="/dashboard/add-category" />}>Thêm danh mục</MenuItem>
           </SubMenu>
           <SubMenu label="Quản lý sản phẩm" icon={<FaBook className="w-5 h-5" />}>
             <MenuItem component={<Link to="/dashboard/manage-product" />}>
               Danh sách sản phẩm
             </MenuItem>
-            <MenuItem component={<Link to="/dashboard/add-product" />}>Thêm sản phẩm</MenuItem>
+            <MenuItem component={<Link to="/dashboard/manage-author" />}>Tác giả</MenuItem>
+            <MenuItem component={<Link to="/dashboard/manage-publishes" />}>Nhà xuất bản</MenuItem>
           </SubMenu>
           <MenuItem component={<Link to="/dashboard/manage-items" />}>
             <div className="flex items-center gap-4">
@@ -163,7 +168,6 @@ const AddProduct = () => {
           </MenuItem>
           <SubMenu label="Quản lý bài viết" icon={<FaRegEdit className="w-5 h-5" />}>
             <MenuItem component={<Link to="/dashboard/manage-blog" />}>Danh sách bài viết</MenuItem>
-            <MenuItem component={<Link to="/dashboard/add-blog" />}>Thêm bài viết</MenuItem>
           </SubMenu>
           <MenuItem onClick={handleLogout}>
             <div className="flex items-center gap-4">
@@ -295,9 +299,10 @@ const AddProduct = () => {
               />
               {errors.quantity && <span className="text-red">Số lượng là bắt buộc</span>}
             </div>
-            <div className="flex items-center justify-center">
-              <Button primary="true" className="py-2 px-10">
-                Thêm sản phẩm
+            <div className="flex items-center gap-3">
+              <Button>Lưu</Button>
+              <Button className="bg-secondary" onClick={handleCancel}>
+                Hủy
               </Button>
             </div>
           </form>

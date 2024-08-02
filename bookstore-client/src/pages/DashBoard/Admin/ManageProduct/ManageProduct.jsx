@@ -113,7 +113,6 @@ const ManageProduct = () => {
               <MenuItem component={<Link to="/dashboard/manage-blog" />}>
                 Danh sách bài viết
               </MenuItem>
-              <MenuItem component={<Link to="/dashboard/add-blog" />}>Thêm bài viết</MenuItem>
             </SubMenu>
             <MenuItem onClick={handleLogout}>
               <div className="flex items-center gap-4">
@@ -126,7 +125,7 @@ const ManageProduct = () => {
         {/* Main Content */}
         <div className="flex-1 p-6">
           <HeaderAdmin />
-          <div className="flex items-center justify-between pb-8 border-b">
+          <div className="flex items-center justify-between pb-5 border-b">
             <PageTitle title="Danh sách sản phẩm" className="text-mainDark" />
             <div className="flex items-center">
               <Link to="/dashboard/add-product">

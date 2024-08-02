@@ -113,7 +113,6 @@ const ManageCategory = () => {
               <MenuItem component={<Link to="/dashboard/manage-blog" />}>
                 Danh sách bài viết
               </MenuItem>
-              <MenuItem component={<Link to="/dashboard/add-blog" />}>Thêm bài viết</MenuItem>
             </SubMenu>
             <MenuItem onClick={handleLogout}>
               <div className="flex items-center gap-4">

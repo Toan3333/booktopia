@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { Sidebar, Menu, MenuItem, SubMenu } from "react-pro-sidebar";
 import { FaBook, FaClipboardList, FaRegEdit, FaUser } from "react-icons/fa";
 import { MdLogout } from "react-icons/md";
@@ -8,9 +8,13 @@ import "../DashBoard.css";
 import PageTitle from "../../../../components/PageTitle/PageTitle";
 import HeaderAdmin from "../../../../components/HeaderAdmin/HeaderAdmin";
 import Button from "../../../../components/Button/Button";
+import { useForm } from "react-hook-form";
+import axios from "axios";
+import Swal from "sweetalert2";
 
-const AddBlog = () => {
+const EditBlog = () => {
   const [selectedImage, setSelectedImage] = useState(null);
+  const { id } = useParams();
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -18,15 +22,31 @@ const AddBlog = () => {
   };
 
   const handleImageChange = (e) => {
-    const { id, files } = e.target;
-    if (files && files[0]) {
-      const fileURL = URL.createObjectURL(files[0]);
-      setSelectedImage({
-        file: files[0],
-        preview: fileURL,
-      });
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      setSelectedImage(URL.createObjectURL(file));
     }
   };
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+  } = useForm();
+
+  // useEffect(() => {
+  //   const getCategoryById = async () => {
+  //     try {
+  //       const response = await axios.get(`http://localhost:3000/category/${id}`);
+  //       const { name, description } = response.data;
+  //       setValue("name", name);
+  //       setValue("description", description);
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   };
+  //   getCategoryById();
+  // }, [id, setValue]);
 
   return (
     <div>
@@ -71,6 +91,7 @@ const AddBlog = () => {
               <MenuItem component={<Link to="/dashboard/manage-blog" />}>
                 Danh sách bài viết
               </MenuItem>
+              <MenuItem component={<Link to="/dashboard/add-blog" />}>Thêm bài viết</MenuItem>
             </SubMenu>
             <MenuItem onClick={handleLogout}>
               <div className="flex items-center gap-4">
@@ -83,7 +104,7 @@ const AddBlog = () => {
         <div className="flex-1 p-6">
           <HeaderAdmin />
           <div className="flex items-center justify-between pb-8 border-b">
-            <PageTitle title="Thêm sản phẩm" className="text-mainDark" />
+            <PageTitle title="Cập nhật bài viết" className="text-mainDark" />
           </div>
           <div className="border rounded-[10px] py-8 px-5 mt-7">
             <form className="flex flex-col gap-6">
@@ -124,5 +145,4 @@ const AddBlog = () => {
     </div>
   );
 };
-
-export default AddBlog;
+export default EditBlog;

@@ -69,7 +69,6 @@ const ManageBlog = () => {
               <MenuItem component={<Link to="/dashboard/manage-blog" />}>
                 Danh sách bài viết
               </MenuItem>
-              <MenuItem component={<Link to="/dashboard/add-blog" />}>Thêm bài viết</MenuItem>
             </SubMenu>
             <MenuItem onClick={handleLogout}>
               <div className="flex items-center gap-4">
@@ -85,9 +84,11 @@ const ManageBlog = () => {
           <div className="flex items-center justify-between pb-8 border-b">
             <PageTitle title="Quản lý bài viết" className="text-mainDark" />
             <div>
-              <button className="flex items-center gap-2 bg-mainDark py-3 px-5 text-white font-semibold leading-normal rounded-[10px]">
-                <FaPlus></FaPlus>Thêm
-              </button>
+              <Link to="/dashboard/add-blog">
+                <button className="flex items-center gap-2 bg-mainDark py-3 px-5 text-white font-semibold leading-normal rounded-[10px]">
+                  <FaPlus></FaPlus>Thêm
+                </button>
+              </Link>
             </div>
           </div>
           <div className="mt-6 border rounded-[30px] p-5">
@@ -166,10 +167,9 @@ const ManageBlog = () => {
                       bài đọc để nâng cao khả năng giao tiếp và hiểu biết văn hóa của ngôn ngữ đó.
                     </p>
                   </td>
-
                   <td>
                     <div className="flex items-center justify-center gap-3">
-                      <Link to="/dashboard/edit-product">
+                      <Link to="/dashboard/edit-blog">
                         <FaUserEdit className="w-5 h-5 text-main" />
                       </Link>
                       <a href="#">
