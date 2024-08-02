@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Sidebar, Menu, MenuItem, SubMenu } from "react-pro-sidebar";
 import {
@@ -15,8 +15,27 @@ import { AiFillDashboard, AiOutlineBars } from "react-icons/ai";
 import "../DashBoard.css";
 import PageTitle from "../../../../components/PageTitle/PageTitle";
 import HeaderAdmin from "../../../../components/HeaderAdmin/HeaderAdmin";
+import axios from "axios";
+import Swal from "sweetalert2";
 
 const ManageBlog = () => {
+
+  const [getBlog,setGetBlog]=useState([])
+  
+useEffect(() => {
+  const fetchBlog = async () => {
+    try {
+      const response = await axios.get("http://localhost:3000/blog");
+      const data = response.data;
+      setGetBlog(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  fetchBlog();
+ 
+}, []);
   const isAdmin = true;
   const navigate = useNavigate();
   const handleLogout = () => {
@@ -25,6 +44,32 @@ const ManageBlog = () => {
     navigate("/");
   };
 
+  const handleDelete = async (id) => {
+    try {
+      await axios.delete(`http://localhost:3000/blog/${id}`);
+      Swal.fire({
+        title: "Bạn có muốn xóa?",
+        text: "Đã xóa không thể khôi phục",
+        icon: "warning",
+        showCancelButton: "Hủy",
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Xóa",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          Swal.fire({
+            title: "Deleted!",
+            text: "Danh mục của bạn đã được xóa.",
+            icon: "success",
+          }).then(() => {
+            window.location.reload(); // Reload the page after deleting
+          });
+        }
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <div>
       <div className="flex min-h-screen border">
@@ -103,17 +148,16 @@ const ManageBlog = () => {
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>1</td>
+              {getBlog.map((item, index)=>(
+                <tr key={item._id}>
+                  <td>{index+1}</td>
                   <td>
-                    <img src="./images/product.png" className="w-20 h-20" alt="" />
+                    <img  src={`http://localhost:3000/images/${item.image}`} className="w-20 h-20" alt="" />
                   </td>
-                  <td>Những lợi ích của việc đọc sách </td>
-                  <td className=" text-left">
-                    <p className=" max-w-[600px] w-full line-clamp-4 text-left flex">
-                      Sách Tâm lý - Kỹ năng sống cung cấp kiến thức và kỹ năng để quản lý cảm xúc,
-                      cải thiện giao tiếp và giải quyết vấn đề, giúp phát triển cá nhân và nâng cao
-                      chất lượng cuộc sống.
+                  <td>{item.name}</td>
+                  <td className=" text-left line-clamp-3">
+                    <p className=" max-w-[600px] w-full text-left  flex">
+                    {item.content}
                     </p>
                   </td>
 
@@ -122,6 +166,7 @@ const ManageBlog = () => {
                       <Link to="/dashboard/edit-product">
                         <FaUserEdit className="w-5 h-5 text-main" />
                       </Link>
+<<<<<<< HEAD
                       <a href="#">
                         <FaTrashAlt className="w-5 h-4 text-red" />
                       </a>
@@ -173,11 +218,15 @@ const ManageBlog = () => {
                         <FaUserEdit className="w-5 h-5 text-main" />
                       </Link>
                       <a href="#">
+=======
+                      <button onClick={(e) => handleDelete(item._id)}>
+>>>>>>> 32970d5af44a7de17f202620e08238ae66e65cb0
                         <FaTrashAlt className="w-5 h-4 text-red" />
-                      </a>
+                      </button>
                     </div>
                   </td>
                 </tr>
+              ))}
               </tbody>
             </table>
           </div>
