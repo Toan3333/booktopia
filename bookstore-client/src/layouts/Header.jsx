@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { FaBars, FaSearch, FaShoppingBag, FaUser } from "react-icons/fa";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { BsBag } from "react-icons/bs";
@@ -15,6 +15,8 @@ const Header = () => {
   const [isSticky, setIsSticky] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
+  const [isMenuOpen, setIsMenuOpen] = useState(false); // Thêm trạng thái cho menu
+  const menuRef = useRef(null); // Tham chiếu đến menu
 
   useEffect(() => {
     const handleScroll = () => {
@@ -28,6 +30,19 @@ const Header = () => {
     window.addEventListener("scroll", handleScroll);
     return () => {
       window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setIsMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
@@ -116,7 +131,7 @@ const Header = () => {
               </ul>
             </div>
             <div className="w-full flex items-center justify-between gap-3 2xl:hidden max-2xl:hidden max-md:inline-flex max-sm:inline-flex max-lg:inline-flex">
-              <div className="">
+              <div className="cursor-pointer" onClick={() => setIsMenuOpen(!isMenuOpen)}>
                 <FaBars className="w-8 h-8" />
               </div>
               <label className="input input-bordered flex items-center gap-2">
@@ -134,6 +149,31 @@ const Header = () => {
                 <FaShoppingBag className="w-8 h-8" />
                 <FaUser className="w-8 h-8" />
               </div>
+            </div>
+            <div
+              ref={menuRef} // Thêm ref cho menu
+              className={`fixed z-50 top-0 left-0 h-screen w-2/4 bg-white shadow-md transition-transform duration-300 block max-2xl:hidden max-sm:block ${
+                isMenuOpen
+                  ? "transform translate-x-0 max-sm:duration-300 max-sm:transition-transform"
+                  : "transform -translate-x-full"
+              }`}>
+              <ul className="flex flex-col">
+                {menuList.map((item) => (
+                  <li key={item.id} className="p-4">
+                    <NavLink
+                      to={item.link}
+                      className={({ isActive }) =>
+                        isActive
+                          ? "text-mainDark font-semibold"
+                          : "hover:text-mainDark hover:font-semibold"
+                      }
+                      onClick={() => setIsMenuOpen(false)} // Đóng menu khi chọn một mục
+                    >
+                      {item.name}
+                    </NavLink>
+                  </li>
+                ))}
+              </ul>
             </div>
             <label className="input input-bordered flex items-center gap-2 max-md:hidden max-lg:hidden">
               <FaSearch className="text-gray-400" />
