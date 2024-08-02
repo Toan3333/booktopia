@@ -161,7 +161,7 @@ const ManageBlog = () => {
                   </td>
                   <td>Những lợi ích của việc đọc sách </td>
                   <td className="">
-                    <p className="w-full line-clamp-4 flex">
+                    <p className="w-full line-clamp-3 flex">
                       Sách ngoại ngữ giúp người học phát triển kỹ năng nghe, nói, đọc, viết và hiểu
                       ngôn ngữ mới. Chúng thường bao gồm từ vựng, ngữ pháp, bài tập thực hành và các
                       bài đọc để nâng cao khả năng giao tiếp và hiểu biết văn hóa của ngôn ngữ đó.

@@ -2,7 +2,7 @@
 
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const ObjectId = Schema.ObjectId; // khóa chính id
+// khóa chính id
 
 const blogSchema = new Schema({
   name: { type: String, require: true }, // require true là bắt buộc ---- fasle là ko bắt buộc
