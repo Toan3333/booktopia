@@ -47,17 +47,17 @@ const ManageCategory = () => {
       Swal.fire({
         title: "Bạn có muốn xóa?",
         text: "Đã xóa không thể khôi phục",
-        icon: "Cảnh báo",
+        icon: "warning",
         showCancelButton: "Hủy",
         confirmButtonColor: "#3085d6",
         cancelButtonColor: "#d33",
-        confirmButtonText: "Xóa thành công",
+        confirmButtonText: "Xóa",
       }).then((result) => {
         if (result.isConfirmed) {
           Swal.fire({
             title: "Deleted!",
             text: "Danh mục của bạn đã được xóa.",
-            icon: "Thành công",
+            icon: "success",
           }).then(() => {
             window.location.reload(); // Reload the page after deleting
           });
@@ -83,24 +83,16 @@ const ManageCategory = () => {
               </div>
             </MenuItem>
 
-            <SubMenu
-              label="Quản lý danh mục"
-              icon={<AiOutlineBars className="w-5 h-5" />}
-            >
+            <SubMenu label="Quản lý danh mục" icon={<AiOutlineBars className="w-5 h-5" />}>
               <MenuItem component={<Link to="/dashboard/manage-category" />}>
                 Danh sách danh mục
               </MenuItem>
             </SubMenu>
-            <SubMenu
-              label="Quản lý sản phẩm"
-              icon={<FaBook className="w-5 h-5" />}
-            >
+            <SubMenu label="Quản lý sản phẩm" icon={<FaBook className="w-5 h-5" />}>
               <MenuItem component={<Link to="/dashboard/manage-product" />}>
                 Danh sách sản phẩm
               </MenuItem>
-              <MenuItem component={<Link to="/dashboard/manage-author" />}>
-                Tác giả
-              </MenuItem>
+              <MenuItem component={<Link to="/dashboard/manage-author" />}>Tác giả</MenuItem>
               <MenuItem component={<Link to="/dashboard/manage-publishes" />}>
                 Nhà xuất bản
               </MenuItem>
@@ -117,16 +109,11 @@ const ManageCategory = () => {
                 Quản lý tài khoản
               </div>
             </MenuItem>
-            <SubMenu
-              label="Quản lý bài viết"
-              icon={<FaRegEdit className="w-5 h-5" />}
-            >
+            <SubMenu label="Quản lý bài viết" icon={<FaRegEdit className="w-5 h-5" />}>
               <MenuItem component={<Link to="/dashboard/manage-blog" />}>
                 Danh sách bài viết
               </MenuItem>
-              <MenuItem component={<Link to="/dashboard/add-blog" />}>
-                Thêm bài viết
-              </MenuItem>
+              <MenuItem component={<Link to="/dashboard/add-blog" />}>Thêm bài viết</MenuItem>
             </SubMenu>
             <MenuItem onClick={handleLogout}>
               <div className="flex items-center gap-4">

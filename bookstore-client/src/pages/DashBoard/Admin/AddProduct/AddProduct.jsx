@@ -227,7 +227,7 @@ const AddProduct = () => {
             </div>
             <div className="flex gap-10 items-center">
               <div className="w-full flex flex-col gap-2">
-                <label htmlFor="price1">*Giá tiền nhập</label>
+                <label htmlFor="price1">*Giá niêm yết</label>
                 <input
                   type="number"
                   {...register("price1", { required: true })}
@@ -237,10 +237,10 @@ const AddProduct = () => {
                 {errors.price1 && <span className="text-red">Giá tiền nhập là bắt buộc</span>}
               </div>
               <div className="w-full flex flex-col gap-2">
-                <label htmlFor="price2">*Giá tiền bán</label>
+                <label htmlFor="price2">*Giá giảm</label>
                 <input
                   type="number"
-                  {...register("price2", { required: true })}
+                  {...register("price2")}
                   id="price2"
                   className={`input input-bordered w-full ${errors.price2 ? "border-red-500" : ""}`}
                 />

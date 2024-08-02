@@ -7,7 +7,7 @@ module.exports = {
   updateById,
   remove,
   findByName,
-  getNewBlog
+  getNewBlog,
 };
 
 //hiển thị tất cả bài viết
@@ -22,15 +22,15 @@ async function getAll() {
 }
 
 //hiển thị bài viết theo id
-async function getBlogById(blogId) {
-  try {
-    const result = await blogModel.findById(blogId);
-    return result;
-  } catch (error) {
-    console.log("Lỗi lấy bài viết theo id", error);
-    throw error;
-  }
-}
+// async function getBlogById(blogId) {
+//   try {
+//     const result = await blogModel.findById(blogId);
+//     return result;
+//   } catch (error) {
+//     console.log("Lỗi lấy bài viết theo id", error);
+//     throw error;
+//   }
+// }
 
 //thêm bài viết
 async function insert(body) {
@@ -57,7 +57,7 @@ async function updateById(id, body) {
     const result = await blogModel.findByIdAndUpdate(id, {
       name,
       image,
-    
+
       content,
     });
     return result;
@@ -92,17 +92,25 @@ async function findByName(name) {
   }
 }
 
-
-
-//lọc bài viết theo ngày 
+//lọc bài viết theo ngày
 async function getNewBlog() {
   try {
-    const results = await blogModel
-      .find()
-      .sort({ date: -1 })
+    const results = await blogModel.find().sort({ date: -1 });
     return results;
   } catch (error) {
     console.log("Lỗi lấy danh sách sản phẩm mới:", error.message);
+    throw error;
+  }
+}
+
+// chi tiết blog
+
+async function getBlogById(id) {
+  try {
+    const blogId = await blogModel.findById(id);
+    return blogId;
+  } catch (error) {
+    console.log("LỖI LAAYS CHI TIẾT SP", error);
     throw error;
   }
 }

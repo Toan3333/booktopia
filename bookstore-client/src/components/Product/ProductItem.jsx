@@ -66,8 +66,18 @@ const ProductItem = ({ className = "", item }) => {
                 className={`flex items-center gap-3 ${
                   isHorizontal ? "justify-start" : "justify-center max-md:text-sm"
                 }`}>
-                <div className="text-red font-semibold leading-normal">{price2} đ</div>
-                <div className="line-through text-grayText">{price1} đ</div>
+                <div className="text-red font-semibold leading-normal">
+                  {price2.toLocaleString("vi-VN", {
+                    style: "currency",
+                    currency: "VND",
+                  })}
+                </div>
+                <div className="line-through text-grayText">
+                  {price1.toLocaleString("vi-VN", {
+                    style: "currency",
+                    currency: "VND",
+                  })}
+                </div>
               </div>
             </div>
           </div>

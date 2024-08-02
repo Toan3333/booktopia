@@ -168,8 +168,18 @@ const ManageProduct = () => {
                     <td>{item.publish?.publishName || "Chưa có"}</td>
                     <td>
                       <div className="flex items-center justify-center gap-4">
-                        <div>{item.price1}</div>
-                        <div className="text-red">{item.price2}</div>
+                        <div>
+                          {item.price1.toLocaleString("vi-VN", {
+                            style: "currency",
+                            currency: "VND",
+                          })}
+                        </div>
+                        <div className="text-red">
+                          {item.price2?.toLocaleString("vi-VN", {
+                            style: "currency",
+                            currency: "VND",
+                          }) || "chưa có"}
+                        </div>
                       </div>
                     </td>
                     <td className="px-3 text-center">{item.quantity}</td>

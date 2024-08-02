@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const BlogItem = ({ item }) => {
   const { name, date, image, content } = item;
@@ -9,13 +10,13 @@ const BlogItem = ({ item }) => {
   return (
     <div>
       <div className="">
-        <a href="#" className="w-full">
+        <Link to="/blog-detail/_id" className="w-full">
           <img
             src={`http://localhost:3000/images/${image}`}
             className="w-full object-cover rounded-[30px]"
             alt=""
           />
-        </a>
+        </Link>
         <div className="mt-2 flex flex-col gap-1">
           <p className="text-gray-400 font-light text-sm">{formattedDate}</p>
           <h3 className="font-semibold leading-normal max-md:leading-none max-md:text-sm max-md:line-clamp-2">
