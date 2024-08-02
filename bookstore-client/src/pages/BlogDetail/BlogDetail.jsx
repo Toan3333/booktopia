@@ -32,26 +32,26 @@ const BlogDetail = () => {
   }
 
   const { name, image, date, content } = blogDetail;
+  // Chuyển đổi chuỗi ngày tháng thành định dạng ngày, tháng, năm
+  const formattedDate = new Date(date).toLocaleDateString();
   return (
     <div className="py-10">
       <div className="container">
         <div className="relative w-full">
           <img
             src={`http://localhost:3000/images/${image}`}
-            className="rounded-[30px] w-full"
+            className="rounded-[30px] w-full h-[450px]"
             alt=""
           />
         </div>
         <div className="max-w-[1100px] mx-auto relative z-20 -mt-32 border-b pb-10">
           <div className="rounded-[30px] border py-6 px-11 bg-white">
             <PageTitle title={name}></PageTitle>
-            <div className="text-grayText leading-normal font-normal">
-              {date}
-            </div>
+            <div className="text-grayText leading-normal font-normal mb-2">{formattedDate}</div>
             <div className="">
               <img
-                    src={`http://localhost:3000/images/${image}`}
-                className="w-full rounded-[30px] h-[355px]"
+                src={`http://localhost:3000/images/${image}`}
+                className="w-full rounded-[30px] h-[365px]"
                 alt=""
               />
               <p className="font-normal leading-normal mt-4">{content}</p>

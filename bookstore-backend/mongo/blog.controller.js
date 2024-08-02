@@ -37,12 +37,28 @@ async function insert(body) {
   try {
     const { name, date, image, content } = body;
 
-    const newBlog = new blogModel({ name, date, image, content });
+    // Kiểm tra các giá trị đầu vào
+    if (!name || !date || !content) {
+      throw new Error("Tên bài viết, ngày viết và nội dung là bắt buộc.");
+    }
+
+    // Tạo một đối tượng mới từ mô hình blogModel
+    const newBlog = new blogModel({
+      name,
+      date,
+      image, // Có thể là URL hoặc đường dẫn
+      content,
+    });
+
+    // Lưu đối tượng vào cơ sở dữ liệu
     const result = await newBlog.save();
+
+    // Trả kết quả khi lưu thành công
     return result;
   } catch (error) {
+    // Ghi log lỗi và ném lỗi để xử lý ở nơi khác nếu cần
     console.error("Lỗi thêm bài viết:", error);
-    throw error;
+    throw new Error("Có lỗi xảy ra khi thêm bài viết. Vui lòng thử lại.");
   }
 }
 
@@ -53,11 +69,11 @@ async function updateById(id, body) {
     if (!blog) {
       throw new Error("Không tìm thấy bài viết");
     }
-    const { name, image, content } = body;
+    const { name, image, content, date } = body;
     const result = await blogModel.findByIdAndUpdate(id, {
       name,
       image,
-
+      date,
       content,
     });
     return result;
@@ -95,7 +111,7 @@ async function findByName(name) {
 //lọc bài viết theo ngày
 async function getNewBlog() {
   try {
-    const results = await blogModel.find().sort({ date: -1 }).limit(5);
+    const results = await blogModel.find().sort({ date: -1 }).limit(4);
     return results;
   } catch (error) {
     console.log("Lỗi lấy danh sách sản phẩm mới:", error.message);

@@ -8,6 +8,9 @@ import "../DashBoard.css";
 import PageTitle from "../../../../components/PageTitle/PageTitle";
 import HeaderAdmin from "../../../../components/HeaderAdmin/HeaderAdmin";
 import Button from "../../../../components/Button/Button";
+import { useForm } from "react-hook-form";
+import Swal from "sweetalert2";
+import axios from "axios";
 
 const AddBlog = () => {
   const [selectedImage, setSelectedImage] = useState(null);
@@ -18,12 +21,53 @@ const AddBlog = () => {
   };
 
   const handleImageChange = (e) => {
-    const { id, files } = e.target;
+    const { files } = e.target;
     if (files && files[0]) {
       const fileURL = URL.createObjectURL(files[0]);
       setSelectedImage({
         file: files[0],
         preview: fileURL,
+      });
+    }
+  };
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
+  const onSubmit = async (data) => {
+    try {
+      const formData = new FormData();
+      formData.append("name", data.name);
+      formData.append("content", data.content);
+      formData.append("date", data.date);
+      formData.append("image", data.image[0]);
+
+      const response = await axios.post("http://localhost:3000/blog", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      Swal.fire({
+        position: "top-end",
+        icon: "success",
+        title: "Bài viết đã được thêm thành công!",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+
+      navigate("/dashboard/manage-blog");
+    } catch (error) {
+      console.error("Error creating blog:", error);
+      Swal.fire({
+        position: "top-end",
+        icon: "error",
+        title: "Có lỗi xảy ra!",
+        text: error.message,
+        showConfirmButton: true,
       });
     }
   };
@@ -83,35 +127,57 @@ const AddBlog = () => {
         <div className="flex-1 p-6">
           <HeaderAdmin />
           <div className="flex items-center justify-between pb-8 border-b">
-            <PageTitle title="Thêm sản phẩm" className="text-mainDark" />
+            <PageTitle title="Thêm bài viết" className="text-mainDark" />
           </div>
           <div className="border rounded-[10px] py-8 px-5 mt-7">
-            <form className="flex flex-col gap-6">
+            <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
               <div className="w-full flex flex-col gap-2">
-                <label htmlFor="category">*Tên bài viết</label>
-                <input type="text" id="category" className="input input-bordered w-full" />
+                <label htmlFor="name">*Tên bài viết</label>
+                <input
+                  type="text"
+                  {...register("name", { required: true })}
+                  id="name"
+                  className="input input-bordered w-full"
+                />
+                {errors.name && <p className="text-red-500">Tên bài viết là bắt buộc</p>}
               </div>
-              <div className="flex flex-col gap-6">
-                <div className="w-full flex flex-col gap-2">
-                  <label htmlFor="image">*Hình ảnh</label>
-                  {selectedImage?.preview && (
-                    <img
-                      src={selectedImage.preview}
-                      alt="Preview"
-                      className="mt-2 max-h-32 w-40 object-cover"
-                    />
-                  )}
-                  <input
-                    type="file"
-                    id="image"
-                    className="file-input file-input-bordered w-full"
-                    onChange={handleImageChange}
+              <div className="w-full flex flex-col gap-2">
+                <label htmlFor="date">*Ngày viết</label>
+                <input
+                  type="date"
+                  {...register("date", { required: true })}
+                  id="date" // Đổi id sang "date"
+                  className="input input-bordered w-full"
+                />
+                {errors.date && <p className="text-red-500">Ngày viết là bắt buộc</p>}{" "}
+                {/* Sửa lỗi cho trường date */}
+              </div>
+              <div className="w-full flex flex-col gap-2">
+                <label htmlFor="image">*Hình ảnh</label>
+                {selectedImage?.preview && (
+                  <img
+                    src={selectedImage.preview}
+                    alt="Preview"
+                    className="mt-2 max-h-32 w-40 object-cover"
                   />
-                </div>
+                )}
+                <input
+                  type="file"
+                  {...register("image", { required: true })}
+                  id="image"
+                  className="file-input file-input-bordered w-full"
+                  onChange={handleImageChange}
+                />
+                {errors.image && <p className="text-red-500">Hình ảnh là bắt buộc</p>}
               </div>
               <div className="w-full flex flex-col gap-2">
-                <label htmlFor="publisher">Nội dung</label>
-                <textarea type="text" id="publisher" className="input input-bordered w-full h-32" />
+                <label htmlFor="content">Nội dung</label>
+                <textarea
+                  {...register("content", { required: true })}
+                  id="content"
+                  className="input input-bordered w-full h-32"
+                />
+                {errors.content && <p className="text-red-500">Nội dung là bắt buộc</p>}
               </div>
               <div className="flex items-center gap-3">
                 <Button>Lưu</Button>

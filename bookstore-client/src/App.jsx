@@ -71,7 +71,7 @@ function App() {
         <Route path="/dashboard/add-blog" element={<AddBlog></AddBlog>}></Route>
         <Route path="/dashboard/edit-product/:id" element={<EditProduct></EditProduct>}></Route>
         <Route path="/dashboard/edit-category/:id" element={<EditCategory></EditCategory>}></Route>
-        <Route path="/dashboard/edit-blog" element={<EditBlog></EditBlog>}></Route>
+        <Route path="/dashboard/edit-blog/:id" element={<EditBlog></EditBlog>}></Route>
       </Routes>
     </Fragment>
   );

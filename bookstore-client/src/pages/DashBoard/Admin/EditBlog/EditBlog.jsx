@@ -27,6 +27,7 @@ const EditBlog = () => {
       setSelectedImage(URL.createObjectURL(file));
     }
   };
+
   const {
     register,
     handleSubmit,
@@ -34,19 +35,58 @@ const EditBlog = () => {
     formState: { errors },
   } = useForm();
 
-  // useEffect(() => {
-  //   const getCategoryById = async () => {
-  //     try {
-  //       const response = await axios.get(`http://localhost:3000/category/${id}`);
-  //       const { name, description } = response.data;
-  //       setValue("name", name);
-  //       setValue("description", description);
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   };
-  //   getCategoryById();
-  // }, [id, setValue]);
+  useEffect(() => {
+    const getBlogById = async () => {
+      try {
+        const response = await axios.get(`http://localhost:3000/blog/${id}`);
+        const { name, date, image, content } = response.data;
+        setValue("name", name);
+        setValue("date", date.substring(0, 10)); // Chuyển đổi định dạng ngày nếu cần
+        setValue("content", content);
+        setSelectedImage(`http://localhost:3000/images/${image}`);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getBlogById();
+  }, [id, setValue]);
+
+  const onSubmit = async (data) => {
+    try {
+      const formData = new FormData();
+      formData.append("name", data.name);
+      formData.append("date", data.date);
+      formData.append("content", data.content);
+      if (data.image[0]) {
+        formData.append("image", data.image[0]); // Chỉ gửi nếu có hình ảnh mới
+      }
+
+      const response = await axios.put(`http://localhost:3000/blog/${id}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      Swal.fire({
+        position: "top-end",
+        icon: "success",
+        title: "Bài viết đã được cập nhật thành công!",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+
+      navigate("/dashboard/manage-blog");
+    } catch (error) {
+      console.error("Error updating blog:", error);
+      Swal.fire({
+        position: "top-end",
+        icon: "error",
+        title: "Có lỗi xảy ra!",
+        text: error.message,
+        showConfirmButton: true,
+      });
+    }
+  };
 
   return (
     <div>
@@ -107,32 +147,53 @@ const EditBlog = () => {
             <PageTitle title="Cập nhật bài viết" className="text-mainDark" />
           </div>
           <div className="border rounded-[10px] py-8 px-5 mt-7">
-            <form className="flex flex-col gap-6">
+            <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
               <div className="w-full flex flex-col gap-2">
-                <label htmlFor="category">*Tên bài viết</label>
-                <input type="text" id="category" className="input input-bordered w-full" />
+                <label htmlFor="name">*Tên bài viết</label>
+                <input
+                  type="text"
+                  {...register("name", { required: true })}
+                  id="name"
+                  className="input input-bordered w-full"
+                />
+                {errors.name && <p className="text-red-500">Tên bài viết là bắt buộc</p>}
               </div>
-              <div className="flex flex-col gap-6">
-                <div className="w-full flex flex-col gap-2">
-                  <label htmlFor="image">*Hình ảnh</label>
-                  {selectedImage?.preview && (
-                    <img
-                      src={selectedImage.preview}
-                      alt="Preview"
-                      className="mt-2 max-h-32 w-40 object-cover"
-                    />
-                  )}
-                  <input
-                    type="file"
-                    id="image"
-                    className="file-input file-input-bordered w-full"
-                    onChange={handleImageChange}
+              <div className="w-full flex flex-col gap-2">
+                <label htmlFor="date">*Ngày viết</label>
+                <input
+                  type="date"
+                  {...register("date", { required: true })}
+                  id="date"
+                  className="input input-bordered w-full"
+                />
+                {errors.date && <p className="text-red-500">Ngày viết là bắt buộc</p>}
+              </div>
+              <div className="w-full flex flex-col gap-2">
+                <label htmlFor="image">*Hình ảnh</label>
+                {selectedImage && (
+                  <img
+                    src={selectedImage}
+                    alt="Preview"
+                    className="mt-2 max-h-32 w-40 object-cover"
                   />
-                </div>
+                )}
+                <input
+                  type="file"
+                  {...register("image")}
+                  id="image"
+                  className="file-input file-input-bordered w-full"
+                  onChange={handleImageChange}
+                />
+                {errors.image && <p className="text-red-500">Hình ảnh là bắt buộc</p>}
               </div>
               <div className="w-full flex flex-col gap-2">
-                <label htmlFor="publisher">Nội dung</label>
-                <textarea type="text" id="publisher" className="input input-bordered w-full h-32" />
+                <label htmlFor="content">Nội dung</label>
+                <textarea
+                  {...register("content", { required: true })}
+                  id="content"
+                  className="input input-bordered w-full h-32"
+                />
+                {errors.content && <p className="text-red-500">Nội dung là bắt buộc</p>}
               </div>
               <div className="flex items-center gap-3">
                 <Button>Lưu</Button>
@@ -145,4 +206,5 @@ const EditBlog = () => {
     </div>
   );
 };
+
 export default EditBlog;

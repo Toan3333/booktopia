@@ -1,7 +1,7 @@
 var express = require("express");
 var router = express.Router();
 const blogController = require("../mongo/blog.controller");
-
+const upload = require("../helper/upload");
 //hiển tất cả bài viết
 router.get("/", async (req, res) => {
   try {
@@ -26,9 +26,13 @@ router.get("/:id", async (req, res, next) => {
 });
 
 //thêm bài viết mới
-router.post("/", async (req, res) => {
+router.post("/", upload.single("image"), async (req, res) => {
   try {
     const body = req.body;
+    // Kiểm tra xem req.file có tồn tại không trước khi truy cập thuộc tính originalname
+    if (req.file && req.file.originalname) {
+      body.image = req.file.originalname;
+    }
     const result = await blogController.insert(body);
     return res.status(200).json(result);
   } catch (error) {
@@ -38,10 +42,14 @@ router.post("/", async (req, res) => {
 });
 
 //sửa bài viết
-router.put("/:id", async (req, res) => {
+router.put("/:id", upload.single("image"), async (req, res) => {
   try {
     const { id } = req.params;
     const body = req.body;
+    // Kiểm tra xem req.file có tồn tại không trước khi truy cập thuộc tính originalname
+    if (req.file && req.file.originalname) {
+      body.image = req.file.originalname;
+    }
     const blogUpdate = await blogController.updateById(id, body);
     return res.status(200).json(blogUpdate);
   } catch (error) {
@@ -78,7 +86,6 @@ router.get("/search/:name", async (req, res, next) => {
 //lọc bài viết mới
 router.get("/blog/new", async (req, res) => {
   try {
-  
     const result = await blogController.getNewBlog();
     return res.status(200).json(result);
   } catch (error) {
