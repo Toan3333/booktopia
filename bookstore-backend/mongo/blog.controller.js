@@ -95,7 +95,7 @@ async function findByName(name) {
 //lọc bài viết theo ngày
 async function getNewBlog() {
   try {
-    const results = await blogModel.find().sort({ date: -1 });
+    const results = await blogModel.find().sort({ date: -1 }).limit(5);
     return results;
   } catch (error) {
     console.log("Lỗi lấy danh sách sản phẩm mới:", error.message);

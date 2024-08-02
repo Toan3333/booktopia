@@ -76,8 +76,9 @@ router.get("/search/:name", async (req, res, next) => {
 });
 
 //lọc bài viết mới
-router.get("/newblog", async (req, res) => {
+router.get("/blog/new", async (req, res) => {
   try {
+  
     const result = await blogController.getNewBlog();
     return res.status(200).json(result);
   } catch (error) {
