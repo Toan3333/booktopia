@@ -1,9 +1,5 @@
-// thực hiện thao tác CRUD với monggo
-
-// const productModel = require('./product.model')
 const authorModel = require("./author.model");
 const productModel = require("./product.model");
-// const categoriesModel = require('./categories.model');
 module.exports = {
   gettAll,
   insert,
@@ -12,7 +8,7 @@ module.exports = {
   getauthorByName,
   deleteCate,
   getById,
-}; // ,, getByKey, updateById, remove
+};
 
 // xử lí dữ liệu ở contronller
 
