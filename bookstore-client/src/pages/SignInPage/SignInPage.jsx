@@ -5,6 +5,7 @@ import { FaFacebookF, FaGooglePlusG } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import * as Yup from "yup";
 import { useFormik } from "formik";
+import Cookies from "js-cookie";
 
 const SignInPage = () => {
   const formik = useFormik({
@@ -38,6 +39,9 @@ const SignInPage = () => {
             throw new Error(errorData.message || "Đăng nhập thất bại");
           }
         }
+        const data = await res.json();
+        Cookies.set("user", JSON.stringify(data.user)); 
+
         alert("Đăng nhập thành công");
       } catch (error) {
         setFieldError("general", error.message);
