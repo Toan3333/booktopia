@@ -21,17 +21,6 @@ async function getAll() {
   }
 }
 
-//hiển thị bài viết theo id
-// async function getBlogById(blogId) {
-//   try {
-//     const result = await blogModel.findById(blogId);
-//     return result;
-//   } catch (error) {
-//     console.log("Lỗi lấy bài viết theo id", error);
-//     throw error;
-//   }
-// }
-
 //thêm bài viết
 async function insert(body) {
   try {
@@ -130,3 +119,13 @@ async function getBlogById(id) {
     throw error;
   }
 }
+//hiển thị bài viết theo id
+// async function getBlogById(blogId) {
+//   try {
+//     const result = await blogModel.findById(blogId);
+//     return result;
+//   } catch (error) {
+//     console.log("Lỗi lấy bài viết theo id", error);
+//     throw error;
+//   }
+// }

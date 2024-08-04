@@ -1,17 +1,17 @@
-// kết nối collection categories
-
-const mongoose = require('mongoose')
-const Schema = mongoose.Schema
-const ObjectId = Schema.ObjectId // khóa chính id
+const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
+const ObjectId = Schema.ObjectId;
 
 const userSchema = new Schema({
-    name : {type : String, require : true}, // require true là bắt buộc / fasle là ko bắt buộc
-    pass : {type : String , require : true}, 
-    phone :{type : String, require : true},
-    email : {type : String , require : true}, 
-    address : {type : String , require : true}, 
-    role : {type : Number , require : true , default : 0}, 
-  
-})
+  name: { type: String, require: true },
+  username: { type: String, require: true },
+  img: { type: String, require: true },
+  password: { type: String, require: true },
+  email: { type: String, require: true },
+  phone: { type: String, require: true },
+  date: { type: String, require: true },
+  address: { type: String, require: true },
+  role: { type: Number, require: true, default: 0 },
+});
 
-module.exports = mongoose.models.users || mongoose.model('users', userSchema) // kiển tra xem nó tồn tại cái model chưa, nếu chưa thì thêm vàos
+module.exports = mongoose.models.users || mongoose.model("users", userSchema);

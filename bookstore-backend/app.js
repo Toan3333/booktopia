@@ -16,7 +16,6 @@ require("./mongo/product.controller");
 require("./mongo/categories.controller");
 
 // Khai báo router
-var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
 var cataRouter = require("./routes/category");
 var listproRouter = require("./routes/products");
@@ -48,7 +47,6 @@ mongoose
   .catch((err) => console.log("Thất bại", err));
 
 // Định nghĩa các trang routing
-app.use("/", indexRouter);
 app.use("/users", usersRouter);
 app.use("/category", cataRouter);
 app.use("/products", listproRouter);

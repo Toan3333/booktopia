@@ -1,9 +1,5 @@
-// thực hiện thao tác CRUD với monggo
-
-// const productModel = require('./product.model')
 const publishModel = require("./publish.model");
 const productModel = require("./product.model");
-// const categoriesModel = require('./categories.model');
 module.exports = {
   gettAll,
   insert,
@@ -12,9 +8,9 @@ module.exports = {
   getpublishByName,
   deleteCate,
   getById,
-}; // ,, getByKey, updateById, remove
+};
 
-// xử lí dữ liệu ở contronller
+//Lấy tất cả publish
 
 async function gettAll() {
   try {
@@ -26,6 +22,7 @@ async function gettAll() {
   }
 }
 
+// Show publish theo id
 async function getBypublish(publish) {
   try {
     const productspublish = await productModel.find({
@@ -33,11 +30,12 @@ async function getBypublish(publish) {
     });
     return productspublish;
   } catch (error) {
-    console.log("Lỗi lấy sản phẩm  theo ID danh mục", error);
+    console.log("Lỗi lấy sản phẩm  theo ID publish", error);
     throw error;
   }
 }
 
+// Show publish theo name
 async function getpublishByName(publishName) {
   try {
     const publish = await publishModel.findOne({ name: publishName });
@@ -47,8 +45,7 @@ async function getpublishByName(publishName) {
   }
 }
 
-// thêm danh mục
-
+// Thêm publish
 async function insert(body) {
   try {
     const { name, description } = body;
@@ -64,13 +61,12 @@ async function insert(body) {
   }
 }
 
-// cập nhật danh mục theo id
-
+// Cập nhật publish
 async function updateById(id, body) {
   try {
     const cate = await publishModel.findById(id);
     if (!cate) {
-      throw new Error("Không tìm thấy danh mục");
+      throw new Error("Không tìm thấy publish");
     }
     const { name, description } = body;
     const result = await publishModel.findByIdAndUpdate(id, {
@@ -84,35 +80,24 @@ async function updateById(id, body) {
   }
 }
 
-// xóa danh mục theo id
+// Xóa publish
 async function deleteCate(id) {
   try {
-    // kiểm tra xem trong danh mục có sản phẩm nào không
+    // kiểm tra xem trong publish có sản phẩm nào không
     const pros = await productModel.find({ "publish.publishId": id });
     if (pros.length > 0) {
-      return { mess: "Danh mục có sản phẩm không thể xóa" };
+      return { mess: "publish có sản phẩm không thể xóa" };
     } else {
       const result = await publishModel.findByIdAndDelete(id);
       return result;
     }
   } catch (error) {
-    console.log("LỖI XÓA DANH MỤC THEO ID", error);
+    console.log("LỖI XÓA publish THEO ID", error);
     throw error;
   }
 }
 
-// xóa danh mục theo id
-// async function remove(id) {
-//     try {
-//         const result = await publishModel.findByIdAndDelete(id);
-//         return result;
-//     } catch (error) {
-//         console.log('LỖI XÓA DANH MỤC THEO ID', error);
-//         throw error;
-//     }
-
-// }
-
+// Chi tiết Publish
 async function getById(id) {
   try {
     const proId = await publishModel.findById(id);
@@ -122,3 +107,14 @@ async function getById(id) {
     throw error;
   }
 }
+// xóa publish theo id
+// async function remove(id) {
+//     try {
+//         const result = await publishModel.findByIdAndDelete(id);
+//         return result;
+//     } catch (error) {
+//         console.log('LỖI XÓA publish THEO ID', error);
+//         throw error;
+//     }
+
+// }

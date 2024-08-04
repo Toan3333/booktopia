@@ -1,8 +1,6 @@
-// kết nối collection categories
-
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const ObjectId = Schema.ObjectId; // khóa chính id
+const ObjectId = Schema.ObjectId;
 
 const productSchema = new Schema({
   name: { type: String, required: true },
@@ -40,4 +38,5 @@ const productSchema = new Schema({
   },
 });
 
-module.exports = mongoose.models.pros || mongoose.model("products", productSchema); // kiển tra xem nó tồn tại cái model chưa, nếu chưa thì thêm vàos
+module.exports =
+  mongoose.models.pros || mongoose.model("products", productSchema);
