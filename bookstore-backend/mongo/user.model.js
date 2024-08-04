@@ -5,7 +5,7 @@ const ObjectId = Schema.ObjectId;
 const userSchema = new Schema({
   name: { type: String, require: true },
   username: { type: String, require: true },
-  img: { type: String, require: true },
+  image: { type: String, require: true },
   password: { type: String, require: true },
   email: { type: String, require: true },
   phone: { type: String, require: true },

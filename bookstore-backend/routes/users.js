@@ -3,6 +3,7 @@ var router = express.Router();
 const usersController = require("../mongo/user.controller");
 const checktoken = require("../helper/checktoken");
 const jwt = require("jsonwebtoken");
+const upload = require("../helper/upload");
 
 // Đăng ký
 
@@ -30,10 +31,15 @@ router.post("/login", async (req, res) => {
 });
 
 // Cập nhật user
-router.put("/:id", async (req, res) => {
+router.put("/:id", upload.single("image"), async (req, res) => {
   try {
     const { id } = req.params;
     const body = req.body;
+    if (req.file) {
+      body.image = req.file.originalname;
+    } else {
+      delete body.image;
+    }
     const userUpdate = await usersController.updateById(id, body);
     return res.status(200).json({ userUpdate: userUpdate });
   } catch (error) {
@@ -54,7 +60,7 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-// refresh - token;
+//refresh - token;
 router.post("/refresh-token", async (req, res) => {
   try {
     const { refreshToken } = req.body;
@@ -77,7 +83,9 @@ router.post("/refresh-token", async (req, res) => {
         );
 
         // Trả về accessToken mới
-        return res.status(200).json({ user, accessToken: accessToken, refreshToken: refreshToken });
+        return res
+          .status(200)
+          .json({ user, accessToken: accessToken, refreshToken: refreshToken });
       }
     });
   } catch (error) {

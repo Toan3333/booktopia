@@ -98,18 +98,37 @@ async function updateById(id, body) {
     if (!user) {
       throw new Error("Không tìm thấy user");
     }
-    const { name, username, img, password, email, phone, date, address, role } = body;
-    const result = await userModel.findByIdAndUpdate(id, {
+
+    const {
       name,
       username,
-      img,
+      image,
       password,
       email,
       phone,
       date,
       address,
       role,
+    } = body;
+
+    // Kiểm tra và mã hóa mật khẩu nếu có thay đổi
+    let updatedFields = { name, username, email, phone, date, address, role };
+
+    // Chỉ cập nhật trường hình ảnh nếu có
+    if (image) {
+      updatedFields.image = image;
+    }
+
+    if (password) {
+      updatedFields.password = await bcrypt.hash(password, 10);
+    }
+
+    const result = await userModel.findByIdAndUpdate(id, updatedFields, {
+      new: true,
     });
+
+    console.log("Updated user:", result);
+
     return result;
   } catch (error) {
     console.log("lỗi update", error);
