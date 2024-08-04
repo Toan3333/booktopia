@@ -86,15 +86,15 @@ router.post("/refresh-token", async (req, res) => {
   }
 });
 
-// router.get('/', async(req, res) =>{
-//   try {
-//       const users = await usersController.gettAll()
-//       return res.status(200).json({LoadUsers: users})
-//   } catch (error) {
-//       console.log('Load user không thành công', error);
-//       res.status(500).json({mess : error})
-//   }
-// })
+router.get("/", async (req, res) => {
+  try {
+    const users = await usersController.gettAll();
+    return res.status(200).json({ LoadUsers: users });
+  } catch (error) {
+    console.log("Load user không thành công", error);
+    res.status(500).json({ mess: error });
+  }
+});
 
 //routing xóa user
 // router.delete("/:id", async (req, res) => {

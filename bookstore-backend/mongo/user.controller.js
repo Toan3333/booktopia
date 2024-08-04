@@ -1,7 +1,7 @@
 const userModel = require("./user.model");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-module.exports = { updateById, register, login, getUserById };
+module.exports = { gettAll, updateById, register, login, getUserById };
 
 // Đăng ký
 async function register(body) {
@@ -116,6 +116,7 @@ async function updateById(id, body) {
     throw error;
   }
 }
+
 async function getUserById(id) {
   try {
     const user = await userModel.findById(id);
@@ -129,16 +130,15 @@ async function getUserById(id) {
   }
 }
 
-// async function gettAll (){
-//     try {
-//         const result = await userModel.find();
-//         return result;
-//     } catch (error) {
-//         console.log('Lỗi lấy danh sách user', error);
-//         throw error;
-//     }
-
-// }
+async function gettAll() {
+  try {
+    const result = await userModel.find();
+    return result;
+  } catch (error) {
+    console.log("Lỗi lấy danh sách user", error);
+    throw error;
+  }
+}
 
 // xóa user theo id
 // async function remove(id) {
