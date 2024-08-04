@@ -10,7 +10,9 @@ import { useSelector } from "react-redux";
 
 const Header = () => {
   const cartItems = useSelector((state) => state.cart.items);
+  const favouriteItems = useSelector((state) => state.favourite.items);
   const cartCount = cartItems.reduce((count, item) => count + Number(item.quantity), 0);
+  const favouriteCount = favouriteItems.reduce((count, item) => count + Number(item.quantity), 0);
   const navigate = useNavigate();
   const [isSticky, setIsSticky] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
@@ -83,7 +85,12 @@ const Header = () => {
             </div>
             <div className="flex items-center gap-8">
               <Link to="/favorites">
-                <CiHeart className="w-7 h-7 hover:text-mainDark cursor-pointer" />
+                <div className="relative">
+                  <CiHeart className="w-7 h-7 hover:text-mainDark cursor-pointer" />
+                  <div className="absolute -top-3 -right-3 w-5 h-5 rounded-full bg-mainDark flex items-center justify-center text-white p-2">
+                    {favouriteCount}
+                  </div>
+                </div>
               </Link>
               <Link to="/sign-in">
                 <CiUser className="w-7 h-7 hover:text-mainDark cursor-pointer" />

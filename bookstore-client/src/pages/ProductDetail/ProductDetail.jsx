@@ -184,9 +184,19 @@ const ProductDetail = () => {
           <div className="w-[45%] max-md:w-full">
             <PageTitle title={name} className="mb-5 max-xl:text-xl text-2xl leading-8" />
             <div className="flex items-center gap-8 max-md:gap-2">
-              <div className="text-red">{price1}</div>
+              <div className="text-red">
+                {price1.toLocaleString("vi-VN", {
+                  style: "currency",
+                  currency: "VND",
+                })}
+              </div>
               <div className="flex items-center gap-10">
-                <div className="line-through">{price2}</div>
+                <div className="line-through">
+                  {price2.toLocaleString("vi-VN", {
+                    style: "currency",
+                    currency: "VND",
+                  })}
+                </div>
                 <div className="w-[1px] h-4 bg-text"></div>
                 <div className="text-gray-500">{sale} Đã bán</div>
               </div>

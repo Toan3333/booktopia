@@ -110,7 +110,12 @@ const Cart = () => {
                             <div className="text-gray-500">{item.category?.categoryName}</div>
                           </div>
                         </td>
-                        <td className="py-4 px-5 text-gray-700 text-center">{item.price2}đ</td>
+                        <td className="py-4 px-5 text-gray-700 text-center">
+                          {item.price2.toLocaleString("vi-VN", {
+                            style: "currency",
+                            currency: "VND",
+                          })}
+                        </td>
                         <td className="py-4 px-5">
                           <div className="flex items-center justify-center">
                             <div className="flex items-center border border-gray-300 rounded-lg">
@@ -135,7 +140,10 @@ const Cart = () => {
                           </div>
                         </td>
                         <td className="py-4 px-5 text-gray-700 text-center">
-                          {item.price2 * item.quantity}đ
+                          {(item.price2 * item.quantity).toLocaleString("vi-VN", {
+                            style: "currency",
+                            currency: "VND",
+                          })}
                         </td>
                         <td className="py-4 px-5 text-mainDark">
                           <FaRegTrashAlt
@@ -181,7 +189,12 @@ const Cart = () => {
               </h2>
               <div className="flex justify-between mb-3 border-b pb-5">
                 <span className="text-text font-normal leading-normal">Tổng tiền:</span>
-                <span className="text-mainDark font-semibold leading-normal">{total}đ</span>
+                <span className="text-mainDark font-semibold leading-normal">
+                  {total.toLocaleString("vi-VN", {
+                    style: "currency",
+                    currency: "VND",
+                  })}
+                </span>
               </div>
               <div className="flex justify-between my-5">
                 <span className="text-text font-normal leading-normal">Giảm giá</span>
@@ -195,7 +208,12 @@ const Cart = () => {
               </div>
               <div className="flex justify-between font-semibold text-lg mb-3">
                 <span>Tổng cộng:</span>
-                <span>{total}đ</span>
+                <span>
+                  {total.toLocaleString("vi-VN", {
+                    style: "currency",
+                    currency: "VND",
+                  })}
+                </span>
               </div>
               <Button className="w-full rounded-[5px] mt-5">
                 <Link to="/checkout">Thanh toán</Link>

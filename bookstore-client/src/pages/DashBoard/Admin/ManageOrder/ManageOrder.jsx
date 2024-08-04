@@ -16,7 +16,7 @@ import "../DashBoard.css";
 import PageTitle from "../../../../components/PageTitle/PageTitle";
 import HeaderAdmin from "../../../../components/HeaderAdmin/HeaderAdmin";
 
-const ManageUser = () => {
+const ManageOrder = () => {
   const isAdmin = true;
   const navigate = useNavigate();
   const handleLogout = () => {
@@ -40,6 +40,7 @@ const ManageUser = () => {
                 Dashboard
               </div>
             </MenuItem>
+
             <SubMenu label="Quản lý danh mục" icon={<AiOutlineBars className="w-5 h-5" />}>
               <MenuItem component={<Link to="/dashboard/manage-category" />}>
                 Danh sách danh mục
@@ -82,7 +83,7 @@ const ManageUser = () => {
         <div className="flex-1 p-6">
           <HeaderAdmin />
           <div className="flex items-center justify-between pb-8 border-b pt-3">
-            <PageTitle title="Quản lý tài khoản" className="text-mainDark" />
+            <PageTitle title="Quản lý đơn hàng" className="text-mainDark" />
           </div>
           <div className="mt-6 border rounded-[30px] p-5">
             <table className="table w-full">
@@ -146,11 +147,10 @@ const ManageUser = () => {
               </tbody>
             </table>
           </div>
-          {/* Content goes here */}
         </div>
       </div>
     </div>
   );
 };
 
-export default ManageUser;
+export default ManageOrder;
