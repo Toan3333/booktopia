@@ -21,10 +21,11 @@ const ProductItem = ({ className = "", item }) => {
   const handleAddToCart = () => {
     Swal.fire({
       position: "top-end",
+      heightAuto: true,
       icon: "success",
       title: "Thêm sản phẩm thành công",
       showConfirmButton: false,
-      timer: 1500,
+      timer: 1000,
     });
     dispatch(addToCart({ item, quantity: 1 }));
   };
@@ -35,7 +36,7 @@ const ProductItem = ({ className = "", item }) => {
       icon: "success",
       title: "Thêm sản phẩm yêu thích thành công",
       showConfirmButton: false,
-      timer: 1500,
+      timer: 1000,
     });
     dispatch(add({ item, quantity: 1 }));
   };

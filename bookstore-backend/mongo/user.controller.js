@@ -99,17 +99,7 @@ async function updateById(id, body) {
       throw new Error("Không tìm thấy user");
     }
 
-    const {
-      name,
-      username,
-      image,
-      password,
-      email,
-      phone,
-      date,
-      address,
-      role,
-    } = body;
+    const { name, username, image, password, email, phone, date, address, role } = body;
 
     // Kiểm tra và mã hóa mật khẩu nếu có thay đổi
     let updatedFields = { name, username, email, phone, date, address, role };
@@ -160,15 +150,15 @@ async function gettAll() {
 }
 
 // xóa user theo id
-// async function remove(id) {
-//   try {
-//     const result = await userModel.findByIdAndDelete(id);
-//     return result;
-//   } catch (error) {
-//     console.log("LỖI XÓA USER THEO ID", error);
-//     throw error;
-//   }
-// }
+async function remove(id) {
+  try {
+    const result = await userModel.findByIdAndDelete(id);
+    return result;
+  } catch (error) {
+    console.log("LỖI XÓA USER THEO ID", error);
+    throw error;
+  }
+}
 
 // async function login(body) {
 //     try {
