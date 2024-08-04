@@ -98,8 +98,7 @@ async function updateById(id, body) {
     if (!user) {
       throw new Error("Không tìm thấy user");
     }
-    const { name, username, img, password, email, phone, date, address, role } =
-      body;
+    const { name, username, img, password, email, phone, date, address, role } = body;
     const result = await userModel.findByIdAndUpdate(id, {
       name,
       username,
@@ -117,7 +116,6 @@ async function updateById(id, body) {
     throw error;
   }
 }
-
 async function getUserById(id) {
   try {
     const user = await userModel.findById(id);
