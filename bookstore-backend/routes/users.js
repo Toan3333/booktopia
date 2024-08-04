@@ -54,7 +54,7 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-refresh - token;
+// refresh - token;
 router.post("/refresh-token", async (req, res) => {
   try {
     const { refreshToken } = req.body;
@@ -77,9 +77,7 @@ router.post("/refresh-token", async (req, res) => {
         );
 
         // Trả về accessToken mới
-        return res
-          .status(200)
-          .json({ user, accessToken: accessToken, refreshToken: refreshToken });
+        return res.status(200).json({ user, accessToken: accessToken, refreshToken: refreshToken });
       }
     });
   } catch (error) {
