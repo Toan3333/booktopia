@@ -1,16 +1,44 @@
 import React from "react";
 import { FaCalendar, FaHeart, FaRegEdit, FaRegTrashAlt, FaUser } from "react-icons/fa";
 import { FiLogOut } from "react-icons/fi";
+import Swal from "sweetalert2";
 import { NavLink } from "react-router-dom";
 import PageTitle from "../../components/PageTitle/PageTitle";
+import { useDispatch, useSelector } from "react-redux";
+import { remove } from "../../redux/slices/favouritesSlide"; 
+
 
 const Favorite = () => {
+  const dispatch = useDispatch();
+  const favouriteItems = useSelector((state) => state.favourite?.items) || []
   const profileMenuList = [
     { id: 1, name: "Tài khoản của tôi", icon: <FaUser />, link: "/profile" },
     { id: 2, name: "Sản phẩm yêu thích", icon: <FaHeart />, link: "/favorites" },
     { id: 3, name: "Đơn hàng của bạn", icon: <FaCalendar />, link: "/my-orders" },
     { id: 4, name: "Đăng xuất", icon: <FiLogOut />, link: "/logout" },
   ];
+
+  
+  const handleRemoveItem = (itemId) => {
+    Swal.fire({
+      title: "Bạn có chắc chắn?",
+      text: "Bạn sẽ không thể hoàn tác hành động này!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#166534",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Có, xóa nó!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        dispatch(remove(itemId));
+        Swal.fire({
+          title: "Đã xóa!",
+          text: "Sản phẩm đã được xóa khỏi yêu thích.",
+          icon: "success",
+        });
+      }
+    });
+  };
 
   return (
     <div className="py-10">
@@ -66,21 +94,23 @@ const Favorite = () => {
                 </tr>
               </thead>
               <tbody className="font-normal text-[16px]">
+              {favouriteItems.map((item, index) => (
                 <tr>
-                  <td>1</td>
+                  <td>{index + 1}</td>
                   <td>
-                    <img src="./images/product.png" className="w-20 h-20 object-cover" alt="" />
+                    <img src={`http://localhost:3000/images/${item.image1}`} className="w-20 h-20 object-cover" alt="" />
                   </td>
-                  <td>Cây cam ngọt của tôi</td>
-                  <td className="max-w-[200px]">José Mauro de Vasconcelos</td>
-                  <td>Văn học</td>
-                  <td>199000 đ</td>
+                  <td>{item.name}</td>
+                  <td className="max-w-[200px]">{item.author.authorName}</td>
+                  <td>{item.category.categoryName}</td>
+                  <td>{item.price2}đ</td>
                   <td>
                     <div className="flex items-center justify-center">
-                      <FaRegTrashAlt className="text-red text-center"></FaRegTrashAlt>
+                      <FaRegTrashAlt onClick={() => handleRemoveItem(item._id)} className="text-red text-center"></FaRegTrashAlt>
                     </div>
                   </td>
                 </tr>
+              ))}
               </tbody>
             </table>
           </div>

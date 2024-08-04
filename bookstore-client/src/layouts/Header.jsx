@@ -82,7 +82,9 @@ const Header = () => {
               <p>0123 456 789</p>
             </div>
             <div className="flex items-center gap-8">
-              <CiHeart className="w-7 h-7 hover:text-mainDark cursor-pointer" />
+              <Link to="/favorites">
+                <CiHeart className="w-7 h-7 hover:text-mainDark cursor-pointer" />
+              </Link>
               <Link to="/sign-in">
                 <CiUser className="w-7 h-7 hover:text-mainDark cursor-pointer" />
               </Link>
