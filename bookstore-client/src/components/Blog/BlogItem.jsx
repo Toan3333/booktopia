@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 const BlogItem = ({ item }) => {
-  const { name, date, image, content } = item;
+  const { name, date, image, content, _id } = item;
 
   // Chuyển đổi chuỗi ngày tháng thành định dạng ngày, tháng, năm
   const formattedDate = new Date(date).toLocaleDateString();
@@ -10,7 +10,7 @@ const BlogItem = ({ item }) => {
   return (
     <div>
       <div className="">
-        <Link to="/blog-detail/_id" className="w-full">
+        <Link to={`/blog-detail/${_id}`} className="w-full">
           <img
             src={`http://localhost:3000/images/${image}`}
             className="w-full object-cover rounded-[30px]"

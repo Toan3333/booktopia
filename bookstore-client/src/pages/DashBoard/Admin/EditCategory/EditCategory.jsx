@@ -16,7 +16,7 @@ const EditCategory = () => {
   const [selectedImage, setSelectedImage] = useState(null);
   const { id } = useParams();
   const navigate = useNavigate();
-
+  const [collapsed, setCollapsed] = useState(false);
   const handleLogout = () => {
     navigate("/");
   };
@@ -37,9 +37,7 @@ const EditCategory = () => {
   useEffect(() => {
     const getCategoryById = async () => {
       try {
-        const response = await axios.get(
-          `http://localhost:3000/category/${id}`
-        );
+        const response = await axios.get(`http://localhost:3000/category/${id}`);
         const { name, description } = response.data;
         setValue("name", name);
         setValue("description", description);
@@ -77,7 +75,9 @@ const EditCategory = () => {
   return (
     <div>
       <div className="flex min-h-screen border">
-        <Sidebar className="relative border p-3 bg-white" width="270px">
+        <Sidebar
+          className={`relative border p-3 bg-white ${collapsed ? "collapsed" : "expanded"}`}
+          width={collapsed ? "0px" : "270px"}>
           <Menu className="bg-white">
             <div className="flex items-center justify-center mb-6">
               <img src="./images/logo.png" alt="Logo" />
@@ -89,26 +89,18 @@ const EditCategory = () => {
               </div>
             </MenuItem>
 
-            <SubMenu
-              label="Quản lý danh mục"
-              icon={<AiOutlineBars className="w-5 h-5" />}
-            >
+            <SubMenu label="Quản lý danh mục" icon={<AiOutlineBars className="w-5 h-5" />}>
               <MenuItem component={<Link to="/dashboard/manage-category" />}>
                 Danh sách danh mục
               </MenuItem>
-              <MenuItem component={<Link to="/dashboard/add-category" />}>
-                Thêm danh mục
-              </MenuItem>
             </SubMenu>
-            <SubMenu
-              label="Quản lý sản phẩm"
-              icon={<FaBook className="w-5 h-5" />}
-            >
+            <SubMenu label="Quản lý sản phẩm" icon={<FaBook className="w-5 h-5" />}>
               <MenuItem component={<Link to="/dashboard/manage-product" />}>
                 Danh sách sản phẩm
               </MenuItem>
-              <MenuItem component={<Link to="/dashboard/add-product" />}>
-                Thêm sản phẩm
+              <MenuItem component={<Link to="/dashboard/manage-author" />}>Tác giả</MenuItem>
+              <MenuItem component={<Link to="/dashboard/manage-publishes" />}>
+                Nhà xuất bản
               </MenuItem>
             </SubMenu>
             <MenuItem component={<Link to="/dashboard/manage-items" />}>
@@ -123,15 +115,9 @@ const EditCategory = () => {
                 Quản lý tài khoản
               </div>
             </MenuItem>
-            <SubMenu
-              label="Quản lý bài viết"
-              icon={<FaRegEdit className="w-5 h-5" />}
-            >
+            <SubMenu label="Quản lý bài viết" icon={<FaRegEdit className="w-5 h-5" />}>
               <MenuItem component={<Link to="/dashboard/manage-blog" />}>
                 Danh sách bài viết
-              </MenuItem>
-              <MenuItem component={<Link to="/dashboard/add-blog" />}>
-                Thêm bài viết
               </MenuItem>
             </SubMenu>
             <MenuItem onClick={handleLogout}>
@@ -142,16 +128,28 @@ const EditCategory = () => {
             </MenuItem>
           </Menu>
         </Sidebar>
+        {/* Nút toggle nằm bên ngoài Sidebar */}
+        <button onClick={() => setCollapsed(!collapsed)} className="toggle-button">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor">
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M3.75 6.75h16.5M3.75 12h16.5M12 17.25h8.25"
+            />
+          </svg>
+        </button>
         <div className="flex-1 p-6">
           <HeaderAdmin />
           <div className="flex items-center justify-between pb-8 border-b">
             <PageTitle title="Cập nhật danh mục" className="text-mainDark" />
           </div>
           <div className="border rounded-[10px] py-8 px-5 mt-7">
-            <form
-              onSubmit={handleSubmit(onSubmit)}
-              className="flex flex-col gap-6"
-            >
+            <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
               <div className="w-full flex flex-col gap-2">
                 <label htmlFor="category">*Danh mục</label>
                 <input

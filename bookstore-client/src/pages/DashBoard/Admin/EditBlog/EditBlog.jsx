@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { Sidebar, Menu, MenuItem, SubMenu } from "react-pro-sidebar";
 import { FaBook, FaClipboardList, FaRegEdit, FaUser } from "react-icons/fa";
 import { MdLogout } from "react-icons/md";
@@ -9,44 +9,59 @@ import PageTitle from "../../../../components/PageTitle/PageTitle";
 import HeaderAdmin from "../../../../components/HeaderAdmin/HeaderAdmin";
 import Button from "../../../../components/Button/Button";
 import { useForm } from "react-hook-form";
-import Swal from "sweetalert2";
 import axios from "axios";
+import Swal from "sweetalert2";
 
-const AddBlog = () => {
+const EditBlog = () => {
   const [selectedImage, setSelectedImage] = useState(null);
+  const { id } = useParams();
   const navigate = useNavigate();
   const [collapsed, setCollapsed] = useState(false);
-
   const handleLogout = () => {
     navigate("/");
   };
 
   const handleImageChange = (e) => {
-    const { files } = e.target;
-    if (files && files[0]) {
-      const fileURL = URL.createObjectURL(files[0]);
-      setSelectedImage({
-        file: files[0],
-        preview: fileURL,
-      });
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      setSelectedImage(URL.createObjectURL(file));
     }
   };
 
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm();
+
+  useEffect(() => {
+    const getBlogById = async () => {
+      try {
+        const response = await axios.get(`http://localhost:3000/blog/${id}`);
+        const { name, date, image, content } = response.data;
+        setValue("name", name);
+        setValue("date", date.substring(0, 10)); // Chuyển đổi định dạng ngày nếu cần
+        setValue("content", content);
+        setSelectedImage(`http://localhost:3000/images/${image}`);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getBlogById();
+  }, [id, setValue]);
 
   const onSubmit = async (data) => {
     try {
       const formData = new FormData();
       formData.append("name", data.name);
-      formData.append("content", data.content);
       formData.append("date", data.date);
-      formData.append("image", data.image[0]);
+      formData.append("content", data.content);
+      if (data.image[0]) {
+        formData.append("image", data.image[0]); // Chỉ gửi nếu có hình ảnh mới
+      }
 
-      const response = await axios.post("http://localhost:3000/blog", formData, {
+      const response = await axios.put(`http://localhost:3000/blog/${id}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -55,14 +70,14 @@ const AddBlog = () => {
       Swal.fire({
         position: "top-end",
         icon: "success",
-        title: "Bài viết đã được thêm thành công!",
+        title: "Bài viết đã được cập nhật thành công!",
         showConfirmButton: false,
         timer: 1500,
       });
 
       navigate("/dashboard/manage-blog");
     } catch (error) {
-      console.error("Error creating blog:", error);
+      console.error("Error updating blog:", error);
       Swal.fire({
         position: "top-end",
         icon: "error",
@@ -147,7 +162,7 @@ const AddBlog = () => {
         <div className="flex-1 p-6">
           <HeaderAdmin />
           <div className="flex items-center justify-between pb-8 border-b">
-            <PageTitle title="Thêm bài viết" className="text-mainDark" />
+            <PageTitle title="Cập nhật bài viết" className="text-mainDark" />
           </div>
           <div className="border rounded-[10px] py-8 px-5 mt-7">
             <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
@@ -166,24 +181,23 @@ const AddBlog = () => {
                 <input
                   type="date"
                   {...register("date", { required: true })}
-                  id="date" // Đổi id sang "date"
+                  id="date"
                   className="input input-bordered w-full"
                 />
-                {errors.date && <p className="text-red-500">Ngày viết là bắt buộc</p>}{" "}
-                {/* Sửa lỗi cho trường date */}
+                {errors.date && <p className="text-red-500">Ngày viết là bắt buộc</p>}
               </div>
               <div className="w-full flex flex-col gap-2">
                 <label htmlFor="image">*Hình ảnh</label>
-                {selectedImage?.preview && (
+                {selectedImage && (
                   <img
-                    src={selectedImage.preview}
+                    src={selectedImage}
                     alt="Preview"
                     className="mt-2 max-h-32 w-40 object-cover"
                   />
                 )}
                 <input
                   type="file"
-                  {...register("image", { required: true })}
+                  {...register("image")}
                   id="image"
                   className="file-input file-input-bordered w-full"
                   onChange={handleImageChange}
@@ -211,4 +225,4 @@ const AddBlog = () => {
   );
 };
 
-export default AddBlog;
+export default EditBlog;

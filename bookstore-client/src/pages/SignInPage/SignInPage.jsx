@@ -3,7 +3,47 @@ import PageTitle from "../../components/PageTitle/PageTitle";
 import Button from "../../components/Button/Button";
 import { FaFacebookF, FaGooglePlusG } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import * as Yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
+import axios from "axios";
+
 const SignInPage = () => {
+  // Định nghĩa schema validation
+  const validationSchema = Yup.object({
+    email: Yup.string().email("Email không hợp lệ").required("Vui lòng nhập email"),
+    password: Yup.string().required("Vui lòng nhập mật khẩu"),
+  });
+
+  // Khởi tạo react-hook-form với schema validation
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    setError,
+  } = useForm({
+    resolver: yupResolver(validationSchema),
+  });
+
+  // Hàm xử lý submit
+  const onSubmit = async (data) => {
+    try {
+      const res = await axios.post("http://localhost:3000/users/login", data);
+      alert("Đăng nhập thành công");
+    } catch (error) {
+      if (error.response && error.response.status === 400) {
+        const errorData = error.response.data;
+        if (errorData.message === "Email hoặc mật khẩu không đúng") {
+          setError("email", { message: "Email hoặc mật khẩu không đúng" });
+        } else {
+          setError("general", { message: errorData.message || "Đăng nhập thất bại" });
+        }
+      } else {
+        setError("general", { message: "Đăng nhập thất bại" });
+      }
+    }
+  };
+
   return (
     <div className="py-10">
       <div className="container">
@@ -13,24 +53,33 @@ const SignInPage = () => {
           </div>
           <div className="w-full">
             <PageTitle title="Đăng nhập" className="text-center mb-6"></PageTitle>
-            <form action="" className="flex flex-col gap-6">
+            <form className="flex flex-col gap-6" onSubmit={handleSubmit(onSubmit)}>
               <div className="w-full">
                 <input
                   type="email"
                   placeholder="Nhập email"
                   className="input input-bordered w-full"
+                  {...register("email")}
                 />
+                {errors.email && <div className="text-danger">{errors.email.message}</div>}
               </div>
               <div className="w-full">
                 <input
                   type="password"
                   placeholder="Mật khẩu"
                   className="input input-bordered w-full"
+                  {...register("password")}
                 />
+                {errors.password && <div className="text-danger">{errors.password.message}</div>}
               </div>
               <div className="text-right text-sm font-normal leading-normal">Quên mật khẩu?</div>
               <div>
-                <Button children="ĐĂNG NHẬP" className="w-full"></Button>
+                <Button
+                  type="submit"
+                  children="ĐĂNG NHẬP"
+                  className="w-full"
+                  disabled={isSubmitting}></Button>
+                {errors.general && <p className="my-3 text-danger">{errors.general.message}</p>}
               </div>
               <div className="text-center">Hoặc đăng nhập bằng</div>
               <div className="flex items-center gap-5">

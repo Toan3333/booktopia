@@ -75,9 +75,9 @@ const Menu = () => {
             Sản phẩm
           </a>
         </nav>
-        <div className="py-8">
-          <div className="flex justify-between gap-5 mt-12">
-            <div className="max-w-[275px] w-full">
+        <div className="py-8 max-lg:py-4">
+          <div className="flex justify-between gap-5 mt-12 max-lg:mt-4">
+            <div className="max-w-[275px] w-full max-lg:hidden">
               <div className="w-full border rounded-[30px] py-14 px-12">
                 <div className="flex flex-col gap-9">
                   <CategoryItem title="Danh mục" items={categories} />

@@ -1,20 +1,25 @@
 import React from "react";
 
-const BlogNewItem = () => {
+const BlogNewItem = ({ item }) => {
+  const { name, date, content, image } = item;
+  const formattedDate = new Date(date).toLocaleDateString();
   return (
-    <div>
-      <div className="rounded-[30px] border p-4">
-        <div className="flex items-center gap-3">
-          <div className="w-[100px] h-[100px]">
-            <img src="./images/image 100.png" className="w-full h-full" alt="" />
+    <div className="rounded-[30px] border p-4">
+      <div className="flex items-center gap-3">
+        <div>
+          <div className="w-24 h-24">
+            <img
+              src={`http://localhost:3000/images/${image}`}
+              className="w-full object-cover h-full"
+              alt=""
+            />
           </div>
-          <div className="flex flex-col gap-1">
-            <div className="text-grayText font-normal leading-normal">15/07/2024</div>
-            <h3 className="text-text font-medium leading-normal">
-              Bí Quyết Giao Tiếp Hiệu Quả: 'Đắc Nhân Tâm'
-            </h3>
-            <div className="text-grayText font-normal leading-normal">Dale Carnegie</div>
-          </div>
+        </div>
+
+        <div className="flex flex-col gap-1">
+          <div className="text-grayText font-normal leading-normal">{formattedDate}</div>
+          <h3 className="text-text font-medium leading-normal line-clamp-1">{name}</h3>
+          <div className="text-grayText line-clamp-2 font-normal leading-normal">{content}</div>
         </div>
       </div>
     </div>

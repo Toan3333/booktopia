@@ -4,13 +4,21 @@ import "../../index.css";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from "../../redux/slices/cartslide";
+import { add } from "../../redux/slices/favouritesSlide";
 import Swal from "sweetalert2";
 import "./Product.css";
 const ProductItem = ({ className = "", item }) => {
   const dispatch = useDispatch();
   const cartItems = useSelector((state) => state.cart?.items) || []; // Truy xuất các sản phẩm trong giỏ hàng hoặc một mảng rỗng nếu không có sản phẩm nào
-
+  const favouriteItems = useSelector((state) => state.favourite?.items) || []
   const navigate = useNavigate();
+
+  useEffect(() => {
+  }, [cartItems]);
+
+  useEffect(() => {
+  }, [favouriteItems]);
+  
   const handleAddToCart = () => {
     Swal.fire({
       position: "top-end",
@@ -20,7 +28,18 @@ const ProductItem = ({ className = "", item }) => {
       timer: 1500,
     });
     dispatch(addToCart({ item, quantity: 1 }));
-    console.log("Cart Items:", cartItems); // Log các sản phẩm trong giỏ hàng
+  };
+
+  const handleAddToFavourite = () => {
+    Swal.fire({
+      position: "top-end",
+      icon: "success",
+      title: "Thêm sản phẩm yêu thích thành công",
+      showConfirmButton: false,
+      timer: 1500,
+    });
+    dispatch(add({ item, quantity: 1 }));  
+
   };
 
   if (!item) {
@@ -89,7 +108,7 @@ const ProductItem = ({ className = "", item }) => {
               : "bottom-32 right-0  flex flex-col items-end justify-center"
           } gap-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pr-2`}>
           <FaEye
-            onClick={() => navigate(`/product-detail/${item._id}`)}
+            onClick={handleAddToFavourite}
             className="text-mainDark w-10 h-10 text-2xl bg-white border bg-opacity-50 p-2 rounded-full transform translate-x-full group-hover:translate-x-0 transition-transform duration-300 hover:bg-grayText hover:text-white hover:cursor-pointer"
           />
           <FaShoppingBag

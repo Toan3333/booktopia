@@ -31,6 +31,7 @@ import ManageAuthor from "./pages/DashBoard/Admin/ManageAuthor/ManageAuthor";
 import AddAuthor from "./pages/DashBoard/Admin/AddAuthor/AddAuthor";
 import ManagePublishes from "./pages/DashBoard/Admin/ManagePublishes/ManagePublishes";
 import AddPublishes from "./pages/DashBoard/Admin/AddPublishes/AddPublishes";
+import EditBlog from "./pages/DashBoard/Admin/EditBlog/EditBlog";
 function App() {
   return (
     <Fragment>
@@ -107,6 +108,10 @@ function App() {
         <Route
           path="/dashboard/edit-category/:id"
           element={<EditCategory></EditCategory>}
+        ></Route>
+        <Route
+          path="/dashboard/edit-blog/:id"
+          element={<EditBlog></EditBlog>}
         ></Route>
       </Routes>
     </Fragment>

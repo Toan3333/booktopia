@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Sidebar, Menu, MenuItem, SubMenu } from "react-pro-sidebar";
 import {
@@ -15,21 +15,64 @@ import { AiFillDashboard, AiOutlineBars } from "react-icons/ai";
 import "../DashBoard.css";
 import PageTitle from "../../../../components/PageTitle/PageTitle";
 import HeaderAdmin from "../../../../components/HeaderAdmin/HeaderAdmin";
+import axios from "axios";
+import Swal from "sweetalert2";
 
 const ManageBlog = () => {
+  const [getBlog, setGetBlog] = useState([]);
+  const [collapsed, setCollapsed] = useState(false);
+  useEffect(() => {
+    const fetchBlog = async () => {
+      try {
+        const response = await axios.get("http://localhost:3000/blog");
+        setGetBlog(response.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchBlog();
+  }, []);
+
   const isAdmin = true;
   const navigate = useNavigate();
   const handleLogout = () => {
-    // Perform logout operations here (e.g., clearing authentication tokens)
-    // Then navigate to the home page
     navigate("/");
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      await axios.delete(`http://localhost:3000/blog/${id}`);
+      Swal.fire({
+        title: "Bạn có muốn xóa?",
+        text: "Đã xóa không thể khôi phục",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Xóa",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          Swal.fire({
+            title: "Deleted!",
+            text: "Danh mục của bạn đã được xóa.",
+            icon: "success",
+          }).then(() => {
+            window.location.reload();
+          });
+        }
+      });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
     <div>
       <div className="flex min-h-screen border">
-        {/* Sidebar */}
-        <Sidebar className="relative border p-3 bg-white" width="270px">
+        <Sidebar
+          className={`relative border p-3 bg-white ${collapsed ? "collapsed" : "expanded"}`}
+          width={collapsed ? "0px" : "270px"}>
           <Menu className="bg-white">
             <div className="flex items-center justify-center mb-6">
               <img src="./images/logo.png" alt="Logo" />
@@ -45,13 +88,15 @@ const ManageBlog = () => {
               <MenuItem component={<Link to="/dashboard/manage-category" />}>
                 Danh sách danh mục
               </MenuItem>
-              <MenuItem component={<Link to="/dashboard/add-category" />}>Thêm danh mục</MenuItem>
             </SubMenu>
             <SubMenu label="Quản lý sản phẩm" icon={<FaBook className="w-5 h-5" />}>
               <MenuItem component={<Link to="/dashboard/manage-product" />}>
                 Danh sách sản phẩm
               </MenuItem>
-              <MenuItem component={<Link to="/dashboard/add-product" />}>Thêm sản phẩm</MenuItem>
+              <MenuItem component={<Link to="/dashboard/manage-author" />}>Tác giả</MenuItem>
+              <MenuItem component={<Link to="/dashboard/manage-publishes" />}>
+                Nhà xuất bản
+              </MenuItem>
             </SubMenu>
             <MenuItem component={<Link to="/dashboard/manage-items" />}>
               <div className="flex items-center gap-4">
@@ -69,7 +114,6 @@ const ManageBlog = () => {
               <MenuItem component={<Link to="/dashboard/manage-blog" />}>
                 Danh sách bài viết
               </MenuItem>
-              <MenuItem component={<Link to="/dashboard/add-blog" />}>Thêm bài viết</MenuItem>
             </SubMenu>
             <MenuItem onClick={handleLogout}>
               <div className="flex items-center gap-4">
@@ -79,15 +123,31 @@ const ManageBlog = () => {
             </MenuItem>
           </Menu>
         </Sidebar>
-        {/* Main Content */}
+        {/* Nút toggle nằm bên ngoài Sidebar */}
+        <button onClick={() => setCollapsed(!collapsed)} className="toggle-button">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor">
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M3.75 6.75h16.5M3.75 12h16.5M12 17.25h8.25"
+            />
+          </svg>
+        </button>
         <div className="flex-1 p-6">
           <HeaderAdmin />
           <div className="flex items-center justify-between pb-8 border-b">
             <PageTitle title="Quản lý bài viết" className="text-mainDark" />
             <div>
-              <button className="flex items-center gap-2 bg-mainDark py-3 px-5 text-white font-semibold leading-normal rounded-[10px]">
-                <FaPlus></FaPlus>Thêm
-              </button>
+              <Link to="/dashboard/add-blog">
+                <button className="flex items-center gap-2 bg-mainDark py-3 px-5 text-white font-semibold leading-normal rounded-[10px]">
+                  <FaPlus /> Thêm
+                </button>
+              </Link>
             </div>
           </div>
           <div className="mt-6 border rounded-[30px] p-5">
@@ -98,90 +158,43 @@ const ManageBlog = () => {
                   <th>Hình ảnh</th>
                   <th>Tên bài viết</th>
                   <th>Nội dung</th>
+                  <th>Ngày viết</th>
                   <th className="text-center">Thao tác</th>
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>1</td>
-                  <td>
-                    <img src="./images/product.png" className="w-20 h-20" alt="" />
-                  </td>
-                  <td>Những lợi ích của việc đọc sách </td>
-                  <td className=" text-left">
-                    <p className=" max-w-[600px] w-full line-clamp-4 text-left flex">
-                      Sách Tâm lý - Kỹ năng sống cung cấp kiến thức và kỹ năng để quản lý cảm xúc,
-                      cải thiện giao tiếp và giải quyết vấn đề, giúp phát triển cá nhân và nâng cao
-                      chất lượng cuộc sống.
-                    </p>
-                  </td>
-
-                  <td>
-                    <div className="flex items-center justify-center gap-3">
-                      <Link to="/dashboard/edit-product">
-                        <FaUserEdit className="w-5 h-5 text-main" />
-                      </Link>
-                      <a href="#">
-                        <FaTrashAlt className="w-5 h-4 text-red" />
-                      </a>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td>1</td>
-                  <td>
-                    <img src="./images/product.png" className="w-20 h-20" alt="" />
-                  </td>
-                  <td>Những lợi ích của việc đọc sách </td>
-                  <td className="">
-                    <p className="w-full line-clamp-4 flex">
-                      Sách nuôi dạy con cung cấp kiến thức và phương pháp giúp cha mẹ chăm sóc, giáo
-                      dục và phát triển toàn diện cho con cái. Chúng bao gồm các chủ đề như dinh
-                      dưỡng, sức khỏe, tâm lý trẻ em và kỹ năng nuôi dạy để hỗ trợ con cái phát
-                      triển tốt nhất.
-                    </p>
-                  </td>
-
-                  <td>
-                    <div className="flex items-center justify-center gap-3">
-                      <Link to="/dashboard/edit-product">
-                        <FaUserEdit className="w-5 h-5 text-main" />
-                      </Link>
-                      <a href="#">
-                        <FaTrashAlt className="w-5 h-4 text-red" />
-                      </a>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td>1</td>
-                  <td>
-                    <img src="./images/product.png" className="w-20 h-20" alt="" />
-                  </td>
-                  <td>Những lợi ích của việc đọc sách </td>
-                  <td className="">
-                    <p className="w-full line-clamp-4 flex">
-                      Sách ngoại ngữ giúp người học phát triển kỹ năng nghe, nói, đọc, viết và hiểu
-                      ngôn ngữ mới. Chúng thường bao gồm từ vựng, ngữ pháp, bài tập thực hành và các
-                      bài đọc để nâng cao khả năng giao tiếp và hiểu biết văn hóa của ngôn ngữ đó.
-                    </p>
-                  </td>
-
-                  <td>
-                    <div className="flex items-center justify-center gap-3">
-                      <Link to="/dashboard/edit-product">
-                        <FaUserEdit className="w-5 h-5 text-main" />
-                      </Link>
-                      <a href="#">
-                        <FaTrashAlt className="w-5 h-4 text-red" />
-                      </a>
-                    </div>
-                  </td>
-                </tr>
+                {getBlog.map((item, index) => (
+                  <tr key={item._id}>
+                    <td>{index + 1}</td>
+                    <td>
+                      <img
+                        src={`http://localhost:3000/images/${item.image}`}
+                        className="w-32 h-24"
+                        alt=""
+                      />
+                    </td>
+                    <td>{item.name}</td>
+                    <td className="text-left">
+                      <p className="max-w-[600px] w-full line-clamp-3 overflow-hidden text-ellipsis">
+                        {item.content}
+                      </p>
+                    </td>
+                    <td>{new Date(item.date).toLocaleDateString()}</td>
+                    <td>
+                      <div className="flex items-center justify-center gap-3">
+                        <Link to={`/dashboard/edit-blog/${item._id}`}>
+                          <FaUserEdit className="w-5 h-5 text-main" />
+                        </Link>
+                        <button onClick={() => handleDelete(item._id)}>
+                          <FaTrashAlt className="w-5 h-4 text-red" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>
-          {/* Content goes here */}
         </div>
       </div>
     </div>
