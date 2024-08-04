@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import { Fragment } from "react";
 import "./App.css";
 import { Routes, Route } from "react-router-dom";
 import HomePage from "./pages/home/HomePage";
@@ -41,7 +41,10 @@ function App() {
           <Route path="/about-us" element={<About></About>}></Route>
           <Route path="/contact-us" element={<Contact></Contact>}></Route>
           <Route path="/blog" element={<Blog></Blog>}></Route>
-          <Route path="/blog-detail/:id" element={<BlogDetail></BlogDetail>}></Route>
+          <Route
+            path="/blog-detail/:id"
+            element={<BlogDetail></BlogDetail>}
+          ></Route>
           <Route path="/sign-in" element={<SignInPage></SignInPage>}></Route>
           <Route path="/sign-up" element={<SignUpPage></SignUpPage>}></Route>
           <Route path="/cart" element={<Cart></Cart>}></Route>
@@ -49,27 +52,62 @@ function App() {
           <Route path="/profile" element={<Profile></Profile>}></Route>
           <Route path="/my-orders" element={<MyOrders></MyOrders>}></Route>
           <Route path="/favorites" element={<Favorite></Favorite>}></Route>
-          <Route path="/product-detail/:id" element={<ProductDetail></ProductDetail>}></Route>
+          <Route
+            path="/product-detail/:id"
+            element={<ProductDetail></ProductDetail>}
+          ></Route>
         </Route>
         {/* admin */}
         <Route path="/dashboard" element={<DashBoard></DashBoard>}></Route>
-        <Route path="/dashboard/manage-product" element={<ManageProduct></ManageProduct>}></Route>
+        <Route
+          path="/dashboard/manage-product"
+          element={<ManageProduct></ManageProduct>}
+        ></Route>
         <Route
           path="/dashboard/manage-category"
-          element={<ManageCategory></ManageCategory>}></Route>
-        <Route path="/dashboard/manage-user" element={<ManageUser></ManageUser>}></Route>
-        <Route path="/dashboard/manage-blog" element={<ManageBlog></ManageBlog>}></Route>
-        <Route path="/dashboard/manage-author" element={<ManageAuthor></ManageAuthor>}></Route>
+          element={<ManageCategory></ManageCategory>}
+        ></Route>
+        <Route
+          path="/dashboard/manage-user"
+          element={<ManageUser></ManageUser>}
+        ></Route>
+        <Route
+          path="/dashboard/manage-blog"
+          element={<ManageBlog></ManageBlog>}
+        ></Route>
+        <Route
+          path="/dashboard/manage-author"
+          element={<ManageAuthor></ManageAuthor>}
+        ></Route>
         <Route
           path="/dashboard/manage-publishes"
-          element={<ManagePublishes></ManagePublishes>}></Route>
-        <Route path="/dashboard/add-author" element={<AddAuthor></AddAuthor>}></Route>
-        <Route path="/dashboard/add-publishes" element={<AddPublishes></AddPublishes>}></Route>
-        <Route path="/dashboard/add-product" element={<AddProduct></AddProduct>}></Route>
-        <Route path="/dashboard/add-category" element={<AddCategory></AddCategory>}></Route>
+          element={<ManagePublishes></ManagePublishes>}
+        ></Route>
+        <Route
+          path="/dashboard/add-author"
+          element={<AddAuthor></AddAuthor>}
+        ></Route>
+        <Route
+          path="/dashboard/add-publishes"
+          element={<AddPublishes></AddPublishes>}
+        ></Route>
+        <Route
+          path="/dashboard/add-product"
+          element={<AddProduct></AddProduct>}
+        ></Route>
+        <Route
+          path="/dashboard/add-category"
+          element={<AddCategory></AddCategory>}
+        ></Route>
         <Route path="/dashboard/add-blog" element={<AddBlog></AddBlog>}></Route>
-        <Route path="/dashboard/edit-product/:id" element={<EditProduct></EditProduct>}></Route>
-        <Route path="/dashboard/edit-category/:id" element={<EditCategory></EditCategory>}></Route>
+        <Route
+          path="/dashboard/edit-product/:id"
+          element={<EditProduct></EditProduct>}
+        ></Route>
+        <Route
+          path="/dashboard/edit-category/:id"
+          element={<EditCategory></EditCategory>}
+        ></Route>
       </Routes>
     </Fragment>
   );

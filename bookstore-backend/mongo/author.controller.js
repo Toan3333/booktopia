@@ -10,8 +10,6 @@ module.exports = {
   getById,
 };
 
-// xử lí dữ liệu ở contronller
-
 async function gettAll() {
   try {
     const result = await authorModel.find();
@@ -29,7 +27,7 @@ async function getByauthor(author) {
     });
     return productsauthor;
   } catch (error) {
-    console.log("Lỗi lấy sản phẩm  theo ID danh mục", error);
+    console.log("Lỗi lấy sản phẩm  theo ID author", error);
     throw error;
   }
 }
@@ -43,7 +41,7 @@ async function getauthorByName(authorName) {
   }
 }
 
-// thêm danh mục
+// thêm author
 
 async function insert(body) {
   try {
@@ -60,13 +58,13 @@ async function insert(body) {
   }
 }
 
-// cập nhật danh mục theo id
+// cập nhật author theo id
 
 async function updateById(id, body) {
   try {
     const cate = await authorModel.findById(id);
     if (!cate) {
-      throw new Error("Không tìm thấy danh mục");
+      throw new Error("Không tìm thấy author");
     }
     const { name, description } = body;
     const result = await authorModel.findByIdAndUpdate(id, {
@@ -80,34 +78,22 @@ async function updateById(id, body) {
   }
 }
 
-// xóa danh mục theo id
+// xóa author theo id
 async function deleteCate(id) {
   try {
-    // kiểm tra xem trong danh mục có sản phẩm nào không
+    // kiểm tra xem trong author có sản phẩm nào không
     const pros = await productModel.find({ "author.authorId": id });
     if (pros.length > 0) {
-      return { mess: "Danh mục có sản phẩm không thể xóa" };
+      return { mess: "author có sản phẩm không thể xóa" };
     } else {
       const result = await authorModel.findByIdAndDelete(id);
       return result;
     }
   } catch (error) {
-    console.log("LỖI XÓA DANH MỤC THEO ID", error);
+    console.log("LỖI XÓA author THEO ID", error);
     throw error;
   }
 }
-
-// xóa danh mục theo id
-// async function remove(id) {
-//     try {
-//         const result = await authorModel.findByIdAndDelete(id);
-//         return result;
-//     } catch (error) {
-//         console.log('LỖI XÓA DANH MỤC THEO ID', error);
-//         throw error;
-//     }
-
-// }
 
 async function getById(id) {
   try {
@@ -118,3 +104,14 @@ async function getById(id) {
     throw error;
   }
 }
+// xóa author theo id
+// async function remove(id) {
+//     try {
+//         const result = await authorModel.findByIdAndDelete(id);
+//         return result;
+//     } catch (error) {
+//         console.log('LỖI XÓA author THEO ID', error);
+//         throw error;
+//     }
+
+// }
