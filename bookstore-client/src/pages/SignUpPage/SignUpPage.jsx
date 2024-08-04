@@ -7,6 +7,8 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const SignUpPage = () => {
   const validationSchema = Yup.object({
@@ -39,26 +41,29 @@ const SignUpPage = () => {
 
   const onSubmit = async (data) => {
     try {
-      // Thêm vai trò vào dữ liệu gửi đi
       const userData = { ...data, role: 0 };
       const res = await axios.post("http://localhost:3000/users/register", userData);
-      alert("Đăng ký thành công");
+      toast.success("Đăng ký thành công");
     } catch (error) {
       if (error.response && error.response.status === 400) {
         const errorData = error.response.data;
         if (errorData.message === "Email đã tồn tại") {
           setError("email", { message: "Email đã tồn tại" });
+          toast.error("Email đã tồn tại");
         } else {
           setError("general", { message: errorData.message || "Đăng ký thất bại" });
+          toast.error(errorData.message || "Đăng ký thất bại");
         }
       } else {
         setError("general", { message: "Đăng ký thất bại" });
+        toast.error("Đăng ký thất bại");
       }
     }
   };
 
   return (
     <div className="py-10">
+      <ToastContainer autoClose={1000} />
       <div className="container">
         <div className="flex items-center justify-between gap-16">
           <div className="max-w-[650px] w-full">
@@ -74,7 +79,7 @@ const SignUpPage = () => {
                   className="input input-bordered w-full"
                   {...register("name")}
                 />
-                {errors.name && <div className="text-danger">{errors.name.message}</div>}
+                {errors.name && <div className="text-red mt-1 text-sm">{errors.name.message}</div>}
               </div>
               <div className="w-full">
                 <input
@@ -83,7 +88,9 @@ const SignUpPage = () => {
                   className="input input-bordered w-full"
                   {...register("username")}
                 />
-                {errors.username && <div className="text-danger">{errors.username.message}</div>}
+                {errors.username && (
+                  <div className="text-red mt-1 text-sm">{errors.username.message}</div>
+                )}
               </div>
               <div className="w-full">
                 <input
@@ -92,7 +99,9 @@ const SignUpPage = () => {
                   className="input rounded-[10px] input-bordered w-full"
                   {...register("email")}
                 />
-                {errors.email && <div className="text-danger">{errors.email.message}</div>}
+                {errors.email && (
+                  <div className="text-red mt-1 text-sm">{errors.email.message}</div>
+                )}
               </div>
               <div className="w-full">
                 <input
@@ -101,7 +110,9 @@ const SignUpPage = () => {
                   className="input input-bordered w-full"
                   {...register("password")}
                 />
-                {errors.password && <div className="text-danger">{errors.password.message}</div>}
+                {errors.password && (
+                  <div className="text-red mt-1 text-sm">{errors.password.message}</div>
+                )}
               </div>
               <div className="w-full">
                 <input
@@ -111,7 +122,7 @@ const SignUpPage = () => {
                   {...register("confirm_password")}
                 />
                 {errors.confirm_password && (
-                  <div className="text-danger">{errors.confirm_password.message}</div>
+                  <div className="text-red mt-1 text-sm">{errors.confirm_password.message}</div>
                 )}
               </div>
               <div className="text-right text-sm font-normal leading-normal">Quên mật khẩu?</div>
@@ -121,7 +132,9 @@ const SignUpPage = () => {
                   children="ĐĂNG KÝ"
                   className="w-full"
                   disabled={isSubmitting}></Button>
-                {errors.general && <p className="my-3 text-danger">{errors.general.message}</p>}
+                {errors.general && (
+                  <p className="text-red mt-1 text-sm">{errors.general.message}</p>
+                )}
               </div>
               <div className="text-center">Hoặc đăng nhập bằng</div>
               <div className="flex items-center gap-5">

@@ -270,7 +270,7 @@ const ProductDetail = () => {
               activeTab === "comments" ? "text-text" : "text-grayText"
             }`}
             onClick={() => setActiveTab("comments")}>
-            Bình luận (3)
+            Đánh giá sản phẩm
           </h3>
         </div>
         {activeTab === "info" && (
@@ -280,18 +280,18 @@ const ProductDetail = () => {
         )}
         {activeTab === "comments" && (
           <div className="mt-7">
-            <PageTitle title="3 lượt bình luận" />
+            <PageTitle title="3 lượt đánh giá" />
             <form action="" className="mt-7">
               <div className="flex justify-between items-center">
                 <div className="w-[85%]">
                   <input
                     type="text"
-                    placeholder="Hãy bình luận gì đó ...."
+                    placeholder="Hãy nhận xét gì đó ...."
                     className="input input-bordered w-full"
                   />
                 </div>
                 <div>
-                  <Button>Bình luận</Button>
+                  <Button>Gửi nhận xét</Button>
                 </div>
               </div>
             </form>
