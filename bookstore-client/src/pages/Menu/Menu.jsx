@@ -43,6 +43,8 @@ const Menu = () => {
   );
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [sortOption, setSortOption] = useState("");
+  const [itemsPerPage, setItemsPerPage] = useState("12");
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -62,6 +64,32 @@ const Menu = () => {
 
     fetchProducts();
   }, [searchTerm]);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      setLoading(true);
+      try {
+        let url = "http://localhost:3000/products";
+        if (sortOption === "Giá tăng dần") {
+          url = `http://localhost:3000/products/sort/asc`;
+        } else if (sortOption === "Giá giảm dần") {
+          url = `http://localhost:3000/products/sort/desc`;
+        } else if (sortOption === "Mới nhất") {
+          url = `http://localhost:3000/products/new`;
+        }
+        const response = await axios.get(url);
+        setProducts(response.data);
+      } catch (error) {
+        console.error("Lỗi khi lấy sản phẩm", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, [sortOption, itemsPerPage]);
+
+
 
   return (
     <div className="mt-8">
@@ -90,10 +118,11 @@ const Menu = () => {
               <div className="flex items-center justify-between mb-6">
                 <PageTitle title="Tất cả sản phẩm" />
                 <div className="flex items-center gap-4">
-                  <select
+                <select
                     className="select select-bordered w-full max-w-xs custom-select"
-                    defaultValue="Mới nhất">
-                    <option disabled value="">
+                    defaultValue="Mới nhất"  value={sortOption}
+                    onChange={(e) => setSortOption(e.target.value)}>
+                    <option value="">
                       Sort by:
                     </option>
                     <option value="Mới nhất">Mới nhất</option>
@@ -101,8 +130,9 @@ const Menu = () => {
                     <option value="Giá giảm dần">Giá giảm dần</option>
                   </select>
 
-                  <select className="select select-bordered w-full max-w-xs" defaultValue="12">
-                    <option disabled value="">
+                  <select className="select select-bordered w-full max-w-xs" defaultValue="12"  value={itemsPerPage}
+                    onChange={(e) => setItemsPerPage(e.target.value)}>
+                    <option disabled value="" >
                       Show:
                     </option>
                     <option value="12">12</option>

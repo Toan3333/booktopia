@@ -321,7 +321,7 @@ async function search(name) {
 //Lọc giá giản phẩm giảm dần
 async function getDecrease() {
   try {
-    const result = await productModel.find().sort({ price: -1 }); // -1 laf giamr daanf
+    const result = await productModel.find().sort({ price2: -1 }); // -1 laf giamr daanf
     return result;
   } catch (error) {
     console.log("Lỗi lấy sp", error);
@@ -332,7 +332,7 @@ async function getDecrease() {
 //Lọc giả sản phẩm tăng dần
 async function getAscending() {
   try {
-    const result = await productModel.find().sort({ price: 1 });
+    const result = await productModel.find().sort({ price2: 1 });
     return result;
   } catch (error) {
     console.log("Lỗi lấy sp theo key", error);
