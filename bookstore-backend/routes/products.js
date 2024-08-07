@@ -51,6 +51,7 @@ router.get("/", async (req, res) => {
   }
 });
 
+
 //Router hiển thị sản phẩm mới nhất
 router.get("/new", async (req, res) => {
   try {
