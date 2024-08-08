@@ -23,6 +23,7 @@ const Menu = () => {
   const [authorId, setAuthorId] = useState(null);
   const [publishers, setPublishers] = useState([]);
   const [publishId, setPublishId] = useState(null);
+  const [currentCategoryName, setCurrentCategoryName] = useState("Tất cả sản phẩm");
 
   // Lấy sản phẩm theo tìm kiếm
   useEffect(() => {
@@ -166,16 +167,20 @@ const Menu = () => {
     fetchProducts();
   }, [publishId]);
 
-  const categoryClick = (categoryId) => {
+  const categoryClick = (categoryId, categoryName) => {
     setCategoryId(categoryId);
+    setCurrentCategoryName(categoryName || "Tất cả sản phẩm");
   };
+  
 
-  const authorClick = (authorId) => {
+  const authorClick = (authorId,authorName) => {
     setAuthorId(authorId);
+    setCurrentCategoryName(authorName || "Tất cả sản phẩm");
   };
 
-  const publishClick = (publishId) => {
+  const publishClick = (publishId,publishName) => {
     setPublishId(publishId);
+    setCurrentCategoryName(publishName || "Tất cả sản phẩm");
   };
 
   return (
@@ -203,7 +208,8 @@ const Menu = () => {
             </div>
             <div className="w-full">
               <div className="flex items-center justify-between mb-6">
-                <PageTitle title="Tất cả sản phẩm" />
+              <PageTitle title={currentCategoryName} />
+
                 <div className="flex items-center gap-4">
                   <select
                     className="select select-bordered w-full max-w-xs custom-select"
@@ -242,6 +248,9 @@ const Menu = () => {
                 </div>
               ) : (
                 <ProductList customItem={true} type="" />
+              //   <div className="text-center text-gray-500">
+              //   Không có sản phẩm nào trong danh mục này.
+              // </div>
               )}
             </div>
           </div>

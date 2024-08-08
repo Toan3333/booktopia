@@ -1,20 +1,14 @@
 import React from "react";
 
-const CategoryItem = ({
-  title,
-  items,
-  onCategoryClick,
-  onAuthorClick,
-  onPublishClick,
-}) => {
-  const handleClick = (e, id, type) => {
-    e.preventDefault(); // Chặn thẻ <a>
+const CategoryItem = ({ title, items, onCategoryClick, onAuthorClick, onPublishClick }) => {
+  const handleClick = (e, id, name, type) => {
+    e.preventDefault(); // Chặn hành vi mặc định của thẻ <a>
     if (type === "category") {
-      onCategoryClick(id);
+      onCategoryClick(id, name);
     } else if (type === "author") {
-      onAuthorClick(id);
+      onAuthorClick(id, name);
     } else if (type === "publish") {
-      onPublishClick(id);
+      onPublishClick(id, name);
     }
   };
 
@@ -31,7 +25,7 @@ const CategoryItem = ({
             <a
               href="#"
               className="text-text leading-normal font-normal menu-link"
-              onClick={(e) => handleClick(e, null, title === "Tác giả" ? "author" : title === "Nhà xuất bản" ? "publish" : "category")}
+              onClick={(e) => handleClick(e, null, "Tất cả sản phẩm", title === "Danh mục" ? "category" : title === "Tác giả" ? "author" : "publish")}
             >
               Tất cả sản phẩm
             </a>
@@ -45,11 +39,8 @@ const CategoryItem = ({
                   handleClick(
                     e,
                     item._id,
-                    title === "Tác giả"
-                      ? "author"
-                      : title === "Nhà xuất bản"
-                      ? "publish"
-                      : "category"
+                    item.name,
+                    title === "Danh mục" ? "category" : title === "Tác giả" ? "author" : "publish"
                   )
                 }
               >
