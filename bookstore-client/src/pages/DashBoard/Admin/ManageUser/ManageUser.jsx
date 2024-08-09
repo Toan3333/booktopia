@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Sidebar, Menu, MenuItem, SubMenu } from "react-pro-sidebar";
 import {
@@ -15,6 +15,8 @@ import { AiFillDashboard, AiOutlineBars } from "react-icons/ai";
 import "../DashBoard.css";
 import PageTitle from "../../../../components/PageTitle/PageTitle";
 import HeaderAdmin from "../../../../components/HeaderAdmin/HeaderAdmin";
+import axios from "axios";
+import Swal from "sweetalert2";
 
 const ManageUser = () => {
   const isAdmin = true;
@@ -23,6 +25,46 @@ const ManageUser = () => {
     // Perform logout operations here (e.g., clearing authentication tokens)
     // Then navigate to the home page
     navigate("/");
+  };
+  const [listUser, setUser] = useState([]);
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const response = await axios.get("http://localhost:3000/users");
+        const data = response.data;
+        setUser(data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchUser();
+  }, []);
+
+  const handleDelete = async (id) => {
+    try {
+      await axios.delete(`http://localhost:3000/users/${id}`);
+      Swal.fire({
+        title: "Bạn có muốn xóa?",
+        text: "Đã xóa không thể khôi phục",
+        icon: "warning",
+        showCancelButton: "Hủy",
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Xóa",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          Swal.fire({
+            title: "Deleted!",
+            text: "Đã xóa tài khoản người dùng.!",
+            icon: "success",
+          }).then(() => {
+            window.location.reload(); 
+          });
+        }
+      });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -40,18 +82,27 @@ const ManageUser = () => {
                 Dashboard
               </div>
             </MenuItem>
-
-            <SubMenu label="Quản lý danh mục" icon={<AiOutlineBars className="w-5 h-5" />}>
+            <SubMenu
+              label="Quản lý danh mục"
+              icon={<AiOutlineBars className="w-5 h-5" />}
+            >
               <MenuItem component={<Link to="/dashboard/manage-category" />}>
                 Danh sách danh mục
               </MenuItem>
-              <MenuItem component={<Link to="/dashboard/add-category" />}>Thêm danh mục</MenuItem>
+              <MenuItem component={<Link to="/dashboard/add-category" />}>
+                Thêm danh mục
+              </MenuItem>
             </SubMenu>
-            <SubMenu label="Quản lý sản phẩm" icon={<FaBook className="w-5 h-5" />}>
+            <SubMenu
+              label="Quản lý sản phẩm"
+              icon={<FaBook className="w-5 h-5" />}
+            >
               <MenuItem component={<Link to="/dashboard/manage-product" />}>
                 Danh sách sản phẩm
               </MenuItem>
-              <MenuItem component={<Link to="/dashboard/add-product" />}>Thêm sản phẩm</MenuItem>
+              <MenuItem component={<Link to="/dashboard/add-product" />}>
+                Thêm sản phẩm
+              </MenuItem>
             </SubMenu>
             <MenuItem component={<Link to="/dashboard/manage-items" />}>
               <div className="flex items-center gap-4">
@@ -65,11 +116,16 @@ const ManageUser = () => {
                 Quản lý tài khoản
               </div>
             </MenuItem>
-            <SubMenu label="Quản lý bài viết" icon={<FaRegEdit className="w-5 h-5" />}>
+            <SubMenu
+              label="Quản lý bài viết"
+              icon={<FaRegEdit className="w-5 h-5" />}
+            >
               <MenuItem component={<Link to="/dashboard/manage-blog" />}>
                 Danh sách bài viết
               </MenuItem>
-              <MenuItem component={<Link to="/dashboard/add-blog" />}>Thêm bài viết</MenuItem>
+              <MenuItem component={<Link to="/dashboard/add-blog" />}>
+                Thêm bài viết
+              </MenuItem>
             </SubMenu>
             <MenuItem onClick={handleLogout}>
               <div className="flex items-center gap-4">
@@ -104,51 +160,24 @@ const ManageUser = () => {
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>1</td>
-                  <td>Bùi Dĩm Lịm</td>
-                  <td>23/08/2004</td>
-                  <td>dim@gmail.com</td>
-                  <td>TP Hồ Chí Minh</td>
-                  <td>0123456789</td>
-                  <td>
-                    <div className="flex items-center justify-center gap-3">
-                      <a href="#">
-                        <FaTrashAlt className="w-5 h-4 text-red" />
-                      </a>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td>1</td>
-                  <td>Bùi Dĩm Lịm</td>
-                  <td>23/08/2004</td>
-                  <td>dim@gmail.com</td>
-                  <td>TP Hồ Chí Minh</td>
-                  <td>0123456789</td>
-                  <td>
-                    <div className="flex items-center justify-center gap-3">
-                      <a href="#">
-                        <FaTrashAlt className="w-5 h-4 text-red" />
-                      </a>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td>1</td>
-                  <td>Bùi Dĩm Lịm</td>
-                  <td>23/08/2004</td>
-                  <td>dim@gmail.com</td>
-                  <td>TP Hồ Chí Minh</td>
-                  <td>0123456789</td>
-                  <td>
-                    <div className="flex items-center justify-center gap-3">
-                      <a href="#">
-                        <FaTrashAlt className="w-5 h-4 text-red" />
-                      </a>
-                    </div>
-                  </td>
-                </tr>
+                {listUser.map((user, index) => (
+                  <tr key={user._id}>
+                    <td>{index + 1}</td>
+                    <td>{user.name}</td>
+                    <td>{user.date}</td>
+                    <td>{user.email}</td>
+                    <td>{user.address}</td>
+                    <td>{user.phone}</td>
+                    <td>
+                      <div className="flex items-center justify-center gap-3">
+                        <button onClick={(e) => handleDelete(user._id)}>
+                          <FaTrashAlt className="w-5 h-4 text-red" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+               
               </tbody>
             </table>
           </div>

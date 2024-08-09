@@ -1,7 +1,7 @@
 const userModel = require("./user.model");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-module.exports = { updateById, register, login, getUserById };
+module.exports = { gettAll, updateById, register, login, getUserById,remove };
 
 // Đăng ký
 async function register(body) {
