@@ -8,12 +8,15 @@ import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
+import Cookies from "js-cookie";
 import "react-toastify/dist/ReactToastify.css";
 
 const SignInPage = () => {
   // Định nghĩa schema validation
   const validationSchema = Yup.object({
-    email: Yup.string().email("Email không hợp lệ").required("Vui lòng nhập email"),
+    email: Yup.string()
+      .email("Email không hợp lệ")
+      .required("Vui lòng nhập email"),
     password: Yup.string().required("Vui lòng nhập mật khẩu"),
   });
 
@@ -31,6 +34,9 @@ const SignInPage = () => {
   const onSubmit = async (data) => {
     try {
       const res = await axios.post("http://localhost:3000/users/login", data);
+      const userData = res.data;
+      // Lưu thông tin user vào cookie
+      Cookies.set("user", JSON.stringify(userData), { expires: 1 });
       toast.success("Đăng nhập thành công");
     } catch (error) {
       if (error.response && error.response.status === 400) {
@@ -39,7 +45,9 @@ const SignInPage = () => {
           setError("email", { message: "Email hoặc mật khẩu không đúng" });
           toast.error("Email hoặc mật khẩu không đúng");
         } else {
-          setError("general", { message: errorData.message || "Đăng nhập thất bại" });
+          setError("general", {
+            message: errorData.message || "Đăng nhập thất bại",
+          });
           toast.error(errorData.message || "Đăng nhập thất bại");
         }
       } else {
@@ -55,11 +63,21 @@ const SignInPage = () => {
       <div className="container">
         <div className="flex items-center justify-between gap-16">
           <div className="max-w-[650px] w-full">
-            <img src="./images/bannersach 1.png" className="w-full rounded-[30px]" alt="" />
+            <img
+              src="./images/bannersach 1.png"
+              className="w-full rounded-[30px]"
+              alt=""
+            />
           </div>
           <div className="w-full">
-            <PageTitle title="Đăng nhập" className="text-center mb-6"></PageTitle>
-            <form className="flex flex-col gap-6" onSubmit={handleSubmit(onSubmit)}>
+            <PageTitle
+              title="Đăng nhập"
+              className="text-center mb-6"
+            ></PageTitle>
+            <form
+              className="flex flex-col gap-6"
+              onSubmit={handleSubmit(onSubmit)}
+            >
               <div className="w-full">
                 <input
                   type="email"
@@ -68,7 +86,9 @@ const SignInPage = () => {
                   {...register("email")}
                 />
                 {errors.email && (
-                  <div className="text-red mt-1 text-sm">{errors.email.message}</div>
+                  <div className="text-red mt-1 text-sm">
+                    {errors.email.message}
+                  </div>
                 )}
               </div>
               <div className="w-full">
@@ -79,17 +99,24 @@ const SignInPage = () => {
                   {...register("password")}
                 />
                 {errors.password && (
-                  <div className="text-red mt-1 text-sm">{errors.password.message}</div>
+                  <div className="text-red mt-1 text-sm">
+                    {errors.password.message}
+                  </div>
                 )}
               </div>
-              <div className="text-right text-sm font-normal leading-normal">Quên mật khẩu?</div>
+              <div className="text-right text-sm font-normal leading-normal">
+                Quên mật khẩu?
+              </div>
               <div>
                 <Button
                   type="submit"
                   children="ĐĂNG NHẬP"
                   className="w-full"
-                  disabled={isSubmitting}></Button>
-                {errors.general && <p className="my-3 text-danger">{errors.general.message}</p>}
+                  disabled={isSubmitting}
+                ></Button>
+                {errors.general && (
+                  <p className="my-3 text-danger">{errors.general.message}</p>
+                )}
               </div>
               <div className="text-center">Hoặc đăng nhập bằng</div>
               <div className="flex items-center gap-5">

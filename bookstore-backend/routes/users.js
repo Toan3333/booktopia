@@ -97,7 +97,7 @@ router.post("/refresh-token", async (req, res) => {
 router.get("/", async (req, res) => {
   try {
     const users = await usersController.gettAll();
-    return res.status(200).json({ LoadUsers: users });
+    return res.status(200).json(users);
   } catch (error) {
     console.log("Load user không thành công", error);
     res.status(500).json({ mess: error });
@@ -105,16 +105,16 @@ router.get("/", async (req, res) => {
 });
 
 //routing xóa user
-// router.delete("/:id", async (req, res) => {
-//   try {
-//     const { id } = req.params; // lấy đượccái id mà người dùng gửi lên
-//     const userDel = await usersController.remove(id);
-//     console.log("Xóa user thành công");
-//     return res.status(200).json({ UserDelete: userDel });
-//   } catch (error) {
-//     console.log("lỗi xóa user theo id", error);
-//     return res.status(500).json({ mess: error });
-//   }
-// });
+router.delete("/:id", async (req, res) => {
+  try {
+    const { id } = req.params; // lấy đượccái id mà người dùng gửi lên
+    const userDel = await usersController.remove(id);
+    console.log("Xóa user thành công");
+    return res.status(200).json({ UserDelete: userDel });
+  } catch (error) {
+    console.log("lỗi xóa user theo id", error);
+    return res.status(500).json({ mess: error });
+  }
+});
 
 module.exports = router;
