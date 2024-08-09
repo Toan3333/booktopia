@@ -88,7 +88,7 @@ router.post("/refresh-token", async (req, res) => {
 
 router.get("/", async (req, res) => {
   try {
-    const users = await usersController.gettAll();
+    const users = await usersController.getAll();
     return res.status(200).json(users);
   } catch (error) {
     console.log("Load user không thành công", error);
