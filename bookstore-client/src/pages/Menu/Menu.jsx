@@ -195,9 +195,17 @@ const Menu = () => {
             <div className="max-w-[275px] w-full max-lg:hidden">
               <div className="w-full border rounded-[30px] py-14 px-12">
                 <div className="flex flex-col gap-9">
-                  <CategoryItem title="Danh mục" items={categories} onCategoryClick={categoryClick} />
+                  <CategoryItem
+                    title="Danh mục"
+                    items={categories}
+                    onCategoryClick={categoryClick}
+                  />
                   <CategoryItem title="Tác giả" items={authors} onAuthorClick={authorClick} />
-                  <CategoryItem title="Nhà xuất bản" items={publishers} onPublishClick={publishClick} />
+                  <CategoryItem
+                    title="Nhà xuất bản"
+                    items={publishers}
+                    onPublishClick={publishClick}
+                  />
                 </div>
               </div>
             </div>
@@ -207,10 +215,8 @@ const Menu = () => {
                 <div className="flex items-center gap-4">
                   <select
                     className="select select-bordered w-full max-w-xs custom-select"
-                    defaultValue="Mới nhất"
                     value={sortOption}
-                    onChange={(e) => setSortOption(e.target.value)}
-                  >
+                    onChange={(e) => setSortOption(e.target.value)}>
                     <option value="">Sắp xếp theo:</option>
                     <option value="Mới nhất">Mới nhất</option>
                     <option value="Giá tăng dần">Giá tăng dần</option>
@@ -219,10 +225,8 @@ const Menu = () => {
 
                   <select
                     className="select select-bordered w-full max-w-xs"
-                    defaultValue="12"
                     value={itemsPerPage}
-                    onChange={(e) => setItemsPerPage(e.target.value)}
-                  >
+                    onChange={(e) => setItemsPerPage(e.target.value)}>
                     <option disabled value="">
                       Hiển thị:
                     </option>

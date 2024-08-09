@@ -93,7 +93,7 @@ const Favorite = () => {
               </thead>
               <tbody className="font-normal text-[16px]">
                 {favouriteItems.map((item, index) => (
-                  <tr>
+                  <tr key={item._id}>
                     <td>{index + 1}</td>
                     <td>
                       <img
