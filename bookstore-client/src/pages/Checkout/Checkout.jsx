@@ -23,10 +23,10 @@ const Checkout = () => {
     const user = Cookies.get("user");
     if (user) {
       const userData = JSON.parse(user);
-      setValue("name", userData.name);
-      setValue("email", userData.email);
-      setValue("phone", userData.phone);
-      setValue("address", userData.address);
+      setValue("name", userData.user.name);
+      setValue("email", userData.user.email);
+      setValue("phone", userData.user.phone);
+      setValue("address", userData.user.address);
     }
   }, [setValue]);
   const onSubmit = async (data) => {
