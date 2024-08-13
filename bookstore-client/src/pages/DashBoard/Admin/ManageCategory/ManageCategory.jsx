@@ -100,7 +100,7 @@ const ManageCategory = () => {
                 Nhà xuất bản
               </MenuItem>
             </SubMenu>
-            <MenuItem component={<Link to="/dashboard/manage-items" />}>
+            <MenuItem component={<Link to="/dashboard/manage-order" />}>
               <div className="flex items-center gap-4">
                 <FaClipboardList className="w-5 h-5" />
                 Quản lý đơn hàng
