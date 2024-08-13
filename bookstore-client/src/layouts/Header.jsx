@@ -155,7 +155,9 @@ const Header = () => {
                 />
               </label>
               <div className="flex items-center gap-2">
-                <FaShoppingBag className="w-8 h-8" />
+                <Link to="/cart">
+                  <FaShoppingBag className="w-8 h-8" />
+                </Link>
                 <FaUser className="w-8 h-8" />
               </div>
             </div>
