@@ -33,21 +33,24 @@ const DashBoard = () => {
   };
   const [totalProducts, setTotalProducts] = useState(0);
   const [totalCategory, setTotalCategory] = useState(0);
+  const [totalUser, setTotalUser] = useState(0);
 
   useEffect(() => {
-    const getTotalProduct = async () => {
+    const getInfoDashboard = async () => {
       try {
-        const [getTotalProduct, getTotalCategory] = await axios.all([
+        const [getTotalProduct, getTotalCategory, getTotalUser] = await axios.all([
           axios.get("http://localhost:3000/products"),
           axios.get("http://localhost:3000/category"),
+          axios.get("http://localhost:3000/users"),
         ]);
         setTotalProducts(getTotalProduct.data.Product.length);
         setTotalCategory(getTotalCategory.data.length);
+        setTotalUser(getTotalUser.data.length);
       } catch (error) {
         console.log(error);
       }
     };
-    getTotalProduct();
+    getInfoDashboard();
   }, []);
 
   return (
@@ -167,7 +170,7 @@ const DashBoard = () => {
             <div className="bg-white p-4 border rounded-lg shadow py-5 px-6">
               <div className="flex items-center justify-between">
                 <div className="">
-                  <PageTitle title="89,935" />
+                  <PageTitle title={totalUser} />
                   <div className="">Người dùng</div>
                 </div>
                 <div className="w-10 h-10 rounded-md border flex items-center justify-center text-mainDark">
