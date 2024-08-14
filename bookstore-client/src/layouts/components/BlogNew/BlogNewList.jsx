@@ -20,7 +20,7 @@ const BlogNewList = () => {
     <div className="mt-5">
       <div className="grid grid-rows-4 gap-5">
         {getNewBlog.map((item) => (
-          <BlogNewItem item={item}></BlogNewItem>
+          <BlogNewItem item={item} key={item._id}></BlogNewItem>
         ))}
       </div>
     </div>

@@ -68,6 +68,38 @@ const Blog = () => {
     arrows: true,
     nextArrow: <SampleNextArrow />,
     prevArrow: <SamplePrevArrow />,
+    responsive: [
+      {
+        breakpoint: 1024,
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1,
+          infinite: true,
+          dots: false,
+        },
+      },
+      {
+        breakpoint: 600,
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1,
+          initialSlide: 1,
+          dots: false,
+          nextArrow: false,
+          prevArrow: false,
+        },
+      },
+      {
+        breakpoint: 480,
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1,
+          dots: false,
+          nextArrow: false,
+          prevArrow: false,
+        },
+      },
+    ],
   };
 
   useEffect(() => {
@@ -87,9 +119,9 @@ const Blog = () => {
     <div className="py-10 max-lg:py-5 max-md:py-2">
       <div className="container">
         <PageTitle title="Bài viết" className="text-center mb-5" />
-        <div className="flex justify-between pb-10">
-          <div className="max-w-[900px] w-full">
-            <div className="relative rounded-[30px] border py-14 px-20">
+        <div className="flex justify-between pb-10 max-xl:block">
+          <div className="max-w-[900px] w-full max-xl:max-w-[100%]">
+            <div className="relative rounded-[30px] border py-14 px-20 max-md:py-4 max-md:px-6">
               <Slider ref={sliderRef} {...settings}>
                 {getBlog.map((item) => (
                   <div key={item._id}>
@@ -103,11 +135,13 @@ const Blog = () => {
                         {new Date(item.date).toLocaleDateString()}
                         {/* Đảm bảo rằng item.date tồn tại */}
                       </div>
-                      <h3 className="text-lg font-semibold text-text">{item.name}</h3>
+                      <h3 className="text-lg font-semibold text-text max-md:text-[16px]">
+                        {item.name}
+                      </h3>
                       <p className="text-sm font-normal leading-normal line-clamp-3 text-gray-500">
                         {item.content}
                       </p>
-                      <div className="text-right text-sm font-normal text-gray-500 cursor-pointer">
+                      <div className="text-right text-sm font-normal text-gray-500 cursor-pointer max-md:text-left max-md:mt-2">
                         Đọc thêm
                       </div>
                     </div>
@@ -116,7 +150,7 @@ const Blog = () => {
               </Slider>
             </div>
           </div>
-          <div className="max-w-[350px] w-full">
+          <div className="max-w-[350px] w-full max-lg:hidden max-xl:hidden max-md:hidden">
             <h3 className="text-lg text-text font-semibold leading-normal">Bài viết mới</h3>
             <BlogNewList />
           </div>

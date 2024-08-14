@@ -41,7 +41,7 @@ const Favorite = () => {
   return (
     <div className="py-10">
       <div className="container">
-        <div className="flex gap-10">
+        <div className="flex gap-10 max-md:flex-col">
           <div className="max-w-[250px] w-full">
             {/* Thông tin tài khoản */}
             <div className="flex items-center gap-2">
@@ -78,16 +78,18 @@ const Favorite = () => {
           </div>
           <div className="w-[90%]">
             <PageTitle title="Sản phẩm yêu thích" className="text-mainDark mb-2"></PageTitle>
-            <div className="text-grayText leading-normal font-normal mb-5">Sản phẩm yêu thích</div>
-            <table className="table">
+            <div className="text-grayText leading-normal font-normal mb-5 max-md:hidden">
+              Sản phẩm yêu thích
+            </div>
+            <table className="table max-md:w-full">
               <thead className="text-[16px] font-semibold leading-normal text-black">
                 <tr>
                   <th>#</th>
                   <th>Hình ảnh</th>
                   <th>Tên sách</th>
-                  <th>Tác giả</th>
-                  <th>Danh mục</th>
-                  <th>Giá</th>
+                  <th className="max-md:hidden">Tác giả</th>
+                  <th className="max-md:hidden">Danh mục</th>
+                  <th className="max-md:hidden">Giá</th>
                   <th className="text-center">Thao tác</th>
                 </tr>
               </thead>
@@ -102,10 +104,10 @@ const Favorite = () => {
                         alt=""
                       />
                     </td>
-                    <td>{item.name}</td>
-                    <td className="max-w-[200px]">{item.author.authorName}</td>
-                    <td>{item.category.categoryName}</td>
-                    <td>
+                    <td className="max-md:text-sm">{item.name}</td>
+                    <td className="max-w-[200px] max-md:hidden">{item.author.authorName}</td>
+                    <td className="max-md:hidden">{item.category.categoryName}</td>
+                    <td className="max-md:hidden">
                       {item.price2.toLocaleString("vi-VN", {
                         style: "currency",
                         currency: "VND",

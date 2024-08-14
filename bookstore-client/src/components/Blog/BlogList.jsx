@@ -17,7 +17,7 @@ const BlogList = () => {
   }, []);
   return (
     <div>
-      <div className="grid grid-cols-4 gap-5 py-10 max-lg:grid-cols-2">
+      <div className="grid grid-cols-4 gap-5 py-10 max-lg:grid-cols-2 max-xl:grid-cols-2">
         {blogList.slice(0, 4).map((item) => (
           <BlogItem item={item} key={item._id}></BlogItem>
         ))}

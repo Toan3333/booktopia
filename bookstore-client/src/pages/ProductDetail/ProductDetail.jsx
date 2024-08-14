@@ -112,7 +112,7 @@ const ProductDetail = () => {
             {name}
           </Link>
         </nav>
-        <div className="flex justify-between py-10 gap-10 max-md:flex-col">
+        <div className="flex justify-between py-10 gap-10 max-md:flex-col max-lg:gap-2">
           <div className="w-[65%] max-xl:w-3/5 max-md:w-full">
             <div className="flex gap-10 items-center">
               <div className="max-w-[130px] w-full max-xl:hidden">
@@ -183,14 +183,14 @@ const ProductDetail = () => {
           </div>
           <div className="w-[45%] max-md:w-full">
             <PageTitle title={name} className="mb-5 max-xl:text-xl text-2xl leading-8" />
-            <div className="flex items-center gap-8 max-md:gap-2">
+            <div className="flex items-center gap-8 max-md:gap-2 max-lg:gap-2">
               <div className="text-red">
                 {price1.toLocaleString("vi-VN", {
                   style: "currency",
                   currency: "VND",
                 })}
               </div>
-              <div className="flex items-center gap-10">
+              <div className="flex items-center gap-10 max-lg:gap-4">
                 <div className="line-through">
                   {price2.toLocaleString("vi-VN", {
                     style: "currency",
@@ -201,7 +201,7 @@ const ProductDetail = () => {
                 <div className="text-gray-500">{sale} Đã bán</div>
               </div>
             </div>
-            <div className="flex justify-between mt-8 gap-5 max-md:hidden">
+            <div className="flex justify-between mt-8 gap-5 max-md:hidden max-lg:gap-3">
               <div className="w-full flex flex-col gap-3 text-text">
                 <div>
                   Tác giả: <span className="text-mainDark leading-normal">{author.authorName}</span>

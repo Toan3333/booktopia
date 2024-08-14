@@ -158,7 +158,9 @@ const Header = () => {
                 <Link to="/cart">
                   <FaShoppingBag className="w-8 h-8" />
                 </Link>
-                <FaUser className="w-8 h-8" />
+                <Link to="/sign-in">
+                  <FaUser className="w-8 h-8" />
+                </Link>
               </div>
             </div>
             <div

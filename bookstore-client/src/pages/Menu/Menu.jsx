@@ -179,8 +179,8 @@ const Menu = () => {
   };
 
   return (
-    <div className="mt-8">
-      <div className="container mx-auto">
+    <div className="mt-8 max-md:mt-3">
+      <div className="container mx-auto max-md:text-sm">
         <nav>
           <a href="#" className="text-gray-500">
             Trang chủ
@@ -190,7 +190,7 @@ const Menu = () => {
             Sản phẩm
           </a>
         </nav>
-        <div className="py-8 max-lg:py-4">
+        <div className="py-8 max-lg:py-4 max-md:py-2">
           <div className="flex justify-between gap-5 mt-12 max-lg:mt-4">
             <div className="max-w-[275px] w-full max-lg:hidden">
               <div className="w-full border rounded-[30px] py-14 px-12">
@@ -210,9 +210,9 @@ const Menu = () => {
               </div>
             </div>
             <div className="w-full">
-              <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center justify-between mb-6 max-md:mb-3 max-md:flex-col max-md:items-start">
                 <PageTitle title="Tất cả sản phẩm" />
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-4 max-md:mt-3">
                   <select
                     className="select select-bordered w-full max-w-xs custom-select"
                     value={sortOption}
@@ -249,23 +249,23 @@ const Menu = () => {
               )}
             </div>
           </div>
-          <div className="flex items-center justify-center gap-5 mt-6">
-            <span className="w-10 h-10 rounded-full flex items-center justify-center border text-grayText text-[20px] font-semibold hover:bg-mainDark hover:text-white cursor-pointer">
+          <div className="flex items-center justify-center gap-5 mt-6 max-md:gap-2 max-md:mt-0 max-md:mb-3 max-lg:mt-0 max-lg:mb-5">
+            <span className="w-10 h-10 max-md:w-8 max-md:h-8 rounded-full flex items-center justify-center border text-grayText text-[20px] font-semibold hover:bg-mainDark hover:text-white cursor-pointer">
               <FaLongArrowAltLeft />
             </span>
-            <span className="w-10 h-10 rounded-full flex items-center justify-center bg-mainDark text-white text-[20px] font-semibold">
+            <span className="w-10 h-10 max-md:w-8 max-md:h-8 rounded-full flex items-center justify-center bg-mainDark text-white text-[20px] font-semibold max-md:text-sm">
               1
             </span>
-            <span className="w-10 h-10 rounded-full flex items-center justify-center border text-grayText text-[20px] font-semibold hover:bg-mainDark hover:text-white cursor-pointer">
+            <span className="w-10 h-10 max-md:w-8 max-md:h-8 rounded-full flex items-center justify-center border text-grayText text-[20px] font-semibold hover:bg-mainDark hover:text-white cursor-pointer max-md:text-sm">
               2
             </span>
-            <span className="w-10 h-10 rounded-full flex items-center justify-center border text-grayText text-[20px] font-semibold hover:bg-mainDark hover:text-white cursor-pointer">
+            <span className="w-10 h-10 max-md:w-8 max-md:h-8 rounded-full flex items-center justify-center border text-grayText text-[20px] font-semibold hover:bg-mainDark hover:text-white cursor-pointer max-md:text-sm">
               3
             </span>
-            <span className="w-10 h-10 rounded-full flex items-center justify-center border text-grayText text-[20px] font-semibold hover:bg-mainDark hover:text-white cursor-pointer">
+            <span className="w-10 h-10 max-md:w-8 max-md:h-8 rounded-full flex items-center justify-center border text-grayText text-[20px] font-semibold hover:bg-mainDark hover:text-white cursor-pointer max-md:text-sm">
               4
             </span>
-            <span className="w-10 h-10 rounded-full flex items-center justify-center border text-grayText text-[20px] font-semibold hover:bg-mainDark hover:text-white cursor-pointer">
+            <span className="w-10 h-10 max-md:w-8 max-md:h-8 rounded-full flex items-center justify-center border text-grayTextfont-semibold hover:bg-mainDark hover:text-white cursor-pointer">
               <FaLongArrowAltRight />
             </span>
           </div>
