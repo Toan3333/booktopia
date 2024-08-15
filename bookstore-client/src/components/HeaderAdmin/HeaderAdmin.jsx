@@ -17,8 +17,8 @@ const HeaderAdmin = () => {
             </label>
           </div>
           <div className="flex items-center gap-5 text-white">
-            <FaRegBell className="w-5 h-5"></FaRegBell>
-            <IoChatbubbleEllipsesOutline className="w-5 h-5"></IoChatbubbleEllipsesOutline>
+            <FaRegBell className="w-5 h-5" />
+            <IoChatbubbleEllipsesOutline className="w-5 h-5" />
             <div>
               <img src="./images/avatar.png" className="w-10 h-10 rounded-full" alt="" />
             </div>

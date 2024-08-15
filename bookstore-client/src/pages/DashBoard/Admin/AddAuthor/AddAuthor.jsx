@@ -11,6 +11,7 @@ import Button from "../../../../components/Button/Button";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import Swal from "sweetalert2";
+import { URL_API } from "../../../../constants/constants";
 
 const AddAuthor = () => {
   const navigate = useNavigate();
@@ -27,7 +28,7 @@ const AddAuthor = () => {
 
   const onSubmit = async (data) => {
     try {
-      const response = await axios.post("http://localhost:3000/authors", data);
+      const response = await axios.post(`${URL_API}/authors`, data);
 
       Swal.fire({
         position: "top-end",

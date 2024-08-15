@@ -18,6 +18,7 @@ import HeaderAdmin from "../../../../components/HeaderAdmin/HeaderAdmin";
 import axios from "axios";
 import Swal from "sweetalert2";
 import "../DashBoard.css";
+import { URL_API } from "../../../../constants/constants";
 
 const ManageProduct = () => {
   const isAdmin = true;
@@ -34,7 +35,7 @@ const ManageProduct = () => {
   useEffect(() => {
     const fetchProductList = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/products");
+        const response = await axios.get(`${URL_API}/products`);
         const data = response.data.Product;
         setAllProductList(data);
       } catch (error) {
@@ -46,7 +47,7 @@ const ManageProduct = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:3000/products/${id}`);
+      await axios.delete(`${URL_API}/products/${id}`);
       Swal.fire({
         title: "Are you sure?",
         text: "You won't be able to revert this!",
@@ -177,7 +178,7 @@ const ManageProduct = () => {
                     <td>{index + 1}</td>
                     <td>
                       <img
-                        src={`http://localhost:3000/images/${item.image1}`}
+                        src={`${URL_API}/images/${item.image1}`}
                         className="w-20 h-20"
                         alt={item.name}
                       />

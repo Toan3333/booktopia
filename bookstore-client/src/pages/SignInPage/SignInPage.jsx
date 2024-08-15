@@ -10,6 +10,7 @@ import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import Cookies from "js-cookie";
 import "react-toastify/dist/ReactToastify.css";
+import { URL_API } from "../../constants/constants";
 
 const SignInPage = () => {
   // Định nghĩa schema validation
@@ -31,13 +32,16 @@ const SignInPage = () => {
   // Hàm xử lý submit
   const onSubmit = async (data) => {
     try {
-      const res = await axios.post("http://localhost:3000/users/login", data);
+      const res = await axios.post(`${URL_API}/users/login`, data);
+      // if(res){
+
+      // }
       const userData = res.data;
       // Lưu thông tin user vào cookie
       Cookies.set("user", JSON.stringify(userData), { expires: 1 });
       toast.success("Đăng nhập thành công");
     } catch (error) {
-      if (error.response && error.response.status === 400) {
+      if (error?.response?.status === 400) {
         const errorData = error.response.data;
         if (errorData.message === "Email hoặc mật khẩu không đúng") {
           setError("email", { message: "Email hoặc mật khẩu không đúng" });

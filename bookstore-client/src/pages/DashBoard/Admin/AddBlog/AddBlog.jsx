@@ -11,6 +11,7 @@ import Button from "../../../../components/Button/Button";
 import { useForm } from "react-hook-form";
 import Swal from "sweetalert2";
 import axios from "axios";
+import { URL_API } from "../../../../constants/constants";
 
 const AddBlog = () => {
   const [selectedImage, setSelectedImage] = useState(null);
@@ -46,7 +47,7 @@ const AddBlog = () => {
       formData.append("date", data.date);
       formData.append("image", data.image[0]);
 
-      const response = await axios.post("http://localhost:3000/blog", formData, {
+      const response = await axios.post(`${URL_API}/blog`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

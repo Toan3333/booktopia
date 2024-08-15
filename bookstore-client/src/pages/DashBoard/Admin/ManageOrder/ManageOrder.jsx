@@ -17,6 +17,7 @@ import PageTitle from "../../../../components/PageTitle/PageTitle";
 import HeaderAdmin from "../../../../components/HeaderAdmin/HeaderAdmin";
 import axios from "axios";
 import Swal from "sweetalert2";
+import { URL_API } from "../../../../constants/constants";
 
 const ManageOrder = () => {
   const navigate = useNavigate();
@@ -26,7 +27,7 @@ const ManageOrder = () => {
   useEffect(() => {
     const fetchOrder = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/orders");
+        const response = await axios.get(`${URL_API}/orders`);
         setOrder(response.data);
       } catch (error) {
         console.log(error);
@@ -37,11 +38,9 @@ const ManageOrder = () => {
 
   const handleStatusChange = async (orderId, newStatus) => {
     try {
-      await axios.put(`http://localhost:3000/orders/${orderId}/status`, { status: newStatus });
+      await axios.put(`${URL_API}/orders/${orderId}/status`, { status: newStatus });
       setOrder((prevOrders) =>
-        prevOrders.map((order) =>
-          order._id === orderId ? { ...order, status: newStatus } : order
-        )
+        prevOrders.map((order) => (order._id === orderId ? { ...order, status: newStatus } : order))
       );
     } catch (error) {
       console.log(error);
@@ -50,8 +49,8 @@ const ManageOrder = () => {
 
   const handleDelete = async (id) => {
     try {
-      const response = await axios.delete(`http://localhost:3000/orders/${id}`);
-      
+      const response = await axios.delete(`${URL_API}/orders/${id}`);
+
       if (response.status === 200) {
         Swal.fire({
           title: "Bạn có muốn xóa?",
@@ -68,9 +67,7 @@ const ManageOrder = () => {
               text: "Hủy đơn hàng thành công!",
               icon: "success",
             }).then(() => {
-              setOrder((prevOrders) =>
-                prevOrders.filter((order) => order._id !== id)
-              );
+              setOrder((prevOrders) => prevOrders.filter((order) => order._id !== id));
             });
           }
         });
@@ -83,7 +80,6 @@ const ManageOrder = () => {
       });
     }
   };
-  
 
   return (
     <div>
@@ -105,17 +101,13 @@ const ManageOrder = () => {
               <MenuItem component={<Link to="/dashboard/manage-category" />}>
                 Danh sách danh mục
               </MenuItem>
-              <MenuItem component={<Link to="/dashboard/add-category" />}>
-                Thêm danh mục
-              </MenuItem>
+              <MenuItem component={<Link to="/dashboard/add-category" />}>Thêm danh mục</MenuItem>
             </SubMenu>
             <SubMenu label="Quản lý sản phẩm" icon={<FaBook className="w-5 h-5" />}>
               <MenuItem component={<Link to="/dashboard/manage-product" />}>
                 Danh sách sản phẩm
               </MenuItem>
-              <MenuItem component={<Link to="/dashboard/add-product" />}>
-                Thêm sản phẩm
-              </MenuItem>
+              <MenuItem component={<Link to="/dashboard/add-product" />}>Thêm sản phẩm</MenuItem>
             </SubMenu>
             <MenuItem component={<Link to="/dashboard/manage-order" />}>
               <div className="flex items-center gap-4">
@@ -133,9 +125,7 @@ const ManageOrder = () => {
               <MenuItem component={<Link to="/dashboard/manage-blog" />}>
                 Danh sách bài viết
               </MenuItem>
-              <MenuItem component={<Link to="/dashboard/add-blog" />}>
-                Thêm bài viết
-              </MenuItem>
+              <MenuItem component={<Link to="/dashboard/add-blog" />}>Thêm bài viết</MenuItem>
             </SubMenu>
             <MenuItem onClick={() => navigate("/")}>
               <div className="flex items-center gap-4">
@@ -186,8 +176,7 @@ const ManageOrder = () => {
                       <td>
                         <select
                           value={order.status}
-                          onChange={(e) => handleStatusChange(order._id, e.target.value)}
-                        >
+                          onChange={(e) => handleStatusChange(order._id, e.target.value)}>
                           {statusOptions.map((status) => (
                             <option key={status} value={status}>
                               {status}

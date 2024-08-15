@@ -17,6 +17,7 @@ import PageTitle from "../../../../components/PageTitle/PageTitle";
 import HeaderAdmin from "../../../../components/HeaderAdmin/HeaderAdmin";
 import axios from "axios";
 import Swal from "sweetalert2";
+import { URL_API } from "../../../../constants/constants";
 
 const ManageCategory = () => {
   const isAdmin = true;
@@ -32,7 +33,7 @@ const ManageCategory = () => {
   useEffect(() => {
     const fetchCategory = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/category");
+        const response = await axios.get(`${URL_API}/category`);
         const data = response.data;
         setListCategory(data);
       } catch (error) {
@@ -44,7 +45,7 @@ const ManageCategory = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:3000/category/delete/${id}`);
+      await axios.delete(`${URL_API}/category/delete/${id}`);
       Swal.fire({
         title: "Bạn có muốn xóa?",
         text: "Đã xóa không thể khôi phục",

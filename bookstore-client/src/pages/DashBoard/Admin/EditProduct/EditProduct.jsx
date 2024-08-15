@@ -11,6 +11,7 @@ import Button from "../../../../components/Button/Button";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import Swal from "sweetalert2";
+import { URL_API } from "../../../../constants/constants";
 
 const EditProduct = () => {
   const { id } = useParams();
@@ -23,7 +24,7 @@ const EditProduct = () => {
   useEffect(() => {
     const fetchListCategory = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/category");
+        const response = await axios.get(`${URL_API}/category`);
         setListCategory(response.data);
       } catch (error) {
         console.log(error);
@@ -32,7 +33,7 @@ const EditProduct = () => {
 
     const fetchListAuthor = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/authors");
+        const response = await axios.get(`${URL_API}/authors`);
         setListAuthor(response.data);
       } catch (error) {
         console.log(error);
@@ -41,7 +42,7 @@ const EditProduct = () => {
 
     const fetchListPublishes = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/publishes");
+        const response = await axios.get(`${URL_API}/publishes`);
         setListPublishes(response.data);
       } catch (error) {
         console.log(error);
@@ -81,7 +82,7 @@ const EditProduct = () => {
   useEffect(() => {
     const getProductById = async () => {
       try {
-        const response = await axios.get(`http://localhost:3000/products/${id}`);
+        const response = await axios.get(`${URL_API}/products/${id}`);
         const {
           name,
           price1,
@@ -106,10 +107,10 @@ const EditProduct = () => {
         setValue("author", author.authorId);
         // Update selectedImages state with existing images
         setSelectedImages({
-          image1: { preview: `http://localhost:3000/images/${image1}` },
-          image2: { preview: `http://localhost:3000/images/${image2}` },
-          image3: { preview: `http://localhost:3000/images/${image3}` },
-          image4: { preview: `http://localhost:3000/images/${image4}` },
+          image1: { preview: `${URL_API}/images/${image1}` },
+          image2: { preview: `${URL_API}/images/${image2}` },
+          image3: { preview: `${URL_API}/images/${image3}` },
+          image4: { preview: `${URL_API}/images/${image4}` },
         });
       } catch (error) {
         console.log(error);
@@ -137,7 +138,7 @@ const EditProduct = () => {
         }
       });
 
-      const response = await axios.put(`http://localhost:3000/products/${id}`, formData, {
+      const response = await axios.put(`${URL_API}/products/${id}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

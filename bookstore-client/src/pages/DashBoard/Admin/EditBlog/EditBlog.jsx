@@ -11,6 +11,7 @@ import Button from "../../../../components/Button/Button";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import Swal from "sweetalert2";
+import { URL_API } from "../../../../constants/constants";
 
 const EditBlog = () => {
   const [selectedImage, setSelectedImage] = useState(null);
@@ -38,12 +39,12 @@ const EditBlog = () => {
   useEffect(() => {
     const getBlogById = async () => {
       try {
-        const response = await axios.get(`http://localhost:3000/blog/${id}`);
+        const response = await axios.get(`${URL_API}/blog/${id}`);
         const { name, date, image, content } = response.data;
         setValue("name", name);
         setValue("date", date.substring(0, 10)); // Chuyển đổi định dạng ngày nếu cần
         setValue("content", content);
-        setSelectedImage(`http://localhost:3000/images/${image}`);
+        setSelectedImage(`${URL_API}/images/${image}`);
       } catch (error) {
         console.log(error);
       }
@@ -61,7 +62,7 @@ const EditBlog = () => {
         formData.append("image", data.image[0]); // Chỉ gửi nếu có hình ảnh mới
       }
 
-      const response = await axios.put(`http://localhost:3000/blog/${id}`, formData, {
+      const response = await axios.put(`${URL_API}/blog/${id}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

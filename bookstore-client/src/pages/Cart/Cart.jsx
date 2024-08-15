@@ -5,6 +5,7 @@ import Button from "../../components/Button/Button";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { updateCartItemQuantity, removeFromCart, clearCart } from "../../redux/slices/cartslide"; // Đảm bảo đường dẫn đúng
+import { URL_API } from "../../constants/constants";
 
 const Cart = () => {
   const cartItems = useSelector((state) => state.cart?.items) || [];
@@ -104,7 +105,7 @@ const Cart = () => {
                         <td className="flex items-center gap-3 py-6 cursor-pointer">
                           <img
                             onClick={() => navigate(`/product-detail/${item._id}`)}
-                            src={`http://localhost:3000/images/${item.image1}`}
+                            src={`${URL_API}/images/${item.image1}`}
                             className="w-[100px] h-[100px] rounded-lg cursor-pointer"
                             alt="Product"
                           />

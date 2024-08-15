@@ -6,6 +6,7 @@ import { NavLink } from "react-router-dom";
 import PageTitle from "../../components/PageTitle/PageTitle";
 import { useDispatch, useSelector } from "react-redux";
 import { remove } from "../../redux/slices/favouritesSlide";
+import { URL_API } from "../../constants/constants";
 
 const Favorite = () => {
   const dispatch = useDispatch();
@@ -99,7 +100,7 @@ const Favorite = () => {
                     <td>{index + 1}</td>
                     <td>
                       <img
-                        src={`http://localhost:3000/images/${item.image1}`}
+                        src={`${URL_API}/images/${item.image1}`}
                         className="w-20 h-20 object-cover"
                         alt=""
                       />

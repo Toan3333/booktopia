@@ -9,6 +9,7 @@ import * as Yup from "yup";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { URL_API } from "../../constants/constants";
 
 const SignUpPage = () => {
   const validationSchema = Yup.object({
@@ -42,7 +43,7 @@ const SignUpPage = () => {
   const onSubmit = async (data) => {
     try {
       const userData = { ...data, role: 0 };
-      const res = await axios.post("http://localhost:3000/users/register", userData);
+      const res = await axios.post(`${URL_API}/users/register`, userData);
       toast.success("Đăng ký thành công");
     } catch (error) {
       if (error.response && error.response.status === 400) {

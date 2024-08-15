@@ -110,7 +110,6 @@ async function updateById(id, body) {
     if (!pro) {
       throw new Error("Không tìm thấy sản phẩm");
     }
-
     const {
       name,
       publish,

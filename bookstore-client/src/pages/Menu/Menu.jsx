@@ -7,6 +7,7 @@ import "./Menu.css";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
 import ProductItem from "../../components/Product/ProductItem";
+import { URL_API } from "../../constants/constants";
 
 const Menu = () => {
   const location = useLocation();
@@ -30,8 +31,8 @@ const Menu = () => {
       setLoading(true);
       try {
         const url = searchTerm.trim()
-          ? `http://localhost:3000/products/search/${searchTerm.trim()}`
-          : "http://localhost:3000/products";
+          ? `${URL_API}/products/search/${searchTerm.trim()}`
+          : `${URL_API}/products`;
         const response = await axios.get(url);
         setProducts(response.data);
       } catch (error) {
@@ -49,13 +50,13 @@ const Menu = () => {
     const fetchProducts = async () => {
       setLoading(true);
       try {
-        let url = "http://localhost:3000/products";
+        let url = `${URL_API}/products`;
         if (sortOption === "Giá tăng dần") {
-          url = `http://localhost:3000/products/sort/asc`;
+          url = `${URL_API}/products/sort/asc`;
         } else if (sortOption === "Giá giảm dần") {
-          url = `http://localhost:3000/products/sort/desc`;
+          url = `${URL_API}/products/sort/desc`;
         } else if (sortOption === "Mới nhất") {
-          url = `http://localhost:3000/products/new`;
+          url = `${URL_API}/products/new`;
         }
         const response = await axios.get(url);
         setProducts(response.data);
@@ -73,7 +74,7 @@ const Menu = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/category");
+        const response = await axios.get(`${URL_API}/category`);
         setCategories(response.data);
       } catch (error) {
         console.error("Lỗi khi lấy danh mục", error);
@@ -82,7 +83,7 @@ const Menu = () => {
 
     const fetchAuthors = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/authors");
+        const response = await axios.get(`${URL_API}/authors`);
         setAuthors(response.data);
       } catch (error) {
         console.error("Lỗi khi lấy tác giả", error);
@@ -91,7 +92,7 @@ const Menu = () => {
 
     const fetchPublishers = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/publishes");
+        const response = await axios.get(`${URL_API}/publishes`);
         setPublishers(response.data);
       } catch (error) {
         console.error("Lỗi khi lấy nhà xuất bản", error);
@@ -108,9 +109,9 @@ const Menu = () => {
     const fetchProducts = async () => {
       setLoading(true);
       try {
-        let url = "http://localhost:3000/products";
+        let url = `${URL_API}/products`;
         if (categoryId) {
-          url = `http://localhost:3000/products/categoryId/${categoryId}`;
+          url = `${URL_API}/products/categoryId/${categoryId}`;
         }
         const response = await axios.get(url);
         setProducts(response.data);
@@ -129,9 +130,9 @@ const Menu = () => {
     const fetchProducts = async () => {
       setLoading(true);
       try {
-        let url = "http://localhost:3000/products";
+        let url = `${URL_API}/products`;
         if (authorId) {
-          url = `http://localhost:3000/products/authorId/${authorId}`;
+          url = `${URL_API}/products/authorId/${authorId}`;
         }
         const response = await axios.get(url);
         setProducts(response.data);
@@ -150,9 +151,9 @@ const Menu = () => {
     const fetchProducts = async () => {
       setLoading(true);
       try {
-        let url = "http://localhost:3000/products";
+        let url = `${URL_API}/products`;
         if (publishId) {
-          url = `http://localhost:3000/products/publishId/${publishId}`;
+          url = `${URL_API}/products/publishId/${publishId}`;
         }
         const response = await axios.get(url);
         setProducts(response.data);

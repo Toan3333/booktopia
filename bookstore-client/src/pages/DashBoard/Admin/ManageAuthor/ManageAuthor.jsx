@@ -17,6 +17,7 @@ import PageTitle from "../../../../components/PageTitle/PageTitle";
 import HeaderAdmin from "../../../../components/HeaderAdmin/HeaderAdmin";
 import axios from "axios";
 import Swal from "sweetalert2";
+import { URL_API } from "../../../../constants/constants";
 
 const ManageAuthor = () => {
   const isAdmin = true;
@@ -32,7 +33,7 @@ const ManageAuthor = () => {
   useEffect(() => {
     const fetchListAuthor = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/authors");
+        const response = await axios.get(`${URL_API}/authors`);
         const data = response.data;
         setListAuthor(data);
       } catch (error) {
@@ -44,7 +45,7 @@ const ManageAuthor = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:3000/authors/delete/${id}`);
+      await axios.delete(`${URL_API}/authors/delete/${id}`);
       Swal.fire({
         title: "Are you sure?",
         text: "You won't be able to revert this!",

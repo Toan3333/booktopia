@@ -7,6 +7,7 @@ import { FaAngleLeft, FaAngleRight } from "react-icons/fa";
 import BlogNewList from "../../layouts/components/BlogNew/BlogNewList";
 import BlogList from "../../components/Blog/BlogList";
 import axios from "axios";
+import { URL_API } from "../../constants/constants";
 
 const Blog = () => {
   const sliderRef = useRef(null);
@@ -105,7 +106,7 @@ const Blog = () => {
   useEffect(() => {
     const fetchBlog = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/blog");
+        const response = await axios.get(`${URL_API}/blog`);
         setGetBlog(response.data);
       } catch (error) {
         console.log("Error fetching blog data:", error);
@@ -126,7 +127,7 @@ const Blog = () => {
                 {getBlog.map((item) => (
                   <div key={item._id}>
                     <img
-                      src={`http://localhost:3000/images/${item.image}`}
+                      src={`${URL_API}/images/${item.image}`}
                       alt="Blog-img"
                       className="w-full h-auto rounded-lg"
                     />

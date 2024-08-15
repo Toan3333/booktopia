@@ -11,6 +11,7 @@ import Button from "../../../../components/Button/Button";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import Swal from "sweetalert2";
+import { URL_API } from "../../../../constants/constants";
 
 const AddPublishes = () => {
   const navigate = useNavigate();
@@ -26,7 +27,7 @@ const AddPublishes = () => {
 
   const onSubmit = async (data) => {
     try {
-      const response = await axios.post("http://localhost:3000/publishes", data);
+      const response = await axios.post(`${URL_API}/publishes`, data);
 
       Swal.fire({
         position: "top-end",

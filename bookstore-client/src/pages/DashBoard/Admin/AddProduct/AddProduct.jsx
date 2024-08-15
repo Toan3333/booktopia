@@ -11,6 +11,7 @@ import Button from "../../../../components/Button/Button";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import Swal from "sweetalert2";
+import { URL_API } from "../../../../constants/constants";
 
 const AddProduct = () => {
   const [selectedImages, setSelectedImages] = useState({});
@@ -21,7 +22,7 @@ const AddProduct = () => {
   useEffect(() => {
     const fetchListCategory = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/category");
+        const response = await axios.get(`${URL_API}/category`);
         setListCategory(response.data);
       } catch (error) {
         console.log(error);
@@ -30,7 +31,7 @@ const AddProduct = () => {
 
     const fetchListAuthor = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/authors");
+        const response = await axios.get(`${URL_API}/authors`);
         setListAuthor(response.data);
       } catch (error) {
         console.log(error);
@@ -39,7 +40,7 @@ const AddProduct = () => {
 
     const fetchListPublishes = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/publishes");
+        const response = await axios.get(`${URL_API}/publishes`);
         setListPublishes(response.data);
         console.log("List of publishes:", response.data);
       } catch (error) {
@@ -97,7 +98,7 @@ const AddProduct = () => {
         }
       });
 
-      const response = await axios.post("http://localhost:3000/products", formData, {
+      const response = await axios.post(`${URL_API}/products`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

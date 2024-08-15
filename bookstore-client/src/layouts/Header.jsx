@@ -7,6 +7,7 @@ import { BiPhoneCall } from "react-icons/bi";
 import axios from "axios";
 import "../index.css";
 import { useSelector } from "react-redux";
+import { URL_API } from "../constants/constants";
 
 const Header = () => {
   const cartItems = useSelector((state) => state.cart.items);
@@ -50,9 +51,7 @@ const Header = () => {
 
   const handleSearch = async () => {
     try {
-      const response = await axios.get(
-        `http://localhost:3000/products/search/${searchTerm.trim()}`
-      );
+      const response = await axios.get(`${URL_API}/products/search/${searchTerm.trim()}`);
       setSearchResults(response.data);
       navigate(`/menu?search=${searchTerm}`);
     } catch (error) {

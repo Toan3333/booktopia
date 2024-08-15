@@ -21,6 +21,7 @@ import HeaderAdmin from "../../../components/HeaderAdmin/HeaderAdmin";
 import PageTitle from "../../../components/PageTitle/PageTitle";
 import SellProductAdminList from "../../../layouts/components/SellProductAdmin/SellProductAdminList";
 import axios from "axios";
+import { URL_API } from "../../../constants/constants";
 
 const DashBoard = () => {
   const isAdmin = true;
@@ -39,9 +40,9 @@ const DashBoard = () => {
     const getInfoDashboard = async () => {
       try {
         const [getTotalProduct, getTotalCategory, getTotalUser] = await axios.all([
-          axios.get("http://localhost:3000/products"),
-          axios.get("http://localhost:3000/category"),
-          axios.get("http://localhost:3000/users"),
+          axios.get(`${URL_API}/products`),
+          axios.get(`${URL_API}/category`),
+          axios.get(`${URL_API}/users`),
         ]);
         setTotalProducts(getTotalProduct.data.Product.length);
         setTotalCategory(getTotalCategory.data.length);

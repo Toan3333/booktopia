@@ -22,6 +22,7 @@ import "lightgallery/css/lg-thumbnail.css";
 // import plugins if you need
 import lgThumbnail from "lightgallery/plugins/thumbnail";
 import lgZoom from "lightgallery/plugins/zoom";
+import { URL_API } from "../../constants/constants";
 
 const ProductDetail = () => {
   const [activeTab, setActiveTab] = useState("info");
@@ -36,7 +37,7 @@ const ProductDetail = () => {
   useEffect(() => {
     const fetchProductDetail = async () => {
       try {
-        const response = await axios.get(`http://localhost:3000/products/${id}`);
+        const response = await axios.get(`${URL_API}/products/${id}`);
         setProductDetailData(response.data);
       } catch (error) {
         setError("Unable to fetch product details. Please try again later.");
@@ -125,9 +126,9 @@ const ProductDetail = () => {
                           mode="lg-fade"
                           thumbnail={true}
                           elementClassNames={"gallery"}>
-                          <a href={`http://localhost:3000/images/${img}`}>
+                          <a href={`${URL_API}/images/${img}`}>
                             <img
-                              src={`http://localhost:3000/images/${img}`}
+                              src={`${URL_API}/images/${img}`}
                               alt={`product-detail-img-${index}`}
                               className="w-full h-[120px]"
                             />
@@ -136,9 +137,9 @@ const ProductDetail = () => {
                           ảnh tồn tại (img ? ... : null), nó sẽ tạo các liên kết tới các ảnh này. */}
                           {[image2, image3, image4].map((img, index) =>
                             img ? (
-                              <a key={index} href={`http://localhost:3000/images/${img}`}>
+                              <a key={index} href={`${URL_API}/images/${img}`}>
                                 <img
-                                  src={`http://localhost:3000/images/${img}`}
+                                  src={`${URL_API}/images/${img}`}
                                   alt={`product-detail-img-${index}`}
                                   className="hidden"
                                 />
@@ -158,18 +159,18 @@ const ProductDetail = () => {
                     mode="lg-fade"
                     elementClassNames={"gallery"}
                     thumbnail={true}>
-                    <a href={`http://localhost:3000/images/${image1}`}>
+                    <a href={`${URL_API}/images/${image1}`}>
                       <img
-                        src={`http://localhost:3000/images/${image1}`}
+                        src={`${URL_API}/images/${image1}`}
                         alt="product-detail-img-main"
                         className="w-full h-[500px] object-cover max-md:h-[400px]"
                       />
                     </a>
                     {[image2, image3, image4].map((img, index) =>
                       img ? (
-                        <a key={index} href={`http://localhost:3000/images/${img}`}>
+                        <a key={index} href={`${URL_API}/images/${img}`}>
                           <img
-                            src={`http://localhost:3000/images/${img}`}
+                            src={`${URL_API}/images/${img}`}
                             alt={`product-detail-img-${index}`}
                             className="hidden"
                           />
@@ -312,7 +313,7 @@ const ProductRelated = ({ id }) => {
   useEffect(() => {
     const fetchProductListRelated = async () => {
       try {
-        const response = await axios.get(`http://localhost:3000/products/related/${id}/related`);
+        const response = await axios.get(`${URL_API}/products/related/${id}/related`);
         setProductListRelated(response.data);
       } catch (error) {
         console.error("Failed to fetch related products:", error);

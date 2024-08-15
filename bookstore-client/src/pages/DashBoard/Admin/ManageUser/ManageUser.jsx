@@ -17,6 +17,7 @@ import PageTitle from "../../../../components/PageTitle/PageTitle";
 import HeaderAdmin from "../../../../components/HeaderAdmin/HeaderAdmin";
 import axios from "axios";
 import Swal from "sweetalert2";
+import { URL_API } from "../../../../constants/constants";
 
 const ManageUser = () => {
   const isAdmin = true;
@@ -30,7 +31,7 @@ const ManageUser = () => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/users");
+        const response = await axios.get(`${URL_API}/users`);
         const data = response.data;
         setUser(data);
       } catch (error) {
@@ -42,7 +43,7 @@ const ManageUser = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:3000/users/${id}`);
+      await axios.delete(`${URL_API}/users/${id}`);
       Swal.fire({
         title: "Bạn có muốn xóa?",
         text: "Đã xóa không thể khôi phục",
@@ -58,7 +59,7 @@ const ManageUser = () => {
             text: "Đã xóa tài khoản người dùng.!",
             icon: "success",
           }).then(() => {
-            window.location.reload(); 
+            window.location.reload();
           });
         }
       });
@@ -82,27 +83,17 @@ const ManageUser = () => {
                 Dashboard
               </div>
             </MenuItem>
-            <SubMenu
-              label="Quản lý danh mục"
-              icon={<AiOutlineBars className="w-5 h-5" />}
-            >
+            <SubMenu label="Quản lý danh mục" icon={<AiOutlineBars className="w-5 h-5" />}>
               <MenuItem component={<Link to="/dashboard/manage-category" />}>
                 Danh sách danh mục
               </MenuItem>
-              <MenuItem component={<Link to="/dashboard/add-category" />}>
-                Thêm danh mục
-              </MenuItem>
+              <MenuItem component={<Link to="/dashboard/add-category" />}>Thêm danh mục</MenuItem>
             </SubMenu>
-            <SubMenu
-              label="Quản lý sản phẩm"
-              icon={<FaBook className="w-5 h-5" />}
-            >
+            <SubMenu label="Quản lý sản phẩm" icon={<FaBook className="w-5 h-5" />}>
               <MenuItem component={<Link to="/dashboard/manage-product" />}>
                 Danh sách sản phẩm
               </MenuItem>
-              <MenuItem component={<Link to="/dashboard/add-product" />}>
-                Thêm sản phẩm
-              </MenuItem>
+              <MenuItem component={<Link to="/dashboard/add-product" />}>Thêm sản phẩm</MenuItem>
             </SubMenu>
             <MenuItem component={<Link to="/dashboard/manage-order" />}>
               <div className="flex items-center gap-4">
@@ -116,16 +107,11 @@ const ManageUser = () => {
                 Quản lý tài khoản
               </div>
             </MenuItem>
-            <SubMenu
-              label="Quản lý bài viết"
-              icon={<FaRegEdit className="w-5 h-5" />}
-            >
+            <SubMenu label="Quản lý bài viết" icon={<FaRegEdit className="w-5 h-5" />}>
               <MenuItem component={<Link to="/dashboard/manage-blog" />}>
                 Danh sách bài viết
               </MenuItem>
-              <MenuItem component={<Link to="/dashboard/add-blog" />}>
-                Thêm bài viết
-              </MenuItem>
+              <MenuItem component={<Link to="/dashboard/add-blog" />}>Thêm bài viết</MenuItem>
             </SubMenu>
             <MenuItem onClick={handleLogout}>
               <div className="flex items-center gap-4">
@@ -172,7 +158,6 @@ const ManageUser = () => {
                     </td>
                   </tr>
                 ))}
-               
               </tbody>
             </table>
           </div>

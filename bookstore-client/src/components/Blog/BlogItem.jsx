@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { URL_API } from "../../constants/constants";
 
 const BlogItem = ({ item }) => {
   const { name, date, image, content, _id } = item;
@@ -12,7 +13,7 @@ const BlogItem = ({ item }) => {
       <div className="">
         <Link to={`/blog-detail/${_id}`} className="w-full">
           <img
-            src={`http://localhost:3000/images/${image}`}
+            src={`${URL_API}/images/${image}`}
             className="w-full object-cover rounded-[30px]"
             alt=""
           />

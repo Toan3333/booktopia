@@ -11,6 +11,7 @@ import Button from "../../../../components/Button/Button";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import Swal from "sweetalert2";
+import { URL_API } from "../../../../constants/constants";
 
 const EditCategory = () => {
   const [selectedImage, setSelectedImage] = useState(null);
@@ -37,7 +38,7 @@ const EditCategory = () => {
   useEffect(() => {
     const getCategoryById = async () => {
       try {
-        const response = await axios.get(`http://localhost:3000/category/${id}`);
+        const response = await axios.get(`${URL_API}/category/${id}`);
         const { name, description } = response.data;
         setValue("name", name);
         setValue("description", description);
@@ -50,7 +51,7 @@ const EditCategory = () => {
 
   const onSubmit = async (data) => {
     try {
-      await axios.put(`http://localhost:3000/category/${id}`, data);
+      await axios.put(`${URL_API}/category/${id}`, data);
       Swal.fire({
         position: "top-end",
         icon: "success",

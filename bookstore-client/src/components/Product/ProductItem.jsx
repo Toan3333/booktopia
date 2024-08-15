@@ -8,6 +8,7 @@ import { add } from "../../redux/slices/favouritesSlide";
 import Swal from "sweetalert2";
 import "./Product.css";
 import { FaHeart } from "react-icons/fa6";
+import { URL_API } from "../../constants/constants";
 const ProductItem = ({ className = "", item }) => {
   const dispatch = useDispatch();
   const cartItems = useSelector((state) => state.cart?.items) || []; // Truy xuất các sản phẩm trong giỏ hàng hoặc một mảng rỗng nếu không có sản phẩm nào
@@ -60,7 +61,7 @@ const ProductItem = ({ className = "", item }) => {
             20%
           </div>
           <img
-            src={`http://localhost:3000/images/${image1}`}
+            src={`${URL_API}/images/${image1}`}
             className={`object-contain product-image cursor-pointer max-lg:w-[190px] max-lg:h-[190px] ${
               isHorizontal ? "w-[100px] h-[100px]" : "w-[190px] h-[190px] cursor-pointer"
             }`}

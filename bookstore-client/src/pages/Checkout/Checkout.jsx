@@ -5,6 +5,7 @@ import Button from "../../components/Button/Button";
 import { useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import Cookies from "js-cookie";
+import { URL_API } from "../../constants/constants";
 
 const Checkout = () => {
   const {
@@ -31,7 +32,7 @@ const Checkout = () => {
   }, [setValue]);
   const onSubmit = async (data) => {
     try {
-      const response = await fetch("http://localhost:3000/orders", {
+      const response = await fetch(`${URL_API}/orders`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -188,7 +189,7 @@ const Checkout = () => {
                       <div className="flex items-center">
                         <div className="w-28 h-22 relative">
                           <img
-                            src={`http://localhost:3000/images/${item.image1}`}
+                            src={`${URL_API}/images/${item.image1}`}
                             className="w-full h-full cursor-pointer"
                             alt=""
                           />
