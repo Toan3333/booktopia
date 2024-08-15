@@ -8,6 +8,7 @@ import BlogNewList from "../../layouts/components/BlogNew/BlogNewList";
 import BlogList from "../../components/Blog/BlogList";
 import axios from "axios";
 import { URL_API } from "../../constants/constants";
+import { formatDate } from "../../helpers/helpers";
 
 const Blog = () => {
   const sliderRef = useRef(null);
@@ -133,7 +134,7 @@ const Blog = () => {
                     />
                     <div className="flex flex-col mt-3">
                       <div className="text-gray-500 font-normal leading-normal">
-                        {new Date(item.date).toLocaleDateString()}
+                        {formatDate}
                         {/* Đảm bảo rằng item.date tồn tại */}
                       </div>
                       <h3 className="text-lg font-semibold text-text max-md:text-[16px]">

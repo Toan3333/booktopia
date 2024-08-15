@@ -16,9 +16,9 @@ import "../DashBoard.css";
 import PageTitle from "../../../../components/PageTitle/PageTitle";
 import HeaderAdmin from "../../../../components/HeaderAdmin/HeaderAdmin";
 import axios from "axios";
-import Swal from "sweetalert2";
 import "../DashBoard.css";
 import { URL_API } from "../../../../constants/constants";
+import { showSwalFireDelete } from "../../../../helpers/helpers";
 
 const ManageProduct = () => {
   const isAdmin = true;
@@ -48,25 +48,7 @@ const ManageProduct = () => {
   const handleDelete = async (id) => {
     try {
       await axios.delete(`${URL_API}/products/${id}`);
-      Swal.fire({
-        title: "Are you sure?",
-        text: "You won't be able to revert this!",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, delete it!",
-      }).then((result) => {
-        if (result.isConfirmed) {
-          Swal.fire({
-            title: "Deleted!",
-            text: "Your product has been deleted.",
-            icon: "success",
-          }).then(() => {
-            window.location.reload(); // Reload the page after deleting
-          });
-        }
-      });
+      showSwalFireDelete();
     } catch (error) {
       console.log(error);
     }

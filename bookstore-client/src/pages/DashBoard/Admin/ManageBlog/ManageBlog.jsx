@@ -18,6 +18,7 @@ import HeaderAdmin from "../../../../components/HeaderAdmin/HeaderAdmin";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { URL_API } from "../../../../constants/constants";
+import { showSwalFireDelete } from "../../../../helpers/helpers";
 
 const ManageBlog = () => {
   const [getBlog, setGetBlog] = useState([]);
@@ -44,25 +45,7 @@ const ManageBlog = () => {
   const handleDelete = async (id) => {
     try {
       await axios.delete(`${URL_API}/blog/${id}`);
-      Swal.fire({
-        title: "Bạn có muốn xóa?",
-        text: "Đã xóa không thể khôi phục",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Xóa",
-      }).then((result) => {
-        if (result.isConfirmed) {
-          Swal.fire({
-            title: "Deleted!",
-            text: "Danh mục của bạn đã được xóa.",
-            icon: "success",
-          }).then(() => {
-            window.location.reload();
-          });
-        }
-      });
+      showSwalFireDelete("Xóa bài viết thành công");
     } catch (error) {
       console.log(error);
     }

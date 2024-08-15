@@ -90,7 +90,6 @@ const AddProduct = () => {
       formData.append("category", data.category);
       formData.append("publish", data.publish);
       formData.append("quantity", data.quantity);
-
       // Append images to FormData
       ["image1", "image2", "image3", "image4"].forEach((imageKey) => {
         if (selectedImages[imageKey]) {

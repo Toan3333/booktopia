@@ -18,6 +18,7 @@ import HeaderAdmin from "../../../../components/HeaderAdmin/HeaderAdmin";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { URL_API } from "../../../../constants/constants";
+import { showSwalFireDelete } from "../../../../helpers/helpers";
 
 const ManageUser = () => {
   const isAdmin = true;
@@ -44,25 +45,7 @@ const ManageUser = () => {
   const handleDelete = async (id) => {
     try {
       await axios.delete(`${URL_API}/users/${id}`);
-      Swal.fire({
-        title: "Bạn có muốn xóa?",
-        text: "Đã xóa không thể khôi phục",
-        icon: "warning",
-        showCancelButton: "Hủy",
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Xóa",
-      }).then((result) => {
-        if (result.isConfirmed) {
-          Swal.fire({
-            title: "Deleted!",
-            text: "Đã xóa tài khoản người dùng.!",
-            icon: "success",
-          }).then(() => {
-            window.location.reload();
-          });
-        }
-      });
+      showSwalFireDelete("Xóa người dùng thành công");
     } catch (error) {
       console.log(error);
     }

@@ -1,12 +1,10 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { URL_API } from "../../constants/constants";
+import { formatDate } from "../../helpers/helpers";
 
 const BlogItem = ({ item }) => {
   const { name, date, image, content, _id } = item;
-
-  // Chuyển đổi chuỗi ngày tháng thành định dạng ngày, tháng, năm
-  const formattedDate = new Date(date).toLocaleDateString();
 
   return (
     <div>
@@ -19,7 +17,7 @@ const BlogItem = ({ item }) => {
           />
         </Link>
         <div className="mt-2 flex flex-col gap-1">
-          <p className="text-gray-400 font-light text-sm">{formattedDate}</p>
+          <p className="text-gray-400 font-light text-sm">{formatDate(date)}</p>
           <h3 className="font-semibold leading-normal max-md:leading-none max-md:text-sm max-md:line-clamp-2">
             <a href="#" className="cursor-pointer hover:text-mainDark max-md:text-sm line-clamp-1">
               {name}

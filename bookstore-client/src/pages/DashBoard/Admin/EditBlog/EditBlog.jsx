@@ -12,6 +12,7 @@ import { useForm } from "react-hook-form";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { URL_API } from "../../../../constants/constants";
+import { showSwalFireSuccess } from "../../../../helpers/helpers";
 
 const EditBlog = () => {
   const [selectedImage, setSelectedImage] = useState(null);
@@ -61,21 +62,12 @@ const EditBlog = () => {
       if (data.image[0]) {
         formData.append("image", data.image[0]); // Chỉ gửi nếu có hình ảnh mới
       }
-
       const response = await axios.put(`${URL_API}/blog/${id}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
-
-      Swal.fire({
-        position: "top-end",
-        icon: "success",
-        title: "Bài viết đã được cập nhật thành công!",
-        showConfirmButton: false,
-        timer: 1500,
-      });
-
+      showSwalFireSuccess("Cập nhật bài viết thành công");
       navigate("/dashboard/manage-blog");
     } catch (error) {
       console.error("Error updating blog:", error);

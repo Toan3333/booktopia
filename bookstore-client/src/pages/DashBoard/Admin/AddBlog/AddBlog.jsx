@@ -12,6 +12,7 @@ import { useForm } from "react-hook-form";
 import Swal from "sweetalert2";
 import axios from "axios";
 import { URL_API } from "../../../../constants/constants";
+import { showSwalFireSuccess } from "../../../../helpers/helpers";
 
 const AddBlog = () => {
   const [selectedImage, setSelectedImage] = useState(null);
@@ -53,13 +54,7 @@ const AddBlog = () => {
         },
       });
 
-      Swal.fire({
-        position: "top-end",
-        icon: "success",
-        title: "Bài viết đã được thêm thành công!",
-        showConfirmButton: false,
-        timer: 1500,
-      });
+      showSwalFireSuccess("Thêm bài viết thành công");
 
       navigate("/dashboard/manage-blog");
     } catch (error) {

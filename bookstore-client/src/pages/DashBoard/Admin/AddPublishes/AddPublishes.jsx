@@ -12,6 +12,7 @@ import { useForm } from "react-hook-form";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { URL_API } from "../../../../constants/constants";
+import { showSwalFireSuccess } from "../../../../helpers/helpers";
 
 const AddPublishes = () => {
   const navigate = useNavigate();
@@ -28,14 +29,7 @@ const AddPublishes = () => {
   const onSubmit = async (data) => {
     try {
       const response = await axios.post(`${URL_API}/publishes`, data);
-
-      Swal.fire({
-        position: "top-end",
-        icon: "success",
-        title: "Thêm nhà xuất bản thành công",
-        showConfirmButton: false,
-        timer: 1500,
-      });
+      showSwalFireSuccess("Thêm nhà xuất bản thành công");
       console.log("Product created:", response.data);
       navigate("/dashboard/manage-publishes");
     } catch (error) {

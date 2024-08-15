@@ -18,6 +18,7 @@ import HeaderAdmin from "../../../../components/HeaderAdmin/HeaderAdmin";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { URL_API } from "../../../../constants/constants";
+import { showSwalFireDelete } from "../../../../helpers/helpers";
 
 const ManageCategory = () => {
   const isAdmin = true;
@@ -46,25 +47,7 @@ const ManageCategory = () => {
   const handleDelete = async (id) => {
     try {
       await axios.delete(`${URL_API}/category/delete/${id}`);
-      Swal.fire({
-        title: "Bạn có muốn xóa?",
-        text: "Đã xóa không thể khôi phục",
-        icon: "warning",
-        showCancelButton: "Hủy",
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Xóa",
-      }).then((result) => {
-        if (result.isConfirmed) {
-          Swal.fire({
-            title: "Deleted!",
-            text: "Danh mục của bạn đã được xóa.",
-            icon: "success",
-          }).then(() => {
-            window.location.reload(); // Reload the page after deleting
-          });
-        }
-      });
+      showSwalFireDelete("Xóa danh mục thành công");
     } catch (error) {
       console.log(error);
     }

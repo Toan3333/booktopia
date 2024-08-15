@@ -12,6 +12,7 @@ import { useForm } from "react-hook-form";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { URL_API } from "../../../../constants/constants";
+import { showSwalFireSuccess } from "../../../../helpers/helpers";
 
 const EditProduct = () => {
   const { id } = useParams();
@@ -143,14 +144,7 @@ const EditProduct = () => {
           "Content-Type": "multipart/form-data",
         },
       });
-
-      Swal.fire({
-        position: "top-end",
-        icon: "success",
-        title: "Sản phẩm đã được cập nhật thành công!",
-        showConfirmButton: false,
-        timer: 1500,
-      });
+      showSwalFireSuccess((title = "Cập nhật sản phẩm thành công"));
       console.log("Product updated:", response.data.ProductUpdate);
       navigate("/dashboard/manage-product");
     } catch (error) {

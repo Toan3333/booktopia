@@ -9,6 +9,7 @@ import Swal from "sweetalert2";
 import "./Product.css";
 import { FaHeart } from "react-icons/fa6";
 import { URL_API } from "../../constants/constants";
+import { showSwalFireSuccess } from "../../helpers/helpers";
 const ProductItem = ({ className = "", item }) => {
   const dispatch = useDispatch();
   const cartItems = useSelector((state) => state.cart?.items) || []; // Truy xuất các sản phẩm trong giỏ hàng hoặc một mảng rỗng nếu không có sản phẩm nào
@@ -20,14 +21,7 @@ const ProductItem = ({ className = "", item }) => {
   useEffect(() => {}, [favouriteItems]);
 
   const handleAddToCart = () => {
-    Swal.fire({
-      position: "top-end",
-      heightAuto: true,
-      icon: "success",
-      title: "Thêm sản phẩm thành công",
-      showConfirmButton: false,
-      timer: 1000,
-    });
+    showSwalFireSuccess();
     dispatch(addToCart({ item, quantity: 1 }));
   };
 

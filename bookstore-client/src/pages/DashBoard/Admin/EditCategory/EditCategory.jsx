@@ -12,6 +12,7 @@ import { useForm } from "react-hook-form";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { URL_API } from "../../../../constants/constants";
+import { showSwalFireSuccess } from "../../../../helpers/helpers";
 
 const EditCategory = () => {
   const [selectedImage, setSelectedImage] = useState(null);
@@ -52,14 +53,7 @@ const EditCategory = () => {
   const onSubmit = async (data) => {
     try {
       await axios.put(`${URL_API}/category/${id}`, data);
-      Swal.fire({
-        position: "top-end",
-        icon: "success",
-        title: "Cập nhật danh mục thành công!",
-        showConfirmButton: false,
-        timer: 1500,
-      });
-
+      showSwalFireSuccess("Cập nhật danh mục thành công");
       navigate("/dashboard/manage-category");
     } catch (error) {
       console.error("Error creating cate:", error);
