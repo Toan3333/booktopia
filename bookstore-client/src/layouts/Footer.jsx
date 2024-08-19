@@ -1,16 +1,6 @@
 import React from "react";
 import "../App.css";
-import {
-  FaSearchLocation,
-  FaPhoneAlt,
-  FaGoogle,
-  FaFacebookF,
-  FaFacebook,
-  FaMapMarkerAlt,
-  FaClock,
-  FaTwitter,
-  FaYoutube,
-} from "react-icons/fa";
+import { FaFacebook, FaTwitter, FaYoutube } from "react-icons/fa";
 import { FaInstagram, FaRegClock } from "react-icons/fa6";
 import { HiOutlineLocationMarker } from "react-icons/hi";
 import { CgMail } from "react-icons/cg";
@@ -20,11 +10,11 @@ const Footer = () => {
     <div className="pb-5">
       <div className="py-10 border">
         <div className="container">
-          <div className="footer-list max-lg:grid-cols-2 max-lg:gap-20 max-md:grid-cols-1 max-md:gap-10">
+          <div className="footer-list max-lg:grid-cols-2 max-lg:gap-20 max-md:grid-cols-1 max-md:gap-6">
             <div className="">
               <img
                 src="./images/logo.png"
-                className="max-w-[220px] w-full object-cover"
+                className="max-w-[220px] w-full object-cover max-md:max-w-[150px]"
                 alt="Logo"
               />
               <div className="mt-3 text-grayText mb-5 font-normal leading-normal">
@@ -35,28 +25,28 @@ const Footer = () => {
                 <li>
                   <a
                     href="#"
-                    className="flex items-center justify-center text-white w-10 h-10 rounded-full bg-mainDark">
+                    className="flex items-center justify-center text-white w-10 h-10 rounded-full bg-mainDark max-md:w-9 max-md:h-9">
                     <FaFacebook className="w-5 h-5" />
                   </a>
                 </li>
                 <li>
                   <a
                     href="#"
-                    className="flex items-center justify-center text-white w-10 h-10 rounded-full bg-mainDark">
+                    className="flex items-center justify-center text-white w-10 h-10 rounded-full bg-mainDark max-md:w-9 max-md:h-9">
                     <FaInstagram className="w-5 h-5" />
                   </a>
                 </li>
                 <li>
                   <a
                     href="#"
-                    className="flex items-center justify-center text-white w-10 h-10 rounded-full bg-mainDark">
+                    className="flex items-center justify-center text-white w-10 h-10 rounded-full bg-mainDark max-md:w-9 max-md:h-9">
                     <FaTwitter className="w-5 h-5" />
                   </a>
                 </li>
                 <li>
                   <a
                     href="#"
-                    className="flex items-center justify-center text-white w-10 h-10 rounded-full bg-mainDark">
+                    className="flex items-center justify-center text-white w-10 h-10 rounded-full bg-mainDark max-md:w-9 max-md:h-9">
                     <FaYoutube className="w-5 h-5" />
                   </a>
                 </li>

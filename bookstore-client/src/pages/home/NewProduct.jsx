@@ -6,7 +6,7 @@ const NewProduct = () => {
   return (
     <div className="py-5 max-lg:py-5">
       <div className="container">
-        <Title>Sản phẩm mới </Title>
+        <Title>Sản phẩm mới</Title>
         <ProductList></ProductList>
       </div>
     </div>

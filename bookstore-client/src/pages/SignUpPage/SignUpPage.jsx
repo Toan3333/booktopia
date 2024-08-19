@@ -44,7 +44,9 @@ const SignUpPage = () => {
     try {
       const userData = { ...data, role: 0 };
       const res = await axios.post(`${URL_API}/users/register`, userData);
-      toast.success("Đăng ký thành công");
+      if (res) {
+        toast.success("Đăng ký thành công");
+      }
     } catch (error) {
       if (error.response && error.response.status === 400) {
         const errorData = error.response.data;
@@ -67,7 +69,7 @@ const SignUpPage = () => {
       <ToastContainer autoClose={1000} />
       <div className="container">
         <div className="flex items-center justify-between gap-16">
-          <div className="max-w-[650px] w-full">
+          <div className="max-w-[650px] w-full max-md:hidden">
             <img src="./images/bannersach 1.png" className="w-full rounded-[30px]" alt="" />
           </div>
           <div className="w-full">
@@ -150,7 +152,7 @@ const SignUpPage = () => {
               </div>
             </form>
             <div className="text-center mt-7 font-medium">
-              Nếu bạn đã có tài khoản, đăng nhập
+              Nếu bạn đã có tài khoản, đăng nhập {""}
               <Link to="/sign-in" className="text-red">
                 tại đây
               </Link>

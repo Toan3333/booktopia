@@ -6,7 +6,6 @@ import { useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import Cookies from "js-cookie";
 import { URL_API } from "../../constants/constants";
-
 const Checkout = () => {
   const {
     register,
@@ -30,6 +29,7 @@ const Checkout = () => {
       setValue("address", userData.user.address);
     }
   }, [setValue]);
+
   const onSubmit = async (data) => {
     try {
       const response = await fetch(`${URL_API}/orders`, {
@@ -66,9 +66,9 @@ const Checkout = () => {
             Thanh toán
           </a>
         </nav>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="flex justify-between gap-20">
-            <div className="w-[55%] mt-6">
+        <form onSubmit={handleSubmit(onSubmit)} className="w-full">
+          <div className="flex justify-between gap-20 max-md:flex-col max-md:w-full">
+            <div className="w-[55%] mt-6 max-md:w-full">
               <h3 className="text-text font-semibold leading-normal mb-2">Thông tin giao hàng</h3>
               <div className="flex flex-col gap-6">
                 <div>
@@ -180,7 +180,7 @@ const Checkout = () => {
                 </div>
               </div>
             </div>
-            <div className="w-[45%]">
+            <div className="w-[45%] max-md:w-full">
               <div className="rounded-[5px] border py-8 px-7">
                 <h2 className="text-lg font-semibold mb-5">Đơn hàng</h2>
                 {listProducts.map((item, index) => (
@@ -226,7 +226,7 @@ const Checkout = () => {
                     <div className="w-[30%]">
                       <Button
                         children="Sử dụng"
-                        className="rounded-[5px] px-5 py-4 w-full"></Button>
+                        className="rounded-[5px] px-5 py-4 w-full max-md:px-2 max-md:py-3 max-md:text-sm"></Button>
                     </div>
                   </div>
                 </div>
@@ -257,10 +257,14 @@ const Checkout = () => {
               </div>
               <div className="flex items-center mt-7">
                 <div className="w-1/2">
-                  <Button className="rounded-[5px] bg-white button-add">Tiếp tục mua hàng</Button>
+                  <Button className="rounded-[5px] bg-white button-add max-md:py-2 max-md:px-5 max-md:text-sm">
+                    Tiếp tục mua hàng
+                  </Button>
                 </div>
                 <div className="w-1/2">
-                  <Button className="w-full rounded-[5px]" type="submit">
+                  <Button
+                    className="w-full rounded-[5px] max-md:text-sm max-md:py-2 max-md:px-5"
+                    type="submit">
                     Đặt hàng
                   </Button>
                 </div>
