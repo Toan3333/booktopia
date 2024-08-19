@@ -51,9 +51,19 @@ const Header = () => {
 
   const handleSearch = async () => {
     try {
-      const response = await axios.get(`${URL_API}/products/search/${searchTerm.trim()}`);
+      const trimmedSearchTerm = searchTerm.trim();
+      let response;
+
+      if (trimmedSearchTerm) {
+        // Nếu có từ khóa tìm kiếm, tìm kiếm sản phẩm dựa trên từ khóa
+        response = await axios.get(`${URL_API}/products/search/${trimmedSearchTerm}`);
+      } else {
+        // Nếu không có từ khóa tìm kiếm, lấy tất cả sản phẩm
+        response = await axios.get(`${URL_API}/products`);
+      }
+
       setSearchResults(response.data);
-      navigate(`/menu?search=${searchTerm}`);
+      navigate(`/menu?search=${trimmedSearchTerm}`);
       window.location.reload();
     } catch (error) {
       console.error("Lỗi tìm kiếm sản phẩm", error);
