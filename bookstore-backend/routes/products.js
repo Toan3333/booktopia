@@ -50,7 +50,6 @@ router.get("/", async (req, res) => {
     res.status(500).json({ mess: error });
   }
 });
-
 //Router hiển thị sản phẩm mới nhất
 router.get("/new", async (req, res) => {
   try {

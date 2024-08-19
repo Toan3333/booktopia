@@ -17,6 +17,8 @@ import PageTitle from "../../../../components/PageTitle/PageTitle";
 import HeaderAdmin from "../../../../components/HeaderAdmin/HeaderAdmin";
 import axios from "axios";
 import Swal from "sweetalert2";
+import { URL_API } from "../../../../constants/constants";
+import { showSwalFireDelete } from "../../../../helpers/helpers";
 
 const ManagePublishes = () => {
   const isAdmin = true;
@@ -32,7 +34,7 @@ const ManagePublishes = () => {
   useEffect(() => {
     const fetchListPublishes = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/publishes");
+        const response = await axios.get(`${URL_API}/publishes`);
         const data = response.data;
         setListPublishes(data);
       } catch (error) {
@@ -44,26 +46,8 @@ const ManagePublishes = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:3000/publishes/delete/${id}`);
-      Swal.fire({
-        title: "Are you sure?",
-        text: "You won't be able to revert this!",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, delete it!",
-      }).then((result) => {
-        if (result.isConfirmed) {
-          Swal.fire({
-            title: "Xóa nhà xuất bản!",
-            text: "Nhà xuất bản đã xóa",
-            icon: "success",
-          }).then(() => {
-            window.location.reload(); // Reload the page after deleting
-          });
-        }
-      });
+      await axios.delete(`${URL_API}/publishes/delete/${id}`);
+      showSwalFireDelete("Xóa nhà xuất bản thành công");
     } catch (error) {
       console.log(error);
     }

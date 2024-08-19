@@ -7,10 +7,13 @@ import { BiPhoneCall } from "react-icons/bi";
 import axios from "axios";
 import "../index.css";
 import { useSelector } from "react-redux";
+import { URL_API } from "../constants/constants";
 
 const Header = () => {
   const cartItems = useSelector((state) => state.cart.items);
+  const favouriteItems = useSelector((state) => state.favourite.items);
   const cartCount = cartItems.reduce((count, item) => count + Number(item.quantity), 0);
+  const favouriteCount = favouriteItems.reduce((count, item) => count + Number(item.quantity), 0);
   const navigate = useNavigate();
   const [isSticky, setIsSticky] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
@@ -48,9 +51,7 @@ const Header = () => {
 
   const handleSearch = async () => {
     try {
-      const response = await axios.get(
-        `http://localhost:3000/products/search/${searchTerm.trim()}`
-      );
+      const response = await axios.get(`${URL_API}/products/search/${searchTerm.trim()}`);
       setSearchResults(response.data);
       navigate(`/menu?search=${searchTerm}`);
     } catch (error) {
@@ -83,7 +84,12 @@ const Header = () => {
             </div>
             <div className="flex items-center gap-8">
               <Link to="/favorites">
-                <CiHeart className="w-7 h-7 hover:text-mainDark cursor-pointer" />
+                <div className="relative">
+                  <CiHeart className="w-7 h-7 hover:text-mainDark cursor-pointer" />
+                  <div className="absolute -top-3 -right-3 w-5 h-5 rounded-full bg-mainDark flex items-center justify-center text-white p-2">
+                    {favouriteCount}
+                  </div>
+                </div>
               </Link>
               <Link to="/sign-in">
                 <CiUser className="w-7 h-7 hover:text-mainDark cursor-pointer" />
@@ -148,8 +154,12 @@ const Header = () => {
                 />
               </label>
               <div className="flex items-center gap-2">
-                <FaShoppingBag className="w-8 h-8" />
-                <FaUser className="w-8 h-8" />
+                <Link to="/cart">
+                  <FaShoppingBag className="w-8 h-8" />
+                </Link>
+                <Link to="/sign-in">
+                  <FaUser className="w-8 h-8" />
+                </Link>
               </div>
             </div>
             <div

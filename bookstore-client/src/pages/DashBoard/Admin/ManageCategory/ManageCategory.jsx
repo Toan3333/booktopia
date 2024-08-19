@@ -17,6 +17,8 @@ import PageTitle from "../../../../components/PageTitle/PageTitle";
 import HeaderAdmin from "../../../../components/HeaderAdmin/HeaderAdmin";
 import axios from "axios";
 import Swal from "sweetalert2";
+import { URL_API } from "../../../../constants/constants";
+import { showSwalFireDelete } from "../../../../helpers/helpers";
 
 const ManageCategory = () => {
   const isAdmin = true;
@@ -32,7 +34,7 @@ const ManageCategory = () => {
   useEffect(() => {
     const fetchCategory = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/category");
+        const response = await axios.get(`${URL_API}/category`);
         const data = response.data;
         setListCategory(data);
       } catch (error) {
@@ -44,26 +46,8 @@ const ManageCategory = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:3000/category/delete/${id}`);
-      Swal.fire({
-        title: "Bạn có muốn xóa?",
-        text: "Đã xóa không thể khôi phục",
-        icon: "warning",
-        showCancelButton: "Hủy",
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Xóa",
-      }).then((result) => {
-        if (result.isConfirmed) {
-          Swal.fire({
-            title: "Deleted!",
-            text: "Danh mục của bạn đã được xóa.",
-            icon: "success",
-          }).then(() => {
-            window.location.reload(); // Reload the page after deleting
-          });
-        }
-      });
+      await axios.delete(`${URL_API}/category/delete/${id}`);
+      showSwalFireDelete("Xóa danh mục thành công");
     } catch (error) {
       console.log(error);
     }
@@ -100,7 +84,7 @@ const ManageCategory = () => {
                 Nhà xuất bản
               </MenuItem>
             </SubMenu>
-            <MenuItem component={<Link to="/dashboard/manage-items" />}>
+            <MenuItem component={<Link to="/dashboard/manage-order" />}>
               <div className="flex items-center gap-4">
                 <FaClipboardList className="w-5 h-5" />
                 Quản lý đơn hàng

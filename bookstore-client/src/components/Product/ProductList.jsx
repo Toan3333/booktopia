@@ -5,6 +5,7 @@ import "slick-carousel/slick/slick-theme.css";
 import { FaAngleRight, FaAngleLeft } from "react-icons/fa";
 import ProductItem from "./ProductItem";
 import axios from "axios";
+import { URL_API } from "../../constants/constants";
 
 const ProductList = ({
   useSlider,
@@ -21,7 +22,7 @@ const ProductList = ({
   useEffect(() => {
     const fetchProductList = async () => {
       try {
-        const response = await axios.get(`http://localhost:3000/products/${type}`);
+        const response = await axios.get(`${URL_API}/products/${type}`);
         const data = response.data;
         setProductList(data);
       } catch (error) {
@@ -31,7 +32,7 @@ const ProductList = ({
 
     const fetchAllProductList = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/products");
+        const response = await axios.get(`${URL_API}/products`);
         const data = response.data.Product;
         setAllProductList(data);
       } catch (error) {
@@ -41,7 +42,7 @@ const ProductList = ({
 
     const fetchProductListSale = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/products/sort/sale");
+        const response = await axios.get(`${URL_API}/products/sort/sale`);
         const data = response.data.ProductsSale;
         setProductListSale(data);
       } catch (error) {
@@ -163,7 +164,7 @@ const ProductList = ({
           </div>
         </>
       ) : customItem ? (
-        <div className="grid grid-cols-4 gap-4">
+        <div className="grid grid-cols-4 gap-4 max-md:grid-cols-2">
           {AllProductList.slice(0, 16).map((item) => (
             <ProductItem key={item._id} item={item} />
           ))}

@@ -7,6 +7,10 @@ import { useForm } from "react-hook-form";
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import Cookies from "js-cookie";
+import "react-toastify/dist/ReactToastify.css";
+import { URL_API } from "../../constants/constants";
 
 const SignInPage = () => {
   // Định nghĩa schema validation
@@ -28,27 +32,39 @@ const SignInPage = () => {
   // Hàm xử lý submit
   const onSubmit = async (data) => {
     try {
-      const res = await axios.post("http://localhost:3000/users/login", data);
-      alert("Đăng nhập thành công");
+      const res = await axios.post(`${URL_API}/users/login`, data);
+      // if(res){
+
+      // }
+      const userData = res.data;
+      // Lưu thông tin user vào cookie
+      Cookies.set("user", JSON.stringify(userData), { expires: 1 });
+      toast.success("Đăng nhập thành công");
     } catch (error) {
-      if (error.response && error.response.status === 400) {
+      if (error?.response?.status === 400) {
         const errorData = error.response.data;
         if (errorData.message === "Email hoặc mật khẩu không đúng") {
           setError("email", { message: "Email hoặc mật khẩu không đúng" });
+          toast.error("Email hoặc mật khẩu không đúng");
         } else {
-          setError("general", { message: errorData.message || "Đăng nhập thất bại" });
+          setError("general", {
+            message: errorData.message || "Đăng nhập thất bại",
+          });
+          toast.error(errorData.message || "Đăng nhập thất bại");
         }
       } else {
         setError("general", { message: "Đăng nhập thất bại" });
+        toast.error("Đăng nhập thất bại");
       }
     }
   };
 
   return (
     <div className="py-10">
+      <ToastContainer autoClose={1000} />
       <div className="container">
         <div className="flex items-center justify-between gap-16">
-          <div className="max-w-[650px] w-full">
+          <div className="max-w-[650px] w-full max-md:hidden">
             <img src="./images/bannersach 1.png" className="w-full rounded-[30px]" alt="" />
           </div>
           <div className="w-full">
@@ -61,7 +77,9 @@ const SignInPage = () => {
                   className="input input-bordered w-full"
                   {...register("email")}
                 />
-                {errors.email && <div className="text-danger">{errors.email.message}</div>}
+                {errors.email && (
+                  <div className="text-red mt-1 text-sm">{errors.email.message}</div>
+                )}
               </div>
               <div className="w-full">
                 <input
@@ -70,7 +88,9 @@ const SignInPage = () => {
                   className="input input-bordered w-full"
                   {...register("password")}
                 />
-                {errors.password && <div className="text-danger">{errors.password.message}</div>}
+                {errors.password && (
+                  <div className="text-red mt-1 text-sm">{errors.password.message}</div>
+                )}
               </div>
               <div className="text-right text-sm font-normal leading-normal">Quên mật khẩu?</div>
               <div>

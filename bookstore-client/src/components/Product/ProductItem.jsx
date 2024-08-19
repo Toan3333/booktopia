@@ -7,26 +7,21 @@ import { addToCart } from "../../redux/slices/cartslide";
 import { add } from "../../redux/slices/favouritesSlide";
 import Swal from "sweetalert2";
 import "./Product.css";
+import { FaHeart } from "react-icons/fa6";
+import { URL_API } from "../../constants/constants";
+import { showSwalFireSuccess } from "../../helpers/helpers";
 const ProductItem = ({ className = "", item }) => {
   const dispatch = useDispatch();
   const cartItems = useSelector((state) => state.cart?.items) || []; // Truy xuất các sản phẩm trong giỏ hàng hoặc một mảng rỗng nếu không có sản phẩm nào
-  const favouriteItems = useSelector((state) => state.favourite?.items) || []
+  const favouriteItems = useSelector((state) => state.favourite?.items) || [];
   const navigate = useNavigate();
 
-  useEffect(() => {
-  }, [cartItems]);
+  useEffect(() => {}, [cartItems]);
 
-  useEffect(() => {
-  }, [favouriteItems]);
-  
+  useEffect(() => {}, [favouriteItems]);
+
   const handleAddToCart = () => {
-    Swal.fire({
-      position: "top-end",
-      icon: "success",
-      title: "Thêm sản phẩm thành công",
-      showConfirmButton: false,
-      timer: 1500,
-    });
+    showSwalFireSuccess();
     dispatch(addToCart({ item, quantity: 1 }));
   };
 
@@ -36,10 +31,9 @@ const ProductItem = ({ className = "", item }) => {
       icon: "success",
       title: "Thêm sản phẩm yêu thích thành công",
       showConfirmButton: false,
-      timer: 1500,
+      timer: 1000,
     });
-    dispatch(add({ item, quantity: 1 }));  
-
+    dispatch(add({ item, quantity: 1 }));
   };
 
   if (!item) {
@@ -61,7 +55,7 @@ const ProductItem = ({ className = "", item }) => {
             20%
           </div>
           <img
-            src={`http://localhost:3000/images/${image1}`}
+            src={`${URL_API}/images/${image1}`}
             className={`object-contain product-image cursor-pointer max-lg:w-[190px] max-lg:h-[190px] ${
               isHorizontal ? "w-[100px] h-[100px]" : "w-[190px] h-[190px] cursor-pointer"
             }`}
@@ -107,9 +101,9 @@ const ProductItem = ({ className = "", item }) => {
               ? " flex flex-col top-20 gap-1 right-0 transform -translate-y-1/2"
               : "bottom-32 right-0  flex flex-col items-end justify-center"
           } gap-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pr-2`}>
-          <FaEye
+          <FaHeart
             onClick={handleAddToFavourite}
-            className="text-mainDark w-10 h-10 text-2xl bg-white border bg-opacity-50 p-2 rounded-full transform translate-x-full group-hover:translate-x-0 transition-transform duration-300 hover:bg-grayText hover:text-white hover:cursor-pointer"
+            className="text-mainDark w-9 h-10 text-2xl bg-white border bg-opacity-50 p-2 rounded-full transform translate-x-full group-hover:translate-x-0 transition-transform duration-300 hover:bg-grayText hover:text-white hover:cursor-pointer"
           />
           <FaShoppingBag
             onClick={handleAddToCart}

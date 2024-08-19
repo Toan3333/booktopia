@@ -5,12 +5,12 @@ import Swal from "sweetalert2";
 import { NavLink } from "react-router-dom";
 import PageTitle from "../../components/PageTitle/PageTitle";
 import { useDispatch, useSelector } from "react-redux";
-import { remove } from "../../redux/slices/favouritesSlide"; 
-
+import { remove } from "../../redux/slices/favouritesSlide";
+import { URL_API } from "../../constants/constants";
 
 const Favorite = () => {
   const dispatch = useDispatch();
-  const favouriteItems = useSelector((state) => state.favourite?.items) || []
+  const favouriteItems = useSelector((state) => state.favourite?.items) || [];
   const profileMenuList = [
     { id: 1, name: "Tài khoản của tôi", icon: <FaUser />, link: "/profile" },
     { id: 2, name: "Sản phẩm yêu thích", icon: <FaHeart />, link: "/favorites" },
@@ -18,7 +18,6 @@ const Favorite = () => {
     { id: 4, name: "Đăng xuất", icon: <FiLogOut />, link: "/logout" },
   ];
 
-  
   const handleRemoveItem = (itemId) => {
     Swal.fire({
       title: "Bạn có chắc chắn?",
@@ -43,7 +42,7 @@ const Favorite = () => {
   return (
     <div className="py-10">
       <div className="container">
-        <div className="flex gap-10">
+        <div className="flex gap-10 max-md:flex-col">
           <div className="max-w-[250px] w-full">
             {/* Thông tin tài khoản */}
             <div className="flex items-center gap-2">
@@ -80,37 +79,50 @@ const Favorite = () => {
           </div>
           <div className="w-[90%]">
             <PageTitle title="Sản phẩm yêu thích" className="text-mainDark mb-2"></PageTitle>
-            <div className="text-grayText leading-normal font-normal mb-5">Sản phẩm yêu thích</div>
-            <table className="table">
+            <div className="text-grayText leading-normal font-normal mb-5 max-md:hidden">
+              Sản phẩm yêu thích
+            </div>
+            <table className="table max-md:w-full">
               <thead className="text-[16px] font-semibold leading-normal text-black">
                 <tr>
                   <th>#</th>
                   <th>Hình ảnh</th>
                   <th>Tên sách</th>
-                  <th>Tác giả</th>
-                  <th>Danh mục</th>
-                  <th>Giá</th>
+                  <th className="max-md:hidden">Tác giả</th>
+                  <th className="max-md:hidden">Danh mục</th>
+                  <th className="max-md:hidden">Giá</th>
                   <th className="text-center">Thao tác</th>
                 </tr>
               </thead>
               <tbody className="font-normal text-[16px]">
-              {favouriteItems.map((item, index) => (
-                <tr>
-                  <td>{index + 1}</td>
-                  <td>
-                    <img src={`http://localhost:3000/images/${item.image1}`} className="w-20 h-20 object-cover" alt="" />
-                  </td>
-                  <td>{item.name}</td>
-                  <td className="max-w-[200px]">{item.author.authorName}</td>
-                  <td>{item.category.categoryName}</td>
-                  <td>{item.price2}đ</td>
-                  <td>
-                    <div className="flex items-center justify-center">
-                      <FaRegTrashAlt onClick={() => handleRemoveItem(item._id)} className="text-red text-center"></FaRegTrashAlt>
-                    </div>
-                  </td>
-                </tr>
-              ))}
+                {favouriteItems.map((item, index) => (
+                  <tr key={item._id}>
+                    <td>{index + 1}</td>
+                    <td>
+                      <img
+                        src={`${URL_API}/images/${item.image1}`}
+                        className="w-20 h-20 object-cover"
+                        alt=""
+                      />
+                    </td>
+                    <td className="max-md:text-sm">{item.name}</td>
+                    <td className="max-w-[200px] max-md:hidden">{item.author.authorName}</td>
+                    <td className="max-md:hidden">{item.category.categoryName}</td>
+                    <td className="max-md:hidden">
+                      {item.price2.toLocaleString("vi-VN", {
+                        style: "currency",
+                        currency: "VND",
+                      })}
+                    </td>
+                    <td>
+                      <div className="flex items-center justify-center cursor-pointer">
+                        <FaRegTrashAlt
+                          onClick={() => handleRemoveItem(item._id)}
+                          className="text-red text-center"></FaRegTrashAlt>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>

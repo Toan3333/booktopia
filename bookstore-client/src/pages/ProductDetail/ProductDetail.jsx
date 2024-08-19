@@ -22,6 +22,7 @@ import "lightgallery/css/lg-thumbnail.css";
 // import plugins if you need
 import lgThumbnail from "lightgallery/plugins/thumbnail";
 import lgZoom from "lightgallery/plugins/zoom";
+import { URL_API } from "../../constants/constants";
 
 const ProductDetail = () => {
   const [activeTab, setActiveTab] = useState("info");
@@ -36,7 +37,7 @@ const ProductDetail = () => {
   useEffect(() => {
     const fetchProductDetail = async () => {
       try {
-        const response = await axios.get(`http://localhost:3000/products/${id}`);
+        const response = await axios.get(`${URL_API}/products/${id}`);
         setProductDetailData(response.data);
       } catch (error) {
         setError("Unable to fetch product details. Please try again later.");
@@ -112,7 +113,7 @@ const ProductDetail = () => {
             {name}
           </Link>
         </nav>
-        <div className="flex justify-between py-10 gap-10 max-md:flex-col">
+        <div className="flex justify-between py-10 gap-10 max-md:flex-col max-lg:gap-2">
           <div className="w-[65%] max-xl:w-3/5 max-md:w-full">
             <div className="flex gap-10 items-center">
               <div className="max-w-[130px] w-full max-xl:hidden">
@@ -125,9 +126,9 @@ const ProductDetail = () => {
                           mode="lg-fade"
                           thumbnail={true}
                           elementClassNames={"gallery"}>
-                          <a href={`http://localhost:3000/images/${img}`}>
+                          <a href={`${URL_API}/images/${img}`}>
                             <img
-                              src={`http://localhost:3000/images/${img}`}
+                              src={`${URL_API}/images/${img}`}
                               alt={`product-detail-img-${index}`}
                               className="w-full h-[120px]"
                             />
@@ -136,9 +137,9 @@ const ProductDetail = () => {
                           ảnh tồn tại (img ? ... : null), nó sẽ tạo các liên kết tới các ảnh này. */}
                           {[image2, image3, image4].map((img, index) =>
                             img ? (
-                              <a key={index} href={`http://localhost:3000/images/${img}`}>
+                              <a key={index} href={`${URL_API}/images/${img}`}>
                                 <img
-                                  src={`http://localhost:3000/images/${img}`}
+                                  src={`${URL_API}/images/${img}`}
                                   alt={`product-detail-img-${index}`}
                                   className="hidden"
                                 />
@@ -158,18 +159,18 @@ const ProductDetail = () => {
                     mode="lg-fade"
                     elementClassNames={"gallery"}
                     thumbnail={true}>
-                    <a href={`http://localhost:3000/images/${image1}`}>
+                    <a href={`${URL_API}/images/${image1}`}>
                       <img
-                        src={`http://localhost:3000/images/${image1}`}
+                        src={`${URL_API}/images/${image1}`}
                         alt="product-detail-img-main"
                         className="w-full h-[500px] object-cover max-md:h-[400px]"
                       />
                     </a>
                     {[image2, image3, image4].map((img, index) =>
                       img ? (
-                        <a key={index} href={`http://localhost:3000/images/${img}`}>
+                        <a key={index} href={`${URL_API}/images/${img}`}>
                           <img
-                            src={`http://localhost:3000/images/${img}`}
+                            src={`${URL_API}/images/${img}`}
                             alt={`product-detail-img-${index}`}
                             className="hidden"
                           />
@@ -183,15 +184,25 @@ const ProductDetail = () => {
           </div>
           <div className="w-[45%] max-md:w-full">
             <PageTitle title={name} className="mb-5 max-xl:text-xl text-2xl leading-8" />
-            <div className="flex items-center gap-8 max-md:gap-2">
-              <div className="text-red">{price1}</div>
-              <div className="flex items-center gap-10">
-                <div className="line-through">{price2}</div>
+            <div className="flex items-center gap-8 max-md:gap-2 max-lg:gap-2">
+              <div className="text-red">
+                {price1.toLocaleString("vi-VN", {
+                  style: "currency",
+                  currency: "VND",
+                })}
+              </div>
+              <div className="flex items-center gap-10 max-lg:gap-4">
+                <div className="line-through">
+                  {price2.toLocaleString("vi-VN", {
+                    style: "currency",
+                    currency: "VND",
+                  })}
+                </div>
                 <div className="w-[1px] h-4 bg-text"></div>
                 <div className="text-gray-500">{sale} Đã bán</div>
               </div>
             </div>
-            <div className="flex justify-between mt-8 gap-5 max-md:hidden">
+            <div className="flex justify-between mt-8 gap-5 max-md:hidden max-lg:gap-3">
               <div className="w-full flex flex-col gap-3 text-text">
                 <div>
                   Tác giả: <span className="text-mainDark leading-normal">{author.authorName}</span>
@@ -260,7 +271,7 @@ const ProductDetail = () => {
               activeTab === "comments" ? "text-text" : "text-grayText"
             }`}
             onClick={() => setActiveTab("comments")}>
-            Bình luận (3)
+            Đánh giá sản phẩm
           </h3>
         </div>
         {activeTab === "info" && (
@@ -270,18 +281,18 @@ const ProductDetail = () => {
         )}
         {activeTab === "comments" && (
           <div className="mt-7">
-            <PageTitle title="3 lượt bình luận" />
+            <PageTitle title="3 lượt đánh giá" />
             <form action="" className="mt-7">
               <div className="flex justify-between items-center">
                 <div className="w-[85%]">
                   <input
                     type="text"
-                    placeholder="Hãy bình luận gì đó ...."
+                    placeholder="Hãy nhận xét gì đó ...."
                     className="input input-bordered w-full"
                   />
                 </div>
                 <div>
-                  <Button>Bình luận</Button>
+                  <Button>Gửi nhận xét</Button>
                 </div>
               </div>
             </form>
@@ -302,7 +313,7 @@ const ProductRelated = ({ id }) => {
   useEffect(() => {
     const fetchProductListRelated = async () => {
       try {
-        const response = await axios.get(`http://localhost:3000/products/related/${id}/related`);
+        const response = await axios.get(`${URL_API}/products/related/${id}/related`);
         setProductListRelated(response.data);
       } catch (error) {
         console.error("Failed to fetch related products:", error);

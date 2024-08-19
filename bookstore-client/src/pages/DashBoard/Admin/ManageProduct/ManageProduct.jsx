@@ -16,8 +16,9 @@ import "../DashBoard.css";
 import PageTitle from "../../../../components/PageTitle/PageTitle";
 import HeaderAdmin from "../../../../components/HeaderAdmin/HeaderAdmin";
 import axios from "axios";
-import Swal from "sweetalert2";
 import "../DashBoard.css";
+import { URL_API } from "../../../../constants/constants";
+import { showSwalFireDelete } from "../../../../helpers/helpers";
 
 const ManageProduct = () => {
   const isAdmin = true;
@@ -34,7 +35,7 @@ const ManageProduct = () => {
   useEffect(() => {
     const fetchProductList = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/products");
+        const response = await axios.get(`${URL_API}/products`);
         const data = response.data.Product;
         setAllProductList(data);
       } catch (error) {
@@ -46,26 +47,8 @@ const ManageProduct = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:3000/products/${id}`);
-      Swal.fire({
-        title: "Are you sure?",
-        text: "You won't be able to revert this!",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, delete it!",
-      }).then((result) => {
-        if (result.isConfirmed) {
-          Swal.fire({
-            title: "Deleted!",
-            text: "Your product has been deleted.",
-            icon: "success",
-          }).then(() => {
-            window.location.reload(); // Reload the page after deleting
-          });
-        }
-      });
+      await axios.delete(`${URL_API}/products/${id}`);
+      showSwalFireDelete();
     } catch (error) {
       console.log(error);
     }
@@ -103,7 +86,7 @@ const ManageProduct = () => {
                 Nhà xuất bản
               </MenuItem>
             </SubMenu>
-            <MenuItem component={<Link to="/dashboard/manage-items" />}>
+            <MenuItem component={<Link to="/dashboard/manage-order" />}>
               <div className="flex items-center gap-4">
                 <FaClipboardList className="w-5 h-5" />
                 Quản lý đơn hàng
@@ -177,7 +160,7 @@ const ManageProduct = () => {
                     <td>{index + 1}</td>
                     <td>
                       <img
-                        src={`http://localhost:3000/images/${item.image1}`}
+                        src={`${URL_API}/images/${item.image1}`}
                         className="w-20 h-20"
                         alt={item.name}
                       />

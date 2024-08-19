@@ -3,6 +3,7 @@ import PageTitle from "../../components/PageTitle/PageTitle";
 import BlogList from "../../components/Blog/BlogList";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import { URL_API } from "../../constants/constants";
 
 const BlogDetail = () => {
   const [error, setError] = useState(null);
@@ -13,7 +14,7 @@ const BlogDetail = () => {
   useEffect(() => {
     const fetchBlogDetail = async () => {
       try {
-        const response = await axios.get(`http://localhost:3000/blog/${id}`);
+        const response = await axios.get(`${URL_API}/blog/${id}`);
         setBlogDetail(response.data);
       } catch (error) {
         setError("Unable to fetch product details. Please try again later.");
@@ -39,7 +40,7 @@ const BlogDetail = () => {
       <div className="container">
         <div className="relative w-full">
           <img
-            src={`http://localhost:3000/images/${image}`}
+            src={`${URL_API}/images/${image}`}
             className="rounded-[30px] w-full h-[450px]"
             alt=""
           />
@@ -50,7 +51,7 @@ const BlogDetail = () => {
             <div className="text-grayText leading-normal font-normal mb-2">{formattedDate}</div>
             <div className="">
               <img
-                src={`http://localhost:3000/images/${image}`}
+                src={`${URL_API}/images/${image}`}
                 className="w-full rounded-[30px] h-[365px]"
                 alt=""
               />

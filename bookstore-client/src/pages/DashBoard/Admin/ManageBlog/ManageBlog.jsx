@@ -17,6 +17,8 @@ import PageTitle from "../../../../components/PageTitle/PageTitle";
 import HeaderAdmin from "../../../../components/HeaderAdmin/HeaderAdmin";
 import axios from "axios";
 import Swal from "sweetalert2";
+import { URL_API } from "../../../../constants/constants";
+import { showSwalFireDelete } from "../../../../helpers/helpers";
 
 const ManageBlog = () => {
   const [getBlog, setGetBlog] = useState([]);
@@ -24,7 +26,7 @@ const ManageBlog = () => {
   useEffect(() => {
     const fetchBlog = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/blog");
+        const response = await axios.get(`${URL_API}/blog`);
         setGetBlog(response.data);
       } catch (error) {
         console.log(error);
@@ -42,26 +44,8 @@ const ManageBlog = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:3000/blog/${id}`);
-      Swal.fire({
-        title: "Bạn có muốn xóa?",
-        text: "Đã xóa không thể khôi phục",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Xóa",
-      }).then((result) => {
-        if (result.isConfirmed) {
-          Swal.fire({
-            title: "Deleted!",
-            text: "Danh mục của bạn đã được xóa.",
-            icon: "success",
-          }).then(() => {
-            window.location.reload();
-          });
-        }
-      });
+      await axios.delete(`${URL_API}/blog/${id}`);
+      showSwalFireDelete("Xóa bài viết thành công");
     } catch (error) {
       console.log(error);
     }
@@ -167,11 +151,7 @@ const ManageBlog = () => {
                   <tr key={item._id}>
                     <td>{index + 1}</td>
                     <td>
-                      <img
-                        src={`http://localhost:3000/images/${item.image}`}
-                        className="w-32 h-24"
-                        alt=""
-                      />
+                      <img src={`${URL_API}/images/${item.image}`} className="w-32 h-24" alt="" />
                     </td>
                     <td>{item.name}</td>
                     <td className="text-left">

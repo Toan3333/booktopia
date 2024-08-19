@@ -11,6 +11,8 @@ import Button from "../../../../components/Button/Button";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import Swal from "sweetalert2";
+import { URL_API } from "../../../../constants/constants";
+import { showSwalFireSuccess } from "../../../../helpers/helpers";
 
 const AddAuthor = () => {
   const navigate = useNavigate();
@@ -27,16 +29,11 @@ const AddAuthor = () => {
 
   const onSubmit = async (data) => {
     try {
-      const response = await axios.post("http://localhost:3000/authors", data);
+      const response = await axios.post(`${URL_API}/authors`, data);
 
-      Swal.fire({
-        position: "top-end",
-        icon: "success",
-        title: "Thêm tác giả thành công",
-        showConfirmButton: false,
-        timer: 1500,
-      });
-      console.log("Product created:", response.data);
+      // Tùy biến tiêu đề khi gọi hàm showSwalFireSuccess
+      showSwalFireSuccess("Thêm tác giả thành công");
+
       navigate("/dashboard/manage-author");
     } catch (error) {
       console.error("Error creating product:", error);

@@ -1,4 +1,5 @@
 import React from "react";
+import { URL_API } from "../../../constants/constants";
 
 const BlogNewItem = ({ item }) => {
   const { name, date, content, image } = item;
@@ -8,11 +9,7 @@ const BlogNewItem = ({ item }) => {
       <div className="flex items-center gap-3">
         <div>
           <div className="w-24 h-24">
-            <img
-              src={`http://localhost:3000/images/${image}`}
-              className="w-full object-cover h-full"
-              alt=""
-            />
+            <img src={`${URL_API}/images/${image}`} className="w-full object-cover h-full" alt="" />
           </div>
         </div>
 

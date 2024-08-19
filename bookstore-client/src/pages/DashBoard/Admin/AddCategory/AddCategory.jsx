@@ -11,6 +11,8 @@ import Button from "../../../../components/Button/Button";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import Swal from "sweetalert2";
+import { URL_API } from "../../../../constants/constants";
+import { showSwalFireSuccess } from "../../../../helpers/helpers";
 const AddCategory = () => {
   const [selectedImage, setSelectedImage] = useState(null);
   const navigate = useNavigate();
@@ -27,15 +29,9 @@ const AddCategory = () => {
 
   const onSubmit = async (data) => {
     try {
-      const response = await axios.post("http://localhost:3000/category", data);
+      const response = await axios.post(`${URL_API}/category`, data);
 
-      Swal.fire({
-        position: "top-end",
-        icon: "success",
-        title: "Danh mục đã được thêm thành công!",
-        showConfirmButton: false,
-        timer: 1500,
-      });
+      showSwalFireSuccess("Thêm danh mục thành công");
       console.log("Category created:", response.data);
       navigate("/dashboard/manage-category");
     } catch (error) {

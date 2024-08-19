@@ -11,6 +11,8 @@ import Button from "../../../../components/Button/Button";
 import { useForm } from "react-hook-form";
 import Swal from "sweetalert2";
 import axios from "axios";
+import { URL_API } from "../../../../constants/constants";
+import { showSwalFireSuccess } from "../../../../helpers/helpers";
 
 const AddBlog = () => {
   const [selectedImage, setSelectedImage] = useState(null);
@@ -46,19 +48,13 @@ const AddBlog = () => {
       formData.append("date", data.date);
       formData.append("image", data.image[0]);
 
-      const response = await axios.post("http://localhost:3000/blog", formData, {
+      const response = await axios.post(`${URL_API}/blog`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
 
-      Swal.fire({
-        position: "top-end",
-        icon: "success",
-        title: "Bài viết đã được thêm thành công!",
-        showConfirmButton: false,
-        timer: 1500,
-      });
+      showSwalFireSuccess("Thêm bài viết thành công");
 
       navigate("/dashboard/manage-blog");
     } catch (error) {

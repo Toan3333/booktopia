@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Title from "../../components/Title/Title";
 import axios from "axios";
 import ProductItem from "../../components/Product/ProductItem";
+import { URL_API } from "../../constants/constants";
 
 const ProductForYou = () => {
   const [listCategory, setListCategory] = useState([]);
@@ -12,7 +13,7 @@ const ProductForYou = () => {
   useEffect(() => {
     const fetchListCategory = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/category");
+        const response = await axios.get(`${URL_API}/category`);
         const categories = response.data;
         setListCategory(categories);
 
@@ -33,9 +34,7 @@ const ProductForYou = () => {
     const fetchProducts = async () => {
       if (selectedCategory) {
         try {
-          const response = await axios.get(
-            `http://localhost:3000/products/categoryId/${selectedCategory}`
-          );
+          const response = await axios.get(`${URL_API}/products/categoryId/${selectedCategory}`);
           const data = response.data;
           setProducts(data);
         } catch (error) {

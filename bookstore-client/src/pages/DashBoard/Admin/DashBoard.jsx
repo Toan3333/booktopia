@@ -21,6 +21,7 @@ import HeaderAdmin from "../../../components/HeaderAdmin/HeaderAdmin";
 import PageTitle from "../../../components/PageTitle/PageTitle";
 import SellProductAdminList from "../../../layouts/components/SellProductAdmin/SellProductAdminList";
 import axios from "axios";
+import { URL_API } from "../../../constants/constants";
 
 const DashBoard = () => {
   const isAdmin = true;
@@ -33,21 +34,24 @@ const DashBoard = () => {
   };
   const [totalProducts, setTotalProducts] = useState(0);
   const [totalCategory, setTotalCategory] = useState(0);
+  const [totalUser, setTotalUser] = useState(0);
 
   useEffect(() => {
-    const getTotalProduct = async () => {
+    const getInfoDashboard = async () => {
       try {
-        const [getTotalProduct, getTotalCategory] = await axios.all([
-          axios.get("http://localhost:3000/products"),
-          axios.get("http://localhost:3000/category"),
+        const [getTotalProduct, getTotalCategory, getTotalUser] = await axios.all([
+          axios.get(`${URL_API}/products`),
+          axios.get(`${URL_API}/category`),
+          axios.get(`${URL_API}/users`),
         ]);
         setTotalProducts(getTotalProduct.data.Product.length);
         setTotalCategory(getTotalCategory.data.length);
+        setTotalUser(getTotalUser.data.length);
       } catch (error) {
         console.log(error);
       }
     };
-    getTotalProduct();
+    getInfoDashboard();
   }, []);
 
   return (
@@ -82,7 +86,7 @@ const DashBoard = () => {
                 Nhà xuất bản
               </MenuItem>
             </SubMenu>
-            <MenuItem component={<Link to="/dashboard/manage-items" />}>
+            <MenuItem component={<Link to="/dashboard/manage-order" />}>
               <div className="flex items-center gap-4">
                 <FaClipboardList className="w-5 h-5" />
                 Quản lý đơn hàng
@@ -167,7 +171,7 @@ const DashBoard = () => {
             <div className="bg-white p-4 border rounded-lg shadow py-5 px-6">
               <div className="flex items-center justify-between">
                 <div className="">
-                  <PageTitle title="89,935" />
+                  <PageTitle title={totalUser} />
                   <div className="">Người dùng</div>
                 </div>
                 <div className="w-10 h-10 rounded-md border flex items-center justify-center text-mainDark">

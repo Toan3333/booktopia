@@ -18,36 +18,66 @@ import HeaderAdmin from "../../../../components/HeaderAdmin/HeaderAdmin";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { URL_API } from "../../../../constants/constants";
-import { showSwalFireDelete } from "../../../../helpers/helpers";
 
-const ManageUser = () => {
-  const isAdmin = true;
+const ManageOrder = () => {
   const navigate = useNavigate();
-  const handleLogout = () => {
-    // Perform logout operations here (e.g., clearing authentication tokens)
-    // Then navigate to the home page
-    navigate("/");
-  };
-  const [listUser, setUser] = useState([]);
+  const [listOrder, setOrder] = useState([]);
+  const statusOptions = ["Chờ xử lý", "Đang xử lý", "Đã gửi", "Đã giao", "Đã hủy"]; // Danh sách trạng thái
+
   useEffect(() => {
-    const fetchUser = async () => {
+    const fetchOrder = async () => {
       try {
-        const response = await axios.get(`${URL_API}/users`);
-        const data = response.data;
-        setUser(data);
+        const response = await axios.get(`${URL_API}/orders`);
+        setOrder(response.data);
       } catch (error) {
         console.log(error);
       }
     };
-    fetchUser();
+    fetchOrder();
   }, []);
+
+  const handleStatusChange = async (orderId, newStatus) => {
+    try {
+      await axios.put(`${URL_API}/orders/${orderId}/status`, { status: newStatus });
+      setOrder((prevOrders) =>
+        prevOrders.map((order) => (order._id === orderId ? { ...order, status: newStatus } : order))
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`${URL_API}/users/${id}`);
-      showSwalFireDelete("Xóa người dùng thành công");
+      const response = await axios.delete(`${URL_API}/orders/${id}`);
+
+      if (response.status === 200) {
+        Swal.fire({
+          title: "Bạn có muốn xóa?",
+          text: "Đã xóa không thể khôi phục",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Xóa",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            Swal.fire({
+              title: "Deleted!",
+              text: "Hủy đơn hàng thành công!",
+              icon: "success",
+            }).then(() => {
+              setOrder((prevOrders) => prevOrders.filter((order) => order._id !== id));
+            });
+          }
+        });
+      }
     } catch (error) {
-      console.log(error);
+      Swal.fire({
+        title: "Lỗi!",
+        text: error.response?.data?.message || "Có lỗi xảy ra khi xóa đơn hàng.",
+        icon: "error",
+      });
     }
   };
 
@@ -66,6 +96,7 @@ const ManageUser = () => {
                 Dashboard
               </div>
             </MenuItem>
+
             <SubMenu label="Quản lý danh mục" icon={<AiOutlineBars className="w-5 h-5" />}>
               <MenuItem component={<Link to="/dashboard/manage-category" />}>
                 Danh sách danh mục
@@ -96,7 +127,7 @@ const ManageUser = () => {
               </MenuItem>
               <MenuItem component={<Link to="/dashboard/add-blog" />}>Thêm bài viết</MenuItem>
             </SubMenu>
-            <MenuItem onClick={handleLogout}>
+            <MenuItem onClick={() => navigate("/")}>
               <div className="flex items-center gap-4">
                 <MdLogout />
                 Logout
@@ -108,47 +139,68 @@ const ManageUser = () => {
         <div className="flex-1 p-6">
           <HeaderAdmin />
           <div className="flex items-center justify-between pb-8 border-b pt-3">
-            <PageTitle title="Quản lý tài khoản" className="text-mainDark" />
+            <PageTitle title="Quản lý đơn hàng" className="text-mainDark" />
           </div>
           <div className="mt-6 border rounded-[30px] p-5">
             <table className="table w-full">
               <thead className="text-[16px] font-semibold text-black">
                 <tr>
                   <th>#</th>
-                  <th>Tên người dùng</th>
-                  <th>Ngày sinh</th>
-                  <th>Email</th>
+                  <th>Mã đơn hàng</th>
+                  <th>Ngày lập</th>
+                  <th>Tên tài khoản</th>
                   <th>Địa chỉ</th>
-                  <th>Số điện thoại</th>
+                  <th>Tổng tiền</th>
+                  <th>Trạng thái</th>
                   <th className="text-center">Thao tác</th>
                 </tr>
               </thead>
               <tbody>
-                {listUser.map((user, index) => (
-                  <tr key={user._id}>
-                    <td>{index + 1}</td>
-                    <td>{user.name}</td>
-                    <td>{user.date}</td>
-                    <td>{user.email}</td>
-                    <td>{user.address}</td>
-                    <td>{user.phone}</td>
-                    <td>
-                      <div className="flex items-center justify-center gap-3">
-                        <button onClick={(e) => handleDelete(user._id)}>
-                          <FaTrashAlt className="w-5 h-4 text-red" />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
+                {listOrder.map((order, index) => {
+                  const dateObj = new Date(order.date);
+                  const formattedDate = dateObj.toLocaleDateString("vi-VN"); // 'vi-VN' for dd/mm/yyyy format
+
+                  return (
+                    <tr key={order._id}>
+                      <td>{index + 1}</td>
+                      <td>{order.orderId}</td>
+                      <td>{formattedDate}</td>
+                      <td>{order.name}</td>
+                      <td>{order.address}</td>
+                      <td>
+                        {Number(order.total).toLocaleString("vi-VN", {
+                          style: "currency",
+                          currency: "VND",
+                        })}
+                      </td>
+                      <td>
+                        <select
+                          value={order.status}
+                          onChange={(e) => handleStatusChange(order._id, e.target.value)}>
+                          {statusOptions.map((status) => (
+                            <option key={status} value={status}>
+                              {status}
+                            </option>
+                          ))}
+                        </select>
+                      </td>
+                      <td>
+                        <div className="flex items-center justify-center gap-3">
+                          <button onClick={() => handleDelete(order._id)}>
+                            <FaTrashAlt className="w-5 h-4 text-red" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
-          {/* Content goes here */}
         </div>
       </div>
     </div>
   );
 };
 
-export default ManageUser;
+export default ManageOrder;
