@@ -144,7 +144,7 @@ const EditProduct = () => {
           "Content-Type": "multipart/form-data",
         },
       });
-      showSwalFireSuccess((title = "Cập nhật sản phẩm thành công"));
+      showSwalFireSuccess("Cập nhật sản phẩm thành công");
       console.log("Product updated:", response.data.ProductUpdate);
       navigate("/dashboard/manage-product");
     } catch (error) {

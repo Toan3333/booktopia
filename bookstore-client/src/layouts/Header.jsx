@@ -54,6 +54,7 @@ const Header = () => {
       const response = await axios.get(`${URL_API}/products/search/${searchTerm.trim()}`);
       setSearchResults(response.data);
       navigate(`/menu?search=${searchTerm}`);
+      window.location.reload();
     } catch (error) {
       console.error("Lỗi tìm kiếm sản phẩm", error);
     }
