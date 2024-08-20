@@ -53,7 +53,6 @@ const Header = () => {
     try {
       const trimmedSearchTerm = searchTerm.trim();
       let response;
-
       if (trimmedSearchTerm) {
         // Nếu có từ khóa tìm kiếm, tìm kiếm sản phẩm dựa trên từ khóa
         response = await axios.get(`${URL_API}/products/search/${trimmedSearchTerm}`);
@@ -165,9 +164,14 @@ const Header = () => {
                 />
               </label>
               <div className="flex items-center gap-2">
-                <Link to="/cart">
-                  <FaShoppingBag className="w-8 h-8" />
-                </Link>
+                <div className="relative">
+                  <Link to="/cart">
+                    <FaShoppingBag className="w-8 h-8" />
+                    <div className="absolute -top-3 -right-3 w-5 h-5 rounded-full bg-mainDark flex items-center justify-center text-white p-2">
+                      {cartCount}
+                    </div>
+                  </Link>
+                </div>
                 <Link to="/sign-in">
                   <FaUser className="w-8 h-8" />
                 </Link>

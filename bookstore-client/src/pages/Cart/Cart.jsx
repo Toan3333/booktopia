@@ -187,7 +187,7 @@ const Cart = () => {
                         </td>
                         <td className="py-4 px-5 text-mainDark">
                           <FaRegTrashAlt
-                            className="w-6 h-6 cursor-pointer max-md:w-10 max-md:h-10"
+                            className="w-6 h-6 cursor-pointer max-md:w-5 max-md:h-5"
                             onClick={() => handleRemoveItem(item._id)}
                           />
                         </td>
