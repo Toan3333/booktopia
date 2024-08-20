@@ -1,4 +1,3 @@
-import React from "react";
 import PageTitle from "../../components/PageTitle/PageTitle";
 import Button from "../../components/Button/Button";
 import { FaFacebookF, FaGooglePlusG } from "react-icons/fa";
@@ -37,6 +36,8 @@ const SignInPage = () => {
 
       // }
       const userData = res.data;
+      console.log(userData);
+      
       // Lưu thông tin user vào cookie
       Cookies.set("user", JSON.stringify(userData), { expires: 1 });
       toast.success("Đăng nhập thành công");

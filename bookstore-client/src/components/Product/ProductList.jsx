@@ -165,7 +165,7 @@ const ProductList = ({
         </>
       ) : customItem ? (
         <div className="grid grid-cols-4 gap-4 max-md:grid-cols-2">
-          {AllProductList.map((item) => (
+          {AllProductList.slice(0, 16).map((item) => (
             <ProductItem key={item._id} item={item} />
           ))}
         </div>

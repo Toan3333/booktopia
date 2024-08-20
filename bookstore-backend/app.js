@@ -14,6 +14,8 @@ require("./mongo/categories.model");
 require("./mongo/product.model");
 require("./mongo/product.controller");
 require("./mongo/categories.controller");
+require("./mongo/comment.controller");
+
 
 // Khai báo router
 var usersRouter = require("./routes/users");
@@ -23,6 +25,7 @@ var publishRouter = require("./routes/publish");
 var authorRouter = require("./routes/author");
 var blogRouter = require("./routes/blog");
 var orderRouter = require("./routes/order");
+var commentRouter = require('./routes/comment')
 
 var app = express();
 // Sử dụng body-parser middleware để phân tích dữ liệu từ body của yêu cầu HTTP
@@ -55,6 +58,8 @@ app.use("/publishes", publishRouter);
 app.use("/authors", authorRouter);
 app.use("/blog", blogRouter);
 app.use("/orders", orderRouter);
+app.use("/comment", commentRouter);
+
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

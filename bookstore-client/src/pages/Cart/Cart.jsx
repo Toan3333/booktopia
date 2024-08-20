@@ -72,7 +72,7 @@ const Cart = () => {
   return (
     <div className="py-10 max-md:py-0 screen">
       <div className="container px-4">
-        <nav className="mb-5 py-3">
+        <nav className="mb-5">
           <a href="#" className="text-gray-500">
             Trang chủ
           </a>
@@ -81,8 +81,8 @@ const Cart = () => {
             Giỏ hàng
           </a>
         </nav>
-        <div className="flex justify-between gap-11 max-lg:flex-col max-xl:flex-col">
-          <div className="max-w-[800px] w-full max-xl:max-w-[100%]">
+        <div className="flex justify-between gap-11">
+          <div className="max-w-[800px] w-full">
             {hasItems ? (
               <div>
                 <table className="w-full table bg-white rounded-lg">
@@ -102,7 +102,7 @@ const Cart = () => {
                   <tbody>
                     {cartItems.map((item, index) => (
                       <tr key={item._id}>
-                        <td className="flex items-center gap-3 py-6 cursor-pointer max-md:gap-2 max-md:py-3">
+                        <td className="flex items-center gap-3 py-6 cursor-pointer">
                           <img
                             onClick={() => navigate(`/product-detail/${item._id}`)}
                             src={`${URL_API}/images/${item.image1}`}
@@ -110,9 +110,7 @@ const Cart = () => {
                             alt="Product"
                           />
                           <div>
-                            <h3 className="font-semibold leading-normal text-text max-md:leading-4 max-md:line-clamp-2">
-                              {item?.name}
-                            </h3>
+                            <h3 className="font-semibold leading-normal text-text">{item?.name}</h3>
                             <div className="text-gray-700 2xl:hidden max-2xl:hidden max-md:block">
                               {item.price2.toLocaleString("vi-VN", {
                                 style: "currency",
@@ -142,7 +140,7 @@ const Cart = () => {
                                 </div>
                               </div>
                             </div>
-                            <div className="max-md:hidden my-1">
+                            <div className="max-md:hidden">
                               Tác giả: {item.author?.authorName || "Chưa có"}
                             </div>
                             <div className="text-gray-500 max-md:hidden">
@@ -187,7 +185,7 @@ const Cart = () => {
                         </td>
                         <td className="py-4 px-5 text-mainDark">
                           <FaRegTrashAlt
-                            className="w-6 h-6 cursor-pointer max-md:w-10 max-md:h-10"
+                            className="w-8 h-8 cursor-pointer max-md:w-5 max-md:h-5"
                             onClick={() => handleRemoveItem(item._id)}
                           />
                         </td>
@@ -198,13 +196,13 @@ const Cart = () => {
                 <div className="border-t">
                   <div className="pt-8 flex items-center justify-between">
                     <div>
-                      <Button className="rounded-[5px] bg-white button-add max-md:hidden max-lg:h-10">
+                      <Button className="rounded-[5px] bg-white button-add max-md:hidden">
                         Tiếp tục mua hàng
                       </Button>
                     </div>
                     <div>
                       <Button
-                        className="rounded-[5px] bg-white button-add max-md:hidden max-lg:h-10"
+                        className="rounded-[5px] bg-white button-add max-md:hidden"
                         onClick={handleClearItem}>
                         Xóa tất cả
                       </Button>
@@ -222,7 +220,7 @@ const Cart = () => {
               </div>
             )}
           </div>
-          <div className="w-full max-w-[420px] max-md:hidden max-lg:max-w-[100%] max-xl:max-w-[100%]">
+          <div className="w-full max-w-[420px] max-md:hidden">
             <div className="bg-white rounded-lg border p-5">
               <h2 className="text-lg font-semibold mb-5 text-center border-b pb-5">
                 Thông tin đơn hàng

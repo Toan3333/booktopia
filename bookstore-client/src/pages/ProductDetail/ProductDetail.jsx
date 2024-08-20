@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import PageTitle from "../../components/PageTitle/PageTitle";
+import Cookies from 'js-cookie';  //cài thư viện để lấy cookie
 import { CiHeart } from "react-icons/ci";
 import { FaMinus, FaPlus } from "react-icons/fa";
 import Button from "../../components/Button/Button";
@@ -14,6 +15,7 @@ import ProductItem from "../../components/Product/ProductItem";
 import { useDispatch } from "react-redux";
 import { addToCart, updateCartItemQuantity } from "../../redux/slices/cartslide";
 import LightGallery from "lightgallery/react";
+import { ToastContainer, toast } from "react-toastify";
 // import styles
 import "lightgallery/css/lightgallery.css";
 import "lightgallery/css/lg-zoom.css";
@@ -26,13 +28,31 @@ import { URL_API } from "../../constants/constants";
 
 const ProductDetail = () => {
   const [activeTab, setActiveTab] = useState("info");
+  const [inforUser, setInforUser] = useState(null)
   const { id } = useParams();
   const [productDetailData, setProductDetailData] = useState(null);
+  const [commentDetailData, setCommentDetailData] = useState(null);
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [quantityDetail, setQuantityDetail] = useState(1);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [contentComment, setContentComment] = useState("")
+  // lấy thong tin user trên coookie
+
+  useEffect(() => {
+    const userCookie = Cookies.get("user");
+    if (userCookie) {
+      const userData = JSON.parse(userCookie);
+      setInforUser(userData?.user);
+    } else {
+      console.log("User not found in cookie");
+    }
+  }, [])
+
+
+
 
   useEffect(() => {
     const fetchProductDetail = async () => {
@@ -49,6 +69,20 @@ const ProductDetail = () => {
     fetchProductDetail();
   }, [id]);
 
+
+  const fetchComment = async () => {
+    try {
+      const response = await axios.get(`${URL_API}/comment/product/${id}`);
+      setCommentDetailData(response.data);
+    } catch (error) {
+      setError("Unable to fetch product details. Please try again later.");
+    } finally {
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
+    fetchComment();
+  }, [id]);
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -101,8 +135,41 @@ const ProductDetail = () => {
     category,
   } = productDetailData;
 
+
+  // lấy thông tin user
+  const handleConment = async () => {
+    if (!inforUser) {
+      toast.error("Vui lòng đăng nhập để bình luận");
+      return
+    }
+    if (!contentComment) {
+      toast.error("Vui lòng nhập nội dung để bình luận");
+      return
+    }
+    const data = {
+      content: contentComment,
+      user: inforUser?._id,
+      book: id
+    }
+    await axios.post(`${URL_API}/comment`, data)
+    toast.success("Bình luận thành công");
+    setContentComment("")
+    fetchComment()
+  }
+
+  const handleDeleteComment = async (id) => {
+    console.log(id);
+    
+    await axios.delete(`${URL_API}/comment/${id}`)
+    toast.success("Xóa thành công");
+    fetchComment()
+  }
+
+
+
   return (
     <div className="py-10">
+      <ToastContainer autoClose={1000} />
       <div className="container">
         <nav>
           <Link to="/" className="text-gray-500">
@@ -260,16 +327,14 @@ const ProductDetail = () => {
         </div>
         <div className="flex items-center gap-10">
           <h3
-            className={`text-[18px] font-semibold cursor-pointer ${
-              activeTab === "info" ? "text-text" : "text-grayText"
-            }`}
+            className={`text-[18px] font-semibold cursor-pointer ${activeTab === "info" ? "text-text" : "text-grayText"
+              }`}
             onClick={() => setActiveTab("info")}>
             Thông tin sản phẩm
           </h3>
           <h3
-            className={`text-[18px] font-semibold cursor-pointer ${
-              activeTab === "comments" ? "text-text" : "text-grayText"
-            }`}
+            className={`text-[18px] font-semibold cursor-pointer ${activeTab === "comments" ? "text-text" : "text-grayText"
+              }`}
             onClick={() => setActiveTab("comments")}>
             Đánh giá sản phẩm
           </h3>
@@ -281,22 +346,24 @@ const ProductDetail = () => {
         )}
         {activeTab === "comments" && (
           <div className="mt-7">
-            <PageTitle title="3 lượt đánh giá" />
+            <PageTitle title={`${commentDetailData.length} lượt đánh giá`} />
             <form action="" className="mt-7">
               <div className="flex justify-between items-center">
                 <div className="w-[85%]">
                   <input
+                    onChange={(e) => setContentComment(e.target.value)}
                     type="text"
                     placeholder="Hãy nhận xét gì đó ...."
                     className="input input-bordered w-full"
                   />
                 </div>
                 <div>
-                  <Button>Gửi nhận xét</Button>
+                  <Button onClick={() => handleConment()}>Gửi nhận xét</Button>
                 </div>
               </div>
             </form>
-            <CommentList />
+
+            <CommentList handleDeleteComment={handleDeleteComment} commentDetailData={commentDetailData} />
           </div>
         )}
         <div>

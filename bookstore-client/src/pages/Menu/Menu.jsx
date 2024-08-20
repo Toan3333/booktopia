@@ -3,11 +3,12 @@ import CategoryItem from "../../components/Category/CategoryItem";
 import ProductList from "../../components/Product/ProductList";
 import { FaLongArrowAltLeft, FaLongArrowAltRight } from "react-icons/fa";
 import PageTitle from "../../components/PageTitle/PageTitle";
+import "./Menu.css";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
 import ProductItem from "../../components/Product/ProductItem";
 import { URL_API } from "../../constants/constants";
-import "./Menu.css";
+
 const Menu = () => {
   const location = useLocation();
   const [searchTerm, setSearchTerm] = useState(
@@ -23,6 +24,51 @@ const Menu = () => {
   const [authorId, setAuthorId] = useState(null);
   const [publishers, setPublishers] = useState([]);
   const [publishId, setPublishId] = useState(null);
+
+  // Lấy sản phẩm theo tìm kiếm
+  useEffect(() => {
+    const fetchProducts = async () => {
+      setLoading(true);
+      try {
+        const url = searchTerm.trim()
+          ? `${URL_API}/products/search/${searchTerm.trim()}`
+          : `${URL_API}/products`;
+        const response = await axios.get(url);
+        setProducts(response.data);
+      } catch (error) {
+        console.error("Lỗi khi tìm kiếm sản phẩm", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, [searchTerm]);
+
+  // Lọc sản phẩm theo sắp xếp và số lượng
+  useEffect(() => {
+    const fetchProducts = async () => {
+      setLoading(true);
+      try {
+        let url = `${URL_API}/products`;
+        if (sortOption === "Giá tăng dần") {
+          url = `${URL_API}/products/sort/asc`;
+        } else if (sortOption === "Giá giảm dần") {
+          url = `${URL_API}/products/sort/desc`;
+        } else if (sortOption === "Mới nhất") {
+          url = `${URL_API}/products/new`;
+        }
+        const response = await axios.get(url);
+        setProducts(response.data);
+      } catch (error) {
+        console.error("Lỗi khi lấy sản phẩm", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, [sortOption, itemsPerPage]);
 
   // Lấy danh mục, tác giả và nhà xuất bản
   useEffect(() => {
@@ -58,61 +104,79 @@ const Menu = () => {
     fetchPublishers();
   }, []);
 
-  // Fetch sản phẩm
+  // Lọc sản phẩm theo danh mục
   useEffect(() => {
     const fetchProducts = async () => {
       setLoading(true);
       try {
         let url = `${URL_API}/products`;
-
-        // Xây dựng URL dựa trên điều kiện
-        if (searchTerm.trim()) {
-          url = `${URL_API}/products/search/${encodeURIComponent(searchTerm.trim())}`;
-        } else if (categoryId) {
+        if (categoryId) {
           url = `${URL_API}/products/categoryId/${categoryId}`;
-        } else if (authorId) {
-          url = `${URL_API}/products/authorId/${authorId}`;
-        } else if (publishId) {
-          url = `${URL_API}/products/publishId/${publishId}`;
-        } else if (sortOption === "Giá tăng dần") {
-          url = `${URL_API}/products/sort/asc`;
-        } else if (sortOption === "Giá giảm dần") {
-          url = `${URL_API}/products/sort/desc`;
-        } else if (sortOption === "Mới nhất") {
-          url = `${URL_API}/products/new`;
         }
-
-        // Fetch dữ liệu từ API
         const response = await axios.get(url);
-
-        if (response.data && response.data.length > 0) {
-          setProducts(response.data);
-        } else {
-          setProducts([]); // Xóa dữ liệu cũ nếu không có kết quả
-        }
+        setProducts(response.data);
       } catch (error) {
-        console.error("Lỗi khi lấy sản phẩm", error);
+        console.error("Lỗi khi lấy sản phẩm theo danh mục", error);
       } finally {
         setLoading(false);
       }
     };
 
     fetchProducts();
-  }, [searchTerm, categoryId, authorId, publishId, sortOption, itemsPerPage]);
+  }, [categoryId]);
+
+  // Lọc sản phẩm theo tác giả
+  useEffect(() => {
+    const fetchProducts = async () => {
+      setLoading(true);
+      try {
+        let url = `${URL_API}/products`;
+        if (authorId) {
+          url = `${URL_API}/products/authorId/${authorId}`;
+        }
+        const response = await axios.get(url);
+        setProducts(response.data);
+      } catch (error) {
+        console.error("Lỗi khi lấy sản phẩm theo tác giả", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, [authorId]);
+
+  // Lọc sản phẩm theo nhà xuất bản
+  useEffect(() => {
+    const fetchProducts = async () => {
+      setLoading(true);
+      try {
+        let url = `${URL_API}/products`;
+        if (publishId) {
+          url = `${URL_API}/products/publishId/${publishId}`;
+        }
+        const response = await axios.get(url);
+        setProducts(response.data);
+      } catch (error) {
+        console.error("Lỗi khi lấy sản phẩm theo nhà xuất bản", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, [publishId]);
 
   const categoryClick = (categoryId) => {
     setCategoryId(categoryId);
-    setSearchTerm(""); // Clear searchTerm nếu click vào danh mục
   };
 
   const authorClick = (authorId) => {
     setAuthorId(authorId);
-    setSearchTerm(""); // Clear searchTerm nếu click vào tác giả
   };
 
   const publishClick = (publishId) => {
     setPublishId(publishId);
-    setSearchTerm(""); // Clear searchTerm nếu click vào nhà xuất bản
   };
 
   return (
@@ -151,7 +215,7 @@ const Menu = () => {
                 <PageTitle title="Tất cả sản phẩm" />
                 <div className="flex items-center gap-4 max-md:mt-3">
                   <select
-                    className="select select-bordered max-w-xs custom-select"
+                    className="select select-bordered w-full max-w-xs custom-select"
                     value={sortOption}
                     onChange={(e) => setSortOption(e.target.value)}>
                     <option value="">Sắp xếp theo:</option>
@@ -190,13 +254,19 @@ const Menu = () => {
             <span className="w-10 h-10 max-md:w-8 max-md:h-8 rounded-full flex items-center justify-center border text-grayText text-[20px] font-semibold hover:bg-mainDark hover:text-white cursor-pointer">
               <FaLongArrowAltLeft />
             </span>
-            <span className="w-10 h-10 max-md:w-8 max-md:h-8 rounded-full flex items-center justify-center bg-mainDark text-white text-[20px] font-semibold cursor-pointer">
+            <span className="w-10 h-10 max-md:w-8 max-md:h-8 rounded-full flex items-center justify-center bg-mainDark text-white text-[20px] font-semibold max-md:text-sm">
               1
             </span>
-            <span className="w-10 h-10 max-md:w-8 max-md:h-8 rounded-full flex items-center justify-center text-grayText text-[20px] font-semibold cursor-pointer">
+            <span className="w-10 h-10 max-md:w-8 max-md:h-8 rounded-full flex items-center justify-center border text-grayText text-[20px] font-semibold hover:bg-mainDark hover:text-white cursor-pointer max-md:text-sm">
               2
             </span>
-            <span className="w-10 h-10 max-md:w-8 max-md:h-8 rounded-full flex items-center justify-center border text-grayText text-[20px] font-semibold hover:bg-mainDark hover:text-white cursor-pointer">
+            <span className="w-10 h-10 max-md:w-8 max-md:h-8 rounded-full flex items-center justify-center border text-grayText text-[20px] font-semibold hover:bg-mainDark hover:text-white cursor-pointer max-md:text-sm">
+              3
+            </span>
+            <span className="w-10 h-10 max-md:w-8 max-md:h-8 rounded-full flex items-center justify-center border text-grayText text-[20px] font-semibold hover:bg-mainDark hover:text-white cursor-pointer max-md:text-sm">
+              4
+            </span>
+            <span className="w-10 h-10 max-md:w-8 max-md:h-8 rounded-full flex items-center justify-center border text-grayTextfont-semibold hover:bg-mainDark hover:text-white cursor-pointer">
               <FaLongArrowAltRight />
             </span>
           </div>

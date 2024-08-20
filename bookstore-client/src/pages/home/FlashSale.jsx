@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { FaAngleRight } from "react-icons/fa";
 import ProductList from "../../components/Product/ProductList";
-import { Link } from "react-router-dom";
 
 const FlashSale = () => {
   const [hours, setHours] = useState(10);
@@ -59,11 +58,9 @@ const FlashSale = () => {
                   </span>
                 </div>
               </div>
-              <Link to="/menu">
-                <div className="text-main flex items-center gap-1">
-                  Xem thêm <FaAngleRight />
-                </div>
-              </Link>
+              <div className="text-main flex items-center gap-1">
+                Xem thêm <FaAngleRight />
+              </div>
             </div>
           </div>
           <ProductList useSlider={true}></ProductList>
