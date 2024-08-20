@@ -8,22 +8,13 @@ import { useForm } from "react-hook-form";
 import Cookies from "js-cookie";
 import axios from "axios";
 import { URL_API } from "../../constants/constants";
+import { showSwalFireSuccess } from "../../helpers/helpers";
 
 const Profile = () => {
   const profileMenuList = [
     { id: 1, name: "Tài khoản của tôi", icon: <FaUser />, link: "/profile" },
-    {
-      id: 2,
-      name: "Sản phẩm yêu thích",
-      icon: <FaHeart />,
-      link: "/favorites",
-    },
-    {
-      id: 3,
-      name: "Đơn hàng của bạn",
-      icon: <FaCalendar />,
-      link: "/my-orders",
-    },
+    { id: 2, name: "Sản phẩm yêu thích", icon: <FaHeart />, link: "/favorites" },
+    { id: 3, name: "Đơn hàng của bạn", icon: <FaCalendar />, link: "/my-orders" },
     { id: 4, name: "Đăng xuất", icon: <FiLogOut />, link: "/logout" },
   ];
 
@@ -32,14 +23,12 @@ const Profile = () => {
   let userId = Cookies.get("user");
   userId = JSON.parse(userId);
 
-  const { register, handleSubmit, setValue, reset, getValues } = useForm();
+  const { register, handleSubmit, setValue, reset } = useForm();
 
   useEffect(() => {
     const getUser = async () => {
       try {
         const res = await axios.get(`${URL_API}/users/${userId.user._id}`);
-        console.log(res);
-
         if (res.status === 200) {
           const data = res.data;
           setValue("name", data.name);
@@ -60,10 +49,13 @@ const Profile = () => {
   }, [userId, setValue]);
 
   const handleImgChange = (e) => {
+    e.preventDefault(); // Ngăn chặn hành động mặc định của form
+
     const file = e.target.files[0];
     if (file) {
-      setImage(URL.createObjectURL(file));
-      setValue("image", file);
+      const imageUrl = URL.createObjectURL(file);
+      setImage(imageUrl); // Cập nhật URL cho ảnh
+      setValue("image", file); // Cập nhật file trong form data
     }
   };
 
@@ -85,9 +77,29 @@ const Profile = () => {
           "Content-Type": "multipart/form-data",
         },
       });
+
       if (res.status === 200) {
         console.log("Profile updated successfully");
-        reset(res.data);
+
+        // Cập nhật thông tin trong cookie
+        const updatedUser = res.data.userUpdate;
+        Cookies.set("user", JSON.stringify({ user: { _id: updatedUser._id, ...updatedUser } }), {
+          expires: 7, // Cookie sẽ hết hạn sau 7 ngày
+        });
+
+        // Cập nhật trạng thái và giao diện
+        setUser(updatedUser);
+        setImage(`${URL_API}/images/${updatedUser.image}`);
+        reset({
+          name: updatedUser.name,
+          username: updatedUser.username,
+          date: updatedUser.date,
+          email: updatedUser.email,
+          phone: updatedUser.phone,
+          address: updatedUser.address,
+        });
+
+        showSwalFireSuccess("Thông tin hồ sơ của bạn đã được cập nhật.");
       } else {
         console.error("Failed to update profile");
       }
@@ -95,6 +107,15 @@ const Profile = () => {
       console.error("Error updating profile:", error);
     }
   };
+
+  useEffect(() => {
+    // Giải phóng URL khi component bị hủy
+    return () => {
+      if (image) {
+        URL.revokeObjectURL(image);
+      }
+    };
+  }, [image]);
 
   return (
     <div className="py-10">

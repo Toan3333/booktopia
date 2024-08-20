@@ -8,6 +8,8 @@ import axios from "axios";
 import "../index.css";
 import { useSelector } from "react-redux";
 import { URL_API } from "../constants/constants";
+import Cookies from "js-cookie";
+import Profile from "../components/Profile/Profile";
 
 const Header = () => {
   const cartItems = useSelector((state) => state.cart.items);
@@ -18,16 +20,13 @@ const Header = () => {
   const [isSticky, setIsSticky] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
-  const [isMenuOpen, setIsMenuOpen] = useState(false); // Thêm trạng thái cho menu
-  const menuRef = useRef(null); // Tham chiếu đến menu
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const menuRef = useRef(null);
+  const [userInfo, setUserInfo] = useState(null);
 
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 40) {
-        setIsSticky(true);
-      } else {
-        setIsSticky(false);
-      }
+      setIsSticky(window.scrollY > 40);
     };
 
     window.addEventListener("scroll", handleScroll);
@@ -49,18 +48,20 @@ const Header = () => {
     };
   }, []);
 
+  useEffect(() => {
+    const userData = Cookies.get("user");
+    if (userData) {
+      const parsedUserData = JSON.parse(userData);
+      setUserInfo(parsedUserData.user);
+    }
+  }, []);
+
   const handleSearch = async () => {
     try {
       const trimmedSearchTerm = searchTerm.trim();
-      let response;
-      if (trimmedSearchTerm) {
-        // Nếu có từ khóa tìm kiếm, tìm kiếm sản phẩm dựa trên từ khóa
-        response = await axios.get(`${URL_API}/products/search/${trimmedSearchTerm}`);
-      } else {
-        // Nếu không có từ khóa tìm kiếm, lấy tất cả sản phẩm
-        response = await axios.get(`${URL_API}/products`);
-      }
-
+      const response = trimmedSearchTerm
+        ? await axios.get(`${URL_API}/products/search/${trimmedSearchTerm}`)
+        : await axios.get(`${URL_API}/products`);
       setSearchResults(response.data);
       navigate(`/menu?search=${trimmedSearchTerm}`);
       window.location.reload();
@@ -73,6 +74,12 @@ const Header = () => {
     if (event.key === "Enter") {
       handleSearch();
     }
+  };
+
+  const handleLogout = () => {
+    Cookies.remove("user"); // Xóa cookie khi đăng xuất
+    setUserInfo(null); // Cập nhật state người dùng
+    navigate("/sign-in"); // Điều hướng đến trang đăng nhập
   };
 
   const menuList = [
@@ -101,9 +108,20 @@ const Header = () => {
                   </div>
                 </div>
               </Link>
-              <Link to="/sign-in">
-                <CiUser className="w-7 h-7 hover:text-mainDark cursor-pointer" />
-              </Link>
+
+              {userInfo ? (
+                <>
+                  <Profile />
+                  <button onClick={handleLogout} className="text-red-500 hover:text-red-700">
+                    Đăng xuất
+                  </button>
+                </>
+              ) : (
+                <Link to="/sign-in">
+                  <CiUser className="w-7 h-7 hover:text-mainDark cursor-pointer" />
+                </Link>
+              )}
+
               <Link to="/cart">
                 <div className="relative">
                   <BsBag className="w-6 h-6 hover:text-mainDark cursor-pointer" />
@@ -178,7 +196,7 @@ const Header = () => {
               </div>
             </div>
             <div
-              ref={menuRef} // Thêm ref cho menu
+              ref={menuRef}
               className={`fixed z-50 top-0 left-0 h-screen w-2/4 bg-white shadow-md transition-transform duration-300 block max-2xl:hidden max-sm:block ${
                 isMenuOpen
                   ? "transform translate-x-0 max-sm:duration-300 max-sm:transition-transform"
@@ -194,8 +212,7 @@ const Header = () => {
                           ? "text-mainDark font-semibold"
                           : "hover:text-mainDark hover:font-semibold"
                       }
-                      onClick={() => setIsMenuOpen(false)} // Đóng menu khi chọn một mục
-                    >
+                      onClick={() => setIsMenuOpen(false)}>
                       {item.name}
                     </NavLink>
                   </li>

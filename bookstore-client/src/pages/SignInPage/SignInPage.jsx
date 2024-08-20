@@ -2,7 +2,7 @@ import React from "react";
 import PageTitle from "../../components/PageTitle/PageTitle";
 import Button from "../../components/Button/Button";
 import { FaFacebookF, FaGooglePlusG } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -13,6 +13,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { URL_API } from "../../constants/constants";
 
 const SignInPage = () => {
+  const navigate = useNavigate();
   // Định nghĩa schema validation
   const validationSchema = Yup.object({
     email: Yup.string().email("Email không hợp lệ").required("Vui lòng nhập email"),
@@ -33,13 +34,23 @@ const SignInPage = () => {
   const onSubmit = async (data) => {
     try {
       const res = await axios.post(`${URL_API}/users/login`, data);
-      // if(res){
-
-      // }
-      const userData = res.data;
-      // Lưu thông tin user vào cookie
-      Cookies.set("user", JSON.stringify(userData), { expires: 1 });
-      toast.success("Đăng nhập thành công");
+      if (res) {
+        const userData = res.data;
+        // Kiểm tra nếu user không có ảnh đại diện thì thêm một ảnh mặc định
+        if (!userData.user.image) {
+          userData.user.image = "./images/avatar.png"; // Đường dẫn tới ảnh mặc định
+        }
+        // Lưu thông tin user vào cookie
+        Cookies.set("user", JSON.stringify(userData), {
+          expires: 1,
+        });
+        toast.success("Đăng nhập thành công", {
+          onClose: () => {
+            navigate("/");
+            window.location.reload();
+          },
+        });
+      }
     } catch (error) {
       if (error?.response?.status === 400) {
         const errorData = error.response.data;
