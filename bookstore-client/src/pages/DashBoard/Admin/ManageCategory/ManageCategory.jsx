@@ -16,7 +16,6 @@ import "../DashBoard.css";
 import PageTitle from "../../../../components/PageTitle/PageTitle";
 import HeaderAdmin from "../../../../components/HeaderAdmin/HeaderAdmin";
 import axios from "axios";
-import Swal from "sweetalert2";
 import { URL_API } from "../../../../constants/constants";
 import { showSwalFireDelete } from "../../../../helpers/helpers";
 

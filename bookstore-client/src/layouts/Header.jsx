@@ -76,12 +76,6 @@ const Header = () => {
     }
   };
 
-  const handleLogout = () => {
-    Cookies.remove("user"); // Xóa cookie khi đăng xuất
-    setUserInfo(null); // Cập nhật state người dùng
-    navigate("/sign-in"); // Điều hướng đến trang đăng nhập
-  };
-
   const menuList = [
     { id: 1, name: "Trang chủ", link: "/" },
     { id: 2, name: "Sản phẩm", link: "/menu" },
@@ -112,9 +106,6 @@ const Header = () => {
               {userInfo ? (
                 <>
                   <Profile />
-                  <button onClick={handleLogout} className="text-red-500 hover:text-red-700">
-                    Đăng xuất
-                  </button>
                 </>
               ) : (
                 <Link to="/sign-in">

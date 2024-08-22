@@ -15,7 +15,6 @@ import { URL_API } from "../../../../constants/constants";
 import { showSwalFireSuccess } from "../../../../helpers/helpers";
 
 const EditCategory = () => {
-  const [selectedImage, setSelectedImage] = useState(null);
   const { id } = useParams();
   const navigate = useNavigate();
   const [collapsed, setCollapsed] = useState(false);
@@ -23,12 +22,6 @@ const EditCategory = () => {
     navigate("/");
   };
 
-  const handleImageChange = (e) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
-      setSelectedImage(URL.createObjectURL(file));
-    }
-  };
   const {
     register,
     handleSubmit,

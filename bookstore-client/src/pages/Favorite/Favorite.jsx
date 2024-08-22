@@ -94,7 +94,7 @@ const Favorite = () => {
                   <th className="text-center">Thao tác</th>
                 </tr>
               </thead>
-              <tbody className="font-normal text-[16px]">
+              <tbody className="font-normal text-sm">
                 {favouriteItems.map((item, index) => (
                   <tr key={item._id}>
                     <td>{index + 1}</td>

@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { FaRegEdit, FaUser, FaHeart, FaCalendar } from "react-icons/fa";
 import { FiLogOut } from "react-icons/fi";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import PageTitle from "../../components/PageTitle/PageTitle";
 import Button from "../../components/Button/Button";
 import { useForm } from "react-hook-form";
@@ -19,16 +19,29 @@ const Profile = () => {
   ];
 
   const [user, setUser] = useState({});
-  const [image, setImage] = useState(""); // Lưu URL của ảnh
-  let userId = Cookies.get("user");
-  userId = JSON.parse(userId);
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [image, setImage] = useState(null);
+  const userId = JSON.parse(Cookies.get("user")).user._id;
+  const navigate = useNavigate();
+  const { register, handleSubmit, setValue } = useForm();
 
-  const { register, handleSubmit, setValue, reset } = useForm();
+  // Xử lý khi người dùng chọn hình ảnh mới
+  const handleImgChange = useCallback((e) => {
+    const { files } = e.target;
+    if (files && files[0]) {
+      const imageUrl = URL.createObjectURL(files[0]);
+      setSelectedImage({
+        file: files[0],
+        preview: imageUrl,
+      });
+    }
+  }, []);
 
+  // Lấy thông tin người dùng từ API khi component mount
   useEffect(() => {
     const getUser = async () => {
       try {
-        const res = await axios.get(`${URL_API}/users/${userId.user._id}`);
+        const res = await axios.get(`${URL_API}/users/${userId}`);
         if (res.status === 200) {
           const data = res.data;
           setValue("name", data.name);
@@ -37,9 +50,10 @@ const Profile = () => {
           setValue("email", data.email);
           setValue("phone", data.phone);
           setValue("address", data.address);
-          setImage(`${URL_API}/images/${data.image}`);
-        } else {
-          console.error("Failed to fetch user details");
+          // Hiển thị hình ảnh hiện tại
+          setImage(data.image ? `${URL_API}/images/${data.image}` : "/path/to/default/image.jpg");
+          // console.log("Image URL:", image);
+          // console.log("Selected Image Preview:", selectedImage?.preview);
         }
       } catch (error) {
         console.error("Error fetching user details:", error);
@@ -47,17 +61,6 @@ const Profile = () => {
     };
     getUser();
   }, [userId, setValue]);
-
-  const handleImgChange = (e) => {
-    e.preventDefault(); // Ngăn chặn hành động mặc định của form
-
-    const file = e.target.files[0];
-    if (file) {
-      const imageUrl = URL.createObjectURL(file);
-      setImage(imageUrl); // Cập nhật URL cho ảnh
-      setValue("image", file); // Cập nhật file trong form data
-    }
-  };
 
   const onSubmit = async (data) => {
     try {
@@ -68,38 +71,28 @@ const Profile = () => {
       formData.append("email", data.email);
       formData.append("phone", data.phone);
       formData.append("address", data.address);
-      if (data.image) {
-        formData.append("image", data.image);
+      if (selectedImage?.file) {
+        formData.append("image", selectedImage.file);
       }
 
-      const res = await axios.put(`${URL_API}/users/${userId.user._id}`, formData, {
+      const res = await axios.put(`${URL_API}/users/${userId}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
 
       if (res.status === 200) {
-        console.log("Profile updated successfully");
-
-        // Cập nhật thông tin trong cookie
         const updatedUser = res.data.userUpdate;
         Cookies.set("user", JSON.stringify({ user: { _id: updatedUser._id, ...updatedUser } }), {
-          expires: 7, // Cookie sẽ hết hạn sau 7 ngày
+          expires: 1,
         });
-
-        // Cập nhật trạng thái và giao diện
         setUser(updatedUser);
         setImage(`${URL_API}/images/${updatedUser.image}`);
-        reset({
-          name: updatedUser.name,
-          username: updatedUser.username,
-          date: updatedUser.date,
-          email: updatedUser.email,
-          phone: updatedUser.phone,
-          address: updatedUser.address,
-        });
-
         showSwalFireSuccess("Thông tin hồ sơ của bạn đã được cập nhật.");
+
+        setTimeout(() => {
+          window.location.reload();
+        }, 1500);
       } else {
         console.error("Failed to update profile");
       }
@@ -108,32 +101,25 @@ const Profile = () => {
     }
   };
 
-  useEffect(() => {
-    // Giải phóng URL khi component bị hủy
-    return () => {
-      if (image) {
-        URL.revokeObjectURL(image);
-      }
-    };
-  }, [image]);
-
   return (
     <div className="py-10">
       <div className="container">
         <div className="flex gap-10">
           <div className="max-w-[300px] w-full">
-            {/* Thông tin tài khoản */}
             <div className="flex items-center gap-2">
-              <img src={image} className="w-[50px] h-[50px] rounded-full" alt="Avatar" />
+              <img
+                src={selectedImage?.preview || image}
+                className="w-[50px] h-[50px] rounded-full"
+                alt="Avatar"
+              />
               <div>
-                <h3 className="font-semibold leading-normal">{userId.user?.email}</h3>
+                <h3 className="font-semibold leading-normal">{user.email}</h3>
                 <p className="flex items-center gap-1 text-grayText">
                   <FaRegEdit />
                   Sửa hồ sơ
                 </p>
               </div>
             </div>
-            {/* Danh sách menu */}
             <ul className="flex flex-col gap-7 mt-10">
               {profileMenuList.map((item) => (
                 <li key={item.id}>
@@ -192,14 +178,14 @@ const Profile = () => {
               <div className="w-full">
                 <label htmlFor="image">Hình ảnh</label>
                 <img
-                  src={image}
-                  style={{ margin: "0 0 20px 0", maxHeight: "160px" }}
-                  alt="Preview"
+                  src={selectedImage?.preview || image}
+                  className="w-[50px] h-[50px] rounded-full"
+                  alt="Avatar"
                 />
                 <input
                   type="file"
                   id="image"
-                  className="input input-bordered h-full py-3 w-full mt-2"
+                  className="file-input file-input-bordered w-full"
                   onChange={handleImgChange}
                 />
               </div>
@@ -243,8 +229,12 @@ const Profile = () => {
                   {...register("address")}
                 />
               </div>
-              <div>
-                <Button type="submit" children="Lưu" className="rounded-[10px]"></Button>
+              <div className="mt-6">
+                <Button
+                  children="Cập nhật tài khoản"
+                  className="bg-mainDark text-white text-center rounded-2xl w-full py-2"
+                  type="submit"
+                />
               </div>
             </form>
           </div>

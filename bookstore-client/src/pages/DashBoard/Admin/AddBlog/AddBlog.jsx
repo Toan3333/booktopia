@@ -47,15 +47,12 @@ const AddBlog = () => {
       formData.append("content", data.content);
       formData.append("date", data.date);
       formData.append("image", data.image[0]);
-
       const response = await axios.post(`${URL_API}/blog`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
-
       showSwalFireSuccess("Thêm bài viết thành công");
-
       navigate("/dashboard/manage-blog");
     } catch (error) {
       console.error("Error creating blog:", error);

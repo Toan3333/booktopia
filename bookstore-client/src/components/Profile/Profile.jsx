@@ -7,7 +7,7 @@ const Profile = () => {
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
   const defaultAvatar =
-    "https://images.unsplash.com/photo-1686170287433-c95faf6d3608?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3t8fHx8fHw%3D";
+    "https://images.unsplash.com/photo-1686170287433-c95faf6d3608?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1wYXJ0bmVy";
 
   useEffect(() => {
     // Lấy dữ liệu người dùng từ cookie
@@ -21,8 +21,15 @@ const Profile = () => {
   const handleLogout = () => {
     // Xử lý logout, ví dụ xóa cookie và chuyển hướng người dùng
     Cookies.remove("user");
+    setUser(null);
     // Chuyển hướng hoặc cập nhật state để hiển thị UI phù hợp
     navigate("/sign-in");
+    window.location.reload();
+  };
+
+  const closeSidebar = () => {
+    // Bỏ chọn checkbox để đóng sidebar
+    document.getElementById("my-drawer-4").checked = false;
   };
 
   return (
@@ -44,21 +51,35 @@ const Profile = () => {
         <label htmlFor="my-drawer-4" aria-label="close sidebar" className="drawer-overlay"></label>
         <ul className="menu bg-base-200 text-base-content min-h-full w-80 p-4">
           <li>
-            <Link to="/profile">Profile</Link>
+            <Link to="/profile" onClick={closeSidebar}>
+              Profile
+            </Link>
           </li>
           <li>
-            <Link to="/orders">Orders</Link>
+            <Link to="/orders" onClick={closeSidebar}>
+              Orders
+            </Link>
           </li>
           <li>
-            <Link to="/settings">Settings</Link>
+            <Link to="/settings" onClick={closeSidebar}>
+              Settings
+            </Link>
           </li>
           {user?.role === "admin" && (
             <li>
-              <Link to="/dashboard">Dashboard</Link>
+              <Link to="/dashboard" onClick={closeSidebar}>
+                Dashboard
+              </Link>
             </li>
           )}
           <li>
-            <a onClick={handleLogout}>Logout</a>
+            <a
+              onClick={() => {
+                handleLogout();
+                closeSidebar();
+              }}>
+              Logout
+            </a>
           </li>
         </ul>
       </div>

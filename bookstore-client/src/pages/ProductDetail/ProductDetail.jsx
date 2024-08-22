@@ -7,12 +7,13 @@ import Button from "../../components/Button/Button";
 import { HiOutlineShoppingBag } from "react-icons/hi2";
 import "../../index.css";
 import CommentList from "../../components/Comment/CommentList";
+import { add } from "../../redux/slices/favouritesSlide";
 import Title from "../../components/Title/Title";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import axios from "axios";
 import ProductItem from "../../components/Product/ProductItem";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addToCart, updateCartItemQuantity } from "../../redux/slices/cartslide";
 import LightGallery from "lightgallery/react";
 import { ToastContainer, toast } from "react-toastify";
@@ -39,6 +40,8 @@ const ProductDetail = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [contentComment, setContentComment] = useState("");
+
+  const favouriteItems = useSelector((state) => state.favourite?.items) || [];
   // lấy thong tin user trên coookie
 
   useEffect(() => {
@@ -50,6 +53,8 @@ const ProductDetail = () => {
       console.log("User not found in cookie");
     }
   }, []);
+
+  useEffect(() => {}, [favouriteItems]);
 
   useEffect(() => {
     const fetchProductDetail = async () => {
@@ -158,6 +163,17 @@ const ProductDetail = () => {
     await axios.delete(`${URL_API}/comment/${id}`);
     toast.success("Xóa thành công");
     fetchComment();
+  };
+
+  const handleAddToFavourite = () => {
+    Swal.fire({
+      position: "top-end",
+      icon: "success",
+      title: "Thêm sản phẩm yêu thích thành công",
+      showConfirmButton: false,
+      timer: 1000,
+    });
+    dispatch(add({ item: productDetailData, quantity: 1 }));
   };
 
   return (
@@ -301,7 +317,7 @@ const ProductDetail = () => {
                 </button>
               </div>
               <div className="flex items-center gap-2 ml-4 text-text font-normal">
-                <CiHeart className="w-8 h-8 cursor-pointer" />
+                <CiHeart className="w-8 h-8 cursor-pointer" onClick={handleAddToFavourite} />
                 Yêu thích
               </div>
             </div>
