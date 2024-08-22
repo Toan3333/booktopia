@@ -32,6 +32,12 @@ const Profile = () => {
     document.getElementById("my-drawer-4").checked = false;
   };
 
+  const getAvatarUrl = (image) => {
+    if (!image) return defaultAvatar;
+    if (image.startsWith("http://") || image.startsWith("https://")) return image;
+    return `${URL_API}/images/${image}`;
+  };
+
   return (
     <div className="drawer-end z-50">
       <input id="my-drawer-4" type="checkbox" className="drawer-toggle" />
@@ -39,11 +45,12 @@ const Profile = () => {
         {/* Nút avatar để mở sidebar */}
         <label htmlFor="my-drawer-4" className="drawer-button btn btn-circle btn-ghost avatar">
           <div className="w-20 rounded-full">
-            {user?.image ? (
-              <img alt="User avatar" src={`${URL_API}/images/${user?.image}`} />
-            ) : (
-              <img alt="Default avatar" src={defaultAvatar} />
-            )}
+            {/* Hiển thị ảnh của người dùng hoặc ảnh mặc định */}
+            <img
+              alt="User avatar"
+              src={getAvatarUrl(user?.image)}
+              className="object-cover w-full h-full rounded-full"
+            />
           </div>
         </label>
       </div>

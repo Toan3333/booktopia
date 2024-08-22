@@ -33,47 +33,44 @@ import ManagePublishes from "./pages/DashBoard/Admin/ManagePublishes/ManagePubli
 import AddPublishes from "./pages/DashBoard/Admin/AddPublishes/AddPublishes";
 import EditBlog from "./pages/DashBoard/Admin/EditBlog/EditBlog";
 import ManageOrder from "./pages/DashBoard/Admin/ManageOrder/ManageOrder";
+import PrivateRoute from "./components/PrivateRoute/PrivateRoute";
 function App() {
   return (
     <Fragment>
       <Routes>
-        <Route element={<Main></Main>}>
-          <Route path="/" element={<HomePage></HomePage>}></Route>
-          <Route path="/menu" element={<Menu></Menu>}></Route>
-          <Route path="/about-us" element={<About></About>}></Route>
-          <Route path="/contact-us" element={<Contact></Contact>}></Route>
-          <Route path="/blog" element={<Blog></Blog>}></Route>
-          <Route path="/blog-detail/:id" element={<BlogDetail></BlogDetail>}></Route>
-          <Route path="/sign-in" element={<SignInPage></SignInPage>}></Route>
-          <Route path="/sign-up" element={<SignUpPage></SignUpPage>}></Route>
-          <Route path="/cart" element={<Cart></Cart>}></Route>
-          <Route path="/checkout" element={<Checkout></Checkout>}></Route>
-          <Route path="/profile" element={<Profile></Profile>}></Route>
-          <Route path="/my-orders" element={<MyOrders></MyOrders>}></Route>
-          <Route path="/favorites" element={<Favorite></Favorite>}></Route>
-          <Route path="/product-detail/:id" element={<ProductDetail></ProductDetail>}></Route>
+        <Route element={<Main />}>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/menu" element={<Menu />} />
+          <Route path="/about-us" element={<About />} />
+          <Route path="/contact-us" element={<Contact />} />
+          <Route path="/blog" element={<Blog />}></Route>
+          <Route path="/blog-detail/:id" element={<BlogDetail />} />
+          <Route path="/sign-in" element={<SignInPage />} />
+          <Route path="/sign-up" element={<SignUpPage />} />
+          <Route path="/cart" element={<Cart />} />
+          <Route path="/checkout" element={<Checkout />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/my-orders" element={<MyOrders />} />
+          <Route path="/favorites" element={<Favorite />} />
+          <Route path="/product-detail/:id" element={<ProductDetail />} />
         </Route>
         {/* admin */}
-        <Route path="/dashboard" element={<DashBoard></DashBoard>}></Route>
-        <Route path="/dashboard/manage-product" element={<ManageProduct></ManageProduct>}></Route>
-        <Route
-          path="/dashboard/manage-category"
-          element={<ManageCategory></ManageCategory>}></Route>
-        <Route path="/dashboard/manage-user" element={<ManageUser></ManageUser>}></Route>
-        <Route path="/dashboard/manage-blog" element={<ManageBlog></ManageBlog>}></Route>
-        <Route path="/dashboard/manage-author" element={<ManageAuthor></ManageAuthor>}></Route>{" "}
-        <Route path="/dashboard/manage-order" element={<ManageOrder></ManageOrder>}></Route>
-        <Route
-          path="/dashboard/manage-publishes"
-          element={<ManagePublishes></ManagePublishes>}></Route>
-        <Route path="/dashboard/add-author" element={<AddAuthor></AddAuthor>}></Route>
-        <Route path="/dashboard/add-publishes" element={<AddPublishes></AddPublishes>}></Route>
-        <Route path="/dashboard/add-product" element={<AddProduct></AddProduct>}></Route>
-        <Route path="/dashboard/add-category" element={<AddCategory></AddCategory>}></Route>
-        <Route path="/dashboard/add-blog" element={<AddBlog></AddBlog>}></Route>
-        <Route path="/dashboard/edit-product/:id" element={<EditProduct></EditProduct>}></Route>
-        <Route path="/dashboard/edit-category/:id" element={<EditCategory></EditCategory>}></Route>
-        <Route path="/dashboard/edit-blog/:id" element={<EditBlog></EditBlog>}></Route>
+        <Route path="/dashboard" element={<DashBoard />}></Route>
+        <Route path="/dashboard/manage-product" element={<ManageProduct />} />
+        <Route path="/dashboard/manage-category" element={<ManageCategory />} />
+        <Route path="/dashboard/manage-user" element={<ManageUser />} />
+        <Route path="/dashboard/manage-blog" element={<ManageBlog />} />
+        <Route path="/dashboard/manage-author" element={<ManageAuthor />} />
+        <Route path="/dashboard/manage-order" element={<ManageOrder />} />
+        <Route path="/dashboard/manage-publishes" element={<ManagePublishes />} />
+        <Route path="/dashboard/add-author" element={<AddAuthor />} />
+        <Route path="/dashboard/add-publishes" element={<AddPublishes />} />
+        <Route path="/dashboard/add-product" element={<AddProduct />} />
+        <Route path="/dashboard/add-category" element={<AddCategory />} />
+        <Route path="/dashboard/add-blog" element={<AddBlog />} />
+        <Route path="/dashboard/edit-product/:id" element={<EditProduct />} />
+        <Route path="/dashboard/edit-category/:id" element={<EditCategory />} />
+        <Route path="/dashboard/edit-blog/:id" element={<EditBlog />} />
       </Routes>
     </Fragment>
   );

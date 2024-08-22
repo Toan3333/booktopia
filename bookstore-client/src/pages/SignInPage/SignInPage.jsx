@@ -44,12 +44,20 @@ const SignInPage = () => {
         Cookies.set("user", JSON.stringify(userData), {
           expires: 1,
         });
-        toast.success("Đăng nhập thành công", {
-          onClose: () => {
-            navigate("/");
-            window.location.reload();
-          },
-        });
+        // Chuyển hướng tùy theo role
+        if (userData.user.role === 1) {
+          toast.success("Đăng nhập thành công", {
+            onClose: () => {
+              navigate("/dashboard");
+            },
+          });
+        } else {
+          toast.success("Đăng nhập thành công", {
+            onClose: () => {
+              navigate("/");
+            },
+          });
+        }
       }
     } catch (error) {
       if (error?.response?.status === 400) {

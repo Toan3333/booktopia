@@ -34,6 +34,8 @@ async function register(body) {
       email,
       password: hash,
       role: role || 0,
+      image:
+        "https://images.unsplash.com/photo-1686170287433-c95faf6d3608?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1wYXJ0bmVy", // Thêm ảnh mặc định ở đây
     });
 
     // Lưu người dùng vào cơ sở dữ liệu

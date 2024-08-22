@@ -134,8 +134,7 @@ const Blog = () => {
                     />
                     <div className="flex flex-col mt-3">
                       <div className="text-gray-500 font-normal leading-normal">
-                        {formatDate}
-                        {/* Đảm bảo rằng item.date tồn tại */}
+                        {formatDate(item.date)}
                       </div>
                       <h3 className="text-lg font-semibold text-text max-md:text-[16px]">
                         {item.name}

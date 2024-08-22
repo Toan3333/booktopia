@@ -11,6 +11,8 @@ import { URL_API } from "../../constants/constants";
 import { showSwalFireSuccess } from "../../helpers/helpers";
 
 const Profile = () => {
+  const defaultAvatar =
+    "https://images.unsplash.com/photo-1686170287433-c95faf6d3608?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1wYXJ0bmVy";
   const profileMenuList = [
     { id: 1, name: "Tài khoản của tôi", icon: <FaUser />, link: "/profile" },
     { id: 2, name: "Sản phẩm yêu thích", icon: <FaHeart />, link: "/favorites" },
@@ -51,7 +53,8 @@ const Profile = () => {
           setValue("phone", data.phone);
           setValue("address", data.address);
           // Hiển thị hình ảnh hiện tại
-          setImage(data.image ? `${URL_API}/images/${data.image}` : "/path/to/default/image.jpg");
+          setImage(data.image ? `${URL_API}/images/${data.image}` : defaultAvatar);
+
           // console.log("Image URL:", image);
           // console.log("Selected Image Preview:", selectedImage?.preview);
         }
