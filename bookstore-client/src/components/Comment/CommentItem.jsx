@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import Cookies from "js-cookie"; // cài thư viện để lấy cookie
+import Cookies from "js-cookie";
 
 const CommentItem = ({ dataComent, handleDeleteComment }) => {
   const [inforUser, setInforUser] = useState(null);

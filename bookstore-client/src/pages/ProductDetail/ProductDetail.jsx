@@ -300,25 +300,27 @@ const ProductDetail = () => {
                 <div>Hình thức: Bìa mềm</div>
               </div>
             </div>
-            <div className="mt-10 text-text font-normal">Số lượng :</div>
-            <div className="flex items-center mt-5">
-              <div className="py-2 px-5 flex items-center border border-gray-300 rounded-xl">
-                <button className="px-3 py-1">
-                  <FaMinus onClick={handleDecreaseQuantity} />
-                </button>
-                <input
-                  type="text"
-                  className="quantity-input w-12 text-center border-0 focus:ring-0"
-                  value={quantityDetail}
-                  readOnly
-                />
-                <button className="px-3 py-1">
-                  <FaPlus onClick={handleIncreaseQuantity} />
-                </button>
-              </div>
-              <div className="flex items-center gap-2 ml-4 text-text font-normal">
-                <CiHeart className="w-8 h-8 cursor-pointer" onClick={handleAddToFavourite} />
-                Yêu thích
+            <div className="mt-10 text-text font-normal max-sm:mt-3 max-sm:flex max-sm:items-center max-sm:gap-2 max-sm:leading-[34px]">
+              <div className="mt-5">Số lượng</div>
+              <div className="flex items-center mt-5">
+                <div className="py-2 px-5 flex items-center border border-gray-300 rounded-xl max-sm:py-1 max-sm:px-3">
+                  <button className="px-3 py-1 max-sm:px-2">
+                    <FaMinus onClick={handleDecreaseQuantity} />
+                  </button>
+                  <input
+                    type="text"
+                    className="quantity-input w-12 text-center border-0 focus:ring-0"
+                    value={quantityDetail}
+                    readOnly
+                  />
+                  <button className="px-3 py-1">
+                    <FaPlus onClick={handleIncreaseQuantity} />
+                  </button>
+                </div>
+                <div className="flex items-center gap-2 ml-4 text-text font-normal">
+                  <CiHeart className="w-8 h-8 cursor-pointer" onClick={handleAddToFavourite} />
+                  Yêu thích
+                </div>
               </div>
             </div>
             <div className="flex flex-col gap-5 mt-10">

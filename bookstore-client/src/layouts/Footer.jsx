@@ -25,29 +25,29 @@ const Footer = () => {
                 <li>
                   <a
                     href="#"
-                    className="flex items-center justify-center text-white w-10 h-10 rounded-full bg-mainDark max-md:w-9 max-md:h-9">
-                    <FaFacebook className="w-5 h-5" />
+                    className="flex items-center justify-center text-white w-10 h-10 rounded-full bg-mainDark max-md:w-8 max-md:h-8">
+                    <FaFacebook className="w-5 h-5 max-sm:w-4 max-sm:h-4" />
                   </a>
                 </li>
                 <li>
                   <a
                     href="#"
-                    className="flex items-center justify-center text-white w-10 h-10 rounded-full bg-mainDark max-md:w-9 max-md:h-9">
-                    <FaInstagram className="w-5 h-5" />
+                    className="flex items-center justify-center text-white w-10 h-10 rounded-full bg-mainDark max-md:w-8 max-md:h-8">
+                    <FaInstagram className="w-5 h-5 max-sm:w-4 max-sm:h-4" />
                   </a>
                 </li>
                 <li>
                   <a
                     href="#"
-                    className="flex items-center justify-center text-white w-10 h-10 rounded-full bg-mainDark max-md:w-9 max-md:h-9">
-                    <FaTwitter className="w-5 h-5" />
+                    className="flex items-center justify-center text-white w-10 h-10 rounded-full bg-mainDark max-md:w-8 max-md:h-8">
+                    <FaTwitter className="w-5 h-5 max-sm:w-4 max-sm:h-4" />
                   </a>
                 </li>
                 <li>
                   <a
                     href="#"
-                    className="flex items-center justify-center text-white w-10 h-10 rounded-full bg-mainDark max-md:w-9 max-md:h-9">
-                    <FaYoutube className="w-5 h-5" />
+                    className="flex items-center justify-center text-white w-10 h-10 rounded-full bg-mainDark max-md:w-8 max-md:h-8">
+                    <FaYoutube className="w-5 h-5 max-sm:w-4 max-sm:h-4" />
                   </a>
                 </li>
               </ul>
@@ -65,7 +65,7 @@ const Footer = () => {
                 </li>
                 <li>
                   <a href="#" className="flex items-center gap-2 font-normal">
-                    <FaRegClock className="w-5 h-5 max-md:w-5 max-md:h-5" />
+                    <FaRegClock className="w-5 h-5 max-md:w-4 max-md:h-4" />
                     <div className="leading-normal">
                       Thứ 2 - Thứ 6: 9:00 - 20:00 <br /> Thứ 7: 9:00 - 12:00
                     </div>

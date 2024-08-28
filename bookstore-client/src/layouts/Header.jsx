@@ -176,7 +176,7 @@ const Header = () => {
                 <div className="relative">
                   <Link to="/cart">
                     <FaShoppingBag className="w-8 h-8" />
-                    <div className="absolute -top-3 -right-3 w-5 h-5 rounded-full bg-mainDark flex items-center justify-center text-white p-2">
+                    <div className="absolute -top-3 -right-3 w-5 h-5 rounded-full bg-mainDark flex items-center justify-center text-white p-2 max-sm:w-4 max-sm:h-4 text-sm max-sm:-top-2 max-sm:-right-[9px]">
                       {cartCount}
                     </div>
                   </Link>

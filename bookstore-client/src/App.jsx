@@ -16,24 +16,24 @@ import Cart from "./pages/Cart/Cart";
 import Checkout from "./pages/Checkout/Checkout";
 import Blog from "./pages/Blog/Blog";
 import BlogDetail from "./pages/BlogDetail/BlogDetail";
-import DashBoard from "./pages/DashBoard/Admin/DashBoard";
 
-import AddProduct from "./pages/DashBoard/Admin/AddProduct/AddProduct";
-import EditProduct from "./pages/DashBoard/Admin/EditProduct/EditProduct";
-import ManageProduct from "./pages/DashBoard/Admin/ManageProduct/ManageProduct";
-import ManageCategory from "./pages/DashBoard/Admin/ManageCategory/ManageCategory";
-import AddCategory from "./pages/DashBoard/Admin/AddCategory/AddCategory";
-import EditCategory from "./pages/DashBoard/Admin/EditCategory/EditCategory";
-import ManageUser from "./pages/DashBoard/Admin/ManageUser/ManageUser";
-import ManageBlog from "./pages/DashBoard/Admin/ManageBlog/ManageBlog";
-import AddBlog from "./pages/DashBoard/Admin/AddBlog/AddBlog";
-import ManageAuthor from "./pages/DashBoard/Admin/ManageAuthor/ManageAuthor";
-import AddAuthor from "./pages/DashBoard/Admin/AddAuthor/AddAuthor";
-import ManagePublishes from "./pages/DashBoard/Admin/ManagePublishes/ManagePublishes";
-import AddPublishes from "./pages/DashBoard/Admin/AddPublishes/AddPublishes";
-import EditBlog from "./pages/DashBoard/Admin/EditBlog/EditBlog";
-import ManageOrder from "./pages/DashBoard/Admin/ManageOrder/ManageOrder";
-import PrivateRoute from "./components/PrivateRoute/PrivateRoute";
+import AddProduct from "./pages/Admin/AddProduct/AddProduct";
+import EditProduct from "./pages/Admin/EditProduct/EditProduct";
+import ManageProduct from "./pages/Admin/ManageProduct/ManageProduct";
+import ManageCategory from "./pages/Admin/ManageCategory/ManageCategory";
+import AddCategory from "./pages/Admin/AddCategory/AddCategory";
+import EditCategory from "./pages/Admin/EditCategory/EditCategory";
+import ManageUser from "./pages/Admin/ManageUser/ManageUser";
+import ManageBlog from "./pages/Admin/ManageBlog/ManageBlog";
+import AddBlog from "./pages/Admin/AddBlog/AddBlog";
+import ManageAuthor from "./pages/Admin/ManageAuthor/ManageAuthor";
+import AddAuthor from "./pages/Admin/AddAuthor/AddAuthor";
+import ManagePublishes from "./pages/Admin/ManagePublishes/ManagePublishes";
+import AddPublishes from "./pages/Admin/AddPublishes/AddPublishes";
+import EditBlog from "./pages/Admin/EditBlog/EditBlog";
+import ManageOrder from "./pages/Admin/ManageOrder/ManageOrder";
+import DashBoard from "./pages/Admin/Dashboard/DashBoard";
+
 function App() {
   return (
     <Fragment>
@@ -56,21 +56,21 @@ function App() {
         </Route>
         {/* admin */}
         <Route path="/dashboard" element={<DashBoard />}></Route>
-        <Route path="/dashboard/manage-product" element={<ManageProduct />} />
-        <Route path="/dashboard/manage-category" element={<ManageCategory />} />
-        <Route path="/dashboard/manage-user" element={<ManageUser />} />
-        <Route path="/dashboard/manage-blog" element={<ManageBlog />} />
-        <Route path="/dashboard/manage-author" element={<ManageAuthor />} />
-        <Route path="/dashboard/manage-order" element={<ManageOrder />} />
-        <Route path="/dashboard/manage-publishes" element={<ManagePublishes />} />
-        <Route path="/dashboard/add-author" element={<AddAuthor />} />
-        <Route path="/dashboard/add-publishes" element={<AddPublishes />} />
-        <Route path="/dashboard/add-product" element={<AddProduct />} />
-        <Route path="/dashboard/add-category" element={<AddCategory />} />
-        <Route path="/dashboard/add-blog" element={<AddBlog />} />
-        <Route path="/dashboard/edit-product/:id" element={<EditProduct />} />
-        <Route path="/dashboard/edit-category/:id" element={<EditCategory />} />
-        <Route path="/dashboard/edit-blog/:id" element={<EditBlog />} />
+        <Route path="/admin/manage-product" element={<ManageProduct />} />
+        <Route path="/admin/manage-category" element={<ManageCategory />} />
+        <Route path="/admin/manage-user" element={<ManageUser />} />
+        <Route path="/admin/manage-blog" element={<ManageBlog />} />
+        <Route path="/admin/manage-author" element={<ManageAuthor />} />
+        <Route path="/admin/manage-order" element={<ManageOrder />} />
+        <Route path="/admin/manage-publishes" element={<ManagePublishes />} />
+        <Route path="/admin/add-author" element={<AddAuthor />} />
+        <Route path="/admin/add-publishes" element={<AddPublishes />} />
+        <Route path="/admin/add-product" element={<AddProduct />} />
+        <Route path="/admin/add-category" element={<AddCategory />} />
+        <Route path="/admin/add-blog" element={<AddBlog />} />
+        <Route path="/admin/edit-product/:id" element={<EditProduct />} />
+        <Route path="/admin/edit-category/:id" element={<EditCategory />} />
+        <Route path="/admin/edit-blog/:id" element={<EditBlog />} />
       </Routes>
     </Fragment>
   );

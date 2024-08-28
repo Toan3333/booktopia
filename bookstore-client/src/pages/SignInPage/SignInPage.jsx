@@ -44,20 +44,15 @@ const SignInPage = () => {
         Cookies.set("user", JSON.stringify(userData), {
           expires: 1,
         });
-        // Chuyển hướng tùy theo role
-        if (userData.user.role === 1) {
-          toast.success("Đăng nhập thành công", {
-            onClose: () => {
-              navigate("/dashboard");
-            },
-          });
-        } else {
-          toast.success("Đăng nhập thành công", {
-            onClose: () => {
-              navigate("/");
-            },
-          });
-        }
+
+        toast.success("Đăng nhập thành công");
+        setTimeout(() => {
+          if (userData.user.role === 1) {
+            window.location.href = "/admin/dashboard";
+          } else {
+            window.location.href = "/";
+          }
+        }, 2000);
       }
     } catch (error) {
       if (error?.response?.status === 400) {

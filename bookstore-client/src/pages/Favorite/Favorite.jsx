@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { FaCalendar, FaHeart, FaRegEdit, FaRegTrashAlt, FaUser } from "react-icons/fa";
 import { FiLogOut } from "react-icons/fi";
 import Swal from "sweetalert2";
@@ -7,9 +7,10 @@ import PageTitle from "../../components/PageTitle/PageTitle";
 import { useDispatch, useSelector } from "react-redux";
 import { remove } from "../../redux/slices/favouritesSlide";
 import { URL_API } from "../../constants/constants";
-
+import Cookies from "js-cookie";
 const Favorite = () => {
   const dispatch = useDispatch();
+  const [user, setUser] = useState({});
   const favouriteItems = useSelector((state) => state.favourite?.items) || [];
   const profileMenuList = [
     { id: 1, name: "Tài khoản của tôi", icon: <FaUser />, link: "/profile" },
@@ -17,6 +18,16 @@ const Favorite = () => {
     { id: 3, name: "Đơn hàng của bạn", icon: <FaCalendar />, link: "/my-orders" },
     { id: 4, name: "Đăng xuất", icon: <FiLogOut />, link: "/logout" },
   ];
+
+  useEffect(() => {
+    // Lấy dữ liệu người dùng từ cookie
+    const userData = Cookies.get("user");
+    if (userData) {
+      const parsedUser = JSON.parse(userData);
+      setUser(parsedUser.user);
+      console.log(parsedUser);
+    }
+  }, []);
 
   const handleRemoveItem = (itemId) => {
     Swal.fire({
@@ -47,12 +58,14 @@ const Favorite = () => {
             {/* Thông tin tài khoản */}
             <div className="flex items-center gap-2">
               <img
-                src="./images/avatar.png"
+                src={
+                  user.image ? `${URL_API}/images/${user.image}` : "https://via.placeholder.com/50"
+                }
                 className="w-[50px] h-[50px] rounded-full"
                 alt="Avatar"
               />
               <div>
-                <h3 className="font-semibold leading-normal">booktopiavn@gmail.com</h3>
+                <h3 className="font-semibold leading-normal">{user.email}</h3>
                 <p className="flex items-center gap-1 text-grayText">
                   <FaRegEdit />
                   Sửa hồ sơ

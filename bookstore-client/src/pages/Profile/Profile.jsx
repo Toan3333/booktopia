@@ -11,13 +11,21 @@ import { URL_API } from "../../constants/constants";
 import { showSwalFireSuccess } from "../../helpers/helpers";
 
 const Profile = () => {
+  const handleLogout = () => {
+    // Xử lý logout, ví dụ xóa cookie và chuyển hướng người dùng
+    Cookies.remove("user");
+    setUser(null);
+    // Chuyển hướng hoặc cập nhật state để hiển thị UI phù hợp
+    navigate("/sign-in");
+    window.location.reload();
+  };
   const defaultAvatar =
     "https://images.unsplash.com/photo-1686170287433-c95faf6d3608?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1wYXJ0bmVy";
   const profileMenuList = [
     { id: 1, name: "Tài khoản của tôi", icon: <FaUser />, link: "/profile" },
     { id: 2, name: "Sản phẩm yêu thích", icon: <FaHeart />, link: "/favorites" },
     { id: 3, name: "Đơn hàng của bạn", icon: <FaCalendar />, link: "/my-orders" },
-    { id: 4, name: "Đăng xuất", icon: <FiLogOut />, link: "/logout" },
+    { id: 4, name: "Đăng xuất", icon: <FiLogOut />, action: handleLogout },
   ];
 
   const [user, setUser] = useState({});
@@ -36,6 +44,16 @@ const Profile = () => {
         file: files[0],
         preview: imageUrl,
       });
+    }
+  }, []);
+
+  // Lấy dữ liệu người dùng từ cookie
+  useEffect(() => {
+    const userData = Cookies.get("user");
+    if (userData) {
+      const parsedUser = JSON.parse(userData);
+      setUser(parsedUser.user);
+      console.log(parsedUser);
     }
   }, []);
 
@@ -116,7 +134,7 @@ const Profile = () => {
                 alt="Avatar"
               />
               <div>
-                <h3 className="font-semibold leading-normal">{user.email}</h3>
+                <h3 className="font-semibold">{user.email}</h3>
                 <p className="flex items-center gap-1 text-grayText">
                   <FaRegEdit />
                   Sửa hồ sơ
@@ -126,16 +144,25 @@ const Profile = () => {
             <ul className="flex flex-col gap-7 mt-10">
               {profileMenuList.map((item) => (
                 <li key={item.id}>
-                  <NavLink
-                    to={item.link}
-                    className={({ isActive }) =>
-                      isActive
-                        ? "text-mainDark flex items-center gap-2 font-normal leading-normal"
-                        : "flex items-center hover:text-mainDark gap-2 font-normal leading-normal"
-                    }>
-                    {item.icon}
-                    {item.name}
-                  </NavLink>
+                  {item.link ? (
+                    <NavLink
+                      to={item.link}
+                      className={({ isActive }) =>
+                        isActive
+                          ? "text-mainDark flex items-center gap-2 font-normal leading-normal"
+                          : "flex items-center text-black hover:text-mainDark gap-2 font-normal leading-normal"
+                      }>
+                      {item.icon}
+                      {item.name}
+                    </NavLink>
+                  ) : (
+                    <button
+                      onClick={item.action}
+                      className="flex items-center text-black hover:text-mainDark gap-2 font-normal leading-normal">
+                      {item.icon}
+                      {item.name}
+                    </button>
+                  )}
                 </li>
               ))}
             </ul>

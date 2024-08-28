@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo } from "react";
 import "../../index.css";
-import OrderList from "../../components/Order/OrderList";
 import Button from "../../components/Button/Button";
 import { useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
@@ -193,7 +192,7 @@ const Checkout = () => {
                             className="w-full h-full cursor-pointer"
                             alt=""
                           />
-                          <div className="absolute flex items-center justify-center -top-2 right-3 w-5 h-5 rounded-full bg-mainDark text-white">
+                          <div className="absolute flex items-center justify-center -top-3 right-2 w-5 h-5 rounded-full bg-mainDark text-white">
                             {item.quantity}
                           </div>
                         </div>
