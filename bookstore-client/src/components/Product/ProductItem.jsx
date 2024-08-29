@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { FaEye, FaShoppingBag } from "react-icons/fa";
+import { FaShoppingBag } from "react-icons/fa";
 import "../../index.css";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";

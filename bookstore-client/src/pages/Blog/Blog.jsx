@@ -9,6 +9,7 @@ import BlogList from "../../components/Blog/BlogList";
 import axios from "axios";
 import { URL_API } from "../../constants/constants";
 import { formatDate } from "../../helpers/helpers";
+import Loading from "../../components/Loading/Loading";
 
 const Blog = () => {
   const sliderRef = useRef(null);
@@ -119,6 +120,7 @@ const Blog = () => {
 
   return (
     <div className="py-10 max-lg:py-5 max-md:py-2">
+      <Loading />
       <div className="container">
         <PageTitle title="Bài viết" className="text-center mb-5" />
         <div className="flex justify-between pb-10 max-xl:block">

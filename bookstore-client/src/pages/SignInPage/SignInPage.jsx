@@ -48,7 +48,7 @@ const SignInPage = () => {
         toast.success("Đăng nhập thành công");
         setTimeout(() => {
           if (userData.user.role === 1) {
-            window.location.href = "/admin/dashboard";
+            navigate("/admin/dashboard");
           } else {
             window.location.href = "/";
           }

@@ -33,6 +33,7 @@ import AddPublishes from "./pages/Admin/AddPublishes/AddPublishes";
 import EditBlog from "./pages/Admin/EditBlog/EditBlog";
 import ManageOrder from "./pages/Admin/ManageOrder/ManageOrder";
 import DashBoard from "./pages/Admin/Dashboard/DashBoard";
+import PrivateRoute from "./components/PrivateRoute/PrivateRoute";
 
 function App() {
   return (
@@ -55,7 +56,14 @@ function App() {
           <Route path="/product-detail/:id" element={<ProductDetail />} />
         </Route>
         {/* admin */}
-        <Route path="/dashboard" element={<DashBoard />}></Route>
+
+        <Route
+          path="/admin/dashboard"
+          element={
+            <PrivateRoute>
+              <DashBoard />
+            </PrivateRoute>
+          }></Route>
         <Route path="/admin/manage-product" element={<ManageProduct />} />
         <Route path="/admin/manage-category" element={<ManageCategory />} />
         <Route path="/admin/manage-user" element={<ManageUser />} />

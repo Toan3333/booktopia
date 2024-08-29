@@ -6,7 +6,7 @@ const ViewProduct = () => {
   return (
     <div className="py-5">
       <div className="container">
-        <Title>Nhiều lượt xem</Title>
+        <Title children="Nhiều lượt xem" />
         <div className="flex items-center justify-between gap-8 py-5 max-lg:flex-col max-lg:gap-5 max-lg:py-5">
           <div className="w-3/5 max-lg:w-full max-md:hidden">
             <img
@@ -16,7 +16,7 @@ const ViewProduct = () => {
             />
           </div>
           <div className="w-2/5 max-lg:w-full">
-            <ProductList customColItem={true} type="view"></ProductList>
+            <ProductList customColItem={true} type="view" />
           </div>
         </div>
       </div>

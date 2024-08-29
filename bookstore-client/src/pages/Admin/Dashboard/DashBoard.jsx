@@ -22,19 +22,35 @@ import PageTitle from "../../../components/PageTitle/PageTitle";
 import SellProductAdminList from "../../../layouts/components/SellProductAdmin/SellProductAdminList";
 import axios from "axios";
 import { URL_API } from "../../../constants/constants";
+import Cookies from "js-cookie";
 
 const DashBoard = () => {
   const isAdmin = true;
   const [collapsed, setCollapsed] = useState(false);
-  const navigate = useNavigate();
-  const handleLogout = () => {
-    // Perform logout operations here (e.g., clearing authentication tokens)
-    // Then navigate to the home page
-    navigate("/");
-  };
+  const [user, setUser] = useState({});
   const [totalProducts, setTotalProducts] = useState(0);
   const [totalCategory, setTotalCategory] = useState(0);
   const [totalUser, setTotalUser] = useState(0);
+  const navigate = useNavigate();
+
+  // Lấy dữ liệu người dùng từ cookie
+  useEffect(() => {
+    const userData = Cookies.get("user");
+    if (userData) {
+      const parsedUser = JSON.parse(userData);
+      setUser(parsedUser.user);
+    }
+  }, []);
+
+  // Đăng xuất xóa cookie người dùng
+  const handleLogout = () => {
+    // Xử lý logout, ví dụ xóa cookie và chuyển hướng người dùng
+    Cookies.remove("user");
+    setUser(null);
+    // Chuyển hướng hoặc cập nhật state để hiển thị UI phù hợp
+    navigate("/sign-in");
+    window.location.reload();
+  };
 
   useEffect(() => {
     const getInfoDashboard = async () => {
@@ -65,7 +81,7 @@ const DashBoard = () => {
             <div className="flex items-center justify-center mb-6">
               <img src="./images/logo.png" alt="Logo" />
             </div>
-            <MenuItem component={<Link to="/dashboard" />}>
+            <MenuItem component={<Link to="/admin/dashboard" />}>
               <div className="flex items-center gap-4">
                 <AiFillDashboard className="w-5 h-5" />
                 Dashboard

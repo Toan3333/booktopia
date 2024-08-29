@@ -6,6 +6,49 @@ import { HiOutlineLocationMarker } from "react-icons/hi";
 import { CgMail } from "react-icons/cg";
 
 const Footer = () => {
+  const Links = [
+    {
+      title: "Dịch vụ",
+      links: [
+        {
+          name: "Điều khoản sử dụng",
+        },
+        {
+          name: "Bảo mật thông tin khách hàng",
+        },
+        {
+          name: "Bảo mật thanh toán",
+        },
+        {
+          name: "Về chúng tôi",
+        },
+        {
+          name: "Hệ thống nhà sách",
+        },
+      ],
+    },
+    {
+      title: "Thông tin liên hệ",
+      links: [
+        {
+          name: "Chính sách bảo hành",
+          link: "#",
+        },
+        {
+          name: "Chính sách đổi - trả - hoàn tiền",
+          link: "#",
+        },
+        {
+          name: "Chính sách vận chuyển",
+          link: "#",
+        },
+        {
+          name: "Chính sách thanh toán",
+          link: "#",
+        },
+      ],
+    },
+  ];
   return (
     <div className="pb-5">
       <div className="py-10 border">
@@ -73,69 +116,26 @@ const Footer = () => {
                 </li>
                 <li>
                   <a href="#" className="flex items-center gap-2 font-normal">
-                    <CgMail className="w-6 h-6 max-md:w-5 max-md:h-5"></CgMail>
+                    <CgMail className="w-6 h-6 max-md:w-5 max-md:h-5" />
                     <div>bansach@gmail.com</div>
                   </a>
                 </li>
               </ul>
             </div>
-            <div className="">
-              <h3 className="font-bold text-mainDark leading-normal mb-8 max-md:mb-2">Dịch vụ</h3>
-              <ul className="flex flex-col gap-5 text-text max-md:text-sm max-md:gap-3">
-                <li>
-                  <a href="#" className="font-normal">
-                    Điều khoản sử dụng
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="font-normal">
-                    Bảo mật thông tin khách hàng
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="font-normal">
-                    Bảo mật thanh toán
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="font-normal">
-                    Về chúng tôi
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="font-normal">
-                    Hệ thống nhà sách
-                  </a>
-                </li>
-              </ul>
-            </div>
-            <div className="">
-              <h3 className="font-bold text-mainDark leading-normal mb-8 max-md:mb-2">
-                Thông tin liên hệ
-              </h3>
-              <ul className="flex flex-col gap-5 text-text max-md:gap-3 max-md:text-sm">
-                <li>
-                  <a href="#" className="font-normal">
-                    Chính sách bảo hành
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="font-normal">
-                    Chính sách đổi - trả - hoàn tiền
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="font-normal">
-                    Chính sách vận chuyển
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="font-normal">
-                    Chính sách thanh toán
-                  </a>
-                </li>
-              </ul>
-            </div>
+            {Links.map((item, index) => (
+              <div className="" key={index}>
+                <h3 className="font-bold text-mainDark leading-normal mb-8 max-md:mb-2">
+                  {item.title}
+                </h3>
+                <ul className="flex flex-col gap-5 text-text max-md:text-sm max-md:gap-3">
+                  {item.links.map((item, index) => (
+                    <li key={index}>
+                      <a href="#">{item.name}</a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
           </div>
         </div>
       </div>

@@ -91,7 +91,7 @@ const Favorite = () => {
             </ul>
           </div>
           <div className="w-[90%]">
-            <PageTitle title="Sản phẩm yêu thích" className="text-mainDark mb-2"></PageTitle>
+            <PageTitle title="Sản phẩm yêu thích" className="text-mainDark mb-2" />
             <div className="text-grayText leading-normal font-normal mb-5 max-md:hidden">
               Sản phẩm yêu thích
             </div>
@@ -131,7 +131,8 @@ const Favorite = () => {
                       <div className="flex items-center justify-center cursor-pointer">
                         <FaRegTrashAlt
                           onClick={() => handleRemoveItem(item._id)}
-                          className="text-red text-center"></FaRegTrashAlt>
+                          className="text-red text-center"
+                        />
                       </div>
                     </td>
                   </tr>

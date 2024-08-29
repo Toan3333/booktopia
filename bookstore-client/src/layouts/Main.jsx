@@ -6,9 +6,9 @@ import Footer from "./Footer";
 const Main = () => {
   return (
     <Fragment>
-      <Header></Header>
-      <Outlet></Outlet>
-      <Footer></Footer>
+      <Header />
+      <Outlet />
+      <Footer />
     </Fragment>
   );
 };

@@ -6,8 +6,8 @@ const Blog = () => {
   return (
     <div className="py-5 max-md:py-2">
       <div className="container">
-        <Title>Bài viết mới</Title>
-        <BlogList></BlogList>
+        <Title children="Bài viết mới" />
+        <BlogList />
       </div>
     </div>
   );

@@ -4,22 +4,25 @@ import NewProduct from "./NewProduct";
 import SellingProduct from "./SellingProduct";
 import ProductForYou from "./ProductForYou";
 import Blog from "./Blog";
-
 import Service from "./Service";
 import FlashSale from "./FlashSale";
 import ViewProduct from "./ViewProduct";
+import ScrollToTopButton from "../../components/ScrollToTopButton/ScrollToTopButton";
+import Loading from "../../components/Loading/Loading";
 
 const HomePage = () => {
   return (
     <div>
-      <Banner></Banner>
-      <NewProduct></NewProduct>
-      <FlashSale></FlashSale>
-      <SellingProduct></SellingProduct>
-      <ViewProduct></ViewProduct>
-      <ProductForYou></ProductForYou>
-      <Blog></Blog>
-      <Service></Service>
+      <Loading />
+      <Banner />
+      <NewProduct />
+      <FlashSale />
+      <SellingProduct />
+      <ViewProduct />
+      <ProductForYou />
+      <Blog />
+      <Service />
+      <ScrollToTopButton />
     </div>
   );
 };

@@ -4,6 +4,7 @@ import BlogList from "../../components/Blog/BlogList";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { URL_API } from "../../constants/constants";
+import Loading from "../../components/Loading/Loading";
 
 const BlogDetail = () => {
   const [error, setError] = useState(null);
@@ -26,7 +27,7 @@ const BlogDetail = () => {
     fetchBlogDetail();
   }, [id]);
   if (loading) {
-    return <div>Loading...</div>;
+    return <div> </div>;
   }
   if (error) {
     return <div>{error}</div>;
@@ -37,6 +38,7 @@ const BlogDetail = () => {
   const formattedDate = new Date(date).toLocaleDateString();
   return (
     <div className="py-10">
+      <Loading />
       <div className="container">
         <div className="relative w-full">
           <img

@@ -8,6 +8,8 @@ import axios from "axios";
 import ProductItem from "../../components/Product/ProductItem";
 import { URL_API } from "../../constants/constants";
 import "./Menu.css";
+import ScrollToTopButton from "../../components/ScrollToTopButton/ScrollToTopButton";
+import Loading from "../../components/Loading/Loading";
 const Menu = () => {
   const location = useLocation();
   const [searchTerm, setSearchTerm] = useState(
@@ -117,6 +119,7 @@ const Menu = () => {
 
   return (
     <div className="mt-8 max-md:mt-3">
+      <Loading />
       <div className="container mx-auto max-md:text-sm">
         <nav>
           <a href="#" className="text-gray-500">
@@ -202,6 +205,7 @@ const Menu = () => {
           </div>
         </div>
       </div>
+      <ScrollToTopButton />
     </div>
   );
 };

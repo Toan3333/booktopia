@@ -66,7 +66,7 @@ const FlashSale = () => {
               </Link>
             </div>
           </div>
-          <ProductList useSlider={true}></ProductList>
+          <ProductList useSlider={true} />
         </div>
       </div>
     </div>

@@ -52,7 +52,7 @@ const ProductForYou = () => {
   return (
     <div className="py-5">
       <div className="container">
-        <Title>Dành cho bạn</Title>
+        <Title children="Dành cho bạn" />
         <div className="py-5 max-lg:py-5 max-md:py-5 max-xl:py-5">
           <div className="p-6 rounded-lg mb-5 max-lg:mb-0 max-md:hidden max-xl:hidden">
             <ul className="flex items-center justify-center gap-8 max-lg:grid max-lg:grid-cols-3 max-lg:gap-5">
@@ -75,7 +75,7 @@ const ProductForYou = () => {
           </div>
           <div className="grid grid-cols-5 max-lg:grid-cols-3 max-md:grid-cols-2">
             {products.slice(0, 5).map((item) => (
-              <ProductItem key={item._id} item={item}></ProductItem>
+              <ProductItem key={item._id} item={item} />
             ))}
           </div>
         </div>

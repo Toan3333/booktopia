@@ -55,7 +55,7 @@ const ManageAuthor = () => {
             <div className="flex items-center justify-center mb-6">
               <img src="./images/logo.png" alt="Logo" />
             </div>
-            <MenuItem component={<Link to="/dashboard" />}>
+            <MenuItem component={<Link to="/admin/dashboard" />}>
               <div className="flex items-center gap-4">
                 <AiFillDashboard className="w-5 h-5" />
                 Dashboard
