@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { FaShoppingBag } from "react-icons/fa";
+import { FaEye, FaShoppingBag } from "react-icons/fa";
 import "../../index.css";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -10,6 +10,8 @@ import "./Product.css";
 import { FaHeart } from "react-icons/fa6";
 import { URL_API } from "../../constants/constants";
 import { showSwalFireSuccess } from "../../helpers/helpers";
+import ProductViews from "./ProductViews";
+
 const ProductItem = ({ className = "", item }) => {
   const dispatch = useDispatch();
   const cartItems = useSelector((state) => state.cart?.items) || []; // Truy xuất các sản phẩm trong giỏ hàng hoặc một mảng rỗng nếu không có sản phẩm nào
@@ -41,16 +43,16 @@ const ProductItem = ({ className = "", item }) => {
   }
 
   const isHorizontal = className.includes("horizontal");
-  const { name, image1, price1, price2, author } = item;
+  const { name, image1, price1, price2, author, view } = item;
 
   return (
     <div className={`py-4 max-md:py-0 ${isHorizontal ? "py-0" : ""}`}>
       <div
-        className={`p-2 cursor-pointer z-10 relative group overflow-hidden rounded-[30px] hover:shadow-lg hover:bg-white max-md:mr-0`}>
+        className={`p-2 cursor-pointer z-10 relative group overflow-hidden rounded hover:shadow-lg hover:bg-white max-md:mr-0`}>
         <div
           className={`flex ${
-            isHorizontal ? "flex-row justify-start max-lg:flex-col" : "flex-col"
-          } items-center gap-4 text-center cursor-pointer py-6 px-3 relative max-md:py-2 max-md:px-0`}>
+            isHorizontal ? "flex-row border justify-start max-lg:flex-col" : "flex-col"
+          } items-center gap-4 text-center cursor-pointer py-5 px-2 relative max-md:py-2 max-md:px-0`}>
           <div className="w-10 h-10 rounded-full bg-yellow-400 flex items-center justify-center text-white absolute left-0 top-0 ">
             20%
           </div>
@@ -79,7 +81,7 @@ const ProductItem = ({ className = "", item }) => {
                 className={`flex items-center gap-3 ${
                   isHorizontal ? "justify-start" : "justify-center max-md:text-sm"
                 }`}>
-                <div className="text-red font-semibold leading-normal">
+                <div className="text-red text-lg font-semibold leading-normal">
                   {price2.toLocaleString("vi-VN", {
                     style: "currency",
                     currency: "VND",
@@ -92,6 +94,8 @@ const ProductItem = ({ className = "", item }) => {
                   })}
                 </div>
               </div>
+              {/* Chỉ hiển thị nếu có nhiều lượt xem */}
+              {view > 100 && <ProductViews views={view} />}
             </div>
           </div>
         </div>

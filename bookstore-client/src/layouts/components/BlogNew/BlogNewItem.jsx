@@ -5,7 +5,7 @@ const BlogNewItem = ({ item }) => {
   const { name, date, content, image } = item;
   const formattedDate = new Date(date).toLocaleDateString();
   return (
-    <div className="rounded-[30px] border p-4">
+    <div className="rounded border p-4">
       <div className="flex items-center gap-3">
         <div>
           <div className="w-24 h-24">

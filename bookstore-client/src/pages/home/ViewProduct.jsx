@@ -7,15 +7,15 @@ const ViewProduct = () => {
     <div className="py-5">
       <div className="container">
         <Title children="Nhiều lượt xem" />
-        <div className="flex items-center justify-between gap-8 py-5 max-lg:flex-col max-lg:gap-5 max-lg:py-5">
-          <div className="w-3/5 max-lg:w-full max-md:hidden">
+        <div className="gap-8 py-5 max-lg:flex-col max-lg:gap-5 max-lg:py-5">
+          {/* <div className="w-3/5 max-lg:w-full max-md:hidden">
             <img
               src="./images/bannerview.jpg"
               className="w-full h-[580px] object-cover rounded-2xl max-lg:h-[380px] max-lg:w-full"
               alt=""
             />
-          </div>
-          <div className="w-2/5 max-lg:w-full">
+          </div> */}
+          <div className="max-lg:w-full">
             <ProductList customColItem={true} type="view" />
           </div>
         </div>

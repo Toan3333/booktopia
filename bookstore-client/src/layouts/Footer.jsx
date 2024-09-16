@@ -60,7 +60,7 @@ const Footer = () => {
                 className="max-w-[220px] w-full object-cover max-md:max-w-[150px]"
                 alt="Logo"
               />
-              <div className="mt-3 text-grayText mb-5 font-normal leading-normal">
+              <div className="mt-3 text-grayText mb-5 font-normal leading-normal text-[15px]">
                 Bạn có câu hỏi? Liên hệ chúng tôi
               </div>
               <div className="mb-5 font-semibold leading-normal">(+84) 776 831 909</div>
@@ -99,7 +99,7 @@ const Footer = () => {
               <h3 className="font-semibold text-mainDark text-[18px] leading-normal mb-8 max-md:mb-2">
                 Thông tin liên hệ
               </h3>
-              <ul className="flex flex-col gap-3 text-text max-md:text-sm">
+              <ul className="flex flex-col gap-3 text-[15px] max-md:text-sm">
                 <li>
                   <a href="#" className="flex gap-2 font-normal">
                     <HiOutlineLocationMarker className="w-6 h-6 max-md:w-5 max-md:h-5" />
@@ -130,7 +130,9 @@ const Footer = () => {
                 <ul className="flex flex-col gap-5 text-text max-md:text-sm max-md:gap-3">
                   {item.links.map((item, index) => (
                     <li key={index}>
-                      <a href="#">{item.name}</a>
+                      <a href="#" className="text-[15px]">
+                        {item.name}
+                      </a>
                     </li>
                   ))}
                 </ul>
