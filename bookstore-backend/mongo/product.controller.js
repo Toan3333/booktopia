@@ -6,7 +6,7 @@ module.exports = {
   insert,
   gettAll,
   updateById,
-  remove,
+  remove,getLimited,
   getNew,
   getProView,
   getById,
@@ -208,7 +208,16 @@ async function remove(id) {
     throw error;
   }
 }
-
+//hiển thị sản phẩm theo số lượng
+async function getLimited(count) {
+  try {
+    const result = await productModel.find().limit(count);
+    return result;
+  } catch (error) {
+    console.log('Lấy sản phẩm không thành công', error);
+    throw error;
+  }
+}
 //Sản phẩm nhiều lượt xem
 async function getProView() {
   try {
