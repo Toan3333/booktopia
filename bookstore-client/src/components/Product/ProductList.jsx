@@ -8,7 +8,6 @@ import axios from "axios";
 import { URL_API } from "../../constants/constants";
 
 const ProductList = ({
-  useSliderView,
   useSlider,
   customItem,
   customThreeItem,
@@ -148,13 +147,6 @@ const ProductList = ({
     ),
   };
 
-  const customViewSetting = {
-    ...settings,
-    slidesToShow: 3,
-    dots: false,
-    slidesToScroll: 4,
-  };
-
   return (
     <div className="py-3 relative">
       {useSlider ? (
@@ -184,13 +176,11 @@ const ProductList = ({
           ))}
         </div>
       ) : customColItem ? (
-        <Slider {...customViewSetting}>
-          {productList.slice(0, 6).map((item, index) => (
-            <div key={item._id} className="p-2">
-              <ProductItem className="horizontal" item={item} />
-            </div>
+        <div className="grid grid-rows-1 gap-1 max-lg:grid-cols-3 max-lg:gap-2 max-md:grid-cols-2">
+          {productList.slice(0, 3).map((item) => (
+            <ProductItem className="horizontal" key={item._id} item={item} />
           ))}
-        </Slider>
+        </div>
       ) : (
         <div className="grid grid-cols-5 max-lg:grid-cols-3 max-lg:gap-2 max-md:grid-cols-2">
           {productList.map((item) => (
