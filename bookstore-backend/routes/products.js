@@ -51,34 +51,34 @@ router.get("/", async (req, res) => {
   }
 });
 // Hiển thị 12 sản phẩm
-router.get('/limit/12', async (req, res) => {
+router.get("/limit/12", async (req, res) => {
   try {
     const products = await productController.getLimited(12);
     return res.status(200).json(products);
   } catch (error) {
-    console.log('Load sản phẩm không thành công', error);
+    console.log("Load sản phẩm không thành công", error);
     res.status(500).json({ mess: error.message });
   }
 });
 
 // Hiển thị 24 sản phẩm
-router.get('/limit/24', async (req, res) => {
+router.get("/limit/24", async (req, res) => {
   try {
     const products = await productController.getLimited(24);
     return res.status(200).json(products);
   } catch (error) {
-    console.log('Load sản phẩm không thành công', error);
+    console.log("Load sản phẩm không thành công", error);
     res.status(500).json({ mess: error.message });
   }
 });
 
 // Hiển thị 36 sản phẩm
-router.get('/limit/36', async (req, res) => {
+router.get("/limit/36", async (req, res) => {
   try {
     const products = await productController.getLimited(36);
     return res.status(200).json(products);
   } catch (error) {
-    console.log('Load sản phẩm không thành công', error);
+    console.log("Load sản phẩm không thành công", error);
     res.status(500).json({ mess: error.message });
   }
 });

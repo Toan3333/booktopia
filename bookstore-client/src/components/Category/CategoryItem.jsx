@@ -25,9 +25,7 @@ const CategoryItem = ({ title, items, onCategoryClick, onAuthorClick, onPublishC
   return (
     <div>
       {title && (
-        <h3 className="text-mainDark text-price font-semibold leading-normal mb-7">
-          {title}
-        </h3>
+        <h3 className="text-mainDark text-price font-semibold leading-normal mb-7">{title}</h3>
       )}
       <ul className="flex flex-col gap-7">
         {title === "Danh mục" && (
@@ -35,23 +33,23 @@ const CategoryItem = ({ title, items, onCategoryClick, onAuthorClick, onPublishC
             <a
               href="#"
               className="text-text leading-normal font-normal menu-link"
-              onClick={(e) => handleClick(e, null, "Tất cả sản phẩm", "category")}
-            >
+              onClick={(e) => handleClick(e, null, "Tất cả sản phẩm", "category")}>
               Tất cả sản phẩm
             </a>
           </li>
         )}
-        {items && items.length > 0 && items.map((item) => (
-          <li key={item._id}>
-            <a
-              href="#"
-              className="text-text leading-normal font-normal menu-link"
-              onClick={(e) => handleClick(e, item._id, item.name, type)}
-            >
-              {item.name}
-            </a>
-          </li>
-        ))}
+        {items &&
+          items.length > 0 &&
+          items.map((item) => (
+            <li key={item._id}>
+              <a
+                href="#"
+                className="text-text leading-normal font-normal menu-link"
+                onClick={(e) => handleClick(e, item._id, item.name, type)}>
+                {item.name}
+              </a>
+            </li>
+          ))}
       </ul>
     </div>
   );

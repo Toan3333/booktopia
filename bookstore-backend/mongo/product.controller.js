@@ -6,7 +6,8 @@ module.exports = {
   insert,
   gettAll,
   updateById,
-  remove,getLimited,
+  remove,
+  getLimited,
   getNew,
   getProView,
   getById,
@@ -214,7 +215,7 @@ async function getLimited(count) {
     const result = await productModel.find().limit(count);
     return result;
   } catch (error) {
-    console.log('Lấy sản phẩm không thành công', error);
+    console.log("Lấy sản phẩm không thành công", error);
     throw error;
   }
 }
