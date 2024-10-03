@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import CategoryItem from "../../components/Category/CategoryItem";
+import ProductList from "../../components/Product/ProductList";
 import { FaLongArrowAltLeft, FaLongArrowAltRight } from "react-icons/fa";
 import PageTitle from "../../components/PageTitle/PageTitle";
 import "./Menu.css";
@@ -80,7 +81,6 @@ const Menu = () => {
     fetchPublishers();
   }, []);
 
-  // Lấy sản phẩm theo tìm kiếm, danh mục, tác giả, nhà xuất bản, sắp xếp và số lượng
   useEffect(() => {
     const fetchProducts = async () => {
       setLoading(true);
@@ -98,15 +98,18 @@ const Menu = () => {
           url = `${URL_API}/products/search/${searchTerm.trim()}`;
         }
 
-        // Thêm bộ lọc sắp xếp và số lượng
-        if (sortOption === "Giá tăng dần") {
-          url += `/sort/asc`;
-        } else if (sortOption === "Giá giảm dần") {
-          url += `/sort/desc`;
-        } else if (sortOption === "Mới nhất") {
-          url += `/newpro`;
+        // Thêm bộ lọc sắp xếp
+        if (sortOption) {
+          if (sortOption === "Giá tăng dần") {
+            url += "/sort/asc";
+          } else if (sortOption === "Giá giảm dần") {
+            url += "/sort/desc";
+          } else if (sortOption === "Mới nhất") {
+            url += "/newpro";
+          }
         }
 
+        // Thêm số lượng hiển thị
         if (itemsPerPage) {
           url += `/limit/${itemsPerPage}`;
         }
@@ -123,15 +126,17 @@ const Menu = () => {
     fetchProducts();
   }, [searchTerm, categoryId, authorId, publishId, sortOption, itemsPerPage]);
 
-  const categoryClick = (categoryId, categoryName) => {
-    setCategoryId(categoryId);
+  const categoryClick = (newCategoryId, categoryName) => {
+    if (categoryId === newCategoryId) {
+      return;
+    }
+    setCategoryId(newCategoryId);
     setAuthorId(null); // Reset tác giả
     setPublishId(null); // Reset nhà xuất bản
     setCurrentCategoryName(categoryName);
     setSortOption(""); // Reset sắp xếp
     setItemsPerPage(""); // Reset hiển thị số lượng
-    // Reset lại danh sách sản phẩm khi thay đổi danh mục
-    setProducts([]);
+    setProducts([]); // Reset lại danh sách sản phẩm
   };
 
   //click tác giả
