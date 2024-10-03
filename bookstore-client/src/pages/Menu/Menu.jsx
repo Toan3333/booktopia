@@ -89,60 +89,63 @@ const Menu = () => {
 
 
 
- // Lấy sản phẩm theo tìm kiếm, danh mục, tác giả, nhà xuất bản, sắp xếp và số lượng
- useEffect(() => {
-  const fetchProducts = async () => {
-    setLoading(true);
-    try {
-      let url = `${URL_API}/products`;
-
-      // Các bộ lọc khác (tìm kiếm, danh mục, tác giả, nhà xuất bản)
-      if (categoryId) {
-        url = `${URL_API}/products/categoryId/${categoryId}`;
-      } else if (authorId) {
-        url = `${URL_API}/products/authorId/${authorId}`;
-      } else if (publishId) {
-        url = `${URL_API}/products/publishId/${publishId}`;
-      } else if (searchTerm.trim()) {
-        url = `${URL_API}/products/search/${searchTerm.trim()}`;
+  useEffect(() => {
+    const fetchProducts = async () => {
+      setLoading(true);
+      try {
+        let url = `${URL_API}/products`;
+  
+        // Các bộ lọc khác (tìm kiếm, danh mục, tác giả, nhà xuất bản)
+        if (categoryId) {
+          url = `${URL_API}/products/categoryId/${categoryId}`;
+        } else if (authorId) {
+          url = `${URL_API}/products/authorId/${authorId}`;
+        } else if (publishId) {
+          url = `${URL_API}/products/publishId/${publishId}`;
+        } else if (searchTerm.trim()) {
+          url = `${URL_API}/products/search/${searchTerm.trim()}`;
+        }
+  
+        // Thêm bộ lọc sắp xếp
+        if (sortOption) {
+          if (sortOption === "Giá tăng dần") {
+            url += "/sort/asc";
+          } else if (sortOption === "Giá giảm dần") {
+            url += "/sort/desc";
+          } else if (sortOption === "Mới nhất") {
+            url += "/newpro";
+          }
+        }
+  
+        // Thêm số lượng hiển thị
+        if (itemsPerPage) {
+          url += `/limit/${itemsPerPage}`;
+        }
+  
+        const response = await axios.get(url);
+        setProducts(response.data);
+      } catch (error) {
+        console.error("Lỗi khi lấy sản phẩm", error);
+      } finally {
+        setLoading(false);
       }
+    };
+  
+    fetchProducts();
+  }, [searchTerm, categoryId, authorId, publishId, sortOption, itemsPerPage]);
+  
 
-      // Thêm bộ lọc sắp xếp và số lượng
-      if (sortOption === "Giá tăng dần") {
-        url += `/sort/asc`;
-      } else if (sortOption === "Giá giảm dần") {
-        url += `/sort/desc`;
-      } else if (sortOption === "Mới nhất") {
-        url += `/newpro`;
-      }
-
-      if (itemsPerPage) {
-        url += `/limit/${itemsPerPage}`;
-      }
-
-      const response = await axios.get(url);
-      setProducts(response.data);
-    } catch (error) {
-      console.error("Lỗi khi lấy sản phẩm", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  fetchProducts();
-}, [searchTerm, categoryId, authorId, publishId, sortOption, itemsPerPage]);
-
-
-
-const categoryClick = (categoryId, categoryName) => {
-  setCategoryId(categoryId);
+const categoryClick = (newCategoryId, categoryName) => {
+  if (categoryId === newCategoryId) {
+    return; 
+  }
+  setCategoryId(newCategoryId);
   setAuthorId(null); // Reset tác giả
   setPublishId(null); // Reset nhà xuất bản
   setCurrentCategoryName(categoryName);
   setSortOption(""); // Reset sắp xếp
   setItemsPerPage(""); // Reset hiển thị số lượng
-  // Reset lại danh sách sản phẩm khi thay đổi danh mục
-  setProducts([]);
+  setProducts([]); // Reset lại danh sách sản phẩm
 };
 
 
