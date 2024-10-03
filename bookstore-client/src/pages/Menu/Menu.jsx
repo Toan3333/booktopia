@@ -25,7 +25,8 @@ const Menu = () => {
   const [publishers, setPublishers] = useState([]);
   const [publishId, setPublishId] = useState(null);
 
-  const [currentCategoryName, setCurrentCategoryName] = useState("Tất cả sản phẩm");
+  const [currentCategoryName, setCurrentCategoryName] =
+    useState("Tất cả sản phẩm");
 
   // Lấy sản phẩm theo tìm kiếm
   useEffect(() => {
@@ -46,6 +47,11 @@ const Menu = () => {
 
     fetchProducts();
   }, [searchTerm]);
+
+
+
+
+
 
   // Lấy danh mục, tác giả và nhà xuất bản
   useEffect(() => {
@@ -81,13 +87,14 @@ const Menu = () => {
     fetchPublishers();
   }, []);
 
-  // Lấy sản phẩm theo tìm kiếm, danh mục, tác giả, nhà xuất bản, sắp xếp và số lượng
+
+
   useEffect(() => {
     const fetchProducts = async () => {
       setLoading(true);
       try {
         let url = `${URL_API}/products`;
-
+  
         // Các bộ lọc khác (tìm kiếm, danh mục, tác giả, nhà xuất bản)
         if (categoryId) {
           url = `${URL_API}/products/categoryId/${categoryId}`;
@@ -98,20 +105,23 @@ const Menu = () => {
         } else if (searchTerm.trim()) {
           url = `${URL_API}/products/search/${searchTerm.trim()}`;
         }
-
-        // Thêm bộ lọc sắp xếp và số lượng
-        if (sortOption === "Giá tăng dần") {
-          url += `/sort/asc`;
-        } else if (sortOption === "Giá giảm dần") {
-          url += `/sort/desc`;
-        } else if (sortOption === "Mới nhất") {
-          url += `/newpro`;
+  
+        // Thêm bộ lọc sắp xếp
+        if (sortOption) {
+          if (sortOption === "Giá tăng dần") {
+            url += "/sort/asc";
+          } else if (sortOption === "Giá giảm dần") {
+            url += "/sort/desc";
+          } else if (sortOption === "Mới nhất") {
+            url += "/newpro";
+          }
         }
-
+  
+        // Thêm số lượng hiển thị
         if (itemsPerPage) {
           url += `/limit/${itemsPerPage}`;
         }
-
+  
         const response = await axios.get(url);
         setProducts(response.data);
       } catch (error) {
@@ -120,40 +130,46 @@ const Menu = () => {
         setLoading(false);
       }
     };
-
+  
     fetchProducts();
   }, [searchTerm, categoryId, authorId, publishId, sortOption, itemsPerPage]);
+  
 
-  const categoryClick = (categoryId, categoryName) => {
-    setCategoryId(categoryId);
-    setAuthorId(null); // Reset tác giả
-    setPublishId(null); // Reset nhà xuất bản
-    setCurrentCategoryName(categoryName);
-    setSortOption(""); // Reset sắp xếp
-    setItemsPerPage(""); // Reset hiển thị số lượng
-    // Reset lại danh sách sản phẩm khi thay đổi danh mục
-    setProducts([]);
-  };
+const categoryClick = (newCategoryId, categoryName) => {
+  if (categoryId === newCategoryId) {
+    return; 
+  }
+  setCategoryId(newCategoryId);
+  setAuthorId(null); // Reset tác giả
+  setPublishId(null); // Reset nhà xuất bản
+  setCurrentCategoryName(categoryName);
+  setSortOption(""); // Reset sắp xếp
+  setItemsPerPage(""); // Reset hiển thị số lượng
+  setProducts([]); // Reset lại danh sách sản phẩm
+};
 
-  //click tác giả
-  const authorClick = (authorId, authorName) => {
-    setAuthorId(authorId);
-    setCategoryId(null); // Reset danh mục
-    setPublishId(null); // Reset nhà xuất bản
-    setCurrentCategoryName(authorName);
-    setSortOption(""); // Reset sắp xếp
-    setItemsPerPage(""); // Reset hiển thị số lượng
-  };
 
-  //click nhà xuất bản
-  const publishClick = (publishId, publishName) => {
-    setPublishId(publishId);
-    setCategoryId(null); // Reset danh mục
-    setAuthorId(null); // Reset tác giả
-    setCurrentCategoryName(publishName);
-    setSortOption(""); // Reset sắp xếp
-    setItemsPerPage(""); // Reset hiển thị số lượng
-  };
+//click tác giả
+const authorClick = (authorId, authorName) => {
+  setAuthorId(authorId);
+  setCategoryId(null); // Reset danh mục
+  setPublishId(null); // Reset nhà xuất bản
+  setCurrentCategoryName(authorName);
+  setSortOption(""); // Reset sắp xếp
+  setItemsPerPage(""); // Reset hiển thị số lượng
+};
+
+//click nhà xuất bản
+const publishClick = (publishId, publishName) => {
+  setPublishId(publishId);
+  setCategoryId(null); // Reset danh mục
+  setAuthorId(null); // Reset tác giả
+  setCurrentCategoryName(publishName);
+  setSortOption(""); // Reset sắp xếp
+  setItemsPerPage(""); // Reset hiển thị số lượng
+};
+
+  
 
   return (
     <div className="mt-8">
@@ -177,7 +193,11 @@ const Menu = () => {
                     items={categories}
                     onCategoryClick={categoryClick}
                   />
-                  <CategoryItem title="Tác giả" items={authors} onAuthorClick={authorClick} />
+                  <CategoryItem
+                    title="Tác giả"
+                    items={authors}
+                    onAuthorClick={authorClick}
+                  />
                   <CategoryItem
                     title="Nhà xuất bản"
                     items={publishers}
@@ -194,7 +214,8 @@ const Menu = () => {
                   <select
                     className="select select-bordered w-full max-w-xs custom-select"
                     value={sortOption}
-                    onChange={(e) => setSortOption(e.target.value)}>
+                    onChange={(e) => setSortOption(e.target.value)}
+                  >
                     <option disabled value="">
                       Sắp xếp theo:
                     </option>
@@ -205,7 +226,8 @@ const Menu = () => {
                   <select
                     className="select select-bordered w-full max-w-xs"
                     value={itemsPerPage}
-                    onChange={(e) => setItemsPerPage(e.target.value)}>
+                    onChange={(e) => setItemsPerPage(e.target.value)}
+                  >
                     <option disabled value="">
                       Hiển thị:
                     </option>
