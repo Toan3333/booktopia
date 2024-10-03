@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import CategoryItem from "../../components/Category/CategoryItem";
-import ProductList from "../../components/Product/ProductList";
 import { FaLongArrowAltLeft, FaLongArrowAltRight } from "react-icons/fa";
 import PageTitle from "../../components/PageTitle/PageTitle";
 import "./Menu.css";
