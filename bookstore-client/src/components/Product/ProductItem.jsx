@@ -75,7 +75,7 @@ const ProductItem = ({ className = "", item }) => {
                 {name}
               </h3>
               <p className="text-sm font-normal text-grayText line-clamp-1 leading-normal ">
-                {author.authorName}
+                {author?.authorName || "Unknown Author"}
               </p>
               <div
                 className={`flex items-center gap-3 ${

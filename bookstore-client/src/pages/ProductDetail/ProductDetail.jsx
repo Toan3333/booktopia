@@ -416,7 +416,7 @@ const ProductRelated = ({ id }) => {
   return (
     <div className="mt-10">
       <Title children="Sản phẩm liên quan" className="text-mainDark" />
-      <div className="grid grid-cols-5 max-lg:grid-cols-4 max-md:grid-cols-2 gap-10 mt-5">
+      <div className="grid grid-cols-5 max-lg:grid-cols-2 max-md:grid-cols-2 gap-10 mt-5">
         {productListRelated.map((item) => (
           <ProductItem key={item._id} item={item} />
         ))}

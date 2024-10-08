@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 const Title = ({ children }) => {
   return (
     <div>
-      <div className="flex items-center justify-between gap-24">
+      <div className="flex items-center justify-between gap-20">
         <h2 className="text-[28px] text-mainDark font-bold leading-normal max-lg:text-[16px] max-xl:text-2xl">
           {children}
         </h2>
