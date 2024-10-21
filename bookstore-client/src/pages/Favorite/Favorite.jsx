@@ -95,6 +95,15 @@ const Favorite = () => {
             <div className="text-grayText leading-normal font-normal mb-5 max-md:hidden">
               Sản phẩm yêu thích
             </div>
+            <div className="mb-6">
+              <select className="select select-bordered w-full max-w-xs">
+                <option disabled selected>
+                  Sắp xếp theo
+                </option>
+                <option>Han Solo</option>
+                <option>Greedo</option>
+              </select>
+            </div>
             <table className="table max-md:w-full">
               <thead className="text-[16px] font-semibold leading-normal text-black">
                 <tr>

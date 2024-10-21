@@ -1,7 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Sidebar, Menu, MenuItem, SubMenu } from "react-pro-sidebar";
-import { FaBook, FaClipboardList, FaRegEdit, FaTrashAlt, FaUser, FaUserEdit } from "react-icons/fa";
+import {
+  FaBook,
+  FaClipboardList,
+  FaImage,
+  FaRegEdit,
+  FaTrashAlt,
+  FaUser,
+  FaUserEdit,
+} from "react-icons/fa";
 import { MdLogout } from "react-icons/md";
 import { AiFillDashboard, AiOutlineBars } from "react-icons/ai";
 
@@ -12,7 +20,7 @@ import PageTitle from "../../../components/PageTitle/PageTitle";
 import HeaderAdmin from "../../../components/HeaderAdmin/HeaderAdmin";
 import { URL_API } from "../../../constants/constants";
 
-const ManageOrder = () => {
+const OrderDetail = () => {
   const navigate = useNavigate();
   const [listOrder, setOrder] = useState([]);
   const [collapsed, setCollapsed] = useState(false);
@@ -153,65 +161,99 @@ const ManageOrder = () => {
         <div className="flex-1 p-6">
           <HeaderAdmin />
           <div className="flex items-center justify-between pb-8 border-b pt-3">
-            <PageTitle title="Quản lý đơn hàng" className="text-mainDark" />
+            <PageTitle title="Chi tiết đơn hàng" className="text-mainDark" />
           </div>
           <div className="mt-6 border rounded-[30px] p-5">
+            <form
+              action=""
+              className="flex flex-col gap-6
+            ">
+              <div className="flex items-center justify-between gap-12">
+                <div className="w-full flex flex-col gap-2">
+                  <label htmlFor="">*Mã đơn hàng</label>
+                  <input
+                    type="text"
+                    placeholder="Type here"
+                    className="input input-bordered w-full"
+                  />
+                </div>
+                <div className="w-full flex flex-col gap-2">
+                  <label htmlFor="">Ngày lập</label>
+                  <input
+                    type="date"
+                    placeholder="15/07/2024"
+                    className="input input-bordered w-full"
+                  />
+                </div>
+              </div>
+              <div className="w-full flex flex-col gap-2">
+                <label htmlFor="">*Tên người mua</label>
+                <input
+                  type="text"
+                  placeholder="Trần Anh Toàn"
+                  className="input input-bordered w-full"
+                />
+              </div>
+              <div className="w-full flex flex-col gap-2">
+                <label htmlFor="">*Địa chỉ</label>
+                <input
+                  type="text"
+                  placeholder="Q12, TPHCM"
+                  className="input input-bordered w-full"
+                />
+              </div>
+              <div className="flex items-center justify-between gap-12">
+                <div className="w-full flex flex-col gap-2">
+                  <label htmlFor="">Giá sản phẩm</label>
+                  <input
+                    type="text"
+                    placeholder="Type here"
+                    className="input input-bordered w-full"
+                  />
+                </div>
+                <div className="w-full flex flex-col gap-2">
+                  <label htmlFor="">Số lượng</label>
+                  <input type="text" placeholder="3" className="input input-bordered w-full" />
+                </div>
+              </div>
+              <div className="w-[48.5%] flex flex-col gap-2">
+                <label htmlFor="">Trạng thái</label>
+                <select className="select select-bordered w-full max-w-xs">
+                  <option disabled selected>
+                    Chưa xác nhận
+                  </option>
+                  <option>Han Solo</option>
+                  <option>Greedo</option>
+                </select>
+              </div>
+            </form>
             <table className="table w-full">
               <thead className="text-[16px] font-semibold text-black">
                 <tr>
-                  <th>#</th>
-                  <th>Mã đơn hàng</th>
-                  <th>Ngày lập</th>
-                  <th>Tên tài khoản</th>
-                  <th>Địa chỉ</th>
-                  <th>Tổng tiền</th>
-                  <th>Trạng thái</th>
-                  <th className="text-center">Thao tác</th>
+                  <th className="text-center">#</th>
+                  <th className="text-center flex items-center justify-center">
+                    <FaImage className="w-6 h-6 " />
+                  </th>
+                  <th className="text-center">Tên sách</th>
+                  <th className="text-center">Phân loại</th>
+                  <th className="text-center">Giá</th>
                 </tr>
               </thead>
               <tbody>
-                {listOrder.map((order, index) => {
-                  const dateObj = new Date(order.date);
-                  const formattedDate = dateObj.toLocaleDateString("vi-VN"); // 'vi-VN' for dd/mm/yyyy format
-                  return (
-                    <tr key={order._id}>
-                      <td>{index + 1}</td>
-                      <td>{order.orderId}</td>
-                      <td>{formattedDate}</td>
-                      <td>{order.name}</td>
-                      <td>{order.address}</td>
-                      <td>
-                        {Number(order.total).toLocaleString("vi-VN", {
-                          style: "currency",
-                          currency: "VND",
-                        })}
-                      </td>
-                      <td>
-                        <select
-                          value={order.status}
-                          onChange={(e) => handleStatusChange(order._id, e.target.value)}>
-                          {statusOptions.map((status) => (
-                            <option key={status} value={status}>
-                              {status}
-                            </option>
-                          ))}
-                        </select>
-                      </td>
-                      <td>
-                        <div className="flex items-center justify-center gap-3">
-                          <button>
-                            <Link to="/admin/edit-order">
-                              <FaUserEdit className="w-5 h-4 text-mainDark" />
-                            </Link>
-                          </button>
-                          <button onClick={() => handleDelete(order._id)}>
-                            <FaTrashAlt className="w-5 h-4 text-red" />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })}
+                <tr>
+                  <td>1</td>
+                  <td className="flex items-center justify-center">
+                    <img src="./images/product.png" alt="" />
+                  </td>
+                  <td>
+                    <div className="flex items-center justify-center gap-3">
+                      <div className="">Cây cam ngọt của tôi</div>
+                      <div className="">x1</div>
+                    </div>
+                  </td>
+                  <td className="text-center">Văn học</td>
+                  <td className="text-center">199000đ</td>
+                </tr>
               </tbody>
             </table>
           </div>
@@ -221,4 +263,4 @@ const ManageOrder = () => {
   );
 };
 
-export default ManageOrder;
+export default OrderDetail;

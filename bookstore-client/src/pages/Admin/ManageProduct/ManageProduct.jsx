@@ -34,11 +34,13 @@ const ManageProduct = () => {
   useEffect(() => {
     const fetchProductList = async () => {
       try {
-        const response = await axios.get(`${URL_API}/products`);
-        const data = response.data.Product;
+        const response = await axios.get("http://localhost:3000/products");
+        const data = response.data;
         setAllProductList(data);
+        console.log(data);
       } catch (error) {
         console.log(error);
+        setAllProductList([]); // Đặt mảng rỗng trong trường hợp lỗi
       }
     };
     fetchProductList();
