@@ -198,7 +198,7 @@ const Profile = () => {
               <div className="w-full">
                 <label htmlFor="date">Ngày sinh</label>
                 <input
-                  type="text"
+                  type="date"
                   id="date"
                   placeholder="dd/mm/yyyy"
                   className="input input-bordered w-full mt-2"

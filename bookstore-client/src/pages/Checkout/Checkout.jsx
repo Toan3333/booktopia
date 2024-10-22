@@ -1,10 +1,12 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import "../../index.css";
 import Button from "../../components/Button/Button";
 import { useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import Cookies from "js-cookie";
 import { URL_API } from "../../constants/constants";
+import axios from "axios";
+
 const Checkout = () => {
   const {
     register,
@@ -17,6 +19,27 @@ const Checkout = () => {
     () => listProducts.reduce((total, item) => total + item.price2 * item.quantity, 0),
     [listProducts]
   );
+
+  const [data, setData] = useState([]);
+  const [cities, setCities] = useState([]);
+  const [selectedCity, setSelectedCity] = useState("");
+  const [selectedDistrict, setSelectedDistrict] = useState("");
+  const [selectedWard, setSelectedWard] = useState("");
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(
+          "https://raw.githubusercontent.com/kenzouno1/DiaGioiHanhChinhVN/master/data.json"
+        );
+        setData(response.data);
+        setCities(response.data.map((city) => city.Name));
+      } catch (error) {
+        console.error("Error fetching location data:", error);
+      }
+    };
+    fetchData();
+  }, []);
 
   useEffect(() => {
     const user = Cookies.get("user");
@@ -40,6 +63,9 @@ const Checkout = () => {
           ...data,
           listProducts,
           total,
+          city: selectedCity,
+          district: selectedDistrict,
+          ward: selectedWard,
         }),
       });
 
@@ -53,6 +79,22 @@ const Checkout = () => {
       console.error("Error creating order", error);
     }
   };
+
+  const handleCityChange = (e) => {
+    setSelectedCity(e.target.value);
+    setSelectedDistrict("");
+    setSelectedWard("");
+  };
+
+  const handleDistrictChange = (e) => {
+    setSelectedDistrict(e.target.value);
+    setSelectedWard("");
+  };
+
+  const getDistricts = () => data.find((city) => city.Name === selectedCity)?.Districts || [];
+  const getWards = () =>
+    getDistricts().find((district) => district.Name === selectedDistrict)?.Wards || [];
+
   return (
     <div className="py-10">
       <div className="container">
@@ -70,11 +112,10 @@ const Checkout = () => {
             <div className="w-[55%] mt-6 max-md:w-full">
               <h3 className="text-text font-semibold leading-normal mb-2">Thông tin giao hàng</h3>
               <div className="flex flex-col gap-6">
+                {/* Thông tin cá nhân */}
                 <div>
                   <input
-                    {...register("name", {
-                      required: "Họ tên là bắt buộc",
-                    })}
+                    {...register("name", { required: "Họ tên là bắt buộc" })}
                     className="input input-bordered w-full"
                     id="name"
                     type="text"
@@ -86,10 +127,7 @@ const Checkout = () => {
                   <input
                     {...register("email", {
                       required: "Email là bắt buộc",
-                      pattern: {
-                        value: /^\S+@\S+$/i,
-                        message: "Email không hợp lệ",
-                      },
+                      pattern: { value: /^\S+@\S+$/i, message: "Email không hợp lệ" },
                     })}
                     id="userEmail"
                     className="input input-bordered w-full"
@@ -100,9 +138,7 @@ const Checkout = () => {
                 </div>
                 <div>
                   <input
-                    {...register("phone", {
-                      required: "Số điện thoại là bắt buộc",
-                    })}
+                    {...register("phone", { required: "Số điện thoại là bắt buộc" })}
                     id="userPhoneNumber"
                     className="input input-bordered w-full"
                     type="text"
@@ -112,9 +148,7 @@ const Checkout = () => {
                 </div>
                 <div>
                   <input
-                    {...register("address", {
-                      required: "Địa chỉ là bắt buộc",
-                    })}
+                    {...register("address", { required: "Địa chỉ là bắt buộc" })}
                     id="userAddress"
                     className="input input-bordered w-full"
                     type="text"
@@ -122,7 +156,61 @@ const Checkout = () => {
                   />
                   {errors.address && <div className="errform">{errors.address.message}</div>}
                 </div>
+
+                {/* Dropdown cho địa chỉ */}
+                <div>
+                  <label htmlFor="city" className="block mb-2">
+                    Chọn Thành Phố:
+                  </label>
+                  <select
+                    value={selectedCity}
+                    onChange={handleCityChange}
+                    className="input input-bordered w-full">
+                    <option value="">-- Chọn Thành Phố --</option>
+                    {cities.map((city) => (
+                      <option key={city} value={city}>
+                        {city}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {selectedCity && (
+                  <div>
+                    <label className="block mb-2">Chọn Quận Huyện:</label>
+                    <select
+                      value={selectedDistrict}
+                      onChange={handleDistrictChange}
+                      className="input input-bordered w-full">
+                      <option value="">-- Chọn Quận Huyện --</option>
+                      {getDistricts().map((district) => (
+                        <option key={district.Id} value={district.Name}>
+                          {district.Name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                )}
+
+                {selectedDistrict && (
+                  <div>
+                    <label className="block mb-2">Chọn Phường Xã:</label>
+                    <select
+                      value={selectedWard}
+                      onChange={(e) => setSelectedWard(e.target.value)}
+                      className="input input-bordered w-full">
+                      <option value="">-- Chọn Phường Xã --</option>
+                      {getWards().map((ward) => (
+                        <option key={ward.Id} value={ward.Name}>
+                          {ward.Name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                )}
               </div>
+
+              {/* Phương thức vận chuyển */}
               <div className="mt-5">
                 <h3 className="text-text font-semibold leading-normal mb-4">
                   Phương thức vận chuyển
@@ -142,9 +230,9 @@ const Checkout = () => {
                   </div>
                   <div className="ml-10">30.000đ</div>
                 </div>
-
-                {/* Additional shipping method options can be added similarly */}
               </div>
+
+              {/* Phương thức thanh toán */}
               <div className="mt-5">
                 <h3 className="text-text font-semibold leading-normal mb-4">
                   Phương thức thanh toán
@@ -179,25 +267,29 @@ const Checkout = () => {
                 </div>
               </div>
             </div>
+
+            {/* Đơn hàng */}
             <div className="w-[45%] max-md:w-full">
               <div className="rounded-[5px] border py-8 px-7">
                 <h2 className="text-lg font-semibold mb-5">Đơn hàng</h2>
-                {listProducts.map((item, index) => (
-                  <div className="" key={item._id}>
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center">
-                        <div className="w-28 h-22 relative">
+                {listProducts.map((item) => (
+                  <div className="mb-5" key={item._id}>
+                    <div className="flex items-center justify-between gap-3">
+                      <div className="flex items-center gap-3">
+                        <div className="w-24 h-32 relative">
                           <img
                             src={`${URL_API}/images/${item.image1}`}
-                            className="w-full h-full cursor-pointer"
+                            className="w-full h-full cursor-pointer object-cover"
                             alt=""
                           />
-                          <div className="absolute flex items-center justify-center -top-3 right-2 w-5 h-5 rounded-full bg-mainDark text-white">
+                          <div className="absolute flex items-center justify-center -top-2 -right-2 w-5 h-5 rounded-full bg-mainDark text-white">
                             {item.quantity}
                           </div>
                         </div>
-                        <div className="flex flex-col gap-1">
-                          <h4 className="font-semibold text-text leading-normal">{item.name}</h4>
+                        <div className="flex flex-col gap-1 max-w-[250px]">
+                          <h4 className="font-semibold text-sm leading-normal line-clamp-3">
+                            {item.name}
+                          </h4>
                           <div className="font-normal text-sm text-grayText leading-normal">
                             {item.category.categoryName}
                           </div>
@@ -212,7 +304,6 @@ const Checkout = () => {
                     </div>
                   </div>
                 ))}
-                {/* <OrderList></OrderList> */}
                 <div className="border-t">
                   <div className="flex items-center justify-between gap-3 mt-7 pb-7 border-b">
                     <div className="w-[70%]">
@@ -225,7 +316,8 @@ const Checkout = () => {
                     <div className="w-[30%]">
                       <Button
                         children="Sử dụng"
-                        className="rounded-[5px] px-5 py-4 w-full max-md:px-2 max-md:py-3 max-md:text-sm"></Button>
+                        className="rounded-[5px] px-5 py-4 w-full max-md:px-2 max-md:py-3 max-md:text-sm"
+                      />
                     </div>
                   </div>
                 </div>
@@ -233,10 +325,7 @@ const Checkout = () => {
                   <div className="flex justify-between my-5">
                     <span className="text-text font-normal leading-normal">Tạm tính:</span>
                     <span className="text-text font-normal leading-normal">
-                      {total.toLocaleString("vi-VN", {
-                        style: "currency",
-                        currency: "VND",
-                      })}
+                      {total.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}
                     </span>
                   </div>
                   <div className="flex justify-between text-text font-normal leading-normal">

@@ -81,7 +81,7 @@ const Cart = () => {
             Giỏ hàng
           </a>
         </nav>
-        <div className="flex justify-between gap-11 max-lg:flex-col max-xl:flex-col">
+        <div className="flex justify-between gap-8 max-lg:flex-col max-xl:flex-col">
           <div className="max-w-[800px] w-full max-xl:max-w-[100%]">
             {hasItems ? (
               <div>
@@ -103,13 +103,17 @@ const Cart = () => {
                     {cartItems.map((item, index) => (
                       <tr key={item._id}>
                         <td className="flex items-center gap-3 py-6 cursor-pointer max-md:gap-2 max-md:py-3">
-                          <img
-                            onClick={() => navigate(`/product-detail/${item._id}`)}
-                            src={`${URL_API}/images/${item.image1}`}
-                            className="w-[100px] h-[100px] rounded-lg cursor-pointer"
-                            alt="Product"
-                          />
-                          <div>
+                          <div className="w-24 h-32 flex items-center justify-center">
+                            {" "}
+                            {/* Kích thước cố định */}
+                            <img
+                              onClick={() => navigate(`/product-detail/${item._id}`)}
+                              src={`${URL_API}/images/${item.image1}`}
+                              className="w-full h-full object-cover rounded-lg cursor-pointer"
+                              alt="Product"
+                            />
+                          </div>
+                          <div className="max-w-[232px]">
                             <h3 className="font-semibold leading-normal text-text max-md:leading-4 max-md:line-clamp-2">
                               {item?.name}
                             </h3>
@@ -150,6 +154,7 @@ const Cart = () => {
                             </div>
                           </div>
                         </td>
+
                         <td className="py-4 px-5 text-gray-700 text-center max-md:hidden">
                           {item.price2.toLocaleString("vi-VN", {
                             style: "currency",

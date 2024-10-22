@@ -60,7 +60,7 @@ const MyOrderDetail = () => {
               <thead className="text-[16px] font-semibold text-black">
                 <tr>
                   <th>#</th>
-                  <th className="text-center flex items-center justify-center">
+                  <th className="text-center flex items-center justify-center max-w-[150px]">
                     <FaImage className="w-6 h-6 " />
                   </th>
                   <th>Tên sách</th>
@@ -71,8 +71,8 @@ const MyOrderDetail = () => {
               <tbody>
                 <tr>
                   <td>1</td>
-                  <td className="flex items-center justify-center">
-                    <img src="./images/product.png" alt="" />
+                  <td className="flex items-center justify-center max-w-[150px]">
+                    <img src="./images/product.png" className="w-full" alt="" />
                   </td>
                   <td>
                     <div className="flex flex-col  gap-3">
@@ -86,7 +86,6 @@ const MyOrderDetail = () => {
               </tbody>
             </table>
             <div className="flex items-center justify-end mt-6 gap-5">
-              <Button>Liên hệ người bán</Button>
               <Button className="bg-secondary">Hủy</Button>
             </div>
           </div>
