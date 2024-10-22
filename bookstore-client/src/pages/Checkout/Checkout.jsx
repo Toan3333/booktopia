@@ -286,7 +286,7 @@ const Checkout = () => {
                             {item.quantity}
                           </div>
                         </div>
-                        <div className="flex flex-col gap-1 max-w-[250px]">
+                        <div className="flex flex-col gap-1 max-w-[250px] max-md:max-w-[220px]">
                           <h4 className="font-semibold text-sm leading-normal line-clamp-3">
                             {item.name}
                           </h4>
