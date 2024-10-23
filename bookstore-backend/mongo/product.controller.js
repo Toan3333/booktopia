@@ -17,8 +17,17 @@ module.exports = {
   search,
   getHot,
   getRelated,
+  getNewProductCategory,
+  getDecreaseCategory,
+  getAscendingCategory,
+  getNewProductAuthor,
   getDecrease,
   getAscending,
+  getDecreaseAuthor,
+  getAscendingAuthor,
+  getDecreasePublish,
+  getAscendingPublish,
+  getNewProductPublish,
   getSale,
   getByCategory,
   getByPublish,
@@ -399,6 +408,138 @@ async function getLimited(count) {
     throw error;
   }
 }
+// Sản phẩm mới nhất bên trang sản phẩm
+async function getNewProduct() {
+  try {
+    const result = await productModel.find().sort({ _id: -1 });
+    return result;
+  } catch (error) {
+    console.log("Lỗi sản phẩm mới nhất", error);
+    throw error;
+  }
+}
+
+/************************************************DANH MUC********************************************/
+
+//sản phẩm mới theo danh mục bên trang sản phẩm
+async function getNewProductCategory(categoryId) {
+  try {
+    const result = await productModel
+      .find({ "category.categoryId": new mongoose.Types.ObjectId(categoryId) })
+      .sort({ _id: -1 });
+    return result;
+  } catch (error) {
+    console.log("Lỗi sản phẩm mới nhất", error);
+    throw error;
+  }
+}
+
+//Lọc giá sản phẩm giảm dần theo danh mục bên trang sản phẩm
+async function getDecreaseCategory(categoryId) {
+  try {
+    const result = await productModel
+      .find({ "category.categoryId": new mongoose.Types.ObjectId(categoryId) })
+      .sort({ price2: -1 });
+    return result;
+  } catch (error) {
+    console.log("Lỗi lấy sp", error);
+    throw error;
+  }
+}
+
+//Lọc giá sản phẩm tăng dần theo danh mục bên trang sản phẩm
+async function getAscendingCategory(categoryId) {
+  try {
+    const result = await productModel
+      .find({ "category.categoryId": new mongoose.Types.ObjectId(categoryId) })
+      .sort({ price2: 1 });
+    return result;
+  } catch (error) {
+    console.log("Lỗi lấy sp theo key", error);
+    throw error;
+  }
+}
+
+/*****************************************TÁC GIẢ**************************************************/
+
+//sản phẩm mới theo tác giả bên trang sản phẩm
+async function getNewProductAuthor(authorId) {
+  try {
+    const result = await productModel
+      .find({ "author.authorId": new mongoose.Types.ObjectId(authorId) })
+      .sort({ _id: -1 });
+    return result;
+  } catch (error) {
+    console.log("Lỗi sản phẩm mới nhất", error);
+    throw error;
+  }
+}
+//Lọc giá sản phẩm giảm dần theo danh mục bên trang sản phẩm
+async function getDecreaseAuthor(authorId) {
+  try {
+    const result = await productModel
+      .find({ "author.authorId": new mongoose.Types.ObjectId(authorId) })
+      .sort({ price2: -1 });
+    return result;
+  } catch (error) {
+    console.log("Lỗi lấy sp", error);
+    throw error;
+  }
+}
+//Lọc giá sản phẩm tăng dần theo danh mục bên trang sản phẩm
+async function getAscendingAuthor(authorId) {
+  try {
+    const result = await productModel
+      .find({ "author.authorId": new mongoose.Types.ObjectId(authorId) })
+      .sort({ price2: 1 });
+    return result;
+  } catch (error) {
+    console.log("Lỗi lấy sp theo key", error);
+    throw error;
+  }
+}
+
+/*****************************************TÁC GIẢ**************************************************/
+
+//sản phẩm mới theo tác giả bên trang sản phẩm
+async function getNewProductPublish(publishId) {
+  try {
+    const result = await productModel
+      .find({ "publish.publishId": new mongoose.Types.ObjectId(publishId) })
+      .sort({ _id: -1 });
+    return result;
+  } catch (error) {
+    console.log("Lỗi sản phẩm mới nhất", error);
+    throw error;
+  }
+}
+//Lọc giá sản phẩm giảm dần theo danh mục bên trang sản phẩm
+async function getDecreasePublish(publishId) {
+  try {
+    const result = await productModel
+      .find({ "publish.publishId": new mongoose.Types.ObjectId(publishId) })
+      .sort({ price2: -1 });
+    return result;
+  } catch (error) {
+    console.log("Lỗi lấy sp", error);
+    throw error;
+  }
+}
+//Lọc giá sản phẩm tăng dần theo danh mục bên trang sản phẩm
+async function getAscendingPublish(publishId) {
+  try {
+    const result = await productModel
+      .find({ "publish.publishId": new mongoose.Types.ObjectId(publishId) })
+      .sort({ price2: 1 });
+    return result;
+  } catch (error) {
+    console.log("Lỗi lấy sp theo key", error);
+    throw error;
+  }
+}
+
+/****************************************************************************************************/
+
 //Sản phẩm nhiều lượt xem
 async function getProView() {
   try {

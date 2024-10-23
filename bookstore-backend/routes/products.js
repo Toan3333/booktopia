@@ -228,6 +228,130 @@ router.get("/hot", async (req, res) => {
     res.status(500).json({ mess: error });
   }
 });
+//Router hiển thị sản phẩm mới nhất bên trang sản phẩm
+router.get("/newpro", async (req, res) => {
+  try {
+    const product = await productController.getNewProduct();
+    return res.status(200).json(product);
+  } catch (error) {
+    console.log("Load sản phẩm không thành công", error);
+    res.status(500).json({ mess: error });
+  }
+});
+
+//sản phẩm mới theo danh mục bên trang sản phẩm
+router.get("/categoryId/:id/newpro", async (req, res) => {
+  try {
+    const categoryId = req.params.id; // Lấy id từ tham số URL
+    const products = await productController.getNewProductCategory(categoryId);
+    return res.status(200).json(products);
+  } catch (error) {
+    console.log("Load sản phẩm không thành công", error);
+    res.status(500).json({ mess: error.message });
+  }
+});
+
+//sản phẩm giá tăng dần theo danh mục bên trang sản phẩm
+//http://localhost:3000/products/sort/asc
+router.get("/categoryId/:id/sort/asc", async (req, res) => {
+  try {
+    const categoryId = req.params.id; // Lấy id từ tham số URL
+    const product = await productController.getAscendingCategory(categoryId);
+    return res.status(200).json(product);
+  } catch (error) {
+    console.log("Load sản phẩm không thành công", error);
+    res.status(500).json({ mess: error });
+  }
+});
+
+//sản phẩm giá giảm dần theo danh mục bên trang sản phẩm
+//http://localhost:3000/products/sort/desc
+router.get("/categoryId/:id/sort/desc", async (req, res) => {
+  try {
+    const categoryId = req.params.id; // Lấy id từ tham số URL
+    const product = await productController.getDecreaseCategory(categoryId);
+    return res.status(200).json(product);
+  } catch (error) {
+    console.log("Load sản phẩm không thành công", error);
+    res.status(500).json({ mess: error });
+  }
+});
+
+//sản phẩm mới theo tác giả
+router.get("/authorId/:id/newpro", async (req, res) => {
+  try {
+    const authorId = req.params.id; // Lấy id từ tham số URL
+    const products = await productController.getNewProductAuthor(authorId);
+    return res.status(200).json(products);
+  } catch (error) {
+    console.log("Load sản phẩm không thành công", error);
+    res.status(500).json({ mess: error.message });
+  }
+});
+//sản phẩm giá tăng dần theo tacs gia bên trang sản phẩm
+//http://localhost:3000/products/sort/asc
+router.get("/authorId/:id/sort/asc", async (req, res) => {
+  try {
+    const authorId = req.params.id; // Lấy id từ tham số URL
+    const product = await productController.getAscendingAuthor(authorId);
+    return res.status(200).json(product);
+  } catch (error) {
+    console.log("Load sản phẩm không thành công", error);
+    res.status(500).json({ mess: error });
+  }
+});
+
+//sản phẩm giá giảm dần theo tacs gia bên trang sản phẩm
+//http://localhost:3000/products/sort/desc
+router.get("/authorId/:id/sort/desc", async (req, res) => {
+  try {
+    const authorId = req.params.id; // Lấy id từ tham số URL
+    const product = await productController.getDecreaseAuthor(authorId);
+    return res.status(200).json(product);
+  } catch (error) {
+    console.log("Load sản phẩm không thành công", error);
+    res.status(500).json({ mess: error });
+  }
+});
+
+//sản phẩm mới theo tác giả
+router.get("/publishId/:id/newpro", async (req, res) => {
+  try {
+    const publishId = req.params.id; // Lấy id từ tham số URL
+    const products = await productController.getNewProductPublish(publishId);
+    return res.status(200).json(products);
+  } catch (error) {
+    console.log("Load sản phẩm không thành công", error);
+    res.status(500).json({ mess: error.message });
+  }
+});
+//sản phẩm giá tăng dần theo tacs gia bên trang sản phẩm
+//http://localhost:3000/products/sort/asc
+router.get("/publishId/:id/sort/asc", async (req, res) => {
+  try {
+    const publishId = req.params.id; // Lấy id từ tham số URL
+    const product = await productController.getAscendingPublish(publishId);
+    return res.status(200).json(product);
+  } catch (error) {
+    console.log("Load sản phẩm không thành công", error);
+    res.status(500).json({ mess: error });
+  }
+});
+
+//sản phẩm giá giảm dần theo tacs gia bên trang sản phẩm
+//http://localhost:3000/products/sort/desc
+router.get("/publishId/:id/sort/desc", async (req, res) => {
+  try {
+    const publishId = req.params.id; // Lấy id từ tham số URL
+    const product = await productController.getDecreasePublish(publishId);
+    return res.status(200).json(product);
+  } catch (error) {
+    console.log("Load sản phẩm không thành công", error);
+    res.status(500).json({ mess: error });
+  }
+});
+
+/**************************************************************************************************************************************************/
 
 //Router chi tiết sản phẩm
 router.get("/:id", async (req, res) => {
