@@ -5,6 +5,105 @@ const multer = require("multer");
 const checktoken = require("../helper/checktoken");
 const upload = require("../helper/upload");
 const path = require("path");
+const productModel = require("../mongo/product.model");
+/*Phân trang*/
+
+// Route để lấy tất cả sản phẩm với phân trang và sắp xếp
+router.get("/paginated/products", async (req, res) => {
+  try {
+    const pageNumber = parseInt(req.query.pageNumber) || 0;
+    const limit = parseInt(req.query.limit) || 12;
+    const sortBy = req.query.sortBy || "new";
+
+    const paginatedProducts = await productController.getPaginatedAndSortedProducts(
+      pageNumber,
+      limit,
+      sortBy
+    );
+
+    return res.status(200).json(paginatedProducts);
+  } catch (error) {
+    console.error("Lỗi khi lấy tất cả sản phẩm", error);
+    res.status(500).json({ msg: "Xin lỗi, đã xảy ra lỗi" });
+  }
+});
+
+/*Phân trang*/
+router.get("/paginated/categoryId/:category", async (req, res) => {
+  try {
+    const category = req.params.category;
+    const pageNumber = parseInt(req.query.pageNumber) || 0;
+    const limit = parseInt(req.query.limit) || 12;
+    const sortBy = req.query.sortBy || "new";
+
+    const paginatedProducts = await productController.getPaginatedProductsByCategorySorted(
+      category,
+      pageNumber,
+      limit,
+      sortBy
+    );
+
+    return res.status(200).json(paginatedProducts);
+  } catch (error) {
+    console.error("Lỗi khi lấy sản phẩm theo danh mục", error);
+    res.status(500).json({ msg: "Xin lỗi, đã xảy ra lỗi" });
+  }
+});
+
+/*Phân trang*/
+router.get("/paginated/authorId/:author", async (req, res) => {
+  try {
+    const author = req.params.author;
+    const pageNumber = parseInt(req.query.pageNumber) || 0;
+    const limit = parseInt(req.query.limit) || 12;
+    const sortBy = req.query.sortBy || "new";
+
+    const paginatedProducts = await productController.getPaginatedProductsByAuthorSorted(
+      author,
+      pageNumber,
+      limit,
+      sortBy
+    );
+
+    return res.status(200).json(paginatedProducts);
+  } catch (error) {
+    console.error("Lỗi khi lấy sản phẩm theo tác giả", error);
+    res.status(500).json({ msg: "Xin lỗi, đã xảy ra lỗi" });
+  }
+});
+/*Phân trang*/
+router.get("/paginated/publisherId/:publisher", async (req, res) => {
+  try {
+    const publisher = req.params.publisher;
+    const pageNumber = parseInt(req.query.pageNumber) || 0;
+    const limit = parseInt(req.query.limit) || 12;
+    const sortBy = req.query.sortBy || "new";
+
+    const paginatedProducts = await productController.getPaginatedProductsByPublisherSorted(
+      publisher,
+      pageNumber,
+      limit,
+      sortBy
+    );
+
+    return res.status(200).json(paginatedProducts);
+  } catch (error) {
+    console.error("Lỗi khi lấy sản phẩm theo nhà xuất bản", error);
+    res.status(500).json({ msg: "Xin lỗi, đã xảy ra lỗi" });
+  }
+});
+
+/*Phân trang*/
+router.get("/products/total", async (req, res) => {
+  try {
+    // Đếm tổng sản phẩm mà không cần điều kiện lọc
+    const totalProducts = await productModel.countDocuments({});
+    res.status(200).json({ total: totalProducts });
+  } catch (error) {
+    console.error("Lỗi khi lấy tổng số sản phẩm:", error);
+    res.status(500).json({ msg: "Đã xảy ra lỗi, vui lòng thử lại." });
+  }
+});
 
 // Thêm sản phẩm
 // Thêm sản phẩm phải có Formdata ,multipart/form-data, và input file
@@ -50,38 +149,7 @@ router.get("/", async (req, res) => {
     res.status(500).json({ mess: error });
   }
 });
-// Hiển thị 12 sản phẩm
-router.get("/limit/12", async (req, res) => {
-  try {
-    const products = await productController.getLimited(12);
-    return res.status(200).json(products);
-  } catch (error) {
-    console.log("Load sản phẩm không thành công", error);
-    res.status(500).json({ mess: error.message });
-  }
-});
 
-// Hiển thị 24 sản phẩm
-router.get("/limit/24", async (req, res) => {
-  try {
-    const products = await productController.getLimited(24);
-    return res.status(200).json(products);
-  } catch (error) {
-    console.log("Load sản phẩm không thành công", error);
-    res.status(500).json({ mess: error.message });
-  }
-});
-
-// Hiển thị 36 sản phẩm
-router.get("/limit/36", async (req, res) => {
-  try {
-    const products = await productController.getLimited(36);
-    return res.status(200).json(products);
-  } catch (error) {
-    console.log("Load sản phẩm không thành công", error);
-    res.status(500).json({ mess: error.message });
-  }
-});
 //Router hiển thị sản phẩm mới nhất
 router.get("/new", async (req, res) => {
   try {
@@ -160,609 +228,6 @@ router.get("/hot", async (req, res) => {
     res.status(500).json({ mess: error });
   }
 });
-//Router hiển thị sản phẩm mới nhất bên trang sản phẩm
-router.get("/newpro", async (req, res) => {
-  try {
-    const product = await productController.getNewProduct();
-    return res.status(200).json(product);
-  } catch (error) {
-    console.log("Load sản phẩm không thành công", error);
-    res.status(500).json({ mess: error });
-  }
-});
-
-/******************************************DANH MUC***********************************************/
-
-//Router hiển thị sản phẩm theo danh mục và giới hạn 12 24 36 sản phẩm bên trang sản phẩm
-router.get("/categoryId/:id/limit/12", async (req, res) => {
-  try {
-    const categoryId = req.params.id;
-    const product = await productController.getProductByIdLimit(categoryId, 12);
-    return res.status(200).json(product);
-  } catch (error) {
-    console.log("Load sản phẩm không thành công", error);
-    res.status(500).json({ mess: error });
-  }
-});
-router.get("/categoryId/:id/limit/24", async (req, res) => {
-  try {
-    const categoryId = req.params.id;
-    const product = await productController.getProductByIdLimit(categoryId, 24);
-    return res.status(200).json(product);
-  } catch (error) {
-    console.log("Load sản phẩm không thành công", error);
-    res.status(500).json({ mess: error });
-  }
-});
-router.get("/categoryId/:id/limit/36", async (req, res) => {
-  try {
-    const categoryId = req.params.id;
-    const product = await productController.getProductByIdLimit(categoryId, 36);
-    return res.status(200).json(product);
-  } catch (error) {
-    console.log("Load sản phẩm không thành công", error);
-    res.status(500).json({ mess: error });
-  }
-});
-
-//Router hiển thị sản phẩm mới nhất và giới hạn 12 24 36 sản phẩm bên trang sản phẩm
-router.get("/newpro/limit/12", async (req, res) => {
-  try {
-    const product = await productController.getNewProductLimit(12);
-    return res.status(200).json(product);
-  } catch (error) {
-    console.log("Load sản phẩm không thành công", error);
-    res.status(500).json({ mess: error });
-  }
-});
-router.get("/newpro/limit/24", async (req, res) => {
-  try {
-    const product = await productController.getNewProductLimit(24);
-    return res.status(200).json(product);
-  } catch (error) {
-    console.log("Load sản phẩm không thành công", error);
-    res.status(500).json({ mess: error });
-  }
-});
-router.get("/newpro/limit/36", async (req, res) => {
-  try {
-    const product = await productController.getNewProductLimit(36);
-    return res.status(200).json(product);
-  } catch (error) {
-    console.log("Load sản phẩm không thành công", error);
-    res.status(500).json({ mess: error });
-  }
-});
-//Router hiển thị sản phẩm giá tăng dần và giới hạn 12 24 36 sản phẩm bên trang sản phẩm
-router.get("/sort/asc/limit/12", async (req, res) => {
-  try {
-    const product = await productController.getAscendingLimit(12);
-    return res.status(200).json(product);
-  } catch (error) {
-    console.log("Load sản phẩm không thành công", error);
-    res.status(500).json({ mess: error });
-  }
-});
-router.get("/sort/asc/limit/24", async (req, res) => {
-  try {
-    const product = await productController.getAscendingLimit(24);
-    return res.status(200).json(product);
-  } catch (error) {
-    console.log("Load sản phẩm không thành công", error);
-    res.status(500).json({ mess: error });
-  }
-});
-router.get("/sort/asc/limit/36", async (req, res) => {
-  try {
-    const product = await productController.getAscendingLimit(36);
-    return res.status(200).json(product);
-  } catch (error) {
-    console.log("Load sản phẩm không thành công", error);
-    res.status(500).json({ mess: error });
-  }
-});
-//Router hiển thị sản phẩm giá giảm dần và giới hạn 12 24 36 sản phẩm bên trang sản phẩm
-router.get("/sort/desc/limit/12", async (req, res) => {
-  try {
-    const product = await productController.getDecreaseLimit(12);
-    return res.status(200).json(product);
-  } catch (error) {
-    console.log("Load sản phẩm không thành công", error);
-    res.status(500).json({ mess: error });
-  }
-});
-router.get("/sort/desc/limit/24", async (req, res) => {
-  try {
-    const product = await productController.getDecreaseLimit(24);
-    return res.status(200).json(product);
-  } catch (error) {
-    console.log("Load sản phẩm không thành công", error);
-    res.status(500).json({ mess: error });
-  }
-});
-router.get("/sort/desc/limit/36", async (req, res) => {
-  try {
-    const product = await productController.getDecreaseLimit(36);
-    return res.status(200).json(product);
-  } catch (error) {
-    console.log("Load sản phẩm không thành công", error);
-    res.status(500).json({ mess: error });
-  }
-});
-
-//sản phẩm mới theo danh mục bên trang sản phẩm
-router.get("/categoryId/:id/newpro", async (req, res) => {
-  try {
-    const categoryId = req.params.id; // Lấy id từ tham số URL
-    const products = await productController.getNewProductCategory(categoryId);
-    return res.status(200).json(products);
-  } catch (error) {
-    console.log("Load sản phẩm không thành công", error);
-    res.status(500).json({ mess: error.message });
-  }
-});
-
-//sản phẩm giá tăng dần theo danh mục bên trang sản phẩm
-//http://localhost:3000/products/sort/asc
-router.get("/categoryId/:id/sort/asc", async (req, res) => {
-  try {
-    const categoryId = req.params.id; // Lấy id từ tham số URL
-    const product = await productController.getAscendingCategory(categoryId);
-    return res.status(200).json(product);
-  } catch (error) {
-    console.log("Load sản phẩm không thành công", error);
-    res.status(500).json({ mess: error });
-  }
-});
-
-//sản phẩm giá giảm dần theo danh mục bên trang sản phẩm
-//http://localhost:3000/products/sort/desc
-router.get("/categoryId/:id/sort/desc", async (req, res) => {
-  try {
-    const categoryId = req.params.id; // Lấy id từ tham số URL
-    const product = await productController.getDecreaseCategory(categoryId);
-    return res.status(200).json(product);
-  } catch (error) {
-    console.log("Load sản phẩm không thành công", error);
-    res.status(500).json({ mess: error });
-  }
-});
-
-//sản phẩm mới theo danh mục vaf giới hạn sản phẩm 12 24 36 bên trang sản phẩm
-router.get("/categoryId/:id/newpro/limit/12", async (req, res) => {
-  try {
-    const categoryId = req.params.id; // Lấy id từ tham số URL
-    const products = await productController.getNewProductCategoryLimit(categoryId, 12);
-    return res.status(200).json(products);
-  } catch (error) {
-    console.log("Load sản phẩm không thành công", error);
-    res.status(500).json({ mess: error.message });
-  }
-});
-router.get("/categoryId/:id/newpro/limit/24", async (req, res) => {
-  try {
-    const categoryId = req.params.id; // Lấy id từ tham số URL
-    const products = await productController.getNewProductCategoryLimit(categoryId, 24);
-    return res.status(200).json(products);
-  } catch (error) {
-    console.log("Load sản phẩm không thành công", error);
-    res.status(500).json({ mess: error.message });
-  }
-});
-router.get("/categoryId/:id/newpro/limit/36", async (req, res) => {
-  try {
-    const categoryId = req.params.id; // Lấy id từ tham số URL
-    const products = await productController.getNewProductCategoryLimit(categoryId, 36);
-    return res.status(200).json(products);
-  } catch (error) {
-    console.log("Load sản phẩm không thành công", error);
-    res.status(500).json({ mess: error.message });
-  }
-});
-
-//sản phẩm giá tăng dần và giới hạn số lượng 12 24 36 theo danh mục bên trang sản phẩm
-router.get("/categoryId/:id/sort/asc/limit/12", async (req, res) => {
-  try {
-    const categoryId = req.params.id; // Lấy id từ tham số URL
-    const product = await productController.getAscendingCategoryLimit(categoryId, 12);
-    return res.status(200).json(product);
-  } catch (error) {
-    console.log("Load sản phẩm không thành công", error);
-    res.status(500).json({ mess: error });
-  }
-});
-router.get("/categoryId/:id/sort/asc/limit/24", async (req, res) => {
-  try {
-    const categoryId = req.params.id; // Lấy id từ tham số URL
-    const product = await productController.getAscendingCategoryLimit(categoryId, 24);
-    return res.status(200).json(product);
-  } catch (error) {
-    console.log("Load sản phẩm không thành công", error);
-    res.status(500).json({ mess: error });
-  }
-});
-
-router.get("/categoryId/:id/sort/asc/limit/36", async (req, res) => {
-  try {
-    const categoryId = req.params.id; // Lấy id từ tham số URL
-    const product = await productController.getAscendingCategoryLimit(categoryId, 36);
-    return res.status(200).json(product);
-  } catch (error) {
-    console.log("Load sản phẩm không thành công", error);
-    res.status(500).json({ mess: error });
-  }
-});
-
-//sản phẩm giá giảm dần theo danh mục bên trang sản phẩm
-//http://localhost:3000/products/sort/desc
-router.get("/categoryId/:id/sort/desc/limit/12", async (req, res) => {
-  try {
-    const categoryId = req.params.id; // Lấy id từ tham số URL
-    const product = await productController.getDecreaseCategoryLimit(categoryId, 12);
-    return res.status(200).json(product);
-  } catch (error) {
-    console.log("Load sản phẩm không thành công", error);
-    res.status(500).json({ mess: error });
-  }
-});
-router.get("/categoryId/:id/sort/desc/limit/24", async (req, res) => {
-  try {
-    const categoryId = req.params.id; // Lấy id từ tham số URL
-    const product = await productController.getDecreaseCategoryLimit(categoryId, 24);
-    return res.status(200).json(product);
-  } catch (error) {
-    console.log("Load sản phẩm không thành công", error);
-    res.status(500).json({ mess: error });
-  }
-});
-router.get("/categoryId/:id/sort/desc/limit/36", async (req, res) => {
-  try {
-    const categoryId = req.params.id; // Lấy id từ tham số URL
-    const product = await productController.getDecreaseCategoryLimit(categoryId, 36);
-    return res.status(200).json(product);
-  } catch (error) {
-    console.log("Load sản phẩm không thành công", error);
-    res.status(500).json({ mess: error });
-  }
-});
-
-/**********************************************TAC GIA**********************************************/
-//Router hiển thị sản phẩm theo tác giả và giới hạn 12 24 36 sản phẩm bên trang sản phẩm
-router.get("/authorId/:id/limit/12", async (req, res) => {
-  try {
-    const authorId = req.params.id;
-    const product = await productController.getProductByAuthorLimit(authorId, 12);
-    return res.status(200).json(product);
-  } catch (error) {
-    console.log("Load sản phẩm không thành công", error);
-    res.status(500).json({ mess: error });
-  }
-});
-router.get("/authorId/:id/limit/24", async (req, res) => {
-  try {
-    const authorId = req.params.id;
-    const product = await productController.getProductByAuthorLimit(authorId, 24);
-    return res.status(200).json(product);
-  } catch (error) {
-    console.log("Load sản phẩm không thành công", error);
-    res.status(500).json({ mess: error });
-  }
-});
-router.get("/authorId/:id/limit/36", async (req, res) => {
-  try {
-    const authorId = req.params.id;
-    const product = await productController.getProductByAuthorLimit(authorId, 36);
-    return res.status(200).json(product);
-  } catch (error) {
-    console.log("Load sản phẩm không thành công", error);
-    res.status(500).json({ mess: error });
-  }
-});
-
-//sản phẩm mới theo tác giả
-router.get("/authorId/:id/newpro", async (req, res) => {
-  try {
-    const authorId = req.params.id; // Lấy id từ tham số URL
-    const products = await productController.getNewProductAuthor(authorId);
-    return res.status(200).json(products);
-  } catch (error) {
-    console.log("Load sản phẩm không thành công", error);
-    res.status(500).json({ mess: error.message });
-  }
-});
-//sản phẩm giá tăng dần theo tacs gia bên trang sản phẩm
-//http://localhost:3000/products/sort/asc
-router.get("/authorId/:id/sort/asc", async (req, res) => {
-  try {
-    const authorId = req.params.id; // Lấy id từ tham số URL
-    const product = await productController.getAscendingAuthor(authorId);
-    return res.status(200).json(product);
-  } catch (error) {
-    console.log("Load sản phẩm không thành công", error);
-    res.status(500).json({ mess: error });
-  }
-});
-
-//sản phẩm giá giảm dần theo tacs gia bên trang sản phẩm
-//http://localhost:3000/products/sort/desc
-router.get("/authorId/:id/sort/desc", async (req, res) => {
-  try {
-    const authorId = req.params.id; // Lấy id từ tham số URL
-    const product = await productController.getDecreaseAuthor(authorId);
-    return res.status(200).json(product);
-  } catch (error) {
-    console.log("Load sản phẩm không thành công", error);
-    res.status(500).json({ mess: error });
-  }
-});
-
-//sản phẩm mới theo danh mục vaf giới hạn sản phẩm 12 24 36 bên trang sản phẩm
-router.get("/authorId/:id/newpro/limit/12", async (req, res) => {
-  try {
-    const authorId = req.params.id; // Lấy id từ tham số URL
-    const products = await productController.getNewProductAuthorLimit(authorId, 12);
-    return res.status(200).json(products);
-  } catch (error) {
-    console.log("Load sản phẩm không thành công", error);
-    res.status(500).json({ mess: error.message });
-  }
-});
-router.get("/authorId/:id/newpro/limit/24", async (req, res) => {
-  try {
-    const authorId = req.params.id; // Lấy id từ tham số URL
-    const products = await productController.getNewProductAuthorLimit(authorId, 24);
-    return res.status(200).json(products);
-  } catch (error) {
-    console.log("Load sản phẩm không thành công", error);
-    res.status(500).json({ mess: error.message });
-  }
-});
-router.get("/authorId/:id/newpro/limit/36", async (req, res) => {
-  try {
-    const authorId = req.params.id; // Lấy id từ tham số URL
-    const products = await productController.getNewProductAuthorLimit(authorId, 36);
-    return res.status(200).json(products);
-  } catch (error) {
-    console.log("Load sản phẩm không thành công", error);
-    res.status(500).json({ mess: error.message });
-  }
-});
-
-//sản phẩm giá tăng dần và giới hạn số lượng 12 24 36 theo danh mục bên trang sản phẩm
-router.get("/authorId/:id/sort/asc/limit/12", async (req, res) => {
-  try {
-    const authorId = req.params.id; // Lấy id từ tham số URL
-    const product = await productController.getAscendingAuthorLimit(authorId, 12);
-    return res.status(200).json(product);
-  } catch (error) {
-    console.log("Load sản phẩm không thành công", error);
-    res.status(500).json({ mess: error });
-  }
-});
-router.get("/authorId/:id/sort/asc/limit/24", async (req, res) => {
-  try {
-    const authorId = req.params.id; // Lấy id từ tham số URL
-    const product = await productController.getAscendingAuthorLimit(authorId, 24);
-    return res.status(200).json(product);
-  } catch (error) {
-    console.log("Load sản phẩm không thành công", error);
-    res.status(500).json({ mess: error });
-  }
-});
-
-router.get("/authorId/:id/sort/asc/limit/36", async (req, res) => {
-  try {
-    const authorId = req.params.id; // Lấy id từ tham số URL
-    const product = await productController.getAscendingAuthorLimit(authorId, 36);
-    return res.status(200).json(product);
-  } catch (error) {
-    console.log("Load sản phẩm không thành công", error);
-    res.status(500).json({ mess: error });
-  }
-});
-
-//sản phẩm giá giảm dần theo danh mục bên trang sản phẩm
-//http://localhost:3000/products/sort/desc
-router.get("/authorId/:id/sort/desc/limit/12", async (req, res) => {
-  try {
-    const authorId = req.params.id; // Lấy id từ tham số URL
-    const product = await productController.getDecreaseAuthorLimit(authorId, 12);
-    return res.status(200).json(product);
-  } catch (error) {
-    console.log("Load sản phẩm không thành công", error);
-    res.status(500).json({ mess: error });
-  }
-});
-router.get("/authorId/:id/sort/desc/limit/24", async (req, res) => {
-  try {
-    const authorId = req.params.id; // Lấy id từ tham số URL
-    const product = await productController.getDecreaseAuthorLimit(authorId, 24);
-    return res.status(200).json(product);
-  } catch (error) {
-    console.log("Load sản phẩm không thành công", error);
-    res.status(500).json({ mess: error });
-  }
-});
-router.get("/authorId/:id/sort/desc/limit/36", async (req, res) => {
-  try {
-    const authorId = req.params.id; // Lấy id từ tham số URL
-    const product = await productController.getDecreaseAuthorLimit(authorId, 36);
-    return res.status(200).json(product);
-  } catch (error) {
-    console.log("Load sản phẩm không thành công", error);
-    res.status(500).json({ mess: error });
-  }
-});
-
-/******************************************************************NXB******************************************************************************/
-//Router hiển thị sản phẩm theo tác giả và giới hạn 12 24 36 sản phẩm bên trang sản phẩm
-router.get("/publishId/:id/limit/12", async (req, res) => {
-  try {
-    const publishId = req.params.id;
-    const product = await productController.getProductByPublishLimit(publishId, 12);
-    return res.status(200).json(product);
-  } catch (error) {
-    console.log("Load sản phẩm không thành công", error);
-    res.status(500).json({ mess: error });
-  }
-});
-router.get("/publishId/:id/limit/24", async (req, res) => {
-  try {
-    const publishId = req.params.id;
-    const product = await productController.getProductByPublishLimit(publishId, 24);
-    return res.status(200).json(product);
-  } catch (error) {
-    console.log("Load sản phẩm không thành công", error);
-    res.status(500).json({ mess: error });
-  }
-});
-router.get("/publishId/:id/limit/36", async (req, res) => {
-  try {
-    const publishId = req.params.id;
-    const product = await productController.getProductByPublishLimit(publishId, 36);
-    return res.status(200).json(product);
-  } catch (error) {
-    console.log("Load sản phẩm không thành công", error);
-    res.status(500).json({ mess: error });
-  }
-});
-
-//sản phẩm mới theo tác giả
-router.get("/publishId/:id/newpro", async (req, res) => {
-  try {
-    const publishId = req.params.id; // Lấy id từ tham số URL
-    const products = await productController.getNewProductPublish(publishId);
-    return res.status(200).json(products);
-  } catch (error) {
-    console.log("Load sản phẩm không thành công", error);
-    res.status(500).json({ mess: error.message });
-  }
-});
-//sản phẩm giá tăng dần theo tacs gia bên trang sản phẩm
-//http://localhost:3000/products/sort/asc
-router.get("/publishId/:id/sort/asc", async (req, res) => {
-  try {
-    const publishId = req.params.id; // Lấy id từ tham số URL
-    const product = await productController.getAscendingPublish(publishId);
-    return res.status(200).json(product);
-  } catch (error) {
-    console.log("Load sản phẩm không thành công", error);
-    res.status(500).json({ mess: error });
-  }
-});
-
-//sản phẩm giá giảm dần theo tacs gia bên trang sản phẩm
-//http://localhost:3000/products/sort/desc
-router.get("/publishId/:id/sort/desc", async (req, res) => {
-  try {
-    const publishId = req.params.id; // Lấy id từ tham số URL
-    const product = await productController.getDecreasePublish(publishId);
-    return res.status(200).json(product);
-  } catch (error) {
-    console.log("Load sản phẩm không thành công", error);
-    res.status(500).json({ mess: error });
-  }
-});
-
-//sản phẩm mới theo danh mục vaf giới hạn sản phẩm 12 24 36 bên trang sản phẩm
-router.get("/publishId/:id/newpro/limit/12", async (req, res) => {
-  try {
-    const publishId = req.params.id; // Lấy id từ tham số URL
-    const products = await productController.getNewProductPublishLimit(publishId, 12);
-    return res.status(200).json(products);
-  } catch (error) {
-    console.log("Load sản phẩm không thành công", error);
-    res.status(500).json({ mess: error.message });
-  }
-});
-router.get("/publishId/:id/newpro/limit/24", async (req, res) => {
-  try {
-    const publishId = req.params.id; // Lấy id từ tham số URL
-    const products = await productController.getNewProductPublishLimit(publishId, 24);
-    return res.status(200).json(products);
-  } catch (error) {
-    console.log("Load sản phẩm không thành công", error);
-    res.status(500).json({ mess: error.message });
-  }
-});
-router.get("/publishId/:id/newpro/limit/36", async (req, res) => {
-  try {
-    const publishId = req.params.id; // Lấy id từ tham số URL
-    const products = await productController.getNewProductPublishLimit(publishId, 36);
-    return res.status(200).json(products);
-  } catch (error) {
-    console.log("Load sản phẩm không thành công", error);
-    res.status(500).json({ mess: error.message });
-  }
-});
-
-//sản phẩm giá tăng dần và giới hạn số lượng 12 24 36 theo danh mục bên trang sản phẩm
-router.get("/publishId/:id/sort/asc/limit/12", async (req, res) => {
-  try {
-    const publishId = req.params.id; // Lấy id từ tham số URL
-    const product = await productController.getAscendingPublishLimit(publishId, 12);
-    return res.status(200).json(product);
-  } catch (error) {
-    console.log("Load sản phẩm không thành công", error);
-    res.status(500).json({ mess: error });
-  }
-});
-router.get("/publishId/:id/sort/asc/limit/24", async (req, res) => {
-  try {
-    const publishId = req.params.id; // Lấy id từ tham số URL
-    const product = await productController.getAscendingPublishLimit(publishId, 24);
-    return res.status(200).json(product);
-  } catch (error) {
-    console.log("Load sản phẩm không thành công", error);
-    res.status(500).json({ mess: error });
-  }
-});
-
-router.get("/publishId/:id/sort/asc/limit/36", async (req, res) => {
-  try {
-    const publishId = req.params.id; // Lấy id từ tham số URL
-    const product = await productController.getAscendingPublishLimit(publishId, 36);
-    return res.status(200).json(product);
-  } catch (error) {
-    console.log("Load sản phẩm không thành công", error);
-    res.status(500).json({ mess: error });
-  }
-});
-
-//sản phẩm giá giảm dần theo danh mục bên trang sản phẩm
-//http://localhost:3000/products/sort/desc
-router.get("/publishId/:id/sort/desc/limit/12", async (req, res) => {
-  try {
-    const publishId = req.params.id; // Lấy id từ tham số URL
-    const product = await productController.getDecreasePublishLimit(publishId, 12);
-    return res.status(200).json(product);
-  } catch (error) {
-    console.log("Load sản phẩm không thành công", error);
-    res.status(500).json({ mess: error });
-  }
-});
-router.get("/publishId/:id/sort/desc/limit/24", async (req, res) => {
-  try {
-    const publishId = req.params.id; // Lấy id từ tham số URL
-    const product = await productController.getDecreasePublishLimit(publishId, 24);
-    return res.status(200).json(product);
-  } catch (error) {
-    console.log("Load sản phẩm không thành công", error);
-    res.status(500).json({ mess: error });
-  }
-});
-router.get("/publishId/:id/sort/desc/limit/36", async (req, res) => {
-  try {
-    const publishId = req.params.id; // Lấy id từ tham số URL
-    const product = await productController.getDecreasePublishLimit(publishId, 36);
-    return res.status(200).json(product);
-  } catch (error) {
-    console.log("Load sản phẩm không thành công", error);
-    res.status(500).json({ mess: error });
-  }
-});
-
-/**************************************************************************************************************************************************/
 
 //Router chi tiết sản phẩm
 router.get("/:id", async (req, res) => {
