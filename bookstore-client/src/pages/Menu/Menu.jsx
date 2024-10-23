@@ -18,17 +18,18 @@ const Menu = () => {
   const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState([]);
   const [categoryId, setCategoryId] = useState(null);
-  const [sortOption, setSortOption] = useState("");
-  const [itemsPerPage, setItemsPerPage] = useState("");
+  const [sortOption, setSortOption] = useState("Mới nhất");
   const [authors, setAuthors] = useState([]);
   const [authorId, setAuthorId] = useState(null);
   const [publishers, setPublishers] = useState([]);
   const [publishId, setPublishId] = useState(null);
-
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageGroup, setPageGroup] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const [totalProducts, setTotalProducts] = useState(0);
+  const pagesPerGroup = 3;
   const [currentCategoryName, setCurrentCategoryName] =
     useState("Tất cả sản phẩm");
-
-  // Lấy sản phẩm theo tìm kiếm
   useEffect(() => {
     const fetchProducts = async () => {
       setLoading(true);
@@ -47,11 +48,6 @@ const Menu = () => {
 
     fetchProducts();
   }, [searchTerm]);
-
-
-
-
-
 
   // Lấy danh mục, tác giả và nhà xuất bản
   useEffect(() => {
@@ -87,89 +83,161 @@ const Menu = () => {
     fetchPublishers();
   }, []);
 
-
-
   useEffect(() => {
     const fetchProducts = async () => {
       setLoading(true);
       try {
-        let url = `${URL_API}/products`;
-  
-        // Các bộ lọc khác (tìm kiếm, danh mục, tác giả, nhà xuất bản)
+        const limit = 12;
+        let url = `${URL_API}/products/paginated/products?pageNumber=${
+          currentPage - 1
+        }&limit=${limit}`;
+
         if (categoryId) {
-          url = `${URL_API}/products/categoryId/${categoryId}`;
+          url = `${URL_API}/products/paginated/categoryId/${categoryId}?pageNumber=${
+            currentPage - 1
+          }&limit=${limit}`;
         } else if (authorId) {
-          url = `${URL_API}/products/authorId/${authorId}`;
+          url = `${URL_API}/products/paginated/authorId/${authorId}?pageNumber=${
+            currentPage - 1
+          }&limit=${limit}`;
         } else if (publishId) {
-          url = `${URL_API}/products/publishId/${publishId}`;
-        } else if (searchTerm.trim()) {
-          url = `${URL_API}/products/search/${searchTerm.trim()}`;
+          url = `${URL_API}/products/paginated/publisherId/${publishId}?pageNumber=${
+            currentPage - 1
+          }&limit=${limit}`;
         }
-  
-        // Thêm bộ lọc sắp xếp
+
         if (sortOption) {
-          if (sortOption === "Giá tăng dần") {
-            url += "/sort/asc";
-          } else if (sortOption === "Giá giảm dần") {
-            url += "/sort/desc";
-          } else if (sortOption === "Mới nhất") {
-            url += "/newpro";
-          }
+          url += `&sortBy=${
+            sortOption === "Mới nhất"
+              ? "new"
+              : sortOption === "Giá tăng dần"
+              ? "priceAsc"
+              : "priceDesc"
+          }`;
         }
-  
-        // Thêm số lượng hiển thị
-        if (itemsPerPage) {
-          url += `/limit/${itemsPerPage}`;
-        }
-  
+
         const response = await axios.get(url);
-        setProducts(response.data);
+        setProducts(response.data.products);
+        setTotalPages(response.data.totalPages);
       } catch (error) {
         console.error("Lỗi khi lấy sản phẩm", error);
       } finally {
         setLoading(false);
       }
     };
-  
+
     fetchProducts();
-  }, [searchTerm, categoryId, authorId, publishId, sortOption, itemsPerPage]);
-  
+  }, [searchTerm, categoryId, authorId, publishId, currentPage, sortOption]);
 
-const categoryClick = (newCategoryId, categoryName) => {
-  if (categoryId === newCategoryId) {
-    return; 
-  }
-  setCategoryId(newCategoryId);
-  setAuthorId(null); // Reset tác giả
-  setPublishId(null); // Reset nhà xuất bản
-  setCurrentCategoryName(categoryName);
-  setSortOption(""); // Reset sắp xếp
-  setItemsPerPage(""); // Reset hiển thị số lượng
-  setProducts([]); // Reset lại danh sách sản phẩm
-};
+  const categoryClick = (newCategoryId, categoryName) => {
+    if (categoryId === newCategoryId) {
+      return;
+    }
+    setCategoryId(newCategoryId);
+    setAuthorId(null);
+    setPublishId(null);
+    setCurrentCategoryName(categoryName);
+    setCurrentPage(1);
+    setProducts([]);
+    setSortOption("Mới nhất");
+    setPageGroup(0);
+    setCurrentPage(1);
+  };
+
+  //click tác giả
+  const authorClick = (authorId, authorName) => {
+    setAuthorId(authorId);
+    setCategoryId(null);
+    setPublishId(null);
+    setCurrentCategoryName(authorName);
+    setSortOption("Mới nhất");
+    setPageGroup(0);
+    setCurrentPage(1);
+  };
+
+  //click nhà xuất bản
+  const publishClick = (publishId, publishName) => {
+    setPublishId(publishId);
+    setCategoryId(null);
+    setAuthorId(null);
+    setCurrentCategoryName(publishName);
+    setSortOption("Mới nhất");
+    setPageGroup(0);
+    setCurrentPage(1);
+  };
+
+  const handleNextGroup = () => {
+    const nextPageGroup = pageGroup + 1;
+    const totalPages = Math.ceil(totalProducts / pagesPerGroup);
+    const firstPageOfNextGroup = nextPageGroup * pagesPerGroup;
+    if (nextPageGroup < totalPages && products.length > 0) {
+      setPageGroup(nextPageGroup);
+      setCurrentPage(firstPageOfNextGroup + 1);
+    }
+  };
+
+  //khong cho chuyen trang khong có san pham
+  const isNextGroupDisabled = () => {
+    const nextPageGroup = pageGroup + 1;
+    const totalPages = Math.ceil(totalProducts / pagesPerGroup);
+    const firstPageOfNextGroup = nextPageGroup * pagesPerGroup;
+    return nextPageGroup >= totalPages || firstPageOfNextGroup >= totalProducts;
+  };
 
 
-//click tác giả
-const authorClick = (authorId, authorName) => {
-  setAuthorId(authorId);
-  setCategoryId(null); // Reset danh mục
-  setPublishId(null); // Reset nhà xuất bản
-  setCurrentCategoryName(authorName);
-  setSortOption(""); // Reset sắp xếp
-  setItemsPerPage(""); // Reset hiển thị số lượng
-};
+  useEffect(() => {
+    const fetchTotalProducts = async () => {
+      try {
+        const url = "http://localhost:3000/products/products/total";
+        const response = await axios.get(url);
 
-//click nhà xuất bản
-const publishClick = (publishId, publishName) => {
-  setPublishId(publishId);
-  setCategoryId(null); // Reset danh mục
-  setAuthorId(null); // Reset tác giả
-  setCurrentCategoryName(publishName);
-  setSortOption(""); // Reset sắp xếp
-  setItemsPerPage(""); // Reset hiển thị số lượng
-};
+        if (response.status === 200) {
+          setTotalProducts(response.data.total);
+        }
+      } catch (error) {
+        console.error("Lỗi khi lấy tổng số sản phẩm:", error);
+      }
+    };
 
-  
+    fetchTotalProducts();
+  }, []);
+  const handlePrevGroup = () => {
+    if (pageGroup > 0) {
+      const prevPageGroup = pageGroup - 1;
+      setPageGroup(prevPageGroup); // Quay về nhóm trước
+      setCurrentPage(prevPageGroup * pagesPerGroup + 1); // Đặt trang đầu của nhóm trước
+    }
+  };
+
+  const handlePageClick = (pageNumber) => {
+    setCurrentPage(pageNumber);
+    const newGroup = Math.floor((pageNumber - 1) / pagesPerGroup);
+    if (newGroup !== pageGroup) {
+      setPageGroup(newGroup); // Đồng bộ nhóm nếu trang thay đổi vượt nhóm
+    }
+  };
+
+  const renderPageButtons = () => {
+    const startPage = pageGroup * pagesPerGroup + 1;
+    const pages = Array.from(
+      { length: pagesPerGroup },
+      (_, i) => startPage + i
+    );
+
+    return pages.map((page) => (
+      <span
+        key={page}
+        className={`w-10 h-10 rounded-full flex items-center justify-center ${
+          currentPage === page
+            ? "bg-mainDark text-white"
+            : "border text-grayText"
+        } text-[20px] font-semibold cursor-pointer`}
+        onClick={() => handlePageClick(page)}
+      >
+        {page}
+      </span>
+    ));
+  };
 
   return (
     <div className="mt-8">
@@ -223,40 +291,9 @@ const publishClick = (publishId, publishName) => {
                     <option value="Giá tăng dần">Giá tăng dần</option>
                     <option value="Giá giảm dần">Giá giảm dần</option>
                   </select>
-                  <select
-                    className="select select-bordered w-full max-w-xs"
-                    value={itemsPerPage}
-                    onChange={(e) => setItemsPerPage(e.target.value)}
-                  >
-                    <option disabled value="">
-                      Hiển thị:
-                    </option>
-                    <option value="12">12</option>
-                    <option value="24">24</option>
-                    <option value="36">36</option>
-                  </select>
                 </div>
               </div>
-              {/* {loading ? (
-                <div className="text-center">Đang tải sản phẩm...</div>
-              ) : products.length > 0 ? (
-                <div className="grid grid-cols-4 gap-4">
-                  {products.map((item) => (
-                    <ProductItem key={item._id} item={item} />
-                  ))}
-                </div>
-              ) : (
 
-                <div className="text-center text-gray-500">
-                  Không có sản phẩm nào trong danh mục này.
-                </div>
-
-                <ProductList customItem={true} type="" />
-              //   <div className="text-center text-gray-500">
-              //   Không có sản phẩm nào trong danh mục này.
-              // </div>
-
-              )} */}
               {loading ? (
                 <div className="text-center">Đang tải sản phẩm...</div>
               ) : products.length > 0 ? (
@@ -270,24 +307,28 @@ const publishClick = (publishId, publishName) => {
                   Không có sản phẩm nào trong danh mục này.
                 </div>
               )}
+              <div className="flex items-center justify-center gap-5 mt-6">
+                <span
+                  className="w-10 h-10 rounded-full flex items-center justify-center border text-grayText text-[20px] font-semibold hover:bg-mainDark hover:text-white cursor-pointer"
+                  onClick={handlePrevGroup}
+                >
+                  <FaLongArrowAltLeft />
+                </span>
+
+                {renderPageButtons()}
+
+                <span
+                  className={`w-10 h-10 rounded-full flex items-center justify-center border text-grayText text-[20px] font-semibold ${
+                    isNextGroupDisabled()
+                      ? "cursor-not-allowed opacity-50"
+                      : "hover:bg-mainDark hover:text-white cursor-pointer"
+                  }`}
+                  onClick={isNextGroupDisabled() ? null : handleNextGroup} // Ngăn chặn sự kiện click nếu nút bị vô hiệu hóa
+                >
+                  <FaLongArrowAltRight />
+                </span>
+              </div>
             </div>
-          </div>
-          <div className="flex items-center justify-center gap-5 mt-6">
-            <span className="w-10 h-10 rounded-full flex items-center justify-center border text-grayText text-[20px] font-semibold hover:bg-mainDark hover:text-white cursor-pointer">
-              <FaLongArrowAltLeft />
-            </span>
-            <span className="w-10 h-10 rounded-full flex items-center justify-center bg-mainDark text-white text-[20px] font-semibold">
-              1
-            </span>
-            <span className="w-10 h-10 rounded-full flex items-center justify-center border text-grayText text-[20px] font-semibold hover:bg-mainDark hover:text-white cursor-pointer">
-              2
-            </span>
-            <span className="w-10 h-10 rounded-full flex items-center justify-center border text-grayText text-[20px] font-semibold hover:bg-mainDark hover:text-white cursor-pointer">
-              3
-            </span>
-            <span className="w-10 h-10 rounded-full flex items-center justify-center border text-grayText text-[20px] font-semibold hover:bg-mainDark hover:text-white cursor-pointer">
-              <FaLongArrowAltRight />
-            </span>
           </div>
         </div>
       </div>

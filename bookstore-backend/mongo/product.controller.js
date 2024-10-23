@@ -20,24 +20,185 @@ module.exports = {
   getNewProductCategory,
   getDecreaseCategory,
   getAscendingCategory,
-  getNewProductLimit,
-  getDecreaseLimit,
-  getAscendingLimit,
-  getNewProductCategoryLimit,
-  getAscendingCategoryLimit,
-  getDecreaseCategoryLimit,
-  getDecreaseAuthorLimit,
-  getNewProductAuthorLimit,
   getNewProductAuthor,
-  getProductByIdLimit,
-  getProductByAuthorLimit,
   getDecrease,
-  getAscending,getDecreaseAuthor,getAscendingAuthor,getAscendingAuthorLimit,getProductByPublishLimit,getDecreasePublish,getAscendingPublish,getNewProductPublishLimit, getNewProductPublish,getDecreasePublishLimit,getAscendingPublishLimit,
+  getAscending,getDecreaseAuthor,getAscendingAuthor,getDecreasePublish,getAscendingPublish, getNewProductPublish,
   getSale,
   getByCategory,
   getByPublish,
   getByAuthor,
+ getPaginatedProductsByPublisherSorted,getPaginatedProductsByAuthorSorted,getPaginatedProductsByCategorySorted,getPaginatedAndSortedProducts
 };
+
+
+
+/*Phân trang*/
+async function getPaginatedAndSortedProducts(pageNumber, limit, sortBy) {
+  try {
+      const totalProducts = await productModel.countDocuments().exec();
+
+      // Thiết lập tùy chọn sắp xếp
+      let sortOption = {};
+      if (sortBy === "new") {
+          sortOption = { _id: -1 }; // Sắp xếp sản phẩm mới nhất trước
+      } else if (sortBy === "priceAsc") {
+          sortOption = { price2: 1 }; // Sắp xếp theo giá tăng dần
+      } else if (sortBy === "priceDesc") {
+          sortOption = { price2: -1 }; // Sắp xếp theo giá giảm dần
+      }
+
+      // Lấy sản phẩm với phân trang và sắp xếp
+      const products = await productModel
+          .find()
+          .sort(sortOption)
+          .skip(pageNumber * limit)
+          .limit(limit)
+          .exec();
+
+      // Thêm thông tin phân trang
+      const paginationInfo = {};
+      if (pageNumber > 0) {
+          paginationInfo.previous = { pageNumber: pageNumber - 1, limit };
+      }
+      if ((pageNumber + 1) * limit < totalProducts) {
+          paginationInfo.next = { pageNumber: pageNumber + 1, limit };
+      }
+
+      return { totalProducts, products, pagination: paginationInfo };
+  } catch (error) {
+      console.error("Lỗi khi phân trang và sắp xếp sản phẩm", error);
+      throw error;
+  }
+}
+
+
+
+/*Phân trang*/
+async function getPaginatedProductsByCategorySorted(category, pageNumber, limit, sortBy) {
+  try {
+      // Kiểm tra category xem có hợp lệ không
+      const categoryObjectId = mongoose.Types.ObjectId.isValid(category) ? new mongoose.Types.ObjectId(category) : null;
+
+      // Nếu category không hợp lệ, trả về lỗi
+      if (!categoryObjectId) {
+          throw new Error("Category ID không hợp lệ");
+      }
+
+      const totalProducts = await productModel.countDocuments({ "category.categoryId": categoryObjectId });
+
+      // Sắp xếp theo yêu cầu
+      let sortOption = {};
+      if (sortBy === "new") {
+          sortOption = { _id: -1 }; // Sắp xếp sản phẩm mới nhất trước
+      } else if (sortBy === "priceAsc") {
+          sortOption = { price2: 1 }; // Sắp xếp theo giá tăng dần
+      } else if (sortBy === "priceDesc") {
+          sortOption = { price2: -1 }; // Sắp xếp theo giá giảm dần
+      }
+
+      const result = await productModel
+          .find({ "category.categoryId": categoryObjectId })
+          .sort(sortOption)
+          .skip(pageNumber * limit)
+          .limit(limit)
+          .exec();
+
+      // Thêm thông tin phân trang
+      const paginationInfo = {
+          totalProducts,
+          currentPage: pageNumber,
+          totalPages: Math.ceil(totalProducts / limit),
+          products: result,
+      };
+
+      if (pageNumber > 0) {
+          paginationInfo.previous = { pageNumber: pageNumber - 1, limit: limit };
+      }
+      if ((pageNumber + 1) * limit < totalProducts) {
+          paginationInfo.next = { pageNumber: pageNumber + 1, limit: limit };
+      }
+
+      return paginationInfo;
+  } catch (error) {
+      console.log("Lỗi khi phân trang sản phẩm theo danh mục", error);
+      throw error;
+  }
+}
+
+/*Phân trang*/
+async function getPaginatedProductsByAuthorSorted(author, pageNumber, limit, sortBy) {
+  try {
+    const totalProducts = await productModel.countDocuments({ "author.authorId": new mongoose.Types.ObjectId(author) });
+
+    // Sắp xếp theo yêu cầu
+    let sortOption = {};
+    if (sortBy === "new") {
+      sortOption = { _id: -1 }; // Sắp xếp sản phẩm mới nhất trước
+    } else if (sortBy === "priceAsc") {
+      sortOption = { price2: 1 }; // Sắp xếp theo giá tăng dần
+    } else if (sortBy === "priceDesc") {
+      sortOption = { price2: -1 }; // Sắp xếp theo giá giảm dần
+    }
+
+    const result = await productModel
+      .find({ "author.authorId": new mongoose.Types.ObjectId(author) })
+      .sort(sortOption)
+      .skip(pageNumber * limit)
+      .limit(limit)
+      .exec();
+
+    // Thêm thông tin phân trang
+    if (pageNumber > 0) {
+      result.previous = { pageNumber: pageNumber - 1, limit: limit };
+    }
+    if ((pageNumber + 1) * limit < totalProducts) {
+      result.next = { pageNumber: pageNumber + 1, limit: limit };
+    }
+
+    return { totalProducts, products: result };
+  } catch (error) {
+    console.log("Lỗi khi phân trang sản phẩm theo tác giả", error);
+    throw error;
+  }
+}
+
+/*Phân trang*/
+async function getPaginatedProductsByPublisherSorted(publisher, pageNumber, limit, sortBy) {
+  try {
+    const totalProducts = await productModel.countDocuments({ "publisher.publisherId": new mongoose.Types.ObjectId(publisher) });
+
+    // Sắp xếp theo yêu cầu
+    let sortOption = {};
+    if (sortBy === "new") {
+      sortOption = { _id: -1 }; // Sắp xếp sản phẩm mới nhất trước
+    } else if (sortBy === "priceAsc") {
+      sortOption = { price2: 1 }; // Sắp xếp theo giá tăng dần
+    } else if (sortBy === "priceDesc") {
+      sortOption = { price2: -1 }; // Sắp xếp theo giá giảm dần
+    }
+
+    const result = await productModel
+      .find({ "publisher.publisherId": new mongoose.Types.ObjectId(publisher) })
+      .sort(sortOption)
+      .skip(pageNumber * limit)
+      .limit(limit)
+      .exec();
+
+    // Thêm thông tin phân trang
+    if (pageNumber > 0) {
+      result.previous = { pageNumber: pageNumber - 1, limit: limit };
+    }
+    if ((pageNumber + 1) * limit < totalProducts) {
+      result.next = { pageNumber: pageNumber + 1, limit: limit };
+    }
+
+    return { totalProducts, products: result };
+  } catch (error) {
+    console.log("Lỗi khi phân trang sản phẩm theo nhà xuất bản", error);
+    throw error;
+  }
+}
+
 
 // Thêm sản phẩm
 async function insert(body) {
@@ -249,49 +410,8 @@ async function getNewProduct() {
 
 /************************************************DANH MUC********************************************/
 
-// Hiển thị sản phẩm theo danh mục và giới hạn 12 24 36 sản phẩm bên trang sản phẩm
-async function getProductByIdLimit(categoryId, count) {
-  try {
-    const result = await productModel
-      .find({ "category.categoryId": new mongoose.Types.ObjectId(categoryId) })
-      .limit(count);
-    return result;
-  } catch (error) {
-    console.log("Lỗi sản phẩm mới nhất", error);
-    throw error;
-  }
-}
 
-// Hiển thị sản phẩm mới nhất và giới hạn 12 24 36 sản phẩm bên trang sản phẩm
-async function getNewProductLimit(count) {
-  try {
-    const result = await productModel.find().sort({ _id: -1 }).limit(count);
-    return result;
-  } catch (error) {
-    console.log("Lỗi sản phẩm mới nhất", error);
-    throw error;
-  }
-}
-async function getDecreaseLimit(count) {
-  try {
-    const result = await productModel.find().sort({ price2: -1 }).limit(count); // -1 laf giamr daanf
-    return result;
-  } catch (error) {
-    console.log("Lỗi lấy sp", error);
-    throw error;
-  }
-}
 
-//Lọc giả sản phẩm tăng dần
-async function getAscendingLimit(count) {
-  try {
-    const result = await productModel.find().sort({ price2: 1 }).limit(count);
-    return result;
-  } catch (error) {
-    console.log("Lỗi lấy sp", error);
-    throw error;
-  }
-}
 
 //sản phẩm mới theo danh mục bên trang sản phẩm
 async function getNewProductCategory(categoryId) {
@@ -299,18 +419,6 @@ async function getNewProductCategory(categoryId) {
     const result = await productModel
       .find({ "category.categoryId": new mongoose.Types.ObjectId(categoryId) })
       .sort({ _id: -1 });
-    return result;
-  } catch (error) {
-    console.log("Lỗi sản phẩm mới nhất", error);
-    throw error;
-  }
-}
-async function getNewProductCategoryLimit(categoryId, count) {
-  try {
-    const result = await productModel
-      .find({ "category.categoryId": new mongoose.Types.ObjectId(categoryId) })
-      .sort({ _id: -1 })
-      .limit(count);
     return result;
   } catch (error) {
     console.log("Lỗi sản phẩm mới nhất", error);
@@ -330,18 +438,7 @@ async function getDecreaseCategory(categoryId) {
     throw error;
   }
 }
-async function getDecreaseCategoryLimit(categoryId, count) {
-  try {
-    const result = await productModel
-      .find({ "category.categoryId": new mongoose.Types.ObjectId(categoryId) })
-      .sort({ price2: -1 })
-      .limit(count);
-    return result;
-  } catch (error) {
-    console.log("Lỗi lấy sp", error);
-    throw error;
-  }
-}
+
 //Lọc giá sản phẩm tăng dần theo danh mục bên trang sản phẩm
 async function getAscendingCategory(categoryId) {
   try {
@@ -354,33 +451,11 @@ async function getAscendingCategory(categoryId) {
     throw error;
   }
 }
-async function getAscendingCategoryLimit(categoryId, count) {
-  try {
-    const result = await productModel
-      .find({ "category.categoryId": new mongoose.Types.ObjectId(categoryId) })
-      .sort({ price2: 1 })
-      .limit(count);
-    return result;
-  } catch (error) {
-    console.log("Lỗi lấy sp theo key", error);
-    throw error;
-  }
-}
+
 
 /*****************************************TÁC GIẢ**************************************************/
 
-// Hiển thị sản phẩm theo tác giả và giới hạn 12 24 36 sản phẩm bên trang sản phẩm
-async function getProductByAuthorLimit(authorId, count) {
-  try {
-    const result = await productModel
-      .find({ "author.authorId": new mongoose.Types.ObjectId(authorId) })
-      .limit(count);
-    return result;
-  } catch (error) {
-    console.log("Lỗi sản phẩm mới nhất", error);
-    throw error;
-  }
-}
+
 
 //sản phẩm mới theo tác giả bên trang sản phẩm
 async function getNewProductAuthor(authorId) {
@@ -422,79 +497,13 @@ async function getAscendingAuthor(authorId) {
 
 
 
-async function getNewProductAuthorLimit(authorId, count) {
-  try {
-    const result = await productModel
-      .find({ "author.authorId": new mongoose.Types.ObjectId(authorId) })
-      .sort({ _id: -1 })
-      .limit(count);
-    return result;
-  } catch (error) {
-    console.log("Lỗi sản phẩm mới nhất", error);
-    throw error;
-  }
-}
-
-async function getDecreaseAuthorLimit(authorId, count) {
-  try {
-    const result = await productModel
-      .find({ "author.authorId": new mongoose.Types.ObjectId(authorId) })
-      .sort({ price2: -1 })
-      .limit(count);
-    return result;
-  } catch (error) {
-    console.log("Lỗi lấy sp", error);
-    throw error;
-  }
-}
-//Lọc giá sản phẩm tăng dần theo danh mục bên trang sản phẩm
-async function getAscendingAuthorLimit(authorId, count) {
-  try {
-    const result = await productModel
-      .find({ "author.authorId": new mongoose.Types.ObjectId(authorId) })
-      .sort({ price2: 1 });
-    return result;
-  } catch (error) {
-    console.log("Lỗi lấy sp theo key", error);
-    throw error;
-  }
-}
-async function getAscendingCategoryLimit(categoryId, count) {
-  try {
-    const result = await productModel
-      .find({ "category.categoryId": new mongoose.Types.ObjectId(categoryId) })
-      .sort({ price2: 1 })
-      .limit(count);
-    return result;
-  } catch (error) {
-    console.log("Lỗi lấy sp theo key", error);
-    throw error;
-  }
-}
-
-
-
-
-
-
 
 
 
 
 /*****************************************TÁC GIẢ**************************************************/
 
-// Hiển thị sản phẩm theo tác giả và giới hạn 12 24 36 sản phẩm bên trang sản phẩm
-async function getProductByPublishLimit(publishId, count) {
-  try {
-    const result = await productModel
-      .find({ "publish.publishId": new mongoose.Types.ObjectId(publishId) })
-      .limit(count);
-    return result;
-  } catch (error) {
-    console.log("Lỗi sản phẩm mới nhất", error);
-    throw error;
-  }
-}
+
 
 //sản phẩm mới theo tác giả bên trang sản phẩm
 async function getNewProductPublish(publishId) {
@@ -534,45 +543,6 @@ async function getAscendingPublish(publishId) {
 }
 
 
-
-
-async function getNewProductPublishLimit(publishId, count) {
-  try {
-    const result = await productModel
-      .find({ "publish.publishId": new mongoose.Types.ObjectId(publishId) })
-      .sort({ _id: -1 })
-      .limit(count);
-    return result;
-  } catch (error) {
-    console.log("Lỗi sản phẩm mới nhất", error);
-    throw error;
-  }
-}
-
-async function getDecreasePublishLimit(publishId, count) {
-  try {
-    const result = await productModel
-      .find({ "publish.publishId": new mongoose.Types.ObjectId(publishId) })
-      .sort({ price2: -1 })
-      .limit(count);
-    return result;
-  } catch (error) {
-    console.log("Lỗi lấy sp", error);
-    throw error;
-  }
-}
-//Lọc giá sản phẩm tăng dần theo danh mục bên trang sản phẩm
-async function getAscendingPublishLimit(publishId, count) {
-  try {
-    const result = await productModel
-      .find({ "publish.publishId": new mongoose.Types.ObjectId(publishId) })
-      .sort({ price2: 1 });
-    return result;
-  } catch (error) {
-    console.log("Lỗi lấy sp theo key", error);
-    throw error;
-  }
-}
 
 
 
