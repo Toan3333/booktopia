@@ -123,7 +123,7 @@ const Cart = () => {
                                 currency: "VND",
                               })}
                             </div>
-                            <div className="max-md:block max-2xl:hidden mt-2">
+                            {/* <div className="max-md:block max-2xl:hidden mt-2">
                               <div className="flex">
                                 <div className="flex items-center border border-gray-300 rounded-lg">
                                   <button
@@ -145,7 +145,7 @@ const Cart = () => {
                                   </button>
                                 </div>
                               </div>
-                            </div>
+                            </div> */}
                             <div className="max-md:hidden my-1">
                               Tác giả: {item.author?.authorName || "Chưa có"}
                             </div>

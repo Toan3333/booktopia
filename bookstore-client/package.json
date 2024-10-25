@@ -18,6 +18,7 @@
     "axios": "^1.7.2",
     "bookstore-client": "file:",
     "cookies": "^0.9.1",
+    "date-fns": "^4.1.0",
     "formik": "^2.4.6",
     "gh-pages": "^6.1.1",
     "js-cookie": "^3.0.5",

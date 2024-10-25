@@ -1,17 +1,63 @@
-import React from "react";
-import { FaCalendar, FaHeart, FaImage, FaRegEdit, FaUser } from "react-icons/fa";
+import React, { useDebugValue, useEffect, useState } from "react";
+import {
+  FaCalendar,
+  FaHeart,
+  FaImage,
+  FaRegEdit,
+  FaUser,
+} from "react-icons/fa";
 import { FiLogOut } from "react-icons/fi";
-import { NavLink } from "react-router-dom";
+import { NavLink, useParams } from "react-router-dom";
 import PageTitle from "../../components/PageTitle/PageTitle";
 import Button from "../../components/Button/Button";
+import axios from "axios";
+import Cookies from "js-cookie";
+import { URL_API } from "../../constants/constants";
 
 const MyOrderDetail = () => {
+  const [user, setUser] = useState({});
+  const { id } = useParams();
+  const [order, setOrder] = useState({ listProducts: [] });
   const profileMenuList = [
     { id: 1, name: "Tài khoản của tôi", icon: <FaUser />, link: "/profile" },
-    { id: 2, name: "Sản phẩm yêu thích", icon: <FaHeart />, link: "/favorites" },
-    { id: 3, name: "Đơn hàng của bạn", icon: <FaCalendar />, link: "/my-orders" },
+    {
+      id: 2,
+      name: "Sản phẩm yêu thích",
+      icon: <FaHeart />,
+      link: "/favorites",
+    },
+    {
+      id: 3,
+      name: "Đơn hàng của bạn",
+      icon: <FaCalendar />,
+      link: "/my-orders",
+    },
     { id: 4, name: "Đăng xuất", icon: <FiLogOut />, link: "/logout" },
   ];
+
+  useEffect(() => {
+    const userData = Cookies.get("user");
+    if (userData) {
+      const parsedUser = JSON.parse(userData);
+      setUser(parsedUser.user);
+    }
+  }, []);
+  useEffect(() => {
+    const fetchOrderDetails = async () => {
+      try {
+        const response = await axios.get(`${URL_API}/orders/${id}`);
+        console.log(response.data);
+
+        setOrder(response.data);
+      } catch (error) {
+        console.error(
+          "Error fetching order details:",
+          error.response?.data || error.message
+        );
+      }
+    };
+    fetchOrderDetails();
+  }, [id]);
 
   return (
     <div className="py-10">
@@ -21,12 +67,16 @@ const MyOrderDetail = () => {
             {/* Thông tin tài khoản */}
             <div className="flex items-center gap-2">
               <img
-                src="./images/avatar.png"
+                src={
+                  user.image
+                    ? `${URL_API}/images/${user.image}`
+                    : "https://via.placeholder.com/50"
+                }
                 className="w-[50px] h-[50px] rounded-full"
                 alt="Avatar"
               />
               <div>
-                <h3 className="font-semibold leading-normal">booktopiavn@gmail.com</h3>
+                <h3 className="font-semibold leading-normal">{user.email}</h3>
                 <p className="flex items-center gap-1 text-grayText">
                   <FaRegEdit />
                   Sửa hồ sơ
@@ -43,7 +93,8 @@ const MyOrderDetail = () => {
                       isActive
                         ? "text-mainDark flex items-center gap-2 font-normal leading-normal"
                         : "flex items-center hover:text-mainDark gap-2 font-normal leading-normal"
-                    }>
+                    }
+                  >
                     {item.icon}
                     {item.name}
                   </NavLink>
@@ -52,7 +103,10 @@ const MyOrderDetail = () => {
             </ul>
           </div>
           <div className="w-[90%]">
-            <PageTitle title="Chi tiết đơn hàng" className="text-mainDark mb-2"></PageTitle>
+            <PageTitle
+              title={`Chi tiết đơn hàng [${order.orderId}]`}
+              className="text-mainDark mb-2"
+            ></PageTitle>
             <div className="text-grayText leading-normal font-normal mb-5">
               Theo dõi thông tin đơn hàng của bạn
             </div>
@@ -64,29 +118,51 @@ const MyOrderDetail = () => {
                     <FaImage className="w-6 h-6 " />
                   </th>
                   <th>Tên sách</th>
-                  <th>Phân loại</th>
                   <th>Giá</th>
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>1</td>
-                  <td className="flex items-center justify-center max-w-[150px]">
-                    <img src="./images/product.png" className="w-full" alt="" />
-                  </td>
-                  <td>
-                    <div className="flex flex-col  gap-3">
-                      <div className="">Cây cam ngọt của tôi</div>
-                      <div className="">x1</div>
-                    </div>
-                  </td>
-                  <td>Văn học</td>
-                  <td>199000đ</td>
-                </tr>
+                {order.listProducts.map((order, index) => (
+                  <tr>
+                    <td>{index + 1}</td>
+                    <td className="flex items-center justify-center max-w-[150px]">
+                      <img
+                        src={`${URL_API}/images/${order.image1}`}
+                        className="w-full"
+                        alt=""
+                      />
+                    </td>
+                    <td>
+                      <div className="flex flex-col  gap-3">
+                        <div className="" style={{ fontSize: "16px" }}>
+                          <b>
+                            {order.name} x{order.quantity}
+                          </b>
+                        </div>
+                        <div className="">
+                          Tác giả: {order.author.authorName}
+                        </div>
+                        <div className="">
+                          Thể loại: {order.category.categoryName}
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div style={{ display: "flex" }}>
+                        <del>{order.price1}đ</del>
+                        <div style={{ fontSize: "16px", marginLeft: "10px" }}>
+                          {order.price2}đ
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
             <div className="flex items-center justify-end mt-6 gap-5">
-              <Button className="bg-secondary">Hủy</Button>
+              <span style={{ fontSize: "18px", fontWeight: "bold" }}>
+                Thành tiền: {order.total}đ
+              </span>
             </div>
           </div>
         </div>

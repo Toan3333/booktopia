@@ -1,7 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Sidebar, Menu, MenuItem, SubMenu } from "react-pro-sidebar";
-import { FaBook, FaClipboardList, FaRegEdit, FaTrashAlt, FaUser, FaUserEdit } from "react-icons/fa";
+import {
+  FaBook,
+  FaClipboardList,
+  FaEye,
+  FaRegEdit,
+  FaTrashAlt,
+  FaUser,
+  FaUserEdit,
+  FaClock,
+  FaCog,
+  FaTruck,
+  FaCheckCircle,
+  FaTimesCircle,
+} from "react-icons/fa";
 import { MdLogout } from "react-icons/md";
 import { AiFillDashboard, AiOutlineBars } from "react-icons/ai";
 
@@ -16,7 +29,13 @@ const ManageOrder = () => {
   const navigate = useNavigate();
   const [listOrder, setOrder] = useState([]);
   const [collapsed, setCollapsed] = useState(false);
-  const statusOptions = ["Chờ xử lý", "Đang xử lý", "Đã gửi", "Đã giao", "Đã hủy"]; // Danh sách trạng thái
+  const statusOptions = [
+    "Chờ xác nhận",
+    "Đang xử lý",
+    "Đang vận chuyển",
+    "Giao thành công",
+    "Đã hủy",
+  ]; // Danh sách trạng thái
 
   const handleLogout = () => {
     // Perform logout operations here (e.g., clearing authentication tokens)
@@ -38,9 +57,13 @@ const ManageOrder = () => {
 
   const handleStatusChange = async (orderId, newStatus) => {
     try {
-      await axios.put(`${URL_API}/orders/${orderId}/status`, { status: newStatus });
+      await axios.put(`${URL_API}/orders/${orderId}/status`, {
+        status: newStatus,
+      });
       setOrder((prevOrders) =>
-        prevOrders.map((order) => (order._id === orderId ? { ...order, status: newStatus } : order))
+        prevOrders.map((order) =>
+          order._id === orderId ? { ...order, status: newStatus } : order
+        )
       );
     } catch (error) {
       console.log(error);
@@ -67,7 +90,9 @@ const ManageOrder = () => {
               text: "Hủy đơn hàng thành công!",
               icon: "success",
             }).then(() => {
-              setOrder((prevOrders) => prevOrders.filter((order) => order._id !== id));
+              setOrder((prevOrders) =>
+                prevOrders.filter((order) => order._id !== id)
+              );
             });
           }
         });
@@ -75,7 +100,8 @@ const ManageOrder = () => {
     } catch (error) {
       Swal.fire({
         title: "Lỗi!",
-        text: error.response?.data?.message || "Có lỗi xảy ra khi xóa đơn hàng.",
+        text:
+          error.response?.data?.message || "Có lỗi xảy ra khi xóa đơn hàng.",
         icon: "error",
       });
     }
@@ -86,8 +112,11 @@ const ManageOrder = () => {
       <div className="flex min-h-screen border">
         {/* Sidebar */}
         <Sidebar
-          className={`relative border p-3 bg-white ${collapsed ? "collapsed" : "expanded"}`}
-          width={collapsed ? "0px" : "270px"}>
+          className={`relative border p-3 bg-white ${
+            collapsed ? "collapsed" : "expanded"
+          }`}
+          width={collapsed ? "0px" : "270px"}
+        >
           <Menu className="bg-white">
             <div className="flex items-center justify-center mb-6">
               <img src="./images/logo.png" alt="Logo" />
@@ -99,17 +128,27 @@ const ManageOrder = () => {
               </div>
             </MenuItem>
 
-            <SubMenu label="Quản lý danh mục" icon={<AiOutlineBars className="w-5 h-5" />}>
+            <SubMenu
+              label="Quản lý danh mục"
+              icon={<AiOutlineBars className="w-5 h-5" />}
+            >
               <MenuItem component={<Link to="/admin/manage-category" />}>
                 Danh sách danh mục
               </MenuItem>
             </SubMenu>
-            <SubMenu label="Quản lý sản phẩm" icon={<FaBook className="w-5 h-5" />}>
+            <SubMenu
+              label="Quản lý sản phẩm"
+              icon={<FaBook className="w-5 h-5" />}
+            >
               <MenuItem component={<Link to="/admin/manage-product" />}>
                 Danh sách sản phẩm
               </MenuItem>
-              <MenuItem component={<Link to="/admin/manage-author" />}>Tác giả</MenuItem>
-              <MenuItem component={<Link to="/admin/manage-publishes" />}>Nhà xuất bản</MenuItem>
+              <MenuItem component={<Link to="/admin/manage-author" />}>
+                Tác giả
+              </MenuItem>
+              <MenuItem component={<Link to="/admin/manage-publishes" />}>
+                Nhà xuất bản
+              </MenuItem>
             </SubMenu>
             <MenuItem component={<Link to="/admin/manage-order" />}>
               <div className="flex items-center gap-4">
@@ -123,8 +162,13 @@ const ManageOrder = () => {
                 Quản lý tài khoản
               </div>
             </MenuItem>
-            <SubMenu label="Quản lý bài viết" icon={<FaRegEdit className="w-5 h-5" />}>
-              <MenuItem component={<Link to="/admin/manage-blog" />}>Danh sách bài viết</MenuItem>
+            <SubMenu
+              label="Quản lý bài viết"
+              icon={<FaRegEdit className="w-5 h-5" />}
+            >
+              <MenuItem component={<Link to="/admin/manage-blog" />}>
+                Danh sách bài viết
+              </MenuItem>
             </SubMenu>
             <MenuItem onClick={handleLogout}>
               <div className="flex items-center gap-4">
@@ -135,13 +179,17 @@ const ManageOrder = () => {
           </Menu>
         </Sidebar>
         {/* Nút toggle nằm bên ngoài Sidebar */}
-        <button onClick={() => setCollapsed(!collapsed)} className="toggle-button">
+        <button
+          onClick={() => setCollapsed(!collapsed)}
+          className="toggle-button"
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
             strokeWidth={1.5}
-            stroke="currentColor">
+            stroke="currentColor"
+          >
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -186,26 +234,160 @@ const ManageOrder = () => {
                           currency: "VND",
                         })}
                       </td>
-                      <td>
-                        <select
-                          value={order.status}
-                          onChange={(e) => handleStatusChange(order._id, e.target.value)}>
-                          {statusOptions.map((status) => (
-                            <option key={status} value={status}>
-                              {status}
-                            </option>
-                          ))}
-                        </select>
-                      </td>
+                      <td>{order.status}</td>
                       <td>
                         <div className="flex items-center justify-center gap-3">
-                          <button>
-                            <Link to="/admin/edit-order">
-                              <FaUserEdit className="w-5 h-4 text-mainDark" />
+                          <button className="px-2 py-1 rounded text-white bg-blue-500">
+                            <Link to="/admin/detail-order">
+                              <FaEye className="w-5 h-4 text-mainDark" />
                             </Link>
                           </button>
-                          <button onClick={() => handleDelete(order._id)}>
-                            <FaTrashAlt className="w-5 h-4 text-red" />
+                          {order.status === "Chờ xác nhận" && (
+                            <button
+                              onClick={() =>
+                                handleStatusChange(order._id, "Đang xử lý")
+                              }
+                              style={{
+                                padding: "4px 8px",
+                                borderRadius: "4px",
+                                color: "white",
+                                backgroundColor: "#1E40AF", // bg-blue-600
+                                cursor: "pointer",
+                              }}
+                              onMouseOver={(e) =>
+                                (e.target.style.backgroundColor = "#1D4ED8")
+                              } // hover:bg-blue-700
+                              onMouseOut={(e) =>
+                                (e.target.style.backgroundColor = "#1E40AF")
+                              }
+                            >
+                              <FaCog
+                                style={{
+                                  display: "inline",
+                                  width: "16px",
+                                  height: "16px",
+                                  marginRight: "4px",
+                                }}
+                              />
+                            </button>
+                          )}
+
+                          {order.status === "Đang xử lý" && (
+                            <button
+                              onClick={() =>
+                                handleStatusChange(order._id, "Đang vận chuyển")
+                              }
+                              style={{
+                                padding: "4px 8px",
+                                borderRadius: "4px",
+                                color: "white",
+                                backgroundColor: "#F59E0B", // bg-yellow-500
+                                cursor: "pointer",
+                              }}
+                              onMouseOver={(e) =>
+                                (e.target.style.backgroundColor = "#D97706")
+                              } // hover:bg-yellow-600
+                              onMouseOut={(e) =>
+                                (e.target.style.backgroundColor = "#F59E0B")
+                              }
+                            >
+                              <FaTruck
+                                style={{
+                                  display: "inline",
+                                  width: "16px",
+                                  height: "16px",
+                                  marginRight: "4px",
+                                }}
+                              />
+                            </button>
+                          )}
+
+                          {order.status === "Đang vận chuyển" && (
+                            <button
+                              onClick={() =>
+                                handleStatusChange(order._id, "Giao thành công")
+                              }
+                              style={{
+                                padding: "4px 8px",
+                                borderRadius: "4px",
+                                color: "white",
+                                backgroundColor: "#10B981", // bg-green-600
+                                cursor: "pointer",
+                              }}
+                              onMouseOver={(e) =>
+                                (e.target.style.backgroundColor = "#059669")
+                              } // hover:bg-green-700
+                              onMouseOut={(e) =>
+                                (e.target.style.backgroundColor = "#10B981")
+                              }
+                            >
+                              <FaCheckCircle
+                                style={{
+                                  display: "inline",
+                                  width: "16px",
+                                  height: "16px",
+                                  marginRight: "4px",
+                                }}
+                              />
+                            </button>
+                          )}
+
+                          {order.status === "Giao thành công" && (
+                            <button
+                              onClick={() =>
+                                handleStatusChange(order._id, "Đã hủy")
+                              }
+                              style={{
+                                padding: "4px 8px",
+                                borderRadius: "4px",
+                                color: "white",
+                                backgroundColor: "#EF4444", // bg-red-600
+                                cursor: "pointer",
+                              }}
+                              onMouseOver={(e) =>
+                                (e.target.style.backgroundColor = "#DC2626")
+                              } // hover:bg-red-700
+                              onMouseOut={(e) =>
+                                (e.target.style.backgroundColor = "#EF4444")
+                              }
+                            >
+                              <FaTimesCircle
+                                style={{
+                                  display: "inline",
+                                  width: "16px",
+                                  height: "16px",
+                                  marginRight: "4px",
+                                }}
+                              />
+                            </button>
+                          )}
+
+                          {order.status === "Đã hủy" && (
+                            <button
+                              style={{
+                                padding: "4px 8px",
+                                borderRadius: "4px",
+                                color: "white",
+                                backgroundColor: "#6B7280", // bg-gray-500
+                                cursor: "not-allowed",
+                              }}
+                            >
+                              <FaTimesCircle
+                                style={{
+                                  display: "inline",
+                                  width: "16px",
+                                  height: "16px",
+                                  marginRight: "4px",
+                                }}
+                              />
+                            </button>
+                          )}
+
+                          <button
+                            onClick={() => handleDelete(order._id)}
+                            className="bg-red-500 text-white px-2 py-1 rounded"
+                          >
+                            <FaTrashAlt className="w-5 h-4" />
                           </button>
                         </div>
                       </td>

@@ -14,14 +14,29 @@ const orderSchema = new Schema({
   listProducts: [
     {
       name: { type: String, required: true },
-      author: { type: String, required: true },
+      author: {
+        type: {
+          authorId: { type: ObjectId, required: true },
+          authorName: { type: String, required: true },
+        },
+        required: true,
+      },
+      category: {
+        type: {
+          categoryId: { type: ObjectId, required: true },
+          categoryName: { type: String, required: true },
+        },
+        required: true,
+      },
       image1: { type: String, required: false },
       price2: { type: Number, required: true },
+      price1: { type: Number, required: true },
       quantity: { type: Number, required: true },
     },
   ],
   updatedAt: { type: Date, default: Date.now },
-  status: { type: String, enum: ['Chờ xử lý', 'Đang xử lý', 'Đã gửi', 'Đã giao', 'Đã hủy'], default: 'Chờ xử lý' },
+  userId: { type: ObjectId, ref: 'users', required: false },
+  status: { type: String, enum: ['Chờ xác nhận', 'Đang xử lý', 'Đang vận chuyển', 'Giao thành công', 'Đã hủy'], default: 'Chờ xác nhận' },
 });
 
 module.exports = mongoose.models.order || mongoose.model("orders", orderSchema);

@@ -35,7 +35,6 @@ import ManageOrder from "./pages/Admin/ManageOrder/ManageOrder";
 import DashBoard from "./pages/Admin/Dashboard/DashBoard";
 import PrivateRoute from "./components/PrivateRoute/PrivateRoute";
 import OrderDetail from "./pages/Admin/OrderDetail/OrderDetail";
-import EditOrder from "./pages/Admin/EditOrder/EditOrder";
 import MyOrderDetail from "./pages/MyOrderDetail/MyOrderDetail";
 import PurchaseHistory from "./pages/Admin/PurchaseHistory/PurchaseHistory";
 
@@ -56,7 +55,7 @@ function App() {
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/my-orders" element={<MyOrders />} />
-          <Route path="/order-detail" element={<MyOrderDetail />} />
+          <Route path="/order-detail/:id" element={<MyOrderDetail />} />
           <Route path="/favorites" element={<Favorite />} />
           <Route path="/product-detail/:id" element={<ProductDetail />} />
         </Route>
@@ -77,7 +76,7 @@ function App() {
         <Route path="/admin/manage-order" element={<ManageOrder />} />
         <Route path="/admin/purchase-history" element={<PurchaseHistory />} />
         <Route path="/admin/order-detail" element={<OrderDetail />} />
-        <Route path="/admin/edit-order" element={<EditOrder />} />
+        {/* <Route path="/admin/manage-items" element={<EditOrder />} /> */}
         <Route path="/admin/manage-publishes" element={<ManagePublishes />} />
         <Route path="/admin/add-author" element={<AddAuthor />} />
         <Route path="/admin/add-publishes" element={<AddPublishes />} />

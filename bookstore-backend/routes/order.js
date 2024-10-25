@@ -60,4 +60,23 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
+router.get('/user/:userId', async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const orders = await orderController.getOrdersByUserId(userId);
+    return res.status(200).json(orders);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+});
+router.get("/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const order = await orderController.getOrderById(id);
+    return res.status(200).json(order);
+  } catch (error) {
+    console.log("Lỗi lấy chi tiết đơn hàng", error);
+    return res.status(500).json(error);
+  }
+});
 module.exports = router;

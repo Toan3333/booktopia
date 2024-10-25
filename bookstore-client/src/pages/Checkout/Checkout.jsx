@@ -1,17 +1,22 @@
 import React, { useEffect, useMemo, useState } from "react";
 import "../../index.css";
 import Button from "../../components/Button/Button";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import Cookies from "js-cookie";
 import { URL_API } from "../../constants/constants";
 import axios from "axios";
+import { clearCart } from "../../redux/slices/cartslide";
+
 
 const Checkout = () => {
+  const dispatch = useDispatch();
+
   const {
     register,
     handleSubmit,
     setValue,
+    reset,
     formState: { errors },
   } = useForm();
   const listProducts = useSelector((state) => state.cart?.items) || [];
@@ -54,6 +59,12 @@ const Checkout = () => {
 
   const onSubmit = async (data) => {
     try {
+      const user = Cookies.get("user");
+      let userId = null;
+      if (user) {
+        const userData = JSON.parse(user);
+        userId = userData.user._id;
+      }
       const response = await fetch(`${URL_API}/orders`, {
         method: "POST",
         headers: {
@@ -63,15 +74,16 @@ const Checkout = () => {
           ...data,
           listProducts,
           total,
-          city: selectedCity,
-          district: selectedDistrict,
-          ward: selectedWard,
+          userId,
+          address: `${data.address}, ${selectedWard}, ${selectedDistrict}, ${selectedCity}`,
         }),
       });
 
       const result = await response.json();
       if (response.ok) {
         console.log("Order created successfully", result);
+        dispatch(clearCart());
+        reset()
       } else {
         console.error("Error creating order", result);
       }

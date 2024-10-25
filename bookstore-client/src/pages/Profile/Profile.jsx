@@ -23,8 +23,18 @@ const Profile = () => {
     "https://images.unsplash.com/photo-1686170287433-c95faf6d3608?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1wYXJ0bmVy";
   const profileMenuList = [
     { id: 1, name: "Tài khoản của tôi", icon: <FaUser />, link: "/profile" },
-    { id: 2, name: "Sản phẩm yêu thích", icon: <FaHeart />, link: "/favorites" },
-    { id: 3, name: "Đơn hàng của bạn", icon: <FaCalendar />, link: "/my-orders" },
+    {
+      id: 2,
+      name: "Sản phẩm yêu thích",
+      icon: <FaHeart />,
+      link: "/favorites",
+    },
+    {
+      id: 3,
+      name: "Đơn hàng của bạn",
+      icon: <FaCalendar />,
+      link: "/my-orders",
+    },
     { id: 4, name: "Đăng xuất", icon: <FiLogOut />, action: handleLogout },
   ];
 
@@ -33,7 +43,12 @@ const Profile = () => {
   const [image, setImage] = useState(null);
   const userId = JSON.parse(Cookies.get("user")).user._id;
   const navigate = useNavigate();
-  const { register, handleSubmit, setValue } = useForm();
+  const { register, handleSubmit, setValue, watch, getValues } = useForm({
+    defaultValues: {
+      phone: "",
+      address: "",
+    },
+  });
 
   // Xử lý khi người dùng chọn hình ảnh mới
   const handleImgChange = useCallback((e) => {
@@ -53,7 +68,6 @@ const Profile = () => {
     if (userData) {
       const parsedUser = JSON.parse(userData);
       setUser(parsedUser.user);
-      console.log(parsedUser);
     }
   }, []);
 
@@ -71,7 +85,9 @@ const Profile = () => {
           setValue("phone", data.phone);
           setValue("address", data.address);
           // Hiển thị hình ảnh hiện tại
-          setImage(data.image ? `${URL_API}/images/${data.image}` : defaultAvatar);
+          setImage(
+            data.image ? `${URL_API}/images/${data.image}` : defaultAvatar
+          );
 
           // console.log("Image URL:", image);
           // console.log("Selected Image Preview:", selectedImage?.preview);
@@ -104,9 +120,13 @@ const Profile = () => {
 
       if (res.status === 200) {
         const updatedUser = res.data.userUpdate;
-        Cookies.set("user", JSON.stringify({ user: { _id: updatedUser._id, ...updatedUser } }), {
-          expires: 1,
-        });
+        Cookies.set(
+          "user",
+          JSON.stringify({ user: { _id: updatedUser._id, ...updatedUser } }),
+          {
+            expires: 1,
+          }
+        );
         setUser(updatedUser);
         setImage(`${URL_API}/images/${updatedUser.image}`);
         showSwalFireSuccess("Thông tin hồ sơ của bạn đã được cập nhật.");
@@ -151,14 +171,16 @@ const Profile = () => {
                         isActive
                           ? "text-mainDark flex items-center gap-2 font-normal leading-normal"
                           : "flex items-center text-black hover:text-mainDark gap-2 font-normal leading-normal"
-                      }>
+                      }
+                    >
                       {item.icon}
                       {item.name}
                     </NavLink>
                   ) : (
                     <button
                       onClick={item.action}
-                      className="flex items-center text-black hover:text-mainDark gap-2 font-normal leading-normal">
+                      className="flex items-center text-black hover:text-mainDark gap-2 font-normal leading-normal"
+                    >
                       {item.icon}
                       {item.name}
                     </button>
@@ -168,11 +190,17 @@ const Profile = () => {
             </ul>
           </div>
           <div className="w-3/5">
-            <PageTitle title="Cập nhật tài khoản" className="text-mainDark mb-2"></PageTitle>
+            <PageTitle
+              title="Cập nhật tài khoản"
+              className="text-mainDark mb-2"
+            ></PageTitle>
             <div className="text-grayText leading-normal font-normal mb-5">
               Chỉnh sửa thông tin cá nhân, tài khoản và mật khẩu
             </div>
-            <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
+            <form
+              onSubmit={handleSubmit(onSubmit)}
+              className="flex flex-col gap-6"
+            >
               <div className="flex items-center justify-center gap-5">
                 <div className="w-full">
                   <label htmlFor="name">Họ và tên</label>
@@ -202,6 +230,7 @@ const Profile = () => {
                   id="date"
                   placeholder="dd/mm/yyyy"
                   className="input input-bordered w-full mt-2"
+                  value={watch("date") || ""}
                   {...register("date")}
                 />
               </div>
@@ -246,6 +275,7 @@ const Profile = () => {
                   id="phone"
                   placeholder="Số điện thoại"
                   className="input input-bordered w-full mt-2"
+                  defaultValue={getValues("phone") || ""} 
                   {...register("phone")}
                 />
               </div>
@@ -256,6 +286,7 @@ const Profile = () => {
                   id="address"
                   placeholder="Địa chỉ"
                   className="input input-bordered w-full mt-2"
+                  value={watch("address") || ""}
                   {...register("address")}
                 />
               </div>
