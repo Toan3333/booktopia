@@ -363,28 +363,29 @@ const ProductDetail = () => {
           </div>
         )}
         {activeTab === "comments" && (
-          <div className="mt-7">
+          <div className="mt-4">
             <PageTitle title={`${commentDetailData.length} lượt đánh giá`} />
-            <form action="" className="mt-7">
-              <div className="flex justify-between items-center">
-                <div className="w-[85%]">
-                  <input
-                    onChange={(e) => setContentComment(e.target.value)}
-                    type="text"
-                    placeholder="Hãy nhận xét gì đó ...."
-                    className="input input-bordered w-full"
-                  />
-                </div>
-                <div>
-                  <Button onClick={() => handleConment()}>Gửi nhận xét</Button>
-                </div>
-              </div>
-            </form>
+            
 
             <CommentList
               handleDeleteComment={handleDeleteComment}
               commentDetailData={commentDetailData}
             />
+            <form action="" className="mt-7">
+              <div className="flex justify-between items-center">
+                <div className="w-[100%] flex gap-2 ">
+                  <input
+                    onChange={(e) => setContentComment(e.target.value)}
+                    type="text"
+                    placeholder="Hãy nhận xét gì đó ...."
+                    className="input input-bordered w-full "
+                    
+                  />
+                  <Button className="text-nowrap" onClick={() => handleConment()}>Đánh giá</Button>
+                </div>
+               
+              </div>
+            </form>
           </div>
         )}
         <div>
