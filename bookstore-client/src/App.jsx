@@ -37,6 +37,7 @@ import PrivateRoute from "./components/PrivateRoute/PrivateRoute";
 import OrderDetail from "./pages/Admin/OrderDetail/OrderDetail";
 import EditOrder from "./pages/Admin/EditOrder/EditOrder";
 import MyOrderDetail from "./pages/MyOrderDetail/MyOrderDetail";
+import PurchaseHistory from "./pages/Admin/PurchaseHistory/PurchaseHistory";
 
 function App() {
   return (
@@ -74,6 +75,7 @@ function App() {
         <Route path="/admin/manage-blog" element={<ManageBlog />} />
         <Route path="/admin/manage-author" element={<ManageAuthor />} />
         <Route path="/admin/manage-order" element={<ManageOrder />} />
+        <Route path="/admin/purchase-history" element={<PurchaseHistory />} />
         <Route path="/admin/order-detail" element={<OrderDetail />} />
         <Route path="/admin/edit-order" element={<EditOrder />} />
         <Route path="/admin/manage-publishes" element={<ManagePublishes />} />

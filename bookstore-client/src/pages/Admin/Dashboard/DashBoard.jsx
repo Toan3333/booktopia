@@ -118,7 +118,7 @@ const DashBoard = () => {
             <MenuItem onClick={handleLogout}>
               <div className="flex items-center gap-4">
                 <MdLogout />
-                Logout
+                Đăng xuất
               </div>
             </MenuItem>
           </Menu>

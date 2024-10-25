@@ -18,7 +18,7 @@ import axios from "axios";
 import { URL_API } from "../../../constants/constants";
 import { showSwalFireDelete } from "../../../helpers/helpers";
 
-const ManageUser = () => {
+const PurchaseHistory = () => {
   const isAdmin = true;
   const navigate = useNavigate();
   const [collapsed, setCollapsed] = useState(false);
@@ -98,7 +98,7 @@ const ManageUser = () => {
             <MenuItem onClick={handleLogout}>
               <div className="flex items-center gap-4">
                 <MdLogout />
-                Logout
+                Đăng xuất
               </div>
             </MenuItem>
           </Menu>
@@ -122,46 +122,98 @@ const ManageUser = () => {
         <div className="flex-1 p-6">
           <HeaderAdmin />
           <div className="flex items-center justify-between pb-8 border-b pt-3">
-            <PageTitle title="Quản lý tài khoản" className="text-mainDark" />
+            <PageTitle title="Lịch sử mua hàng" className="text-mainDark" />
           </div>
-          <div className="mt-6 border rounded-[30px] p-5">
-            <table className="table w-full">
-              <thead className="text-[16px] font-semibold text-black">
-                <tr>
-                  <th>#</th>
-                  <th>Tên người dùng</th>
-                  <th>Ngày sinh</th>
-                  <th>Email</th>
-                  <th>Địa chỉ</th>
-                  <th>Số điện thoại</th>
-                  <th className="text-center">Thao tác</th>
-                </tr>
-              </thead>
-              <tbody>
-                {listUser.map((user, index) => (
-                  <tr key={user._id}>
-                    <td>{index + 1}</td>
-                    <td>{user.name}</td>
-                    <td>{user.date}</td>
-                    <td>{user.email}</td>
-                    <td>{user.address}</td>
-                    <td>{user.phone}</td>
-                    <td>
-                      <div className="flex items-center justify-center gap-3">
-                        <button>
-                          <Link to="/admin/purchase-history">
-                            <FaUserClock className="w-5 h-4 text-mainDark" />
-                          </Link>
-                        </button>
-                        <button onClick={(e) => handleDelete(user._id)}>
-                          <FaTrashAlt className="w-5 h-4 text-red" />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div className="mt-6 border rounded-lg p-5">
+            <div className="flex items-center justify-between pb-3 border-b border-b-gray-300">
+              <div className="">
+                <span>Mã đơn hàng:  </span>
+                <span>2410081KP8SEW3</span>
+              </div>
+              <div className=" flex items-center">
+                <span className="pr-3">Ngày đặt: 20/10/2024</span>
+
+                <span className="text-mainDark border-l border-l-gray-300 pl-3 font-medium">
+                  ĐANG XỬ LÝ
+                </span>
+              </div>
+            </div>
+            <div className="flex items-center justify-between py-3 pb-3 border-b border-b-gray-300">
+              <div className="flex items-center">
+                <div className="max-w-[120px]">
+                  <img className="w-full" src="./images/product.png" alt="" />
+                </div>
+                <div className="flex flex-col gap-3">
+                  <h3 className="font-normal">Cây cam ngọt của tôi</h3>
+                  <div className="text-sm text-gray-400">José Mauro de Vasconcelos</div>
+                  <span className="text-sm">x1</span>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="text-sm text-gray-400 line-through">86.400 đ</div>
+                <div className="text-lg text-red font-semibold">86.400 đ</div>
+              </div>
+            </div>
+
+            <div className="flex justify-end mt-4">
+              <div className="flex items-center">
+                <span>Thành tiền: </span>
+                <div className="text-xl text-red font-semibold ml-3">86.400 đ</div>
+              </div>
+            </div>
+          </div>
+          <div className="mt-6 border rounded-lg p-5">
+            <div className="flex items-center justify-between pb-3 border-b border-b-gray-300">
+              <div className="">
+                <span>Mã đơn hàng:  </span>
+                <span>2410081KP8SEW3</span>
+              </div>
+              <div className=" flex items-center">
+                <span className="pr-3">Ngày đặt: 20/10/2024</span>
+
+                <span className="text-mainDark border-l border-l-gray-300 pl-3 font-medium">
+                  Hoàn thành
+                </span>
+              </div>
+            </div>
+            <div className="flex items-center justify-between py-3 pb-3 border-b border-b-gray-300">
+              <div className="flex items-center">
+                <div className="max-w-[120px]">
+                  <img className="w-full" src="./images/product.png" alt="" />
+                </div>
+                <div className="flex flex-col gap-3">
+                  <h3 className="font-normal">Cây cam ngọt của tôi</h3>
+                  <div className="text-sm text-gray-400">José Mauro de Vasconcelos</div>
+                  <span className="text-sm">x1</span>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="text-sm text-gray-400 line-through">86.400 đ</div>
+                <div className="text-lg text-red font-semibold">86.400 đ</div>
+              </div>
+            </div>
+            <div className="flex items-center justify-between py-3 pb-3 border-b border-b-gray-300">
+              <div className="flex items-center">
+                <div className="max-w-[120px]">
+                  <img className="w-full" src="./images/product.png" alt="" />
+                </div>
+                <div className="flex flex-col gap-3">
+                  <h3 className="font-normal">Cây cam ngọt của tôi</h3>
+                  <div className="text-sm text-gray-400">José Mauro de Vasconcelos</div>
+                  <span className="text-sm">x1</span>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="text-sm text-gray-400 line-through">86.400 đ</div>
+                <div className="text-lg text-red font-semibold">86.400 đ</div>
+              </div>
+            </div>
+            <div className="flex justify-end mt-4">
+              <div className="flex items-center">
+                <span>Thành tiền: </span>
+                <div className="text-xl text-red font-semibold ml-3">86.400 đ</div>
+              </div>
+            </div>
           </div>
           {/* Content goes here */}
         </div>
@@ -170,4 +222,4 @@ const ManageUser = () => {
   );
 };
 
-export default ManageUser;
+export default PurchaseHistory;
