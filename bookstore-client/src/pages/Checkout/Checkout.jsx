@@ -7,8 +7,8 @@ import Cookies from "js-cookie";
 import { URL_API } from "../../constants/constants";
 import axios from "axios";
 import { clearCart } from "../../redux/slices/cartslide";
-
-
+import Swal from "sweetalert2";
+import "./Checkout.css";
 const Checkout = () => {
   const dispatch = useDispatch();
 
@@ -83,7 +83,19 @@ const Checkout = () => {
       if (response.ok) {
         console.log("Order created successfully", result);
         dispatch(clearCart());
-        reset()
+        reset();
+        Swal.fire({
+          position: "center",
+          icon: "success",
+          title: "Thanh toán thành công! Bạn có thể theo dõi đơn hàng ở trang quản lý đơn hàng.",
+          showConfirmButton: false,
+          timer: 3500,
+          customClass: {
+            title: "custom-title",
+          },
+        }).then(() => {
+          navigate("/");
+        });
       } else {
         console.error("Error creating order", result);
       }
