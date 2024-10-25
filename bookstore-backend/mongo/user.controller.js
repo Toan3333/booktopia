@@ -6,28 +6,17 @@ module.exports = { gettAll, updateById, register, login, getUserById, remove };
 // Đăng ký
 async function register(body) {
   try {
-    console.log("Dữ liệu nhận được từ request body:", body);
-    // Lấy dữ liệu từ request body
     const { name, username, email, password, role } = body;
+    console.log("body register:", name);
 
-    // Kiểm tra dữ liệu
-    console.log("name:", name);
-    console.log("username:", username);
-    console.log("email:", email);
-    console.log("pass:", password);
-    console.log("role:", role);
-
-    // Kiểm tra email đã được đăng ký trước đó chưa
     let user = await userModel.findOne({ email: email });
     if (user) {
-      throw new Error("Email đã tồn tại");
+      throw { statusCode: 409, message: "Email đã tồn tại" }; // 409 Conflict
     }
 
-    // Mã hóa mật khẩu
-    var salt = bcrypt.genSaltSync(10);
-    var hash = bcrypt.hashSync(password, salt);
+    const salt = bcrypt.genSaltSync(10);
+    const hash = bcrypt.hashSync(password, salt);
 
-    // Tạo mới người dùng
     user = new userModel({
       name,
       username,
@@ -35,10 +24,9 @@ async function register(body) {
       password: hash,
       role: role || 0,
       image:
-        "https://images.unsplash.com/photo-1686170287433-c95faf6d3608?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1wYXJ0bmVy", // Thêm ảnh mặc định ở đây
+        "https://images.unsplash.com/photo-1686170287433-c95faf6d3608?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1wYXJ0bmVy", // Ảnh mặc định
     });
 
-    // Lưu người dùng vào cơ sở dữ liệu
     const result = await user.save();
     return result;
   } catch (error) {
@@ -50,41 +38,32 @@ async function register(body) {
 // Đăng nhập
 async function login(body) {
   try {
-    // Lấy dữ liệu từ request body
     const { email, password } = body;
 
-    // Tìm người dùng trong cơ sở dữ liệu
     let user = await userModel.findOne({ email: email });
     if (!user) {
-      throw new Error("Email không tồn tại");
+      throw { statusCode: 404, message: "Email không tồn tại" }; // 404 Not Found
     }
 
-    // Kiểm tra mật khẩu
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
-      throw new Error("Mật khẩu không chính xác");
+      throw { statusCode: 401, message: "Mật khẩu không chính xác" }; // 401 Unauthorized
     }
 
-    // Xóa trường pass từ đối tượng người dùng
     delete user._doc.password;
 
-    // Tạo access token có hạn trong 1 phút
     const accessToken = jwt.sign(
       { _id: user._id, email: user.email, name: user.name, role: user.role },
       "access_token_secret",
       { expiresIn: "1m" }
     );
 
-    // Tạo refresh token có hạn trong 1 phút
     const refreshToken = jwt.sign(
       { _id: user._id, email: user.email, name: user.name, role: user.role },
       "refresh_token_secret",
       { expiresIn: "1h" }
     );
 
-    // Lưu trữ refresh token vào cơ sở dữ liệu hoặc bộ nhớ của máy chủ
-
-    // Gửi thông tin người dùng cùng với access token và refresh token về cho client
     return { user: user, accessToken: accessToken, refreshToken: refreshToken };
   } catch (error) {
     console.error("Lỗi đăng nhập:", error);
@@ -93,24 +72,30 @@ async function login(body) {
 }
 
 // Cập nhật user
-
 async function updateById(id, body) {
   try {
     const user = await userModel.findById(id);
     if (!user) {
-      throw new Error("Không tìm thấy user");
+      throw { statusCode: 404, message: "Không tìm thấy user" }; // 404 Not Found
     }
 
-    const { name, username, image, password, email, phone, date, address, role } = body;
+    const {
+      name,
+      username,
+      image,
+      password,
+      email,
+      phone,
+      date,
+      address,
+      role,
+    } = body;
 
-    // Kiểm tra và mã hóa mật khẩu nếu có thay đổi
     let updatedFields = { name, username, email, phone, date, address, role };
 
-    // Chỉ cập nhật trường hình ảnh nếu có
     if (image) {
       updatedFields.image = image;
     }
-
     if (password) {
       updatedFields.password = await bcrypt.hash(password, 10);
     }
@@ -118,46 +103,48 @@ async function updateById(id, body) {
     const result = await userModel.findByIdAndUpdate(id, updatedFields, {
       new: true,
     });
-
-    console.log("Updated user:", result);
-
     return result;
   } catch (error) {
-    console.log("lỗi update", error);
+    console.log("Lỗi cập nhật:", error);
     throw error;
   }
 }
 
+// Lấy thông tin user theo ID
 async function getUserById(id) {
   try {
     const user = await userModel.findById(id);
     if (!user) {
-      throw new Error("Lấy chi tiết user không thành công");
+      throw { statusCode: 404, message: "Lấy chi tiết user không thành công" }; // 404 Not Found
     }
     return user;
   } catch (error) {
-    console.log("Lỗi", error);
+    console.log("Lỗi:", error);
     throw error;
   }
 }
 
+// Lấy danh sách tất cả user
 async function gettAll() {
   try {
     const result = await userModel.find();
     return result;
   } catch (error) {
-    console.log("Lỗi lấy danh sách user", error);
+    console.log("Lỗi lấy danh sách user:", error);
     throw error;
   }
 }
 
-// xóa user theo id
+// Xóa user theo ID
 async function remove(id) {
   try {
     const result = await userModel.findByIdAndDelete(id);
+    if (!result) {
+      throw { statusCode: 404, message: "Không tìm thấy user để xóa" }; // 404 Not Found
+    }
     return result;
   } catch (error) {
-    console.log("LỖI XÓA USER THEO ID", error);
+    console.log("Lỗi xóa user theo ID:", error);
     throw error;
   }
 }
