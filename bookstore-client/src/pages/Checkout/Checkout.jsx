@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import "../../index.css";
+import { useNavigate } from "react-router-dom";
 import Button from "../../components/Button/Button";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
@@ -11,7 +12,7 @@ import Swal from "sweetalert2";
 import "./Checkout.css";
 const Checkout = () => {
   const dispatch = useDispatch();
-
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -89,7 +90,7 @@ const Checkout = () => {
           icon: "success",
           title: "Thanh toán thành công! Bạn có thể theo dõi đơn hàng ở trang quản lý đơn hàng.",
           showConfirmButton: false,
-          timer: 3500,
+          timer: 3000,
           customClass: {
             title: "custom-title",
           },
