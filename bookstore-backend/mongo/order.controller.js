@@ -1,6 +1,14 @@
 const orderModel = require("./order.model");
 
-module.exports = { create, getAll, updateOrderStatus, updateOrderInfo, cancelOrder };
+module.exports = {
+  create,
+  getAll,
+  updateOrderStatus,
+  updateOrderInfo,
+  cancelOrder,
+  getOrdersByUserId,
+  getOrderById
+};
 
 async function getAll() {
   try {
@@ -23,17 +31,18 @@ async function create(req, res) {
       date,
       total,
       listProducts,
+      userId,
     } = req.body;
 
     const dateObject = new Date();
-    const day = ('0' + dateObject.getDate()).slice(-2);
-    const month = ('0' + (dateObject.getMonth() + 1)).slice(-2);
+    const day = ("0" + dateObject.getDate()).slice(-2);
+    const month = ("0" + (dateObject.getMonth() + 1)).slice(-2);
     const year = dateObject.getFullYear();
-    const datePart = `${day}${month}${year}`; 
+    const datePart = `${day}${month}${year}`;
 
-    const prefix = "BT"; 
+    const prefix = "BT";
     const uniqueId = Math.random().toString(36).substr(2, 5).toUpperCase();
-    const orderId = `${prefix}${datePart}${uniqueId}`; 
+    const orderId = `${prefix}${datePart}${uniqueId}`;
 
     const newOrder = new orderModel({
       orderId,
@@ -42,9 +51,10 @@ async function create(req, res) {
       address,
       email,
       description,
-      date, 
+      date,
       total,
       listProducts,
+      userId,
     });
 
     const result = await newOrder.save();
@@ -58,11 +68,28 @@ async function create(req, res) {
   }
 }
 
-
 async function updateOrderStatus(id, status) {
   const order = await orderModel.findById(id);
-  if (!order) throw new Error('Đơn hàng không tồn tại');
+  if (!order) throw new Error("Đơn hàng không tồn tại");
 
+  const validStatuses = [
+    "Chờ xác nhận",
+    "Đang xử lý",
+    "Đang vận chuyển",
+    "Giao thành công",
+    "Đã hủy",
+  ];
+
+  const currentStatusIndex = validStatuses.indexOf(order.status);
+  const newStatusIndex = validStatuses.indexOf(status);
+
+  if (newStatusIndex <= currentStatusIndex) {
+    throw new Error(
+      "Không thể chuyển trạng thái đơn hàng về trạng thái trước đó."
+    );
+  }
+
+  // Cập nhật trạng thái và thời gian cập nhật
   order.status = status;
   order.updatedAt = Date.now();
 
@@ -73,14 +100,14 @@ async function updateOrderStatus(id, status) {
 async function updateOrderInfo(id, updateData) {
   try {
     const order = await orderModel.findById(id);
-    if (!order) throw new Error('Đơn hàng không tồn tại');
+    if (!order) throw new Error("Đơn hàng không tồn tại");
 
     Object.assign(order, updateData);
     order.updatedAt = Date.now();
 
     return await order.save();
   } catch (error) {
-    throw new Error('Lỗi khi chỉnh sửa thông tin đơn hàng: ' + error.message);
+    throw new Error("Lỗi khi chỉnh sửa thông tin đơn hàng: " + error.message);
   }
 }
 
@@ -88,21 +115,43 @@ async function updateOrderInfo(id, updateData) {
 async function cancelOrder(id) {
   try {
     const order = await orderModel.findById(id);
-    if (!order) throw new Error('Đơn hàng không tồn tại');
+    if (!order) throw new Error("Đơn hàng không tồn tại");
 
-    if (order.status === 'Đã gửi' || order.status === 'Hoàn thành') {
-      throw new Error('Đơn hàng đã được gửi hoặc hoàn thành và không thể xóa');
+    // Không cho phép xóa nếu đơn hàng đang vận chuyển
+    if (order.status === "Đang vận chuyển") {
+      throw new Error("Đơn hàng đang được vận chuyển không thể xóa");
     }
 
-    if (order.status !== 'Chờ xử lý' && order.status !== 'Đã xử lý') {
-      throw new Error('Đơn hàng không thể xóa vì trạng thái không hợp lệ');
-    }
-
-    // Xóa đơn hàng
+    // Xử lý logic xóa đơn hàng trong các trường hợp hợp lệ
     await orderModel.deleteOne({ _id: id });
-
-    return { message: 'Đơn hàng đã được xóa thành công' };
+    return { message: "Đơn hàng đã được xóa thành công" };
   } catch (error) {
-    throw new Error('Lỗi khi xóa đơn hàng: ' + error.message);
+    throw new Error(error.message);
+  }
+}
+
+async function getOrdersByUserId(userId) {
+  try {
+    const orders = await orderModel.find({ userId: userId });
+    if (!orders || orders.length === 0) {
+      throw new Error("Không tìm thấy đơn hàng cho người dùng này");
+    }
+    return orders;
+  } catch (error) {
+    console.log("Lỗi", error);
+    throw error;
+  }
+}
+
+async function getOrderById(id) {
+  try {
+    const order = await orderModel.findById(id);
+    if (!order) {
+      throw new Error("Lấy chi tiết đơn hàng không thành công");
+    }
+    return order;
+  } catch (error) {
+    console.log("Lỗi", error);
+    throw error;
   }
 }

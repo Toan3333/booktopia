@@ -21,7 +21,7 @@ import HeaderAdmin from "../../../components/HeaderAdmin/HeaderAdmin";
 import { URL_API } from "../../../constants/constants";
 import Button from "../../../components/Button/Button";
 
-const EditOrder = () => {
+const DetailOrder = () => {
   const navigate = useNavigate();
   const [listOrder, setOrder] = useState([]);
   const [collapsed, setCollapsed] = useState(false);
@@ -162,7 +162,7 @@ const EditOrder = () => {
         <div className="flex-1 p-6">
           <HeaderAdmin />
           <div className="flex items-center justify-between pb-8 border-b pt-3">
-            <PageTitle title="Cập nhật đơn hàng" className="text-mainDark" />
+            <PageTitle title="Chi tiết đơn hàng" className="text-mainDark" />
           </div>
           <div className="mt-6 border rounded-[30px] p-5">
             <form
@@ -237,4 +237,4 @@ const EditOrder = () => {
   );
 };
 
-export default EditOrder;
+export default DetailOrder;
