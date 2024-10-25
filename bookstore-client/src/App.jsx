@@ -34,9 +34,9 @@ import EditBlog from "./pages/Admin/EditBlog/EditBlog";
 import ManageOrder from "./pages/Admin/ManageOrder/ManageOrder";
 import DashBoard from "./pages/Admin/Dashboard/DashBoard";
 import PrivateRoute from "./components/PrivateRoute/PrivateRoute";
-import OrderDetail from "./pages/Admin/OrderDetail/OrderDetail";
 import MyOrderDetail from "./pages/MyOrderDetail/MyOrderDetail";
 import PurchaseHistory from "./pages/Admin/PurchaseHistory/PurchaseHistory";
+import DetailOrder from "./pages/Admin/DetailOrder/DetailOrder";
 
 function App() {
   return (
@@ -74,8 +74,8 @@ function App() {
         <Route path="/admin/manage-blog" element={<ManageBlog />} />
         <Route path="/admin/manage-author" element={<ManageAuthor />} />
         <Route path="/admin/manage-order" element={<ManageOrder />} />
-        <Route path="/admin/purchase-history" element={<PurchaseHistory />} />
-        <Route path="/admin/order-detail" element={<OrderDetail />} />
+        <Route path="/admin/purchase-history/:id" element={<PurchaseHistory />} />
+        <Route path="/admin/detail-order/:id" element={<DetailOrder />} />
         {/* <Route path="/admin/manage-items" element={<EditOrder />} /> */}
         <Route path="/admin/manage-publishes" element={<ManagePublishes />} />
         <Route path="/admin/add-author" element={<AddAuthor />} />

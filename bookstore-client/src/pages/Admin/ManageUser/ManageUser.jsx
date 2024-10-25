@@ -149,7 +149,7 @@ const ManageUser = () => {
                     <td>
                       <div className="flex items-center justify-center gap-3">
                         <button>
-                          <Link to="/admin/purchase-history">
+                          <Link to={`/admin/purchase-history/${user._id}`}>
                             <FaUserClock className="w-5 h-4 text-mainDark" />
                           </Link>
                         </button>

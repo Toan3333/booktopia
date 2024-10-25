@@ -11,6 +11,7 @@ import {
   FaUserEdit,
   FaClock,
   FaCog,
+  FaCheck,
   FaTruck,
   FaCheckCircle,
   FaTimesCircle,
@@ -238,7 +239,7 @@ const ManageOrder = () => {
                       <td>
                         <div className="flex items-center justify-center gap-3">
                           <button className="px-2 py-1 rounded text-white bg-blue-500">
-                            <Link to="/admin/detail-order">
+                            <Link to={`/admin/detail-order/${order._id}`}>
                               <FaEye className="w-5 h-4 text-mainDark" />
                             </Link>
                           </button>
@@ -261,7 +262,7 @@ const ManageOrder = () => {
                                 (e.target.style.backgroundColor = "#1E40AF")
                               }
                             >
-                              <FaCog
+                              <FaCheck
                                 style={{
                                   display: "inline",
                                   width: "16px",

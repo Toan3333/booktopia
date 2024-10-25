@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { Sidebar, Menu, MenuItem, SubMenu } from "react-pro-sidebar";
+import Cookies from "js-cookie";
 import {
   FaBook,
   FaClipboardList,
-  FaImage,
   FaRegEdit,
-  FaTrashAlt,
   FaUser,
-  FaUserEdit,
+  FaImage,
 } from "react-icons/fa";
 import { MdLogout } from "react-icons/md";
 import { AiFillDashboard, AiOutlineBars } from "react-icons/ai";
@@ -22,72 +21,29 @@ import { URL_API } from "../../../constants/constants";
 import Button from "../../../components/Button/Button";
 
 const DetailOrder = () => {
-  const navigate = useNavigate();
-  const [listOrder, setOrder] = useState([]);
+  const { id } = useParams();
+  const [order, setOrder] = useState({ listProducts: [] });
   const [collapsed, setCollapsed] = useState(false);
-  const statusOptions = ["Chờ xử lý", "Đang xử lý", "Đã gửi", "Đã giao", "Đã hủy"]; // Danh sách trạng thái
-
-  const handleLogout = () => {
-    // Perform logout operations here (e.g., clearing authentication tokens)
-    // Then navigate to the home page
-    navigate("/");
-  };
 
   useEffect(() => {
-    const fetchOrder = async () => {
+    const fetchOrderDetails = async () => {
       try {
-        const response = await axios.get(`${URL_API}/orders`);
+        const response = await axios.get(`${URL_API}/orders/${id}`);
+        console.log(response.data);
+
         setOrder(response.data);
       } catch (error) {
-        console.log(error);
+        console.error(
+          "Error fetching order details:",
+          error.response?.data || error.message
+        );
       }
     };
-    fetchOrder();
-  }, []);
+    fetchOrderDetails();
+  }, [id]);
 
-  const handleStatusChange = async (orderId, newStatus) => {
-    try {
-      await axios.put(`${URL_API}/orders/${orderId}/status`, { status: newStatus });
-      setOrder((prevOrders) =>
-        prevOrders.map((order) => (order._id === orderId ? { ...order, status: newStatus } : order))
-      );
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const handleDelete = async (id) => {
-    try {
-      const response = await axios.delete(`${URL_API}/orders/${id}`);
-
-      if (response.status === 200) {
-        Swal.fire({
-          title: "Bạn có muốn xóa?",
-          text: "Đã xóa không thể khôi phục",
-          icon: "warning",
-          showCancelButton: true,
-          confirmButtonColor: "#3085d6",
-          cancelButtonColor: "#d33",
-          confirmButtonText: "Xóa",
-        }).then((result) => {
-          if (result.isConfirmed) {
-            Swal.fire({
-              title: "Deleted!",
-              text: "Hủy đơn hàng thành công!",
-              icon: "success",
-            }).then(() => {
-              setOrder((prevOrders) => prevOrders.filter((order) => order._id !== id));
-            });
-          }
-        });
-      }
-    } catch (error) {
-      Swal.fire({
-        title: "Lỗi!",
-        text: error.response?.data?.message || "Có lỗi xảy ra khi xóa đơn hàng.",
-        icon: "error",
-      });
-    }
+  const handleLogout = () => {
+    navigate("/");
   };
 
   return (
@@ -95,8 +51,11 @@ const DetailOrder = () => {
       <div className="flex min-h-screen border">
         {/* Sidebar */}
         <Sidebar
-          className={`relative border p-3 bg-white ${collapsed ? "collapsed" : "expanded"}`}
-          width={collapsed ? "0px" : "270px"}>
+          className={`relative border p-3 bg-white ${
+            collapsed ? "collapsed" : "expanded"
+          }`}
+          width={collapsed ? "0px" : "270px"}
+        >
           <Menu className="bg-white">
             <div className="flex items-center justify-center mb-6">
               <img src="./images/logo.png" alt="Logo" />
@@ -108,17 +67,27 @@ const DetailOrder = () => {
               </div>
             </MenuItem>
 
-            <SubMenu label="Quản lý danh mục" icon={<AiOutlineBars className="w-5 h-5" />}>
+            <SubMenu
+              label="Quản lý danh mục"
+              icon={<AiOutlineBars className="w-5 h-5" />}
+            >
               <MenuItem component={<Link to="/admin/manage-category" />}>
                 Danh sách danh mục
               </MenuItem>
             </SubMenu>
-            <SubMenu label="Quản lý sản phẩm" icon={<FaBook className="w-5 h-5" />}>
+            <SubMenu
+              label="Quản lý sản phẩm"
+              icon={<FaBook className="w-5 h-5" />}
+            >
               <MenuItem component={<Link to="/admin/manage-product" />}>
                 Danh sách sản phẩm
               </MenuItem>
-              <MenuItem component={<Link to="/admin/manage-author" />}>Tác giả</MenuItem>
-              <MenuItem component={<Link to="/admin/manage-publishes" />}>Nhà xuất bản</MenuItem>
+              <MenuItem component={<Link to="/admin/manage-author" />}>
+                Tác giả
+              </MenuItem>
+              <MenuItem component={<Link to="/admin/manage-publishes" />}>
+                Nhà xuất bản
+              </MenuItem>
             </SubMenu>
             <MenuItem component={<Link to="/admin/manage-order" />}>
               <div className="flex items-center gap-4">
@@ -132,8 +101,13 @@ const DetailOrder = () => {
                 Quản lý tài khoản
               </div>
             </MenuItem>
-            <SubMenu label="Quản lý bài viết" icon={<FaRegEdit className="w-5 h-5" />}>
-              <MenuItem component={<Link to="/admin/manage-blog" />}>Danh sách bài viết</MenuItem>
+            <SubMenu
+              label="Quản lý bài viết"
+              icon={<FaRegEdit className="w-5 h-5" />}
+            >
+              <MenuItem component={<Link to="/admin/manage-blog" />}>
+                Danh sách bài viết
+              </MenuItem>
             </SubMenu>
             <MenuItem onClick={handleLogout}>
               <div className="flex items-center gap-4">
@@ -144,13 +118,17 @@ const DetailOrder = () => {
           </Menu>
         </Sidebar>
         {/* Nút toggle nằm bên ngoài Sidebar */}
-        <button onClick={() => setCollapsed(!collapsed)} className="toggle-button">
+        <button
+          onClick={() => setCollapsed(!collapsed)}
+          className="toggle-button"
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
             strokeWidth={1.5}
-            stroke="currentColor">
+            stroke="currentColor"
+          >
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -162,74 +140,138 @@ const DetailOrder = () => {
         <div className="flex-1 p-6">
           <HeaderAdmin />
           <div className="flex items-center justify-between pb-8 border-b pt-3">
-            <PageTitle title="Chi tiết đơn hàng" className="text-mainDark" />
+            <PageTitle
+              title={`Chi tiết đơn hàng [${order.orderId}]`}
+              className="text-mainDark"
+            />
           </div>
           <div className="mt-6 border rounded-[30px] p-5">
-            <form
-              action=""
-              className="flex flex-col gap-6
-            ">
+            <form action="" className="flex flex-col gap-6">
               <div className="flex items-center justify-between gap-12">
                 <div className="w-full flex flex-col gap-2">
                   <label htmlFor="">*Mã đơn hàng</label>
                   <input
                     type="text"
                     placeholder="Type here"
+                    value={order.orderId || ""}
                     className="input input-bordered w-full"
+                    readOnly
+                  />
+                </div>
+                <div className="w-full flex flex-col gap-2">
+                  <label htmlFor="">*Tên người mua</label>
+                  <input
+                    type="text"
+                    placeholder="Trần Anh Toàn"
+                    value={order.name || ""}
+                    className="input input-bordered w-full"
+                    readOnly
                   />
                 </div>
                 <div className="w-full flex flex-col gap-2">
                   <label htmlFor="">Ngày lập</label>
                   <input
                     type="date"
-                    placeholder="15/07/2024"
+                    value={order.date?.split("T")[0] || ""}
                     className="input input-bordered w-full"
+                    readOnly
                   />
                 </div>
               </div>
-              <div className="w-full flex flex-col gap-2">
-                <label htmlFor="">*Tên người mua</label>
-                <input
-                  type="text"
-                  placeholder="Trần Anh Toàn"
-                  className="input input-bordered w-full"
-                />
-              </div>
+
               <div className="w-full flex flex-col gap-2">
                 <label htmlFor="">*Địa chỉ</label>
                 <input
                   type="text"
                   placeholder="Q12, TPHCM"
+                  value={order.address || ""}
                   className="input input-bordered w-full"
+                  readOnly
                 />
               </div>
               <div className="flex items-center justify-between gap-12">
                 <div className="w-full flex flex-col gap-2">
-                  <label htmlFor="">Giá sản phẩm</label>
+                  <label htmlFor="">Tổng đơn hàng</label>
                   <input
                     type="text"
                     placeholder="Type here"
+                    value={`${order.total}đ` || ""}
                     className="input input-bordered w-full"
+                    readOnly
                   />
                 </div>
-                <div className="w-full flex flex-col gap-2">
-                  <label htmlFor="">Số lượng</label>
-                  <input type="text" placeholder="3" className="input input-bordered w-full" />
+                <div className="w-[48%] flex flex-col gap-2">
+                  <label htmlFor="">Trạng thái</label>
+                  <input
+                    type="text"
+                    placeholder="Type here"
+                    value={order.status || ""}
+                    className="input input-bordered w-full"
+                    readOnly
+                  />
                 </div>
               </div>
-              <div className="w-[48%] flex flex-col gap-2">
-                <label htmlFor="">Trạng thái</label>
-                <select className="select select-bordered w-full" defaultValue="Chưa xác nhận">
-                  <option disabled>Chưa xác nhận</option>
-                  <option>Han Solo</option>
-                  <option>Greedo</option>
-                </select>
-              </div>
             </form>
-            <div className="flex items-center gap-3 mt-6">
-              <Button>Cập nhật</Button>
-              <Button className="bg-secondary">Hủy</Button>
-            </div>
+
+            <h1
+              className="text-mainDark"
+              style={{
+                margin: "20px 8px",
+                fontSize: "20px",
+                fontWeight: "bold",
+              }}
+            >
+              Danh sách sản phẩm
+            </h1>
+            <table className="table w-full">
+              <thead className="text-[16px] font-semibold text-black">
+                <tr>
+                  <th>#</th>
+                  <th className="text-center flex items-center justify-center max-w-[150px]">
+                    <FaImage className="w-6 h-6 " />
+                  </th>
+                  <th>Tên sách</th>
+                  <th>Giá</th>
+                </tr>
+              </thead>
+              <tbody>
+                {order.listProducts.map((order, index) => (
+                  <tr>
+                    <td>{index + 1}</td>
+                    <td className="flex items-center justify-center max-w-[150px]">
+                      <img
+                        src={`${URL_API}/images/${order.image1}`}
+                        className="w-full"
+                        alt=""
+                      />
+                    </td>
+                    <td>
+                      <div className="flex flex-col  gap-3">
+                        <div className="" style={{ fontSize: "16px" }}>
+                          <b>
+                            {order.name} x{order.quantity}
+                          </b>
+                        </div>
+                        <div className="">
+                          Tác giả: {order.author.authorName}
+                        </div>
+                        <div className="">
+                          Thể loại: {order.category.categoryName}
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div style={{ display: "flex" }}>
+                        <del>{order.price1}đ</del>
+                        <div style={{ fontSize: "16px", marginLeft: "10px" }}>
+                          {order.price2}đ
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
