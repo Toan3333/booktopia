@@ -1,6 +1,6 @@
 var express = require("express");
 var router = express.Router();
-const usersController = require("../mongo/user.controller");
+const usersController = require("../controller/user.controller");
 const checktoken = require("../helper/checktoken");
 const jwt = require("jsonwebtoken");
 const upload = require("../helper/upload");

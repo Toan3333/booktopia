@@ -16,7 +16,6 @@ import ProductItem from "../../components/Product/ProductItem";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart, updateCartItemQuantity } from "../../redux/slices/cartslide";
 import LightGallery from "lightgallery/react";
-import ImageGallery from "react-image-gallery";
 import "react-image-gallery/styles/css/image-gallery.css";
 import { ToastContainer, toast } from "react-toastify";
 // import styles

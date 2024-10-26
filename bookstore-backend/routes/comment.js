@@ -1,6 +1,6 @@
 var express = require("express");
 var router = express.Router();
-const commentController = require("../mongo/comment.controller");
+const commentController = require("../controller/comment.controller");
 
 // Show tất cả bình luận
 router.get("/", async (req, res) => {
