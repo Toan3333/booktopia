@@ -1,11 +1,11 @@
 var express = require("express");
 var router = express.Router();
-const productController = require("../mongo/product.controller");
+const productController = require("../controller/product.controller");
 const multer = require("multer");
 const checktoken = require("../helper/checktoken");
 const upload = require("../helper/upload");
 const path = require("path");
-const productModel = require("../mongo/product.model");
+const productModel = require("../model/product.model");
 /*Phân trang*/
 
 // Route để lấy tất cả sản phẩm với phân trang và sắp xếp
@@ -15,11 +15,12 @@ router.get("/paginated/products", async (req, res) => {
     const limit = parseInt(req.query.limit) || 12;
     const sortBy = req.query.sortBy || "new";
 
-    const paginatedProducts = await productController.getPaginatedAndSortedProducts(
-      pageNumber,
-      limit,
-      sortBy
-    );
+    const paginatedProducts =
+      await productController.getPaginatedAndSortedProducts(
+        pageNumber,
+        limit,
+        sortBy
+      );
 
     return res.status(200).json(paginatedProducts);
   } catch (error) {
@@ -36,12 +37,13 @@ router.get("/paginated/categoryId/:category", async (req, res) => {
     const limit = parseInt(req.query.limit) || 12;
     const sortBy = req.query.sortBy || "new";
 
-    const paginatedProducts = await productController.getPaginatedProductsByCategorySorted(
-      category,
-      pageNumber,
-      limit,
-      sortBy
-    );
+    const paginatedProducts =
+      await productController.getPaginatedProductsByCategorySorted(
+        category,
+        pageNumber,
+        limit,
+        sortBy
+      );
 
     return res.status(200).json(paginatedProducts);
   } catch (error) {
@@ -58,12 +60,13 @@ router.get("/paginated/authorId/:author", async (req, res) => {
     const limit = parseInt(req.query.limit) || 12;
     const sortBy = req.query.sortBy || "new";
 
-    const paginatedProducts = await productController.getPaginatedProductsByAuthorSorted(
-      author,
-      pageNumber,
-      limit,
-      sortBy
-    );
+    const paginatedProducts =
+      await productController.getPaginatedProductsByAuthorSorted(
+        author,
+        pageNumber,
+        limit,
+        sortBy
+      );
 
     return res.status(200).json(paginatedProducts);
   } catch (error) {
@@ -79,12 +82,13 @@ router.get("/paginated/publisherId/:publisher", async (req, res) => {
     const limit = parseInt(req.query.limit) || 12;
     const sortBy = req.query.sortBy || "new";
 
-    const paginatedProducts = await productController.getPaginatedProductsByPublisherSorted(
-      publisher,
-      pageNumber,
-      limit,
-      sortBy
-    );
+    const paginatedProducts =
+      await productController.getPaginatedProductsByPublisherSorted(
+        publisher,
+        pageNumber,
+        limit,
+        sortBy
+      );
 
     return res.status(200).json(paginatedProducts);
   } catch (error) {

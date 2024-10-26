@@ -1,6 +1,6 @@
 var express = require("express");
 var router = express.Router();
-const favoriteController = require("../mongo/favorite.controller");
+const favoriteController = require("../controller/favorite.controller");
 
 router.post("/add", async (req, res) => {
   try {
@@ -19,8 +19,8 @@ router.get("/:userId", async (req, res) => {
   try {
     const favorites = await favoriteController.getFavorites(req, res);
     if (favorites.error) {
-        return res.status(500).json({ message: favorites.error });
-      }
+      return res.status(500).json({ message: favorites.error });
+    }
     return res.status(200).json(favorites);
   } catch (error) {
     return res.status(500).json({ message: error.message });

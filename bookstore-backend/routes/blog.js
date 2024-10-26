@@ -1,6 +1,6 @@
 var express = require("express");
 var router = express.Router();
-const blogController = require("../mongo/blog.controller");
+const blogController = require("../controller/blog.controller");
 const upload = require("../helper/upload");
 //hiển tất cả bài viết
 router.get("/", async (req, res) => {

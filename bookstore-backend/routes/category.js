@@ -1,7 +1,7 @@
 var express = require("express");
 var router = express.Router();
-const categoryController = require("../mongo/categories.controller");
-const productController = require("../mongo/product.controller");
+const categoryController = require("../controller/categories.controller");
+const productController = require("../controller/product.controller");
 const checktoken = require("../helper/checktoken");
 
 //Show danh mục
