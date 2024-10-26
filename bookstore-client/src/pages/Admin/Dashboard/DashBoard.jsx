@@ -4,8 +4,8 @@ import { Sidebar, Menu, MenuItem, SubMenu } from "react-pro-sidebar";
 import {
   FaBook,
   FaClipboardList,
+  FaGift,
   FaMoneyBill,
-  FaProductHunt,
   FaRegEdit,
   FaShoppingBag,
   FaTrashAlt,
@@ -15,21 +15,19 @@ import {
 } from "react-icons/fa";
 import { MdLogout } from "react-icons/md";
 import { AiFillDashboard, AiOutlineBars } from "react-icons/ai";
-import { BiSolidCategoryAlt } from "react-icons/bi";
 import "./DashBoard.css";
 import HeaderAdmin from "../../../components/HeaderAdmin/HeaderAdmin";
 import PageTitle from "../../../components/PageTitle/PageTitle";
-import SellProductAdminList from "../../../layouts/components/SellProductAdmin/SellProductAdminList";
+
 import axios from "axios";
 import { URL_API } from "../../../constants/constants";
 import Cookies from "js-cookie";
-
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Rectangle } from "recharts";
+import { PieChart, Pie } from "recharts";
 const DashBoard = () => {
   const isAdmin = true;
   const [collapsed, setCollapsed] = useState(false);
   const [user, setUser] = useState({});
-  const [totalProducts, setTotalProducts] = useState(0);
-  const [totalCategory, setTotalCategory] = useState(0);
   const [totalUser, setTotalUser] = useState(0);
   const navigate = useNavigate();
 
@@ -55,13 +53,11 @@ const DashBoard = () => {
   useEffect(() => {
     const getInfoDashboard = async () => {
       try {
-        const [getTotalProduct, getTotalCategory, getTotalUser] = await axios.all([
+        const [getTotalUser] = await axios.all([
           axios.get(`${URL_API}/products`),
           axios.get(`${URL_API}/category`),
           axios.get(`${URL_API}/users`),
         ]);
-        setTotalProducts(getTotalProduct.data.Product.length);
-        setTotalCategory(getTotalCategory.data.length);
         setTotalUser(getTotalUser.data.length);
       } catch (error) {
         console.log(error);
@@ -69,6 +65,71 @@ const DashBoard = () => {
     };
     getInfoDashboard();
   }, []);
+
+  const data = [
+    {
+      name: "Page A",
+      uv: 4000,
+      pv: 2400,
+      amt: 2400,
+    },
+    {
+      name: "Page B",
+      uv: 3000,
+      pv: 1398,
+      amt: 2210,
+    },
+    {
+      name: "Page C",
+      uv: 2000,
+      pv: 9800,
+      amt: 2290,
+    },
+    {
+      name: "Page D",
+      uv: 2780,
+      pv: 3908,
+      amt: 2000,
+    },
+    {
+      name: "Page E",
+      uv: 1890,
+      pv: 4800,
+      amt: 2181,
+    },
+    {
+      name: "Page F",
+      uv: 2390,
+      pv: 3800,
+      amt: 2500,
+    },
+    {
+      name: "Page G",
+      uv: 3490,
+      pv: 4300,
+      amt: 2100,
+    },
+  ];
+
+  const data01 = [
+    { name: "Group A", value: 400 },
+    { name: "Group B", value: 300 },
+    { name: "Group C", value: 300 },
+    { name: "Group D", value: 200 },
+  ];
+  const data02 = [
+    { name: "A1", value: 100 },
+    { name: "A2", value: 300 },
+    { name: "B1", value: 100 },
+    { name: "B2", value: 80 },
+    { name: "B3", value: 40 },
+    { name: "B4", value: 30 },
+    { name: "B5", value: 50 },
+    { name: "C1", value: 100 },
+    { name: "C2", value: 200 },
+    { name: "D1", value: 150 },
+    { name: "D2", value: 50 },
+  ];
 
   return (
     <div>
@@ -110,6 +171,12 @@ const DashBoard = () => {
               <div className="flex items-center gap-4">
                 <FaUser />
                 Quản lý tài khoản
+              </div>
+            </MenuItem>
+            <MenuItem component={<Link to="/admin/manage-voucher" />}>
+              <div className="flex items-center gap-4">
+                <FaGift />
+                Quản lý voucher
               </div>
             </MenuItem>
             <SubMenu label="Quản lý bài viết" icon={<FaRegEdit className="w-5 h-5" />}>
@@ -161,28 +228,6 @@ const DashBoard = () => {
             <div className="bg-white p-4 border rounded-lg shadow py-5 px-6">
               <div className="flex items-center justify-between">
                 <div className="">
-                  <PageTitle title={totalProducts} />
-                  <div className="">Sản phẩm</div>
-                </div>
-                <div className="w-10 h-10 rounded-md border flex items-center justify-center text-mainDark">
-                  <FaProductHunt className="w-7 h-7" />
-                </div>
-              </div>
-            </div>
-            <div className="bg-white p-4 border rounded-lg shadow py-5 px-6">
-              <div className="flex items-center justify-between">
-                <div className="">
-                  <PageTitle title={totalCategory} />
-                  <div className="">Danh mục</div>
-                </div>
-                <div className="w-10 h-10 rounded-md border flex items-center justify-center text-mainDark">
-                  <BiSolidCategoryAlt className="w-7 h-7" />
-                </div>
-              </div>
-            </div>
-            <div className="bg-white p-4 border rounded-lg shadow py-5 px-6">
-              <div className="flex items-center justify-between">
-                <div className="">
                   <PageTitle title={totalUser} />
                   <div className="">Người dùng</div>
                 </div>
@@ -193,7 +238,7 @@ const DashBoard = () => {
             </div>
           </div>
           <div className="mt-10">
-            <div className="flex justify-between gap-7">
+            {/* <div className="flex justify-between gap-7">
               <div className="w-[55%]">
                 <div className="flex flex-col gap-5">
                   <div className="w-full">
@@ -222,6 +267,58 @@ const DashBoard = () => {
                   </div>
                   <SellProductAdminList />
                 </div>
+              </div>
+            </div> */}
+            <div className="flex items-center justify-between gap-6">
+              <div className="w-2/4">
+                <BarChart
+                  className="w-full"
+                  width={800}
+                  height={300}
+                  data={data}
+                  margin={{
+                    top: 5,
+                    right: 30,
+                    left: 20,
+                    bottom: 5,
+                  }}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="name" />
+                  <YAxis />
+                  <Tooltip />
+                  <Bar
+                    dataKey="uv"
+                    fill="#B3CDAD"
+                    activeBar={<Rectangle fill="pink" stroke="blue" />}
+                  />
+                  <BarChart
+                    dataKey="pv"
+                    fill="#FF5F5E"
+                    activeBar={<Rectangle fill="gold" stroke="purple" />}
+                  />
+                </BarChart>
+              </div>
+              <div>
+                <PieChart width={600} height={400}>
+                  <Pie
+                    data={data01}
+                    dataKey="value"
+                    cx={200}
+                    cy={200}
+                    outerRadius={60}
+                    fill="#8884d8"
+                  />
+                  <Pie
+                    data={data02}
+                    dataKey="value"
+                    cx={200}
+                    cy={200}
+                    innerRadius={70}
+                    outerRadius={90}
+                    fill="#82ca9d"
+                    label
+                  />
+                </PieChart>
               </div>
             </div>
           </div>

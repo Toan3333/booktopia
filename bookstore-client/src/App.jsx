@@ -37,6 +37,9 @@ import PrivateRoute from "./components/PrivateRoute/PrivateRoute";
 import MyOrderDetail from "./pages/MyOrderDetail/MyOrderDetail";
 import PurchaseHistory from "./pages/Admin/PurchaseHistory/PurchaseHistory";
 import DetailOrder from "./pages/Admin/DetailOrder/DetailOrder";
+import ManageVoucher from "./pages/Admin/ManageVoucher/ManageVoucher";
+import AddVoucher from "./pages/Admin/AddVoucher/AddVoucher";
+import EditVoucher from "./pages/Admin/EditVoucher/EditVoucher";
 
 function App() {
   return (
@@ -74,6 +77,7 @@ function App() {
         <Route path="/admin/manage-blog" element={<ManageBlog />} />
         <Route path="/admin/manage-author" element={<ManageAuthor />} />
         <Route path="/admin/manage-order" element={<ManageOrder />} />
+        <Route path="/admin/manage-voucher" element={<ManageVoucher />} />
         <Route path="/admin/purchase-history/:id" element={<PurchaseHistory />} />
         <Route path="/admin/detail-order/:id" element={<DetailOrder />} />
         {/* <Route path="/admin/manage-items" element={<EditOrder />} /> */}
@@ -83,6 +87,8 @@ function App() {
         <Route path="/admin/add-product" element={<AddProduct />} />
         <Route path="/admin/add-category" element={<AddCategory />} />
         <Route path="/admin/add-blog" element={<AddBlog />} />
+        <Route path="/admin/add-voucher" element={<AddVoucher />} />
+        <Route path="/admin/edit-voucher" element={<EditVoucher />} />
         <Route path="/admin/edit-product/:id" element={<EditProduct />} />
         <Route path="/admin/edit-category/:id" element={<EditCategory />} />
         <Route path="/admin/edit-blog/:id" element={<EditBlog />} />
