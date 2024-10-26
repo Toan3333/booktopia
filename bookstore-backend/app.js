@@ -10,13 +10,13 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 
 // muốn sài được thì phải rq nó ở đây
-require("./mongo/categories.model");
-require("./mongo/product.model");
-require("./mongo/product.controller");
-require("./mongo/categories.controller");
-require("./mongo/favorite.controller");
-require("./mongo/voucher.controller");
-require("./mongo/voucher.model");
+require("./model/categories.model");
+require("./model/product.model");
+require("./model/voucher.model");
+require("./controller/product.controller");
+require("./controller/categories.controller");
+require("./controller/favorite.controller");
+require("./controller/voucher.controller");
 
 // Khai báo router
 var usersRouter = require("./routes/users");

@@ -1,6 +1,6 @@
 var express = require("express");
 var router = express.Router();
-const voucherController = require("../mongo/voucher.controller");
+const voucherController = require("../controller/voucher.controller");
 
 // danh sách voucher
 router.get("/", async (req, res) => {
