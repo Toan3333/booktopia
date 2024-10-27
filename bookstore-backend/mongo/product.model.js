@@ -14,7 +14,7 @@ const productSchema = new Schema({
   quantity: { type: Number, required: true },
   sale: { type: Number, required: false },
   hot: { type: Number, required: false },
-  view: { type: Number, required: false },
+  view: { type: Number, default: 0},
   publish: {
     type: {
       publishId: { type: ObjectId, required: true },

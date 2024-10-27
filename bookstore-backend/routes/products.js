@@ -109,7 +109,27 @@ router.get("/products/total", async (req, res) => {
   }
 });
 
-
+//cập nhật lượt view từng sản phẩm
+router.put('/:id/views', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updatedProduct = await productModel.findByIdAndUpdate(
+      id,
+      { $inc: { view: 1 } },
+      { new: true } 
+    );
+    if (!updatedProduct) {
+      return res.status(404).json({ message: 'Sản phẩm không tồn tại' });
+    }
+    res.status(200).json({
+      message: 'Lượt xem đã được cập nhật!',
+      product: updatedProduct,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ mess: error.message });
+  }
+});
 
 // Thêm sản phẩm
 // Thêm sản phẩm phải có Formdata ,multipart/form-data, và input file
