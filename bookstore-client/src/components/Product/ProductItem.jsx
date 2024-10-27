@@ -11,6 +11,7 @@ import { FaHeart } from "react-icons/fa6";
 import { URL_API } from "../../constants/constants";
 import { showSwalFireSuccess } from "../../helpers/helpers";
 import ProductViews from "./ProductViews";
+import axios from "axios";
 
 const ProductItem = ({ className = "", item }) => {
   const dispatch = useDispatch();
@@ -41,6 +42,14 @@ const ProductItem = ({ className = "", item }) => {
   if (!item) {
     return null; // Hoặc bạn có thể hiển thị một thông báo lỗi hoặc một component trống
   }
+  const handleNavigateToDetail = async () => {
+    try {
+      await axios.put(`${URL_API}/products/${item._id}/views`);
+      navigate(`/product-detail/${item._id}`);
+    } catch (error) {
+      console.error("Cập nhật lượt xem thất bại:", error);
+    }
+  };
 
   const isHorizontal = className.includes("horizontal");
   const { name, image1, price1, price2, author, view } = item;
@@ -61,7 +70,7 @@ const ProductItem = ({ className = "", item }) => {
             className={`object-contain product-image cursor-pointer max-lg:w-[190px] max-lg:h-[190px] ${
               isHorizontal ? "w-[100px] h-[100px]" : "w-[190px] h-[190px] cursor-pointer"
             }`}
-            onClick={() => navigate(`/product-detail/${item._id}`)}
+            onClick={handleNavigateToDetail}
             alt={name}
           />
           <div>
@@ -94,8 +103,7 @@ const ProductItem = ({ className = "", item }) => {
                   })}
                 </div>
               </div>
-              {/* Chỉ hiển thị nếu có nhiều lượt xem */}
-              {view > 100 && <ProductViews views={view} />}
+              <ProductViews views={view}/>
             </div>
           </div>
         </div>
