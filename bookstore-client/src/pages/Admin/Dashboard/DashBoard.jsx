@@ -273,7 +273,7 @@ const DashBoard = () => {
               <div className="w-2/4">
                 <BarChart
                   className="w-full"
-                  width={800}
+                  width={600}
                   height={300}
                   data={data}
                   margin={{
@@ -298,8 +298,8 @@ const DashBoard = () => {
                   />
                 </BarChart>
               </div>
-              <div>
-                <PieChart width={600} height={400}>
+              <div className="w-2/4">
+                <PieChart width={400} height={400}>
                   <Pie
                     data={data01}
                     dataKey="value"
