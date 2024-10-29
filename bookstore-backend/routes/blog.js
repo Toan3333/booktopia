@@ -2,6 +2,8 @@ var express = require("express");
 var router = express.Router();
 const blogController = require("../mongo/blog.controller");
 const upload = require("../helper/upload");
+const authen = require("../middleware/authen");
+
 //hiển tất cả bài viết
 router.get("/", async (req, res) => {
   try {
@@ -26,7 +28,7 @@ router.get("/:id", async (req, res, next) => {
 });
 
 //thêm bài viết mới
-router.post("/", upload.single("image"), async (req, res) => {
+router.post("/", upload.single("image"),[authen([1])], async (req, res) => {
   try {
     const body = req.body;
     // Kiểm tra xem req.file có tồn tại không trước khi truy cập thuộc tính originalname
@@ -42,7 +44,7 @@ router.post("/", upload.single("image"), async (req, res) => {
 });
 
 //sửa bài viết
-router.put("/:id", upload.single("image"), async (req, res) => {
+router.put("/:id", upload.single("image"),[authen([1])], async (req, res) => {
   try {
     const { id } = req.params;
     const body = req.body;
@@ -59,7 +61,7 @@ router.put("/:id", upload.single("image"), async (req, res) => {
 });
 
 //xóa bài viết
-router.delete("/:id", async (req, res) => {
+router.delete("/:id",[authen([1])], async (req, res) => {
   try {
     const { id } = req.params;
     const blogDel = await blogController.remove(id);

@@ -1,8 +1,9 @@
 var express = require("express");
 var router = express.Router();
 const favoriteController = require("../mongo/favorite.controller");
+const authen = require("../middleware/authen");
 
-router.post("/add", async (req, res) => {
+router.post("/add",[authen([1])], async (req, res) => {
   try {
     const result = await favoriteController.addFavorite(req, res);
     if (result.error) {

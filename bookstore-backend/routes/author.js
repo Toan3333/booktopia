@@ -3,6 +3,7 @@ var router = express.Router();
 const authorController = require("../mongo/author.controller");
 const productController = require("../mongo/product.controller");
 const checktoken = require("../helper/checktoken");
+const authen = require("../middleware/authen");
 
 router.get("/", async (req, res) => {
   try {
@@ -29,7 +30,7 @@ router.get("/authorId/:author", async (req, res, next) => {
 
 // them danh mục mơi
 
-router.post("/", async (req, res) => {
+router.post("/",[authen([1])], async (req, res) => {
   try {
     const body = req.body;
     const result = await authorController.insert(body);
@@ -53,7 +54,7 @@ router.get("/:id", async (req, res) => {
 });
 
 //routing cập nhật sản phẩm theo id
-router.put("/:id", async (req, res) => {
+router.put("/:id",[authen([1])], async (req, res) => {
   try {
     const { id } = req.params;
     const body = req.body;
@@ -67,7 +68,7 @@ router.put("/:id", async (req, res) => {
 
 //routing xóa danh mục theo id
 
-router.delete("/delete/:id", async (req, res) => {
+router.delete("/delete/:id",[authen([1])], async (req, res) => {
   try {
     const { id } = req.params; // lấy đượccái id mà người dùng gửi lên
     const cateDel = await authorController.deleteCate(id);

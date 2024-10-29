@@ -6,6 +6,8 @@ const checktoken = require("../helper/checktoken");
 const upload = require("../helper/upload");
 const path = require("path");
 const productModel = require("../mongo/product.model");
+const authen = require("../middleware/authen");
+
 /*Phân trang*/
 
 // Route để lấy tất cả sản phẩm với phân trang và sắp xếp
@@ -137,7 +139,7 @@ router.post(
     { name: "image2", maxCount: 1 },
     { name: "image3", maxCount: 1 },
     { name: "image4", maxCount: 1 },
-  ]),
+  ]),[authen([1])],
   async (req, res) => {
     try {
       const body = req.body;
@@ -202,7 +204,7 @@ router.put(
     { name: "image2", maxCount: 1 },
     { name: "image3", maxCount: 1 },
     { name: "image4", maxCount: 1 },
-  ]),
+  ]),[authen([1])],
   async (req, res) => {
     try {
       const { id } = req.params;
@@ -228,7 +230,7 @@ router.put(
 
 //Router xóa sản phẩm
 
-router.delete("/:id", async (req, res) => {
+router.delete("/:id",[authen([1])], async (req, res) => {
   try {
     const { id } = req.params; // lấy đượccái id mà người dùng gửi lên
     const proDel = await productController.remove(id);
@@ -250,6 +252,26 @@ router.get("/hot", async (req, res) => {
     res.status(500).json({ mess: error });
   }
 });
+
+router.put("/:id/hot", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await productModel.findByIdAndUpdate(
+      id,
+      { $inc: { hot: 1 } },
+      { new: true }
+    );
+
+    if (!result) {
+      return res.status(404).json({ message: "Không tìm thấy sản phẩm" });
+    }
+    res.status(200).json(result);
+  } catch (error) {
+    console.error("Lỗi khi cập nhật hot:", error);
+    res.status(500).json({ message: "Lỗi khi cập nhật sản phẩm" });
+  }
+});
+
 //Router hiển thị sản phẩm mới nhất bên trang sản phẩm
 router.get("/newpro", async (req, res) => {
   try {

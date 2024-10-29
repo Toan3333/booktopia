@@ -40,7 +40,7 @@ const ProductItem = ({ className = "", item }) => {
   };
 
   if (!item) {
-    return null; // Hoặc bạn có thể hiển thị một thông báo lỗi hoặc một component trống
+    return null; 
   }
   const handleNavigateToDetail = async () => {
     try {

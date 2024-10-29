@@ -1,6 +1,7 @@
 var express = require("express");
 var router = express.Router();
 const orderController = require("../mongo/order.controller");
+const authen = require("../middleware/authen");
 
 router.get("/", async (req, res) => {
   try {
@@ -35,7 +36,7 @@ router.put('/:id/status', async (req, res) => {
   }
 });
 
-router.put('/:id', async (req, res) => {
+router.put('/:id',[authen([1])], async (req, res) => {
   try {
     const { id } = req.params;
     const body = req.body;
@@ -48,7 +49,7 @@ router.put('/:id', async (req, res) => {
   }
 });
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:id',[authen([1])], async (req, res) => {
   try {
     const { id } = req.params;
 

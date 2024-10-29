@@ -4,6 +4,7 @@ const usersController = require("../mongo/user.controller");
 const checktoken = require("../helper/checktoken");
 const jwt = require("jsonwebtoken");
 const upload = require("../helper/upload");
+const authen = require("../middleware/authen");
 
 // Đăng ký
 
@@ -105,7 +106,7 @@ router.get("/", async (req, res) => {
 });
 
 //routing xóa user
-router.delete("/:id", async (req, res) => {
+router.delete("/:id",[authen([1])], async (req, res) => {
   try {
     const { id } = req.params; // lấy đượccái id mà người dùng gửi lên
     const userDel = await usersController.remove(id);
