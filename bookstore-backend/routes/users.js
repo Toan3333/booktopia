@@ -7,7 +7,6 @@ const upload = require("../helper/upload");
 const authen = require("../middleware/authen");
 
 // Đăng ký
-
 router.post("/register", async (req, res) => {
   try {
     const body = req.body;
@@ -84,9 +83,7 @@ router.post("/refresh-token", async (req, res) => {
         );
 
         // Trả về accessToken mới
-        return res
-          .status(200)
-          .json({ user, accessToken: accessToken, refreshToken: refreshToken });
+        return res.status(200).json({ user, accessToken: accessToken, refreshToken: refreshToken });
       }
     });
   } catch (error) {
@@ -106,7 +103,7 @@ router.get("/", async (req, res) => {
 });
 
 //routing xóa user
-router.delete("/:id",[authen([1])], async (req, res) => {
+router.delete("/:id", [authen([1])], async (req, res) => {
   try {
     const { id } = req.params; // lấy đượccái id mà người dùng gửi lên
     const userDel = await usersController.remove(id);
