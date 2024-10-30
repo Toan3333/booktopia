@@ -83,6 +83,29 @@ const Checkout = () => {
       const result = await response.json();
       if (response.ok) {
         console.log("Order created successfully", result);
+        await Promise.all(
+          listProducts.map(async (item) => {
+            // Kiểm tra xem item có thuộc tính _id hoặc id không
+            const productId = item._id || item.id; // Chọn thuộc tính nào phù hợp với cấu trúc của bạn
+            if (!productId) {
+              console.error(`Product does not have a valid id:`, item);
+              return; // Bỏ qua nếu không có id
+            }
+            try {
+              const productResponse = await fetch(`${URL_API}/products/${productId}/hot`, {
+                method: "PUT",
+              });
+              
+              if (!productResponse.ok) {
+                const productResult = await productResponse.json();
+                console.error(`Error updating product ${productId}:`, productResult);
+              }
+            } catch (error) {
+              console.error(`Error updating product ${productId}:`, error);
+            }
+          })
+        );
+        
         dispatch(clearCart());
         reset();
         Swal.fire({
