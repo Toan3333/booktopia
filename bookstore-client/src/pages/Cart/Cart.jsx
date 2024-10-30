@@ -286,7 +286,7 @@ const Cart = () => {
             </span>
           </div>
           <Button className="rounded-lg bg-green-600 text-white px-4 py-2">
-            <Link to="/checkout">Thanh toán</Link>
+            <Link to="{`/checkout?id=${item._id}`}">Thanh toán</Link>
           </Button>
         </div>
       </div>
