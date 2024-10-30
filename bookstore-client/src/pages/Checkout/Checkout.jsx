@@ -84,27 +84,37 @@ const Checkout = () => {
       if (response.ok) {
         console.log("Order created successfully", result);
         await Promise.all(
-          listProducts.map(async (item) => {
-            // Kiểm tra xem item có thuộc tính _id hoặc id không
-            const productId = item._id || item.id; // Chọn thuộc tính nào phù hợp với cấu trúc của bạn
-            if (!productId) {
-              console.error(`Product does not have a valid id:`, item);
-              return; // Bỏ qua nếu không có id
-            }
-            try {
-              const productResponse = await fetch(`${URL_API}/products/${productId}/hot`, {
-                method: "PUT",
-              });
-              
-              if (!productResponse.ok) {
-                const productResult = await productResponse.json();
-                console.error(`Error updating product ${productId}:`, productResult);
+          await Promise.all(
+            listProducts.map(async (item) => {
+              const productId = item._id || item.id;
+              const quantity = item.quantity || 1;
+              if (!productId) {
+                console.error(`Không có id:`, item);
               }
-            } catch (error) {
-              console.error(`Error updating product ${productId}:`, error);
-            }
-          })
-        );
+              try {
+                //kiểm số lượng sản phẩm chung id
+                const hotPromises = Array.from({ length: quantity }).map(() =>
+                  fetch(`${URL_API}/products/${productId}/hot`, {
+                    method: "PUT",
+                  })
+                );
+    
+                //giống cái ở trên
+                const salePromises = Array.from({ length: quantity }).map(() =>
+                  fetch(`${URL_API}/products/${productId}/sale`, {
+                    method: "PUT",
+                  })
+                );
+    
+                //chờ gọi api xong
+                await Promise.all([...hotPromises, ...salePromises]);
+              } catch (error) {
+                console.error(`Error processing product ${productId}:`, error);
+              }
+            })
+          )
+        )
+  
         
         dispatch(clearCart());
         reset();

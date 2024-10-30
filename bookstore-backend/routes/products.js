@@ -271,6 +271,24 @@ router.put("/:id/hot", async (req, res) => {
     res.status(500).json({ message: "Lỗi khi cập nhật sản phẩm" });
   }
 });
+router.put("/:id/sale", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await productModel.findByIdAndUpdate(
+      id,
+      { $inc: { sale: 1 } },
+      { new: true }
+    );
+
+    if (!result) {
+      return res.status(404).json({ message: "Không tìm thấy sản phẩm" });
+    }
+    res.status(200).json(result);
+  } catch (error) {
+    console.error("Lỗi khi cập nhật hot:", error);
+    res.status(500).json({ message: "Lỗi khi cập nhật sản phẩm" });
+  }
+});
 
 //Router hiển thị sản phẩm mới nhất bên trang sản phẩm
 router.get("/newpro", async (req, res) => {
