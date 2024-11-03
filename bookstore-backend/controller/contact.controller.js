@@ -94,6 +94,49 @@ const contactController = {
       throw new Error(error.message);
     }
   },
+
+  updateContactStatus: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const contact = await Contact.findById(id);
+
+      if (!contact) {
+        return res.status(404).json({ message: "Liên hệ không tồn tại" });
+      }
+
+      contact.status =
+        contact.status === "Chưa phản hồi" ? "Đã phản hồi" : "Chưa phản hồi";
+      await contact.save();
+
+      res
+        .status(200)
+        .json({ message: "Cập nhật trạng thái thành công", contact });
+    } catch (error) {
+      res.status(500).json({
+        message: "Có lỗi xảy ra khi cập nhật trạng thái",
+        error: error.message,
+      });
+    }
+  },
+
+  deleteContact: async (id) => {
+    try {
+      const contact = await Contact.findById(id);
+
+      if (!contact) {
+        throw new Error("Liên hệ không tồn tại");
+      }
+
+      if (contact.status === "Chưa phản hồi") {
+        throw new Error("Chỉ có thể xóa các liên hệ đã phản hồi");
+      }
+
+      const deletedContact = await Contact.findByIdAndDelete(id);
+      return deletedContact;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  },
 };
 
 module.exports = contactController;

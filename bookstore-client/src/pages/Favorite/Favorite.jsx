@@ -36,7 +36,7 @@ const Favorite = () => {
     },
     { id: 4, name: "Đăng xuất", icon: <FiLogOut />, link: "/logout" },
   ];
-  
+
 
   useEffect(() => {
     // Lấy dữ liệu người dùng từ cookie
@@ -54,7 +54,7 @@ const Favorite = () => {
   //     try {
   //       const response = await axios.get(`${URL_API}/favorites/${userId}`);
   //       console.log(response.data);
-        
+
   //       setFavorites(response.data); 
   //     } catch (err) {
   //       console.error("Error fetching favorites:", err);

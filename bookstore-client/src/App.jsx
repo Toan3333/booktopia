@@ -40,6 +40,7 @@ import DetailOrder from "./pages/Admin/DetailOrder/DetailOrder";
 import ManageVoucher from "./pages/Admin/ManageVoucher/ManageVoucher";
 import AddVoucher from "./pages/Admin/AddVoucher/AddVoucher";
 import EditVoucher from "./pages/Admin/EditVoucher/EditVoucher";
+import ManageContact from "./pages/Admin/ManageContact/ManageContact";
 
 function App() {
   return (
@@ -78,6 +79,7 @@ function App() {
         <Route path="/admin/manage-author" element={<ManageAuthor />} />
         <Route path="/admin/manage-order" element={<ManageOrder />} />
         <Route path="/admin/manage-voucher" element={<ManageVoucher />} />
+        <Route path="/admin/manage-contact" element={<ManageContact />} />
         <Route path="/admin/purchase-history/:id" element={<PurchaseHistory />} />
         <Route path="/admin/detail-order/:id" element={<DetailOrder />} />
         {/* <Route path="/admin/manage-items" element={<EditOrder />} /> */}
