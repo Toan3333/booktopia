@@ -24,6 +24,8 @@ import { URL_API } from "../../../constants/constants";
 import Cookies from "js-cookie";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Rectangle } from "recharts";
 import { PieChart, Pie } from "recharts";
+import { MdMarkEmailRead } from "react-icons/md";
+
 const DashBoard = () => {
   const isAdmin = true;
   const [collapsed, setCollapsed] = useState(false);
@@ -182,6 +184,12 @@ const DashBoard = () => {
             <SubMenu label="Quản lý bài viết" icon={<FaRegEdit className="w-5 h-5" />}>
               <MenuItem component={<Link to="/admin/manage-blog" />}>Danh sách bài viết</MenuItem>
             </SubMenu>
+            <MenuItem component={<Link to="/admin/manage-contact" />}>
+              <div className="flex items-center gap-4">
+              <MdMarkEmailRead />
+                Quản lý liên hệ
+              </div>
+            </MenuItem>
             <MenuItem onClick={handleLogout}>
               <div className="flex items-center gap-4">
                 <MdLogout />

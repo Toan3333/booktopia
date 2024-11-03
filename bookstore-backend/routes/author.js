@@ -1,7 +1,7 @@
 var express = require("express");
 var router = express.Router();
-const authorController = require("../mongo/author.controller");
-const productController = require("../mongo/product.controller");
+const authorController = require("../controller/author.controller");
+const productController = require("../controller/product.controller");
 const checktoken = require("../helper/checktoken");
 const authen = require("../middleware/authen");
 

@@ -1,6 +1,6 @@
 var express = require("express");
 var router = express.Router();
-const voucherController = require("../mongo/voucher.controller");
+const voucherController = require("../controller/voucher.controller");
 const authen = require("../middleware/authen");
 
 // danh sách voucher
@@ -15,7 +15,7 @@ router.get("/", async (req, res) => {
 });
 
 // Thêm danh mục mơi
-router.post("/",[authen([1])], async (req, res) => {
+router.post("/", [authen([1])], async (req, res) => {
   try {
     const body = req.body;
     const result = await voucherController.insertVoucher(body);
@@ -27,7 +27,7 @@ router.post("/",[authen([1])], async (req, res) => {
 });
 
 // update voucher
-router.put("/:id",[authen([1])], async (req, res) => {
+router.put("/:id", [authen([1])], async (req, res) => {
   try {
     const { id } = req.params;
     const body = req.body;
@@ -40,7 +40,7 @@ router.put("/:id",[authen([1])], async (req, res) => {
 });
 
 // xóa voucher
-router.delete("/:id",[authen([1])], async (req, res) => {
+router.delete("/:id", [authen([1])], async (req, res) => {
   try {
     const { id } = req.params;
     const voucher = await voucherController.deleteVoucher(id);

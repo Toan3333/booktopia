@@ -4,19 +4,19 @@ var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 const bodyParser = require("body-parser");
-
+require("dotenv").config();
 // MongoDB
 const mongoose = require("mongoose");
 const cors = require("cors");
 
 // muốn sài được thì phải rq nó ở đây
-require("./mongo/categories.model");
-require("./mongo/product.model");
-require("./mongo/product.controller");
-require("./mongo/categories.controller");
-require("./mongo/favorite.controller");
-require("./mongo/voucher.controller");
-require("./mongo/voucher.model");
+require("./model/categories.model");
+require("./model/product.model");
+require("./model/voucher.model");
+require("./controller/product.controller");
+require("./controller/categories.controller");
+require("./controller/favorite.controller");
+require("./controller/voucher.controller");
 
 // Khai báo router
 var usersRouter = require("./routes/users");
@@ -29,6 +29,7 @@ var orderRouter = require("./routes/order");
 var commentRouter = require("./routes/comment");
 var favoriteRouter = require("./routes/favorite");
 var voucherRouter = require("./routes/voucher");
+var contactRouter = require("./routes/contact");
 
 var app = express();
 // Sử dụng body-parser middleware để phân tích dữ liệu từ body của yêu cầu HTTP
@@ -64,6 +65,8 @@ app.use("/orders", orderRouter);
 app.use("/comment", commentRouter);
 app.use("/favorites", favoriteRouter);
 app.use("/vouchers", voucherRouter);
+app.use("/contact", contactRouter);
+
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
   next(createError(404));
