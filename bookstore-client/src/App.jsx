@@ -96,6 +96,7 @@ function App() {
         <Route path="/admin/edit-product/:id" element={<PrivateRoute allowedRoles={[1]}><EditProduct /></PrivateRoute>} />
         <Route path="/admin/edit-category/:id" element={<PrivateRoute allowedRoles={[1]}><EditCategory /></PrivateRoute>} />
         <Route path="/admin/edit-blog/:id" element={<PrivateRoute allowedRoles={[1]}><EditBlog /></PrivateRoute>} />
+        <Route path="/admin/manage-contact" element={<PrivateRoute allowedRoles={[1]}><ManageContact /></PrivateRoute>} />
       </Routes>
     </Fragment>
   );
