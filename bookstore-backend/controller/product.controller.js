@@ -583,7 +583,7 @@ async function getNew() {
 //Sản phẩm hot
 async function getHot() {
   try {
-    const result = await productModel.find({ hot: 1 }).limit(4);
+    const result = await productModel.find().sort({ _id: 1 }).limit(4);
     return result;
   } catch (error) {
     console.log("Lỗi sản phẩm hot", error);

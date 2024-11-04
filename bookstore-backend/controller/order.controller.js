@@ -8,6 +8,7 @@ module.exports = {
   cancelOrder,
   getOrdersByUserId,
   getOrderById,
+  getPendingOrders,
 };
 
 async function getAll() {
@@ -20,6 +21,15 @@ async function getAll() {
   }
 }
 
+async function getPendingOrders() {
+  try {
+    const result = await orderModel.find({ status: "Chờ xác nhận" }).sort({ date: 1 });
+    return result;
+  } catch (error) {
+    console.log("Lỗi lấy danh sách đơn hàng chờ xác nhận", error);
+    throw error;
+  }
+}
 async function create(req, res) {
   try {
     const {

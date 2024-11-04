@@ -16,13 +16,23 @@ import {
 import { MdLogout } from "react-icons/md";
 import { AiFillDashboard, AiOutlineBars } from "react-icons/ai";
 import "./DashBoard.css";
+import { format } from "date-fns";
 import HeaderAdmin from "../../../components/HeaderAdmin/HeaderAdmin";
 import PageTitle from "../../../components/PageTitle/PageTitle";
 
 import axios from "axios";
 import { URL_API } from "../../../constants/constants";
 import Cookies from "js-cookie";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Rectangle } from "recharts";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  Rectangle,
+} from "recharts";
 import { PieChart, Pie } from "recharts";
 import { MdMarkEmailRead } from "react-icons/md";
 
@@ -32,7 +42,49 @@ const DashBoard = () => {
   const [user, setUser] = useState({});
   const [totalUser, setTotalUser] = useState(0);
   const navigate = useNavigate();
-
+  const [orders, setOrders] = useState([]);
+  const [selectedStatus, setSelectedStatus] = useState(1);
+  const handleStatusChange = (id) => {
+    setSelectedStatus(id);
+  };
+  const [productHot, setProductHot] = useState([]);
+  const [productView, setProductView] = useState([]);
+  useEffect(() => {
+    const fetchProductHot = async () => {
+      try {
+        const response = await axios.get(`${URL_API}/products/hot`);
+        const data = response.data;
+        setProductHot(data);
+        console.log(data);
+      } catch (error) {
+        console.log(error);
+        setProductHot([]); 
+      }
+    };
+    fetchProductHot();
+  }, []);
+  useEffect(() => {
+    const fetchProductView = async () => {
+      try {
+        const response = await axios.get(`${URL_API}/products/view`);
+        const data = response.data;
+        setProductView(data);
+        console.log(data);
+      } catch (error) {
+        console.log(error);
+        setProductView([]); 
+      }
+    };
+    fetchProductView();
+  }, []);
+  const handleDelete = async (id) => {
+    try {
+      await axios.delete(`${URL_API}/products/${id}`);
+      showSwalFireDelete();
+    } catch (error) {
+      console.log(error);
+    }
+  };
   // Lấy dữ liệu người dùng từ cookie
   useEffect(() => {
     const userData = Cookies.get("user");
@@ -132,14 +184,43 @@ const DashBoard = () => {
     { name: "D1", value: 150 },
     { name: "D2", value: 50 },
   ];
+  const filteredOrders = orders.filter((order) => {
+    if (selectedStatus === 1) return true; // Hiển thị tất cả đơn hàng nếu "Tất cả đơn hàng" được chọn
+    if (selectedStatus === 2) return order.status === "Chờ xác nhận";
+    if (selectedStatus === 3) return order.status === "Đang xử lý";
+    if (selectedStatus === 4) return order.status === "Đang vận chuyển";
+    if (selectedStatus === 5) return order.status === "Giao thành công";
+    if (selectedStatus === 6) return order.status === "Đã hủy";
+    return false;
+  });
 
+  useEffect(() => {
+    const userData = Cookies.get("user");
+    if (userData) {
+      const parsedUser = JSON.parse(userData);
+      setUser(parsedUser.user);
+      fetchOrders(parsedUser.user._id);
+    }
+  }, []);
+
+  const fetchOrders = async (userId) => {
+    try {
+      const response = await axios.get(`${URL_API}/orders/pending`);
+      setOrders(response.data);
+    } catch (error) {
+      console.error("Lỗi khi gọi API:", error);
+    }
+  };
   return (
     <div>
       <div className="flex min-h-screen border">
         {/* Sidebar */}
         <Sidebar
-          className={`relative border p-3 bg-white ${collapsed ? "collapsed" : "expanded"}`}
-          width={collapsed ? "0px" : "270px"}>
+          className={`relative border p-3 bg-white ${
+            collapsed ? "collapsed" : "expanded"
+          }`}
+          width={collapsed ? "0px" : "270px"}
+        >
           <Menu className="bg-white">
             <div className="flex items-center justify-center mb-6">
               <img src="./images/logo.png" alt="Logo" />
@@ -151,17 +232,27 @@ const DashBoard = () => {
               </div>
             </MenuItem>
 
-            <SubMenu label="Quản lý danh mục" icon={<AiOutlineBars className="w-5 h-5" />}>
+            <SubMenu
+              label="Quản lý danh mục"
+              icon={<AiOutlineBars className="w-5 h-5" />}
+            >
               <MenuItem component={<Link to="/admin/manage-category" />}>
                 Danh sách danh mục
               </MenuItem>
             </SubMenu>
-            <SubMenu label="Quản lý sản phẩm" icon={<FaBook className="w-5 h-5" />}>
+            <SubMenu
+              label="Quản lý sản phẩm"
+              icon={<FaBook className="w-5 h-5" />}
+            >
               <MenuItem component={<Link to="/admin/manage-product" />}>
                 Danh sách sản phẩm
               </MenuItem>
-              <MenuItem component={<Link to="/admin/manage-author" />}>Tác giả</MenuItem>
-              <MenuItem component={<Link to="/admin/manage-publishes" />}>Nhà xuất bản</MenuItem>
+              <MenuItem component={<Link to="/admin/manage-author" />}>
+                Tác giả
+              </MenuItem>
+              <MenuItem component={<Link to="/admin/manage-publishes" />}>
+                Nhà xuất bản
+              </MenuItem>
             </SubMenu>
             <MenuItem component={<Link to="/admin/manage-order" />}>
               <div className="flex items-center gap-4">
@@ -181,12 +272,17 @@ const DashBoard = () => {
                 Quản lý voucher
               </div>
             </MenuItem>
-            <SubMenu label="Quản lý bài viết" icon={<FaRegEdit className="w-5 h-5" />}>
-              <MenuItem component={<Link to="/admin/manage-blog" />}>Danh sách bài viết</MenuItem>
+            <SubMenu
+              label="Quản lý bài viết"
+              icon={<FaRegEdit className="w-5 h-5" />}
+            >
+              <MenuItem component={<Link to="/admin/manage-blog" />}>
+                Danh sách bài viết
+              </MenuItem>
             </SubMenu>
             <MenuItem component={<Link to="/admin/manage-contact" />}>
               <div className="flex items-center gap-4">
-              <MdMarkEmailRead />
+                <MdMarkEmailRead />
                 Quản lý liên hệ
               </div>
             </MenuItem>
@@ -199,13 +295,17 @@ const DashBoard = () => {
           </Menu>
         </Sidebar>
         {/* Nút toggle nằm bên ngoài Sidebar */}
-        <button onClick={() => setCollapsed(!collapsed)} className="toggle-button">
+        <button
+          onClick={() => setCollapsed(!collapsed)}
+          className="toggle-button"
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
             strokeWidth={1.5}
-            stroke="currentColor">
+            stroke="currentColor"
+          >
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -289,7 +389,8 @@ const DashBoard = () => {
                     right: 30,
                     left: 20,
                     bottom: 5,
-                  }}>
+                  }}
+                >
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="name" />
                   <YAxis />
@@ -342,67 +443,150 @@ const DashBoard = () => {
                   <th>Địa chỉ</th>
                   <th>Tổng tiền</th>
                   <th>Trạng thái</th>
+                  {/* <th className="text-center">Thao tác</th> */}
+                </tr>
+              </thead>
+              <tbody>
+                {filteredOrders.map((order, index) => (
+                  <tr key={order._id}>
+                    <td>{index + 1}</td>
+                    <td>
+                        {order.orderId}
+                    </td>
+                    <td>{format(new Date(order.date), "dd/MM/yyyy")}</td>
+                    <td>{order.name}</td>
+                    <td>{order.address}</td>
+                    <td>{order.total} đ</td>
+                    <td>{order.status}</td>
+                    <td></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <div className="mt-6 border rounded-[30px] p-5">
+            <h3 className="text-lg font-semibold">Sản phẩm bán chạy</h3>
+            <table className="table">
+            <thead className="text-[16px] font-semibold text-black">
+                <tr>
+                  <th>#</th>
+                  <th>Hình ảnh</th>
+                  <th>Tên sách</th>
+                  <th>Tác giả</th>
+                  <th>Danh mục</th>
+                  <th>Nhà xuất bản</th>
+                  <th className="text-center">Giá</th>
+                  <th>Số lượng</th>
                   <th className="text-center">Thao tác</th>
                 </tr>
               </thead>
               <tbody>
+              {productHot.map((item, index) => (
+                 <tr key={item._id}>
+                    <td>{index + 1}</td>
+                    <td>
+                      <img
+                        src={`${URL_API}/images/${item.image1}`}
+                        className="w-20 h-20"
+                        alt={item.name}
+                      />
+                    </td>
+                    <td>{item.name}</td>
+                    <td>{item.author?.authorName || "Chưa có"}</td>
+                    <td>{item.category?.categoryName || "Chưa có"}</td>
+                    <td>{item.publish?.publishName || "Chưa có"}</td>
+                    <td>
+                      <div className="flex items-center justify-center gap-4">
+                        <div>
+                          {item.price1.toLocaleString("vi-VN", {
+                            style: "currency",
+                            currency: "VND",
+                          })}
+                        </div>
+                        <div className="text-red">
+                          {item.price2?.toLocaleString("vi-VN", {
+                            style: "currency",
+                            currency: "VND",
+                          }) || "chưa có"}
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-3 text-center">{item.quantity}</td>
+                    <td>
+                      <div className="flex items-center justify-center gap-3">
+                        <Link to={`/admin/edit-product/${item._id}`}>
+                          <FaUserEdit className="w-5 h-5 text-main" />
+                        </Link>
+                        <button onClick={(e) => handleDelete(item._id)}>
+                          <FaTrashAlt className="w-5 h-4 text-red" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <div className="mt-6 border rounded-[30px] p-5">
+            <h3 className="text-lg font-semibold">Sản phẩm nhiều lượt xem</h3>
+            <table className="table">
+            <thead className="text-[16px] font-semibold text-black">
                 <tr>
-                  <td>1</td>
-                  <td>BOKTOPIA001</td>
-                  <td>23/08/2004</td>
-                  <td>Bùi Liệm</td>
-                  <td>Quận 12, TP Hồ Chí Minh</td>
-                  <td>199000đ</td>
-                  <td>Chưa xác nhận</td>
-                  <td>
-                    <div className="flex items-center justify-center gap-3">
-                      <a href="#">
-                        <FaUserEdit className="w-5 h-5 text-main" />
-                      </a>
-                      <a href="#">
-                        <FaTrashAlt className="w-5 h-4 text-red" />
-                      </a>
-                    </div>
-                  </td>
+                  <th>#</th>
+                  <th>Hình ảnh</th>
+                  <th>Tên sách</th>
+                  <th>Tác giả</th>
+                  <th>Danh mục</th>
+                  <th>Nhà xuất bản</th>
+                  <th className="text-center">Giá</th>
+                  <th>Số lượng</th>
+                  <th className="text-center">Thao tác</th>
                 </tr>
-                <tr>
-                  <td>1</td>
-                  <td>BOKTOPIA001</td>
-                  <td>23/08/2004</td>
-                  <td>Bùi Liệm</td>
-                  <td>Quận 12, TP Hồ Chí Minh</td>
-                  <td>199000đ</td>
-                  <td>Chưa xác nhận</td>
-                  <td>
-                    <div className="flex items-center justify-center gap-3">
-                      <a href="#">
-                        <FaUserEdit className="w-5 h-5 text-main" />
-                      </a>
-                      <a href="#">
-                        <FaTrashAlt className="w-5 h-4 text-red" />
-                      </a>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td>1</td>
-                  <td>BOKTOPIA001</td>
-                  <td>23/08/2004</td>
-                  <td>Bùi Liệm</td>
-                  <td>Quận 12, TP Hồ Chí Minh</td>
-                  <td>199000đ</td>
-                  <td>Chưa xác nhận</td>
-                  <td>
-                    <div className="flex items-center justify-center gap-3">
-                      <a href="#">
-                        <FaUserEdit className="w-5 h-5 text-main" />
-                      </a>
-                      <a href="#">
-                        <FaTrashAlt className="w-5 h-4 text-red" />
-                      </a>
-                    </div>
-                  </td>
-                </tr>
+              </thead>
+              <tbody>
+              {productView.map((item, index) => (
+                 <tr key={item._id}>
+                    <td>{index + 1}</td>
+                    <td>
+                      <img
+                        src={`${URL_API}/images/${item.image1}`}
+                        className="w-20 h-20"
+                        alt={item.name}
+                      />
+                    </td>
+                    <td>{item.name}</td>
+                    <td>{item.author?.authorName || "Chưa có"}</td>
+                    <td>{item.category?.categoryName || "Chưa có"}</td>
+                    <td>{item.publish?.publishName || "Chưa có"}</td>
+                    <td>
+                      <div className="flex items-center justify-center gap-4">
+                        <div>
+                          {item.price1.toLocaleString("vi-VN", {
+                            style: "currency",
+                            currency: "VND",
+                          })}
+                        </div>
+                        <div className="text-red">
+                          {item.price2?.toLocaleString("vi-VN", {
+                            style: "currency",
+                            currency: "VND",
+                          }) || "chưa có"}
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-3 text-center">{item.quantity}</td>
+                    <td>
+                      <div className="flex items-center justify-center gap-3">
+                        <Link to={`/admin/edit-product/${item._id}`}>
+                          <FaUserEdit className="w-5 h-5 text-main" />
+                        </Link>
+                        <button onClick={(e) => handleDelete(item._id)}>
+                          <FaTrashAlt className="w-5 h-4 text-red" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>

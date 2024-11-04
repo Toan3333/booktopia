@@ -12,7 +12,15 @@ router.get("/", async (req, res) => {
     res.status(500).json({ mess: error });
   }
 });
-
+router.get("/pending", async (req, res) => {
+  try {
+    const result = await orderController.getPendingOrders();
+    return res.status(200).json(result);
+  } catch (error) {
+    console.log("Lấy danh sách đơn hàng chờ xác nhận không thành công", error);
+    res.status(500).json({ mess: error });
+  }
+});
 router.post("/", async (req, res) => {
   try {
     const result = await orderController.create(req, res);
