@@ -8,6 +8,7 @@ import {
   FaTrashAlt,
   FaUser,
   FaUserClock,
+  FaGift
 } from "react-icons/fa";
 import { MdLogout } from "react-icons/md";
 import { AiFillDashboard, AiOutlineBars } from "react-icons/ai";
@@ -16,6 +17,8 @@ import HeaderAdmin from "../../../components/HeaderAdmin/HeaderAdmin";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import { showSwalFireDelete } from "../../../helpers/helpers";
+import { MdMarkEmailRead } from "react-icons/md";
+
 
 const ManageContact = () => {
   const navigate = useNavigate();
@@ -107,9 +110,21 @@ const ManageContact = () => {
                 Quản lý tài khoản
               </div>
             </MenuItem>
+            <MenuItem component={<Link to="/admin/manage-voucher" />}>
+              <div className="flex items-center gap-4">
+                <FaGift />
+                Quản lý voucher
+              </div>
+            </MenuItem>
             <SubMenu label="Quản lý bài viết" icon={<FaRegEdit className="w-5 h-5" />}>
               <MenuItem component={<Link to="/admin/manage-blog" />}>Danh sách bài viết</MenuItem>
             </SubMenu>
+            <MenuItem component={<Link to="/admin/manage-contact" />}>
+              <div className="flex items-center gap-4">
+                <MdMarkEmailRead />
+                Quản lý liên hệ
+              </div>
+            </MenuItem>
             <MenuItem onClick={handleLogout}>
               <div className="flex items-center gap-4">
                 <MdLogout />
@@ -136,7 +151,7 @@ const ManageContact = () => {
         <div className="flex-1 p-6">
           <HeaderAdmin />
           <div className="flex items-center justify-between pb-8 border-b pt-3">
-            <PageTitle title="Quản lý tài khoản" className="text-mainDark" />
+            <PageTitle title="Quản lý liên hệ" className="text-mainDark" />
           </div>
           <div className="mt-6 border rounded-[30px] p-5">
             <table className="table w-full">

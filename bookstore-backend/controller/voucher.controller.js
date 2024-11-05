@@ -7,6 +7,7 @@ module.exports = {
   deleteVoucher,
   applyVoucher,
   deactivateVoucher,
+  getVoucherById
 };
 
 // danh sách voucher
@@ -88,42 +89,35 @@ async function deleteVoucher(id) {
 // áp dụng voucher
 
 async function applyVoucher(body) {
-  try {
-    const { code, orderValue } = body;
-    const voucher = await voucherModel.findOne({ code, isActive: true });
-
-    if (!voucher) {
-      return {
-        status: 400,
-        message: "Voucher không hợp lệ hoặc không còn hiệu lực.",
-      };
-    }
-
-    // Kiểm tra gia trị đơn hàng
-    if (orderValue < voucher.minimumOrderValue) {
-      return {
-        status: 400,
-        message: `Đơn hàng tối thiểu để áp dụng voucher là ${voucher.minimumOrderValue}.`,
-      };
-    }
-
-    // Kiểm tra ngày hiệu lực
-    const currentDate = new Date();
-    if (
-      currentDate < voucher.effectiveDate ||
-      currentDate > voucher.expirationDate
-    ) {
-      return { status: 400, message: "Voucher đã hết hạn." };
-    }
-
-    // Tính toán giảm giá
-    let discount = 0;
-    if (voucher.type === "discount") {
-      discount = (voucher.discountValue / 100) * orderValue;
-    } else if (voucher.type === "shipping") {
-      discount = voucher.discountValue;
-    }
-
+    try {
+      const { code, orderValue } = body; 
+      const voucher = await voucherModel.findOne({ code, isActive: true });
+      
+      if (!voucher) {
+        return { status: 400, message: "Voucher không hợp lệ hoặc không còn hiệu lực." };
+      }
+      
+      // Kiểm tra gia trị đơn hàng
+      if (orderValue < voucher.minimumOrderValue) {
+        return {
+          status: 400,
+          message: `Đơn hàng tối thiểu để áp dụng voucher là ${voucher.minimumOrderValue}.`,
+        };
+      }
+      
+      // Kiểm tra ngày hiệu lực
+      const currentDate = new Date();
+      if (currentDate < voucher.effectiveDate || currentDate > voucher.expirationDate) {
+        return { status: 400, message: "Voucher đã hết hạn." };
+      }
+      
+      // Tính toán giảm giá
+      let discount = 0;
+      if (voucher.type === "Discount") {
+        discount = (voucher.discountValue / 100) * orderValue; 
+      } else if (voucher.type === "Shipping") {
+        discount = voucher.discountValue; 
+      }
     return {
       status: 200,
       data: {
@@ -147,7 +141,6 @@ async function deactivateVoucher(id) {
     if (!voucher) {
       throw new Error("Không tìm thấy voucher với ID đã cho.");
     }
-
     voucher.isActive = false;
     await voucher.save();
 
@@ -156,4 +149,14 @@ async function deactivateVoucher(id) {
     console.error("Lỗi trong deactivateVoucher:", error);
     throw error;
   }
-}
+  }
+
+  async function getVoucherById(id) {
+    try {
+      const voucher = await voucherModel.findById(id);
+      return voucher;
+    } catch (error) {
+      console.log("Lỗi lấy chi tiết voucher", error);
+      throw error;
+    }
+  }

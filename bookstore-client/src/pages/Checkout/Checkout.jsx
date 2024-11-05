@@ -22,7 +22,11 @@ const Checkout = () => {
   } = useForm();
   const listProducts = useSelector((state) => state.cart?.items) || [];
   const total = useMemo(
-    () => listProducts.reduce((total, item) => total + item.price2 * item.quantity, 0),
+    () =>
+      listProducts.reduce(
+        (total, item) => total + item.price2 * item.quantity,
+        0
+      ),
     [listProducts]
   );
 
@@ -31,6 +35,9 @@ const Checkout = () => {
   const [selectedCity, setSelectedCity] = useState("");
   const [selectedDistrict, setSelectedDistrict] = useState("");
   const [selectedWard, setSelectedWard] = useState("");
+  const [voucherCode, setVoucherCode] = useState("");
+  const [discount, setDiscount] = useState(0);
+  const shippingFee = 30000;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -121,7 +128,8 @@ const Checkout = () => {
         Swal.fire({
           position: "center",
           icon: "success",
-          title: "Thanh toán thành công! Bạn có thể theo dõi đơn hàng ở trang quản lý đơn hàng.",
+          title:
+            "Thanh toán thành công! Bạn có thể theo dõi đơn hàng ở trang quản lý đơn hàng.",
           showConfirmButton: false,
           timer: 3000,
           customClass: {
@@ -138,6 +146,45 @@ const Checkout = () => {
     }
   };
 
+  const applyVoucher = async (voucherCode) => {
+    debugger;
+    try {
+      const response = await axios.post(`${URL_API}/vouchers/apply`, {
+        code: voucherCode,
+        orderValue: total + shippingFee,
+      });
+
+      const res = response.data.data
+      setDiscount(res.voucher.discountValue);
+      
+      return Swal.fire({
+        icon: "success",
+        title: "Áp dụng voucher thành công",
+      });
+    } catch (error) {
+      console.error("Error applying voucher:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Không thành công",
+        text: error.message,
+      });
+      return 0; // Nếu có lỗi, trả về 0
+    }
+  };
+
+  const handleApplyVoucher = async () => {
+    debugger;
+    const discount = await applyVoucher(voucherCode);
+    if (discount > 0) {
+      setDiscount(discount);
+      Swal.fire({
+        icon: "success",
+        title: "Áp dụng voucher thành công!",
+        text: `Bạn đã nhận được giảm giá ${discount}%`,
+      });
+    }
+  };
+
   const handleCityChange = (e) => {
     setSelectedCity(e.target.value);
     setSelectedDistrict("");
@@ -149,9 +196,11 @@ const Checkout = () => {
     setSelectedWard("");
   };
 
-  const getDistricts = () => data.find((city) => city.Name === selectedCity)?.Districts || [];
+  const getDistricts = () =>
+    data.find((city) => city.Name === selectedCity)?.Districts || [];
   const getWards = () =>
-    getDistricts().find((district) => district.Name === selectedDistrict)?.Wards || [];
+    getDistricts().find((district) => district.Name === selectedDistrict)
+      ?.Wards || [];
 
   return (
     <div className="py-10">
@@ -168,7 +217,9 @@ const Checkout = () => {
         <form onSubmit={handleSubmit(onSubmit)} className="w-full">
           <div className="flex justify-between gap-20 max-md:flex-col max-md:w-full">
             <div className="w-[55%] mt-6 max-md:w-full">
-              <h3 className="text-text font-semibold leading-normal mb-2">Thông tin giao hàng</h3>
+              <h3 className="text-text font-semibold leading-normal mb-2">
+                Thông tin giao hàng
+              </h3>
               <div className="flex flex-col gap-6">
                 {/* Thông tin cá nhân */}
                 <div>
@@ -179,40 +230,55 @@ const Checkout = () => {
                     type="text"
                     placeholder="Nhập họ tên"
                   />
-                  {errors.name && <div className="errform">{errors.name.message}</div>}
+                  {errors.name && (
+                    <div className="errform">{errors.name.message}</div>
+                  )}
                 </div>
                 <div>
                   <input
                     {...register("email", {
                       required: "Email là bắt buộc",
-                      pattern: { value: /^\S+@\S+$/i, message: "Email không hợp lệ" },
+                      pattern: {
+                        value: /^\S+@\S+$/i,
+                        message: "Email không hợp lệ",
+                      },
                     })}
                     id="userEmail"
                     className="input input-bordered w-full"
                     type="text"
                     placeholder="Nhập email"
                   />
-                  {errors.email && <div className="errform">{errors.email.message}</div>}
+                  {errors.email && (
+                    <div className="errform">{errors.email.message}</div>
+                  )}
                 </div>
                 <div>
                   <input
-                    {...register("phone", { required: "Số điện thoại là bắt buộc" })}
+                    {...register("phone", {
+                      required: "Số điện thoại là bắt buộc",
+                    })}
                     id="userPhoneNumber"
                     className="input input-bordered w-full"
                     type="text"
                     placeholder="Nhập số điện thoại"
                   />
-                  {errors.phone && <div className="errform">{errors.phone.message}</div>}
+                  {errors.phone && (
+                    <div className="errform">{errors.phone.message}</div>
+                  )}
                 </div>
                 <div>
                   <input
-                    {...register("address", { required: "Địa chỉ là bắt buộc" })}
+                    {...register("address", {
+                      required: "Địa chỉ là bắt buộc",
+                    })}
                     id="userAddress"
                     className="input input-bordered w-full"
                     type="text"
                     placeholder="Nhập địa chỉ"
                   />
-                  {errors.address && <div className="errform">{errors.address.message}</div>}
+                  {errors.address && (
+                    <div className="errform">{errors.address.message}</div>
+                  )}
                 </div>
 
                 {/* Dropdown cho địa chỉ */}
@@ -223,7 +289,8 @@ const Checkout = () => {
                   <select
                     value={selectedCity}
                     onChange={handleCityChange}
-                    className="input input-bordered w-full">
+                    className="input input-bordered w-full"
+                  >
                     <option value="">-- Chọn Thành Phố --</option>
                     {cities.map((city) => (
                       <option key={city} value={city}>
@@ -239,7 +306,8 @@ const Checkout = () => {
                     <select
                       value={selectedDistrict}
                       onChange={handleDistrictChange}
-                      className="input input-bordered w-full">
+                      className="input input-bordered w-full"
+                    >
                       <option value="">-- Chọn Quận Huyện --</option>
                       {getDistricts().map((district) => (
                         <option key={district.Id} value={district.Name}>
@@ -256,7 +324,8 @@ const Checkout = () => {
                     <select
                       value={selectedWard}
                       onChange={(e) => setSelectedWard(e.target.value)}
-                      className="input input-bordered w-full">
+                      className="input input-bordered w-full"
+                    >
                       <option value="">-- Chọn Phường Xã --</option>
                       {getWards().map((ward) => (
                         <option key={ward.Id} value={ward.Name}>
@@ -284,7 +353,9 @@ const Checkout = () => {
                       />
                       <div className="checkbox-box"></div>
                     </label>
-                    <div className="">Giao hàng tiêu chuẩn (từ 3 đến 5 ngày)</div>
+                    <div className="">
+                      Giao hàng tiêu chuẩn (từ 3 đến 5 ngày)
+                    </div>
                   </div>
                   <div className="ml-10">30.000đ</div>
                 </div>
@@ -364,40 +435,48 @@ const Checkout = () => {
                 ))}
                 <div className="border-t">
                   <div className="flex items-center justify-between gap-3 mt-7 pb-7 border-b">
-                    <div className="w-[70%]">
-                      <input
-                        type="text"
-                        placeholder="Mã giảm giá"
-                        className="input input-bordered w-full"
-                      />
-                    </div>
-                    <div className="w-[30%]">
-                      <Button
-                        children="Sử dụng"
-                        className="rounded-[5px] px-5 py-4 w-full max-md:px-2 max-md:py-3 max-md:text-sm"
-                      />
-                    </div>
+                    <input
+                      type="text"
+                      placeholder="Mã giảm giá"
+                      className="input input-bordered w-full"
+                      value={voucherCode}
+                      onChange={(e) => setVoucherCode(e.target.value)}
+                    />
+                    <Button type="button" onClick={handleApplyVoucher}>
+                      Áp dụng Voucher
+                    </Button>
                   </div>
                 </div>
                 <div className="pb-7 border-b">
                   <div className="flex justify-between my-5">
-                    <span className="text-text font-normal leading-normal">Tạm tính:</span>
                     <span className="text-text font-normal leading-normal">
-                      {total.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}
+                      Tạm tính:
+                    </span>
+                    <span className="text-text font-normal leading-normal">
+                      {total.toLocaleString("vi-VN", {
+                        style: "currency",
+                        currency: "VND",
+                      })}
                     </span>
                   </div>
                   <div className="flex justify-between text-text font-normal leading-normal">
                     <span>Phí vận chuyển:</span>
-                    <span>30.000đ</span>
+                    <span>{shippingFee}đ</span>
                   </div>
                 </div>
+                {discount > 0 && (
+                  <div className="flex items-center justify-between gap-3">
+                    <p className="text-sm text-gray-500">Giảm giá</p>
+                    <p className="font-semibold">{discount} đ</p>
+                  </div>
+                )}
                 <div className="flex justify-between text-text font-normal leading-normal mt-10">
                   <span>Tổng cộng:</span>
                   <span className="text-mainDark font-semibold leading-normal">
-                    {(total + 30000).toLocaleString("vi-VN", {
-                      style: "currency",
-                      currency: "VND",
-                    })}
+                    {(
+                      (total + shippingFee) - discount
+                    ).toLocaleString("vi-VN")}
+                    đ
                   </span>
                 </div>
               </div>
@@ -410,7 +489,8 @@ const Checkout = () => {
                 <div className="w-1/2">
                   <Button
                     className="w-full rounded-[5px] max-md:text-sm max-md:py-2 max-md:px-5"
-                    type="submit">
+                    type="submit"
+                  >
                     Đặt hàng
                   </Button>
                 </div>

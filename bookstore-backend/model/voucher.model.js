@@ -9,7 +9,7 @@ const voucherSchema = new Schema({
   },
   type: {
     type: String,
-    enum: ["discount", "shipping"], 
+    enum: ["Discount", "Shipping"], 
     required: true,
   },
   minimumOrderValue: {
