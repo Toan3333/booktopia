@@ -41,6 +41,8 @@ const DashBoard = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [user, setUser] = useState({});
   const [totalUser, setTotalUser] = useState(0);
+  const [totalOrder, setTotalOrder] = useState(0);
+  const [totalRevenue, setTotalRevenue] = useState(0);
   const navigate = useNavigate();
   const [orders, setOrders] = useState([]);
   const [selectedStatus, setSelectedStatus] = useState(1);
@@ -58,7 +60,7 @@ const DashBoard = () => {
         console.log(data);
       } catch (error) {
         console.log(error);
-        setProductHot([]); 
+        setProductHot([]);
       }
     };
     fetchProductHot();
@@ -72,7 +74,7 @@ const DashBoard = () => {
         console.log(data);
       } catch (error) {
         console.log(error);
-        setProductView([]); 
+        setProductView([]);
       }
     };
     fetchProductView();
@@ -107,12 +109,16 @@ const DashBoard = () => {
   useEffect(() => {
     const getInfoDashboard = async () => {
       try {
-        const [getTotalUser] = await axios.all([
-          axios.get(`${URL_API}/products`),
-          axios.get(`${URL_API}/category`),
+        const [getTotalUser, getTotalOrder] = await axios.all([
           axios.get(`${URL_API}/users`),
+          axios.get(`${URL_API}/orders`),
         ]);
         setTotalUser(getTotalUser.data.length);
+        setTotalOrder(getTotalOrder.data.length);
+        const totalValue = getTotalOrder.data.reduce((acc, order) => {
+          return acc + (parseFloat(order.total) || 0);
+        }, 0);
+        setTotalRevenue(totalValue);
       } catch (error) {
         console.log(error);
       }
@@ -319,17 +325,28 @@ const DashBoard = () => {
           <HeaderAdmin />
           <PageTitle title="Dashboard" />
           {/* Content goes here */}
-          <div className="grid grid-cols-4 gap-7 mt-5">
+          <div className="grid grid-cols-3 gap-7 mt-5">
             <div className="bg-white p-4 border rounded-lg shadow py-5 px-6">
               <div className="flex items-center justify-between">
                 <div className="">
-                  <PageTitle title="89,935" />
+                  <PageTitle title={totalRevenue.toLocaleString()} />
                   {/* Tổng doanh thu của các đơn hàng */}
                   {/* Đơn hàng: Thống kê số lượng đơn hàng đã hoàn thành và đơn hàng đang chờ xử lý. */}
                   <div className="">Doanh thu</div>
                 </div>
                 <div className="w-10 h-10 rounded-md border flex items-center justify-center text-mainDark">
                   <FaMoneyBill className="w-7 h-7" />
+                </div>
+              </div>
+            </div>
+            <div className="bg-white p-4 border rounded-lg shadow py-5 px-6">
+              <div className="flex items-center justify-between">
+                <div className="">
+                  <PageTitle title={totalOrder} />
+                  <div className="">Đơn hàng</div>
+                </div>
+                <div className="w-10 h-10 rounded-md border flex items-center justify-center text-mainDark">
+                  <FaUsers className="w-7 h-7" />
                 </div>
               </div>
             </div>
@@ -377,7 +394,7 @@ const DashBoard = () => {
                 </div>
               </div>
             </div> */}
-            <div className="flex items-center justify-between gap-6">
+            {/* <div className="flex items-center justify-between gap-6">
               <div className="w-2/4">
                 <BarChart
                   className="w-full"
@@ -429,10 +446,10 @@ const DashBoard = () => {
                   />
                 </PieChart>
               </div>
-            </div>
+            </div> */}
           </div>
           <div className="mt-6 border rounded-[30px] p-5">
-            <h3 className="text-lg font-semibold">Đơn hàng</h3>
+            <h3 className="text-lg font-semibold">Đơn hàng mới</h3>
             <table className="table">
               <thead className="text-[16px] font-semibold text-black">
                 <tr>
@@ -451,7 +468,7 @@ const DashBoard = () => {
                   <tr key={order._id}>
                     <td>{index + 1}</td>
                     <td>
-                        {order.orderId}
+                      <Link to={`/admin/manage-order`}>{order.orderId}</Link>
                     </td>
                     <td>{format(new Date(order.date), "dd/MM/yyyy")}</td>
                     <td>{order.name}</td>
@@ -467,7 +484,7 @@ const DashBoard = () => {
           <div className="mt-6 border rounded-[30px] p-5">
             <h3 className="text-lg font-semibold">Sản phẩm bán chạy</h3>
             <table className="table">
-            <thead className="text-[16px] font-semibold text-black">
+              <thead className="text-[16px] font-semibold text-black">
                 <tr>
                   <th>#</th>
                   <th>Hình ảnh</th>
@@ -477,12 +494,12 @@ const DashBoard = () => {
                   <th>Nhà xuất bản</th>
                   <th className="text-center">Giá</th>
                   <th>Số lượng</th>
-                  <th className="text-center">Thao tác</th>
+                  {/* <th className="text-center">Thao tác</th> */}
                 </tr>
               </thead>
               <tbody>
-              {productHot.map((item, index) => (
-                 <tr key={item._id}>
+                {productHot.map((item, index) => (
+                  <tr key={item._id}>
                     <td>{index + 1}</td>
                     <td>
                       <img
@@ -512,7 +529,7 @@ const DashBoard = () => {
                       </div>
                     </td>
                     <td className="px-3 text-center">{item.quantity}</td>
-                    <td>
+                    {/* <td>
                       <div className="flex items-center justify-center gap-3">
                         <Link to={`/admin/edit-product/${item._id}`}>
                           <FaUserEdit className="w-5 h-5 text-main" />
@@ -521,7 +538,7 @@ const DashBoard = () => {
                           <FaTrashAlt className="w-5 h-4 text-red" />
                         </button>
                       </div>
-                    </td>
+                    </td> */}
                   </tr>
                 ))}
               </tbody>
@@ -530,7 +547,7 @@ const DashBoard = () => {
           <div className="mt-6 border rounded-[30px] p-5">
             <h3 className="text-lg font-semibold">Sản phẩm nhiều lượt xem</h3>
             <table className="table">
-            <thead className="text-[16px] font-semibold text-black">
+              <thead className="text-[16px] font-semibold text-black">
                 <tr>
                   <th>#</th>
                   <th>Hình ảnh</th>
@@ -540,12 +557,12 @@ const DashBoard = () => {
                   <th>Nhà xuất bản</th>
                   <th className="text-center">Giá</th>
                   <th>Số lượng</th>
-                  <th className="text-center">Thao tác</th>
+                  {/* <th className="text-center">Thao tác</th> */}
                 </tr>
               </thead>
               <tbody>
-              {productView.map((item, index) => (
-                 <tr key={item._id}>
+                {productView.map((item, index) => (
+                  <tr key={item._id}>
                     <td>{index + 1}</td>
                     <td>
                       <img
@@ -575,7 +592,7 @@ const DashBoard = () => {
                       </div>
                     </td>
                     <td className="px-3 text-center">{item.quantity}</td>
-                    <td>
+                    {/* <td>
                       <div className="flex items-center justify-center gap-3">
                         <Link to={`/admin/edit-product/${item._id}`}>
                           <FaUserEdit className="w-5 h-5 text-main" />
@@ -584,7 +601,7 @@ const DashBoard = () => {
                           <FaTrashAlt className="w-5 h-4 text-red" />
                         </button>
                       </div>
-                    </td>
+                    </td> */}
                   </tr>
                 ))}
               </tbody>

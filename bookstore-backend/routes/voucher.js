@@ -73,4 +73,15 @@ router.put("/deactivate/:id", async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 });
+
+router.get("/:id", async (req, res) => {
+  try {
+    const { id } = req.params; 
+    const voucher = await voucherController.getVoucherById(id);
+    return res.status(200).json(voucher);
+  } catch (error) {
+    console.log("lỗi lay chi tiet voucher", error);
+    return res.status(500).json({ mess: error });
+  }
+});
 module.exports = router;

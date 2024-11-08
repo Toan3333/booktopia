@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Sidebar, Menu, MenuItem, SubMenu } from "react-pro-sidebar";
-import { FaBook, FaClipboardList, FaRegEdit, FaUser } from "react-icons/fa";
+import { FaBook, FaClipboardList, FaRegEdit, FaUser, FaGift } from "react-icons/fa";
 import { MdLogout } from "react-icons/md";
 import { AiFillDashboard, AiOutlineBars } from "react-icons/ai";
+import { MdMarkEmailRead } from "react-icons/md";
 
 import Button from "../../../components/Button/Button";
 import { useForm } from "react-hook-form";
@@ -80,9 +81,21 @@ const AddAuthor = () => {
                 Quản lý tài khoản
               </div>
             </MenuItem>
+            <MenuItem component={<Link to="/admin/manage-voucher" />}>
+              <div className="flex items-center gap-4">
+                <FaGift />
+                Quản lý voucher
+              </div>
+            </MenuItem>
             <SubMenu label="Quản lý bài viết" icon={<FaRegEdit className="w-5 h-5" />}>
               <MenuItem component={<Link to="/admin/manage-blog" />}>Danh sách bài viết</MenuItem>
             </SubMenu>
+            <MenuItem component={<Link to="/admin/manage-contact" />}>
+              <div className="flex items-center gap-4">
+                <MdMarkEmailRead />
+                Quản lý liên hệ
+              </div>
+            </MenuItem>
             <MenuItem onClick={handleLogout}>
               <div className="flex items-center gap-4">
                 <MdLogout />

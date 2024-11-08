@@ -9,6 +9,7 @@ import {
   FaTrashAlt,
   FaUser,
   FaUserClock,
+  FaGift
 } from "react-icons/fa";
 import { MdLogout } from "react-icons/md";
 import { AiFillDashboard, AiOutlineBars } from "react-icons/ai";
@@ -17,6 +18,7 @@ import HeaderAdmin from "../../../components/HeaderAdmin/HeaderAdmin";
 import Cookies from "js-cookie";
 import axios from "axios";
 import { URL_API } from "../../../constants/constants";
+import { MdMarkEmailRead } from "react-icons/md";
 
 const PurchaseHistory = () => {
   const isAdmin = true;
@@ -101,6 +103,12 @@ const PurchaseHistory = () => {
                 Quản lý tài khoản
               </div>
             </MenuItem>
+            <MenuItem component={<Link to="/admin/manage-voucher" />}>
+              <div className="flex items-center gap-4">
+                <FaGift />
+                Quản lý voucher
+              </div>
+            </MenuItem>
             <SubMenu
               label="Quản lý bài viết"
               icon={<FaRegEdit className="w-5 h-5" />}
@@ -109,6 +117,12 @@ const PurchaseHistory = () => {
                 Danh sách bài viết
               </MenuItem>
             </SubMenu>
+            <MenuItem component={<Link to="/admin/manage-contact" />}>
+              <div className="flex items-center gap-4">
+                <MdMarkEmailRead />
+                Quản lý liên hệ
+              </div>
+            </MenuItem>
             <MenuItem onClick={handleLogout}>
               <div className="flex items-center gap-4">
                 <MdLogout />

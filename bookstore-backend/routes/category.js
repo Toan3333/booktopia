@@ -7,7 +7,7 @@ const authen = require("../middleware/authen");
 
 //Show danh mục
 
-router.get("/", async (req, res) => {
+router.get("/", authen([1]), async (req, res) => {
   try {
     const category = await categoryController.gettAll();
     // console.log("Category:", category);
