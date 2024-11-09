@@ -11,7 +11,14 @@ import { ToastContainer, toast } from "react-toastify";
 import Cookies from "js-cookie";
 import "react-toastify/dist/ReactToastify.css";
 import { URL_API } from "../../constants/constants";
-import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import {
+  browserSessionPersistence,
+  getAuth,
+  GoogleAuthProvider,
+  setPersistence,
+  signInWithPopup,
+  signOut,
+} from "firebase/auth";
 import app from "../../firebase/firebase.config";
 const SignInPage = () => {
   const navigate = useNavigate();
@@ -36,10 +43,17 @@ const SignInPage = () => {
   // Hàm đăng nhập với Google
   const signUpWithGoogle = async () => {
     try {
-      const result = await signInWithPopup(auth, googleProvider); // Thực hiện đăng nhập
-      const user = result.user; // Lấy thông tin người dùng từ Firebase
+      // Đặt 'prompt' thành 'select_account' để yêu cầu người dùng chọn tài khoản
 
-      // Kiểm tra nếu user không có ảnh đại diện thì thêm một ảnh mặc định
+      // Tiến hành đăng nhập với Google
+      const googleProvider = new GoogleAuthProvider();
+
+      googleProvider.setCustomParameters({
+        prompt: "select_account",
+      });
+      const result = await signInWithPopup(auth, googleProvider);
+
+      const user = result.user; // Lấy thông tin người dùng từ Firebase
       const userData = {
         uid: user.uid,
         email: user.email,
@@ -47,8 +61,9 @@ const SignInPage = () => {
         photoURL: user.photoURL || "./images/avatar.png", // Dùng ảnh mặc định nếu không có ảnh từ Google
       };
 
-      // Lưu thông tin người dùng vào cookie (hoặc Redux nếu cần)
+      // Lưu thông tin người dùng vào cookie
       Cookies.set("user", JSON.stringify(userData), { expires: 1 });
+
       console.log("User logged in:", userData);
       toast.success("Đăng nhập với Google thành công");
 
