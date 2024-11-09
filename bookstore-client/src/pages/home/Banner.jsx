@@ -3,6 +3,7 @@ import { FaAngleLeft, FaAngleRight } from "react-icons/fa";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import { Link } from "react-router-dom";
 
 const Banner = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -108,11 +109,13 @@ const Banner = () => {
         <Slider ref={sliderRef} {...settings}>
           {listBanner.map((item) => (
             <div className="w-full" key={item.id}>
-              <img
-                src={item.image}
-                className="w-full h-[520px] cursor-pointer max-lg:h-48 max-md:h-44 max-xl:h-56 object-cover"
-                alt="Banner 1"
-              />
+              <Link to="/menu">
+                <img
+                  src={item.image}
+                  className="w-full h-[520px] cursor-pointer max-lg:h-48 max-md:h-44 max-xl:h-56 object-cover"
+                  alt="Banner 1"
+                />
+              </Link>
             </div>
           ))}
         </Slider>
