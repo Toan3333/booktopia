@@ -11,9 +11,12 @@ import { ToastContainer, toast } from "react-toastify";
 import Cookies from "js-cookie";
 import "react-toastify/dist/ReactToastify.css";
 import { URL_API } from "../../constants/constants";
-
+import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import app from "../../firebase/firebase.config";
 const SignInPage = () => {
   const navigate = useNavigate();
+  const auth = getAuth(app); // Lấy auth từ Firebase
+  const googleProvider = new GoogleAuthProvider(); // Khởi tạo provider Google
   // Định nghĩa schema validation
   const validationSchema = Yup.object({
     email: Yup.string().email("Email không hợp lệ").required("Vui lòng nhập email"),
@@ -29,6 +32,38 @@ const SignInPage = () => {
   } = useForm({
     resolver: yupResolver(validationSchema),
   });
+
+  // Hàm đăng nhập với Google
+  const signUpWithGoogle = async () => {
+    try {
+      const result = await signInWithPopup(auth, googleProvider); // Thực hiện đăng nhập
+      const user = result.user; // Lấy thông tin người dùng từ Firebase
+
+      // Kiểm tra nếu user không có ảnh đại diện thì thêm một ảnh mặc định
+      const userData = {
+        uid: user.uid,
+        email: user.email,
+        displayName: user.displayName,
+        photoURL: user.photoURL || "./images/avatar.png", // Dùng ảnh mặc định nếu không có ảnh từ Google
+      };
+
+      // Lưu thông tin người dùng vào cookie (hoặc Redux nếu cần)
+      Cookies.set("user", JSON.stringify(userData), { expires: 1 });
+      console.log("User logged in:", userData);
+      toast.success("Đăng nhập với Google thành công");
+
+      // Điều hướng đến trang chính hoặc trang admin (nếu có)
+      setTimeout(() => {
+        if (user.email === "admin@example.com") {
+          navigate("/admin/dashboard"); // Điều hướng đến trang admin nếu là admin
+        } else {
+          window.location.href = "/"; // Điều hướng đến trang chính
+        }
+      }, 2000);
+    } catch (error) {
+      toast.error("Đăng nhập với Google thất bại: " + error.message);
+    }
+  };
 
   // Hàm xử lý submit
   const onSubmit = async (data) => {
@@ -121,7 +156,9 @@ const SignInPage = () => {
                   <FaFacebookF className="w-5 h-5"></FaFacebookF>
                   Facebook
                 </div>
-                <div className="bg-btnGoogle w-full rounded-[10px] py-3 px-10 text-white h-10 flex items-center gap-2 justify-center cursor-pointer">
+                <div
+                  onClick={signUpWithGoogle}
+                  className="bg-btnGoogle w-full rounded-[10px] py-3 px-10 text-white h-10 flex items-center gap-2 justify-center cursor-pointer">
                   <FaGooglePlusG className="w-5 h-5"></FaGooglePlusG>
                   Google
                 </div>

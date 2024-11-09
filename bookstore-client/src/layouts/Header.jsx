@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import { FaBars, FaSearch, FaShoppingBag, FaUser } from "react-icons/fa";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { BsBag } from "react-icons/bs";
@@ -9,7 +9,8 @@ import "../index.css";
 import { useSelector } from "react-redux";
 import { URL_API } from "../constants/constants";
 import Cookies from "js-cookie";
-import Profile from "../components/Profile/Profile";
+import Profile from "../components/Profile/Profile"; // Component Profile để hiển thị thông tin người dùng
+import { AuthContext } from "../contexts/AuthProvider";
 
 const Header = () => {
   const cartItems = useSelector((state) => state.cart.items);
@@ -23,7 +24,9 @@ const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef(null);
   const [userInfo, setUserInfo] = useState(null);
+  const { user } = useContext(AuthContext); // AuthContext cung cấp thông tin user từ Firebase
 
+  // Kiểm tra khi người dùng cuộn trang để làm sticky header
   useEffect(() => {
     const handleScroll = () => {
       setIsSticky(window.scrollY > 40);
@@ -35,6 +38,7 @@ const Header = () => {
     };
   }, []);
 
+  // Đóng menu khi click ngoài
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (menuRef.current && !menuRef.current.contains(event.target)) {
@@ -48,14 +52,16 @@ const Header = () => {
     };
   }, []);
 
+  // Lấy thông tin người dùng từ cookie hoặc Firebase
   useEffect(() => {
     const userData = Cookies.get("user");
     if (userData) {
       const parsedUserData = JSON.parse(userData);
       setUserInfo(parsedUserData.user);
     }
-  }, []);
+  }, [user]); // Cập nhật khi user thay đổi
 
+  // Tìm kiếm sản phẩm
   const handleSearch = async () => {
     try {
       const trimmedSearchTerm = searchTerm.trim();
@@ -112,10 +118,8 @@ const Header = () => {
                 </div>
               </Link>
 
-              {userInfo ? (
-                <>
-                  <Profile />
-                </>
+              {userInfo || user ? ( // Kiểm tra nếu có thông tin người dùng (đăng nhập qua Google hoặc hệ thống)
+                <Profile />
               ) : (
                 <Link to="/sign-in">
                   <CiUser className="w-7 h-7 hover:text-mainDark cursor-pointer" />
@@ -125,6 +129,7 @@ const Header = () => {
           </div>
         </div>
       </header>
+
       <div
         className={`shadow-custom ${
           isSticky ? "fixed top-0 left-0 w-full shadow-custom z-50 bg-white" : "shadow-custom"

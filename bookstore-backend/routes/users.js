@@ -32,7 +32,7 @@ router.post("/login", async (req, res) => {
   }
 });
 
-// Cập nhật user
+// cap nhat
 router.put("/:id", upload.single("image"), async (req, res) => {
   try {
     const { id } = req.params;
