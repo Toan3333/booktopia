@@ -72,7 +72,9 @@ const Contact = () => {
                 <p className="text-red text-[14px] mt-1 ">{errors.message?.message}</p>
               </div>
               <div className="w-full">
-                <Button className="rounded-[5px] w-full">Gửi</Button>
+                <Button type="submit" className="rounded-[5px] w-full">
+                  Gửi
+                </Button>
               </div>
             </form>
           </div>

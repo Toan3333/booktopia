@@ -104,13 +104,10 @@ const contactController = {
         return res.status(404).json({ message: "Liên hệ không tồn tại" });
       }
 
-      contact.status =
-        contact.status === "Chưa phản hồi" ? "Đã phản hồi" : "Chưa phản hồi";
+      contact.status = contact.status === "Chưa phản hồi" ? "Đã phản hồi" : "Chưa phản hồi";
       await contact.save();
 
-      res
-        .status(200)
-        .json({ message: "Cập nhật trạng thái thành công", contact });
+      res.status(200).json({ message: "Cập nhật trạng thái thành công", contact });
     } catch (error) {
       res.status(500).json({
         message: "Có lỗi xảy ra khi cập nhật trạng thái",
