@@ -22,11 +22,7 @@ const Checkout = () => {
   } = useForm();
   const listProducts = useSelector((state) => state.cart?.items) || [];
   const total = useMemo(
-    () =>
-      listProducts.reduce(
-        (total, item) => total + item.price2 * item.quantity,
-        0
-      ),
+    () => listProducts.reduce((total, item) => total + item.price2 * item.quantity, 0),
     [listProducts]
   );
 
@@ -105,14 +101,14 @@ const Checkout = () => {
                     method: "PUT",
                   })
                 );
-    
+
                 //giống cái ở trên
                 const salePromises = Array.from({ length: quantity }).map(() =>
                   fetch(`${URL_API}/products/${productId}/sale`, {
                     method: "PUT",
                   })
                 );
-    
+
                 //chờ gọi api xong
                 await Promise.all([...hotPromises, ...salePromises]);
               } catch (error) {
@@ -120,16 +116,14 @@ const Checkout = () => {
               }
             })
           )
-        )
-  
-        
+        );
+
         dispatch(clearCart());
         reset();
         Swal.fire({
           position: "center",
           icon: "success",
-          title:
-            "Thanh toán thành công! Bạn có thể theo dõi đơn hàng ở trang quản lý đơn hàng.",
+          title: "Thanh toán thành công! Bạn có thể theo dõi đơn hàng ở trang quản lý đơn hàng.",
           showConfirmButton: false,
           timer: 3000,
           customClass: {
@@ -154,9 +148,9 @@ const Checkout = () => {
         orderValue: total + shippingFee,
       });
 
-      const res = response.data.data
+      const res = response.data.data;
       setDiscount(res.voucher.discountValue);
-      
+
       return Swal.fire({
         icon: "success",
         title: "Áp dụng voucher thành công",
@@ -196,11 +190,9 @@ const Checkout = () => {
     setSelectedWard("");
   };
 
-  const getDistricts = () =>
-    data.find((city) => city.Name === selectedCity)?.Districts || [];
+  const getDistricts = () => data.find((city) => city.Name === selectedCity)?.Districts || [];
   const getWards = () =>
-    getDistricts().find((district) => district.Name === selectedDistrict)
-      ?.Wards || [];
+    getDistricts().find((district) => district.Name === selectedDistrict)?.Wards || [];
 
   return (
     <div className="py-10">
@@ -217,9 +209,7 @@ const Checkout = () => {
         <form onSubmit={handleSubmit(onSubmit)} className="w-full">
           <div className="flex justify-between gap-20 max-md:flex-col max-md:w-full">
             <div className="w-[55%] mt-6 max-md:w-full">
-              <h3 className="text-text font-semibold leading-normal mb-2">
-                Thông tin giao hàng
-              </h3>
+              <h3 className="text-text font-semibold leading-normal mb-2">Thông tin giao hàng</h3>
               <div className="flex flex-col gap-6">
                 {/* Thông tin cá nhân */}
                 <div>
@@ -230,9 +220,7 @@ const Checkout = () => {
                     type="text"
                     placeholder="Nhập họ tên"
                   />
-                  {errors.name && (
-                    <div className="errform">{errors.name.message}</div>
-                  )}
+                  {errors.name && <div className="errform">{errors.name.message}</div>}
                 </div>
                 <div>
                   <input
@@ -248,9 +236,7 @@ const Checkout = () => {
                     type="text"
                     placeholder="Nhập email"
                   />
-                  {errors.email && (
-                    <div className="errform">{errors.email.message}</div>
-                  )}
+                  {errors.email && <div className="errform">{errors.email.message}</div>}
                 </div>
                 <div>
                   <input
@@ -262,9 +248,7 @@ const Checkout = () => {
                     type="text"
                     placeholder="Nhập số điện thoại"
                   />
-                  {errors.phone && (
-                    <div className="errform">{errors.phone.message}</div>
-                  )}
+                  {errors.phone && <div className="errform">{errors.phone.message}</div>}
                 </div>
                 <div>
                   <input
@@ -276,9 +260,7 @@ const Checkout = () => {
                     type="text"
                     placeholder="Nhập địa chỉ"
                   />
-                  {errors.address && (
-                    <div className="errform">{errors.address.message}</div>
-                  )}
+                  {errors.address && <div className="errform">{errors.address.message}</div>}
                 </div>
 
                 {/* Dropdown cho địa chỉ */}
@@ -289,8 +271,7 @@ const Checkout = () => {
                   <select
                     value={selectedCity}
                     onChange={handleCityChange}
-                    className="input input-bordered w-full"
-                  >
+                    className="input input-bordered w-full">
                     <option value="">-- Chọn Thành Phố --</option>
                     {cities.map((city) => (
                       <option key={city} value={city}>
@@ -306,8 +287,7 @@ const Checkout = () => {
                     <select
                       value={selectedDistrict}
                       onChange={handleDistrictChange}
-                      className="input input-bordered w-full"
-                    >
+                      className="input input-bordered w-full">
                       <option value="">-- Chọn Quận Huyện --</option>
                       {getDistricts().map((district) => (
                         <option key={district.Id} value={district.Name}>
@@ -324,8 +304,7 @@ const Checkout = () => {
                     <select
                       value={selectedWard}
                       onChange={(e) => setSelectedWard(e.target.value)}
-                      className="input input-bordered w-full"
-                    >
+                      className="input input-bordered w-full">
                       <option value="">-- Chọn Phường Xã --</option>
                       {getWards().map((ward) => (
                         <option key={ward.Id} value={ward.Name}>
@@ -353,9 +332,7 @@ const Checkout = () => {
                       />
                       <div className="checkbox-box"></div>
                     </label>
-                    <div className="">
-                      Giao hàng tiêu chuẩn (từ 3 đến 5 ngày)
-                    </div>
+                    <div className="">Giao hàng tiêu chuẩn (từ 3 đến 5 ngày)</div>
                   </div>
                   <div className="ml-10">30.000đ</div>
                 </div>
@@ -449,9 +426,7 @@ const Checkout = () => {
                 </div>
                 <div className="pb-7 border-b">
                   <div className="flex justify-between my-5">
-                    <span className="text-text font-normal leading-normal">
-                      Tạm tính:
-                    </span>
+                    <span className="text-text font-normal leading-normal">Tạm tính:</span>
                     <span className="text-text font-normal leading-normal">
                       {total.toLocaleString("vi-VN", {
                         style: "currency",
@@ -473,10 +448,7 @@ const Checkout = () => {
                 <div className="flex justify-between text-text font-normal leading-normal mt-10">
                   <span>Tổng cộng:</span>
                   <span className="text-mainDark font-semibold leading-normal">
-                    {(
-                      (total + shippingFee) - discount
-                    ).toLocaleString("vi-VN")}
-                    đ
+                    {(total + shippingFee - discount).toLocaleString("vi-VN")}đ
                   </span>
                 </div>
               </div>
@@ -489,8 +461,7 @@ const Checkout = () => {
                 <div className="w-1/2">
                   <Button
                     className="w-full rounded-[5px] max-md:text-sm max-md:py-2 max-md:px-5"
-                    type="submit"
-                  >
+                    type="submit">
                     Đặt hàng
                   </Button>
                 </div>

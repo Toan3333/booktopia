@@ -1,18 +1,18 @@
 import React from "react";
 import PageTitle from "../../components/PageTitle/PageTitle";
 import Button from "../../components/Button/Button";
-import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as Yup from 'yup';
-import axios from 'axios';
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as Yup from "yup";
+import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const Contact = () => {
   const validationSchema = Yup.object().shape({
-    name: Yup.string().required('Vui lòng nhập họ và tên'),
-    email: Yup.string().email('Email không hợp lệ').required('Vui lòng nhập email'),
-    message: Yup.string().required('Vui lòng nhập lời nhắn'),
+    name: Yup.string().required("Vui lòng nhập họ và tên"),
+    email: Yup.string().email("Email không hợp lệ").required("Vui lòng nhập email"),
+    message: Yup.string().required("Vui lòng nhập lời nhắn"),
   });
 
   const {
@@ -26,11 +26,11 @@ const Contact = () => {
 
   const onSubmit = async (data) => {
     try {
-      await axios.post('http://localhost:3000/contact/api/contact', data);
-      toast.success('Gửi tin nhắn thành công!');
+      await axios.post("http://localhost:3000/contact/api/contact", data);
+      toast.success("Gửi tin nhắn thành công!");
       reset();
     } catch (error) {
-      toast.error('Có lỗi xảy ra, vui lòng thử lại.');
+      toast.error("Có lỗi xảy ra, vui lòng thử lại.");
     }
   };
 
@@ -49,7 +49,7 @@ const Contact = () => {
               <div className="w-full">
                 <input
                   type="text"
-                  {...register('name')}
+                  {...register("name")}
                   placeholder="Họ và tên"
                   className="input input-bordered w-full rounded-[5px]"
                 />
@@ -58,7 +58,7 @@ const Contact = () => {
               <div className="w-full">
                 <input
                   type="email"
-                  {...register('email')}
+                  {...register("email")}
                   placeholder="Email"
                   className="input input-bordered w-full rounded-[5px]"
                 />
@@ -66,17 +66,14 @@ const Contact = () => {
               </div>
               <div className="w-full">
                 <textarea
-                  {...register('message')}
+                  {...register("message")}
                   className="textarea rounded-[5px] w-full textarea-bordered h-[120px]"
-                  placeholder="Để lại lời nhắn cho chúng tôi"
-                ></textarea>
+                  placeholder="Để lại lời nhắn cho chúng tôi"></textarea>
                 <p className="text-red text-[14px] mt-1 ">{errors.message?.message}</p>
               </div>
-              <di className="w-full">
-                <Button className="rounded-[5px] w-full">
-                  Gửi
-                </Button>
-              </di>
+              <div className="w-full">
+                <Button className="rounded-[5px] w-full">Gửi</Button>
+              </div>
             </form>
           </div>
         </div>

@@ -27,7 +27,7 @@ router.get("/product/:productId", async (req, res) => {
 });
 
 // Thêm bình luận mới
-router.post("/", [authen([1])], async (req, res) => {
+router.post("/", async (req, res) => {
   try {
     const body = req.body;
     const result = await commentController.insertComment(body);
@@ -39,7 +39,7 @@ router.post("/", [authen([1])], async (req, res) => {
 });
 
 // Cập nhật bình luận theo id
-router.put("/:id", [authen([1])], async (req, res) => {
+router.put("/:id", async (req, res) => {
   try {
     const { id } = req.params;
     const body = req.body;
@@ -64,7 +64,7 @@ router.get("/:id", async (req, res) => {
 });
 
 // Xóa bình luận theo id
-router.delete("/:id", [authen([1])], async (req, res) => {
+router.delete("/:id", async (req, res) => {
   try {
     const { id } = req.params;
     const result = await commentController.deleteComment(id);
