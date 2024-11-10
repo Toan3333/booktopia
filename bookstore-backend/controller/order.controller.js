@@ -42,6 +42,7 @@ async function create(req, res) {
       total,
       listProducts,
       userId,
+      paymentStatus
     } = req.body;
 
     const dateObject = new Date();
@@ -65,6 +66,7 @@ async function create(req, res) {
       total,
       listProducts,
       userId,
+      paymentStatus
     });
 
     const result = await newOrder.save();

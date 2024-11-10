@@ -35,8 +35,22 @@ const orderSchema = new Schema({
     },
   ],
   updatedAt: { type: Date, default: Date.now },
-  userId: { type: ObjectId, ref: 'users', required: false },
-  status: { type: String, enum: ['Chờ xác nhận', 'Đang xử lý', 'Đang vận chuyển', 'Giao thành công', 'Đã hủy'], default: 'Chờ xác nhận' },
+  userId: { type: ObjectId, ref: "users", required: false },
+  paymentStatus: {
+    type: String,
+    enum: ["Đã thanh toán", "Chưa thanh toán"],
+  },
+  status: {
+    type: String,
+    enum: [
+      "Chờ xác nhận",
+      "Đang xử lý",
+      "Đang vận chuyển",
+      "Giao thành công",
+      "Đã hủy",
+    ],
+    default: "Chờ xác nhận",
+  },
 });
 
 module.exports = mongoose.models.order || mongoose.model("orders", orderSchema);

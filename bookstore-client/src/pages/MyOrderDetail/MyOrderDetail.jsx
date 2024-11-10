@@ -150,11 +150,14 @@ const MyOrderDetail = () => {
                     <td>
                       <div style={{ display: "flex" }}>
                         <del>{order.price1}đ</del>
+
                         <div style={{ fontSize: "16px", marginLeft: "10px" }}>
                           {order.price2}đ
                         </div>
                       </div>
+                      
                     </td>
+                         <td>{order.paymentStatus}</td>
                   </tr>
                 ))}
               </tbody>

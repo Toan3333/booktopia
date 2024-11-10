@@ -10,6 +10,9 @@ import axios from "axios";
 import { clearCart } from "../../redux/slices/cartslide";
 import Swal from "sweetalert2";
 import "./Checkout.css";
+import Paypal from "../../components/Paypal/Paypal";
+import { current } from "@reduxjs/toolkit";
+
 const Checkout = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -17,24 +20,53 @@ const Checkout = () => {
     register,
     handleSubmit,
     setValue,
+    getValues,
     reset,
     formState: { errors },
   } = useForm();
   const listProducts = useSelector((state) => state.cart?.items) || [];
   const total = useMemo(
-    () => listProducts.reduce((total, item) => total + item.price2 * item.quantity, 0),
+    () =>
+      listProducts.reduce(
+        (total, item) => total + item.price2 * item.quantity,
+        0
+      ),
     [listProducts]
   );
+  const address = getValues("address");
 
   const [data, setData] = useState([]);
   const [cities, setCities] = useState([]);
   const [selectedCity, setSelectedCity] = useState("");
   const [selectedDistrict, setSelectedDistrict] = useState("");
   const [selectedWard, setSelectedWard] = useState("");
-  const [voucherCode, setVoucherCode] = useState("");
-  const [discount, setDiscount] = useState(0);
-  const shippingFee = 30000;
-
+  const [selectedOption, setSelectedOption] = useState(null);
+  const [paymentStatus, setPaymentStatus] = useState("Chưa thanh toán");
+  const handleCheckboxChange = (option) => {
+    setSelectedOption((prev) => (prev === option ? null : option));
+    const checkbox = document.getElementById(option);
+    if (option === "tructiep") {
+      setPaymentStatus("Chưa thanh toán");
+    } else if (option === "paypal") {
+      setPaymentStatus("");
+    }
+    if (checkbox) {
+      const isClicked = checkbox.dataset.clicked;
+      if (!isClicked) {
+        checkbox.dataset.clicked = "true";
+        checkbox.click();
+        setTimeout(() => {
+          checkbox.click();
+        }, 20);
+        setTimeout(() => {
+          checkbox.click();
+        }, 20);
+      }
+    }
+  };
+  const handlePaymentComplete = (status) => {
+    setPaymentStatus(status);
+  };
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -60,9 +92,31 @@ const Checkout = () => {
       setValue("address", userData.user.address);
     }
   }, [setValue]);
-
+  // console.log((total + 30000).toLocaleString("vi-VN", {
+  //   style: "currency",
+  //   currency: "VND",
+  // }));
   const onSubmit = async (data) => {
     try {
+      if (!selectedOption) {
+        Swal.fire({
+          title: "Chưa chọn phương thức thanh toán!",
+          text: "Vui lòng chọn phương thức thanh toán trước khi tiếp tục.",
+          icon: "warning",
+        });
+        return;  // Dừng lại nếu chưa chọn phương thức thanh toán
+      }
+
+      if (selectedOption === "paypal" && paymentStatus !== "Đã thanh toán") {
+        Swal.fire({
+          title: "Thanh toán chưa thành công!",
+          text: "Vui lòng thanh toán qua PayPal trước khi đặt hàng.",
+          icon: "warning",
+        });
+        return;
+      }
+      if (selectedOption === "tructiep") {
+      }
       const user = Cookies.get("user");
       let userId = null;
       if (user) {
@@ -80,6 +134,7 @@ const Checkout = () => {
           total,
           userId,
           address: `${data.address}, ${selectedWard}, ${selectedDistrict}, ${selectedCity}`,
+          paymentStatus,
         }),
       });
 
@@ -123,7 +178,8 @@ const Checkout = () => {
         Swal.fire({
           position: "center",
           icon: "success",
-          title: "Thanh toán thành công! Bạn có thể theo dõi đơn hàng ở trang quản lý đơn hàng.",
+          title:
+            "Thanh toán thành công! Bạn có thể theo dõi đơn hàng ở trang quản lý đơn hàng.",
           showConfirmButton: false,
           timer: 3000,
           customClass: {
@@ -140,45 +196,6 @@ const Checkout = () => {
     }
   };
 
-  const applyVoucher = async (voucherCode) => {
-    debugger;
-    try {
-      const response = await axios.post(`${URL_API}/vouchers/apply`, {
-        code: voucherCode,
-        orderValue: total + shippingFee,
-      });
-
-      const res = response.data.data;
-      setDiscount(res.voucher.discountValue);
-
-      return Swal.fire({
-        icon: "success",
-        title: "Áp dụng voucher thành công",
-      });
-    } catch (error) {
-      console.error("Error applying voucher:", error);
-      Swal.fire({
-        icon: "error",
-        title: "Không thành công",
-        text: error.message,
-      });
-      return 0; // Nếu có lỗi, trả về 0
-    }
-  };
-
-  const handleApplyVoucher = async () => {
-    debugger;
-    const discount = await applyVoucher(voucherCode);
-    if (discount > 0) {
-      setDiscount(discount);
-      Swal.fire({
-        icon: "success",
-        title: "Áp dụng voucher thành công!",
-        text: `Bạn đã nhận được giảm giá ${discount}%`,
-      });
-    }
-  };
-
   const handleCityChange = (e) => {
     setSelectedCity(e.target.value);
     setSelectedDistrict("");
@@ -190,9 +207,11 @@ const Checkout = () => {
     setSelectedWard("");
   };
 
-  const getDistricts = () => data.find((city) => city.Name === selectedCity)?.Districts || [];
+  const getDistricts = () =>
+    data.find((city) => city.Name === selectedCity)?.Districts || [];
   const getWards = () =>
-    getDistricts().find((district) => district.Name === selectedDistrict)?.Wards || [];
+    getDistricts().find((district) => district.Name === selectedDistrict)
+      ?.Wards || [];
 
   return (
     <div className="py-10">
@@ -209,7 +228,9 @@ const Checkout = () => {
         <form onSubmit={handleSubmit(onSubmit)} className="w-full">
           <div className="flex justify-between gap-20 max-md:flex-col max-md:w-full">
             <div className="w-[55%] mt-6 max-md:w-full">
-              <h3 className="text-text font-semibold leading-normal mb-2">Thông tin giao hàng</h3>
+              <h3 className="text-text font-semibold leading-normal mb-2">
+                Thông tin giao hàng
+              </h3>
               <div className="flex flex-col gap-6">
                 {/* Thông tin cá nhân */}
                 <div>
@@ -220,7 +241,9 @@ const Checkout = () => {
                     type="text"
                     placeholder="Nhập họ tên"
                   />
-                  {errors.name && <div className="errform">{errors.name.message}</div>}
+                  {errors.name && (
+                    <div className="errform">{errors.name.message}</div>
+                  )}
                 </div>
                 <div>
                   <input
@@ -236,7 +259,9 @@ const Checkout = () => {
                     type="text"
                     placeholder="Nhập email"
                   />
-                  {errors.email && <div className="errform">{errors.email.message}</div>}
+                  {errors.email && (
+                    <div className="errform">{errors.email.message}</div>
+                  )}
                 </div>
                 <div>
                   <input
@@ -248,7 +273,9 @@ const Checkout = () => {
                     type="text"
                     placeholder="Nhập số điện thoại"
                   />
-                  {errors.phone && <div className="errform">{errors.phone.message}</div>}
+                  {errors.phone && (
+                    <div className="errform">{errors.phone.message}</div>
+                  )}
                 </div>
                 <div>
                   <input
@@ -260,7 +287,9 @@ const Checkout = () => {
                     type="text"
                     placeholder="Nhập địa chỉ"
                   />
-                  {errors.address && <div className="errform">{errors.address.message}</div>}
+                  {errors.address && (
+                    <div className="errform">{errors.address.message}</div>
+                  )}
                 </div>
 
                 {/* Dropdown cho địa chỉ */}
@@ -271,7 +300,8 @@ const Checkout = () => {
                   <select
                     value={selectedCity}
                     onChange={handleCityChange}
-                    className="input input-bordered w-full">
+                    className="input input-bordered w-full"
+                  >
                     <option value="">-- Chọn Thành Phố --</option>
                     {cities.map((city) => (
                       <option key={city} value={city}>
@@ -287,7 +317,8 @@ const Checkout = () => {
                     <select
                       value={selectedDistrict}
                       onChange={handleDistrictChange}
-                      className="input input-bordered w-full">
+                      className="input input-bordered w-full"
+                    >
                       <option value="">-- Chọn Quận Huyện --</option>
                       {getDistricts().map((district) => (
                         <option key={district.Id} value={district.Name}>
@@ -304,7 +335,8 @@ const Checkout = () => {
                     <select
                       value={selectedWard}
                       onChange={(e) => setSelectedWard(e.target.value)}
-                      className="input input-bordered w-full">
+                      className="input input-bordered w-full"
+                    >
                       <option value="">-- Chọn Phường Xã --</option>
                       {getWards().map((ward) => (
                         <option key={ward.Id} value={ward.Name}>
@@ -332,7 +364,9 @@ const Checkout = () => {
                       />
                       <div className="checkbox-box"></div>
                     </label>
-                    <div className="">Giao hàng tiêu chuẩn (từ 3 đến 5 ngày)</div>
+                    <div className="">
+                      Giao hàng tiêu chuẩn (từ 3 đến 5 ngày)
+                    </div>
                   </div>
                   <div className="ml-10">30.000đ</div>
                 </div>
@@ -352,23 +386,39 @@ const Checkout = () => {
                           name="tructiep"
                           id="tructiep"
                           className="checkbox-input"
+                          checked={selectedOption === "tructiep"}
+                          onChange={() => handleCheckboxChange("tructiep")}
                         />
                         <div className="checkbox-box"></div>
                       </label>
                       <div className="">Thanh toán trực tiếp khi nhận hàng</div>
                     </div>
                     <div className="flex items-center gap-3">
-                      <label htmlFor="tructiep" className="checkbox-style">
+                      <label htmlFor="paypal" className="checkbox-style">
                         <input
                           type="checkbox"
-                          name="tructiep"
-                          id="tructiep"
+                          name="paypal"
+                          id="paypal"
                           className="checkbox-input"
+                          checked={selectedOption === "paypal"}
+                          onChange={() => handleCheckboxChange("paypal")}
                         />
                         <div className="checkbox-box"></div>
                       </label>
-                      <div className="">Thanh toán bằng</div>
-                    </div>
+                      <div className="">Thanh toán bằng Paypal</div>
+                    </div>{" "}
+                    {selectedOption === "paypal" && (
+                      <Paypal
+                        payload={{
+                          products: listProducts,
+                          total: total + 30000,
+                          address: address,
+                        }}
+                        currency="USD"
+                        amount={Number(total) + 30000}
+                        onPaymentComplete={handlePaymentComplete}
+                      />
+                    )}
                   </div>
                 </div>
               </div>
@@ -412,21 +462,26 @@ const Checkout = () => {
                 ))}
                 <div className="border-t">
                   <div className="flex items-center justify-between gap-3 mt-7 pb-7 border-b">
-                    <input
-                      type="text"
-                      placeholder="Mã giảm giá"
-                      className="input input-bordered w-full"
-                      value={voucherCode}
-                      onChange={(e) => setVoucherCode(e.target.value)}
-                    />
-                    <Button type="button" onClick={handleApplyVoucher}>
-                      Áp dụng Voucher
-                    </Button>
+                    <div className="w-[70%]">
+                      <input
+                        type="text"
+                        placeholder="Mã giảm giá"
+                        className="input input-bordered w-full"
+                      />
+                    </div>
+                    <div className="w-[30%]">
+                      <Button
+                        children="Sử dụng"
+                        className="rounded-[5px] px-5 py-4 w-full max-md:px-2 max-md:py-3 max-md:text-sm"
+                      />
+                    </div>
                   </div>
                 </div>
                 <div className="pb-7 border-b">
                   <div className="flex justify-between my-5">
-                    <span className="text-text font-normal leading-normal">Tạm tính:</span>
+                    <span className="text-text font-normal leading-normal">
+                      Tạm tính:
+                    </span>
                     <span className="text-text font-normal leading-normal">
                       {total.toLocaleString("vi-VN", {
                         style: "currency",
@@ -436,22 +491,20 @@ const Checkout = () => {
                   </div>
                   <div className="flex justify-between text-text font-normal leading-normal">
                     <span>Phí vận chuyển:</span>
-                    <span>{shippingFee}đ</span>
+                    <span>30.000đ</span>
                   </div>
                 </div>
-                {discount > 0 && (
-                  <div className="flex items-center justify-between gap-3">
-                    <p className="text-sm text-gray-500">Giảm giá</p>
-                    <p className="font-semibold">{discount} đ</p>
-                  </div>
-                )}
                 <div className="flex justify-between text-text font-normal leading-normal mt-10">
                   <span>Tổng cộng:</span>
                   <span className="text-mainDark font-semibold leading-normal">
-                    {(total + shippingFee - discount).toLocaleString("vi-VN")}đ
+                    {(total + 30000).toLocaleString("vi-VN", {
+                      style: "currency",
+                      currency: "VND",
+                    })}
                   </span>
                 </div>
               </div>
+
               <div className="flex items-center mt-7">
                 <div className="w-1/2">
                   <Button className="rounded-[5px] bg-white button-add max-md:py-2 max-md:px-5 max-md:text-sm">
@@ -461,7 +514,8 @@ const Checkout = () => {
                 <div className="w-1/2">
                   <Button
                     className="w-full rounded-[5px] max-md:text-sm max-md:py-2 max-md:px-5"
-                    type="submit">
+                    type="submit"
+                  >
                     Đặt hàng
                   </Button>
                 </div>
