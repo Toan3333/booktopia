@@ -54,6 +54,7 @@ const SignInPage = () => {
       const result = await signInWithPopup(auth, googleProvider);
 
       const user = result.user; // Lấy thông tin người dùng từ Firebase
+
       const userData = {
         uid: user.uid,
         email: user.email,

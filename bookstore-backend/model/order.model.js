@@ -35,8 +35,18 @@ const orderSchema = new Schema({
     },
   ],
   updatedAt: { type: Date, default: Date.now },
-  userId: { type: ObjectId, ref: 'users', required: false },
-  status: { type: String, enum: ['Chờ xác nhận', 'Đang xử lý', 'Đang vận chuyển', 'Giao thành công', 'Đã hủy'], default: 'Chờ xác nhận' },
+  userId: {
+    type: Schema.Types.Mixed, // Chấp nhận cả ObjectId và String (Firebase UID)
+    ref: "users",
+    required: false,
+  },
+
+  firebaseUid: { type: String, required: false }, // Để lưu Firebase UID nếu đăng nhập qua Firebase
+  status: {
+    type: String,
+    enum: ["Chờ xác nhận", "Đang xử lý", "Đang vận chuyển", "Giao thành công", "Đã hủy"],
+    default: "Chờ xác nhận",
+  },
 });
 
 module.exports = mongoose.models.order || mongoose.model("orders", orderSchema);

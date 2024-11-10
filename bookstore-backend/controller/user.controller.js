@@ -5,8 +5,8 @@ module.exports = {
   gettAll,
   updateById,
   register,
-  login,
   getUserById,
+  login,
   remove,
 };
 

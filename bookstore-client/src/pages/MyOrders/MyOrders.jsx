@@ -1,11 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  FaCalendar,
-  FaHeart,
-  FaRegEdit,
-  FaUser,
-  FaTrashAlt,
-} from "react-icons/fa";
+import { FaCalendar, FaHeart, FaRegEdit, FaUser, FaTrashAlt } from "react-icons/fa";
 import { FiLogOut } from "react-icons/fi";
 import { Link, NavLink } from "react-router-dom";
 import PageTitle from "../../components/PageTitle/PageTitle";
@@ -59,11 +53,32 @@ const MyOrders = () => {
   ];
 
   useEffect(() => {
+    // Lấy thông tin người dùng từ cookie
     const userData = Cookies.get("user");
+    console.log("User Data from Cookies:", userData); // Kiểm tra dữ liệu từ cookie
+
     if (userData) {
-      const parsedUser = JSON.parse(userData);
-      setUser(parsedUser.user);
-      fetchOrders(parsedUser.user._id);
+      try {
+        const parsedUser = JSON.parse(userData); // Chuyển đổi từ JSON
+        console.log("Parsed User:", parsedUser); // Kiểm tra dữ liệu người dùng sau khi phân tích
+
+        // Kiểm tra nếu đối tượng có UID hoặc _ID
+        if (parsedUser?.uid) {
+          console.log("Found UID:", parsedUser.uid); // Kiểm tra UID
+          fetchOrders(parsedUser.uid); // Gọi API với UID
+          setUser(parsedUser); // Cập nhật thông tin người dùng vào state
+        } else if (parsedUser?.user?._id) {
+          console.log("Found _ID:", parsedUser.user._id); // Kiểm tra _ID trong user
+          fetchOrders(parsedUser.user._id); // Gọi API với _ID từ đối tượng con 'user'
+          setUser(parsedUser.user); // Cập nhật thông tin người dùng vào state
+        } else {
+          console.error("Không tìm thấy UID hoặc _ID trong cookie");
+        }
+      } catch (error) {
+        console.error("Lỗi khi phân tích dữ liệu từ cookie:", error);
+      }
+    } else {
+      console.error("Không tìm thấy cookie 'user'");
     }
   }, []);
 
@@ -104,8 +119,7 @@ const MyOrders = () => {
     } catch (error) {
       Swal.fire({
         title: "Lỗi!",
-        text:
-          error.response?.data?.message || "Có lỗi xảy ra khi xóa đơn hàng.",
+        text: error.response?.data?.message || "Có lỗi xảy ra khi xóa đơn hàng.",
         icon: "error",
       });
     }
@@ -120,9 +134,7 @@ const MyOrders = () => {
             <div className="flex items-center gap-2">
               <img
                 src={
-                  user.image
-                    ? `${URL_API}/images/${user.image}`
-                    : "https://via.placeholder.com/50"
+                  user.image ? `${URL_API}/images/${user.image}` : "https://via.placeholder.com/50"
                 }
                 className="w-[50px] h-[50px] rounded-full"
                 alt="Avatar"
@@ -145,8 +157,7 @@ const MyOrders = () => {
                       isActive
                         ? "text-mainDark flex items-center gap-2 font-normal leading-normal"
                         : "flex items-center hover:text-mainDark gap-2 font-normal leading-normal"
-                    }
-                  >
+                    }>
                     {item.icon}
                     {item.name}
                   </NavLink>
@@ -155,10 +166,7 @@ const MyOrders = () => {
             </ul>
           </div>
           <div className="w-[90%]">
-            <PageTitle
-              title="Đơn hàng của tôi"
-              className="text-mainDark mb-2"
-            ></PageTitle>
+            <PageTitle title="Đơn hàng của tôi" className="text-mainDark mb-2"></PageTitle>
             <div className="text-grayText leading-normal font-normal mb-5">
               Theo dõi thông tin đơn hàng của bạn
             </div>
@@ -171,8 +179,7 @@ const MyOrders = () => {
                         onClick={() => handleStatusChange(item.id)}
                         className={`${
                           selectedStatus === item.id ? "font-bold" : ""
-                        } cursor-pointer`} 
-                      >
+                        } cursor-pointer`}>
                         {item.name}
                       </a>
                     </li>
@@ -207,20 +214,26 @@ const MyOrders = () => {
                 </tr> */}
                 {filteredOrders.map((order, index) => (
                   <tr key={order._id}>
-                    <td>{index + 1}</td>
-                    <td> <Link to={`/order-detail/${order._id}`}>{order.orderId}</Link></td>
+                    <td className="">{index + 1}</td>
+                    <td>
+                      {" "}
+                      <Link to={`/order-detail/${order._id}`}>{order.orderId}</Link>
+                    </td>
                     <td>{format(new Date(order.date), "dd/MM/yyyy")}</td>
                     <td>{order.address}</td>
                     <td>{order.phone}</td>
-                    <td>{order.total} đ</td>
+                    <td>
+                      {Number(order.total).toLocaleString("vi-VN", {
+                        style: "currency",
+                        currency: "VND",
+                      })}
+                    </td>
                     <td>{order.status}</td>
                     <td>
-                      <button onClick={() => handleDelete(order._id)}>
-                        Hủy đơn
-                      </button>
+                      <button onClick={() => handleDelete(order._id)}>Hủy đơn</button>
                     </td>
                   </tr>
-                ))} 
+                ))}
               </tbody>
             </table>
           </div>

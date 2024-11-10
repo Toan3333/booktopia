@@ -10,6 +10,7 @@ import axios from "axios";
 import { clearCart } from "../../redux/slices/cartslide";
 import Swal from "sweetalert2";
 import "./Checkout.css";
+
 const Checkout = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -52,12 +53,24 @@ const Checkout = () => {
 
   useEffect(() => {
     const user = Cookies.get("user");
+
     if (user) {
       const userData = JSON.parse(user);
-      setValue("name", userData.user.name);
-      setValue("email", userData.user.email);
-      setValue("phone", userData.user.phone);
-      setValue("address", userData.user.address);
+
+      // Kiểm tra xem người dùng đăng nhập qua Google (Firebase) hay đăng nhập thông qua hệ thống truyền thống
+      if (userData.uid) {
+        // Nếu có trường 'uid', tức là người dùng đăng nhập qua Firebase (Google)
+        setValue("name", userData.displayName); // Gán tên từ Firebase
+        setValue("email", userData.email); // Gán email từ Firebase
+        setValue("phone", ""); // Bạn có thể để trống hoặc yêu cầu người dùng nhập lại
+        setValue("address", ""); // Bạn có thể để trống hoặc yêu cầu người dùng nhập lại
+      } else {
+        // Nếu không có trường 'uid', tức là người dùng đăng nhập thông qua hệ thống truyền thống (email/password)
+        setValue("name", userData.user.name);
+        setValue("email", userData.user.email);
+        setValue("phone", userData.user.phone);
+        setValue("address", userData.user.address);
+      }
     }
   }, [setValue]);
 
@@ -65,10 +78,20 @@ const Checkout = () => {
     try {
       const user = Cookies.get("user");
       let userId = null;
+
       if (user) {
         const userData = JSON.parse(user);
-        userId = userData.user._id;
+
+        // Kiểm tra xem người dùng đăng nhập qua Firebase (Google) hay hệ thống truyền thống
+        if (userData.uid) {
+          // Nếu có trường 'uid', tức là người dùng đăng nhập qua Firebase (Google)
+          userId = userData.uid; // Sử dụng 'uid' cho người dùng Firebase
+        } else {
+          // Nếu không có trường 'uid', tức là người dùng đăng nhập thông qua hệ thống truyền thống
+          userId = userData.user._id; // Sử dụng '_id' cho người dùng hệ thống truyền thống
+        }
       }
+
       const response = await fetch(`${URL_API}/orders`, {
         method: "POST",
         headers: {
@@ -87,35 +110,30 @@ const Checkout = () => {
       if (response.ok) {
         console.log("Order created successfully", result);
         await Promise.all(
-          await Promise.all(
-            listProducts.map(async (item) => {
-              const productId = item._id || item.id;
-              const quantity = item.quantity || 1;
-              if (!productId) {
-                console.error(`Không có id:`, item);
-              }
-              try {
-                //kiểm số lượng sản phẩm chung id
-                const hotPromises = Array.from({ length: quantity }).map(() =>
-                  fetch(`${URL_API}/products/${productId}/hot`, {
-                    method: "PUT",
-                  })
-                );
+          listProducts.map(async (item) => {
+            const productId = item._id || item.id;
+            const quantity = item.quantity || 1;
+            if (!productId) {
+              console.error(`Không có id:`, item);
+            }
+            try {
+              const hotPromises = Array.from({ length: quantity }).map(() =>
+                fetch(`${URL_API}/products/${productId}/hot`, {
+                  method: "PUT",
+                })
+              );
 
-                //giống cái ở trên
-                const salePromises = Array.from({ length: quantity }).map(() =>
-                  fetch(`${URL_API}/products/${productId}/sale`, {
-                    method: "PUT",
-                  })
-                );
+              const salePromises = Array.from({ length: quantity }).map(() =>
+                fetch(`${URL_API}/products/${productId}/sale`, {
+                  method: "PUT",
+                })
+              );
 
-                //chờ gọi api xong
-                await Promise.all([...hotPromises, ...salePromises]);
-              } catch (error) {
-                console.error(`Error processing product ${productId}:`, error);
-              }
-            })
-          )
+              await Promise.all([...hotPromises, ...salePromises]);
+            } catch (error) {
+              console.error(`Error processing product ${productId}:`, error);
+            }
+          })
         );
 
         dispatch(clearCart());
@@ -140,43 +158,38 @@ const Checkout = () => {
     }
   };
 
-  const applyVoucher = async (voucherCode) => {
-    debugger;
+  const applyVoucher = async () => {
     try {
       const response = await axios.post(`${URL_API}/vouchers/apply`, {
         code: voucherCode,
         orderValue: total + shippingFee,
       });
 
-      const res = response.data.data;
-      setDiscount(res.voucher.discountValue);
-
-      return Swal.fire({
-        icon: "success",
-        title: "Áp dụng voucher thành công",
-      });
+      if (response.data.success) {
+        setDiscount(response.data.data.voucher.discountValue);
+        Swal.fire({
+          icon: "success",
+          title: "Áp dụng voucher thành công",
+        });
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Mã giảm giá không hợp lệ",
+        });
+        setDiscount(0); // Reset discount if voucher is invalid
+      }
     } catch (error) {
       console.error("Error applying voucher:", error);
       Swal.fire({
         icon: "error",
         title: "Không thành công",
-        text: error.message,
+        text: "Đã xảy ra lỗi khi áp dụng voucher. Vui lòng thử lại sau.",
       });
-      return 0; // Nếu có lỗi, trả về 0
     }
   };
 
   const handleApplyVoucher = async () => {
-    debugger;
-    const discount = await applyVoucher(voucherCode);
-    if (discount > 0) {
-      setDiscount(discount);
-      Swal.fire({
-        icon: "success",
-        title: "Áp dụng voucher thành công!",
-        text: `Bạn đã nhận được giảm giá ${discount}%`,
-      });
-    }
+    applyVoucher();
   };
 
   const handleCityChange = (e) => {

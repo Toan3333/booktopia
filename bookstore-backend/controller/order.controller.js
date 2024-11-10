@@ -1,5 +1,5 @@
 const orderModel = require("../model/order.model");
-
+const mongoose = require("mongoose");
 module.exports = {
   create,
   getAll,
@@ -32,17 +32,8 @@ async function getPendingOrders() {
 }
 async function create(req, res) {
   try {
-    const {
-      name,
-      phone,
-      address,
-      email,
-      description,
-      date,
-      total,
-      listProducts,
-      userId,
-    } = req.body;
+    const { name, phone, address, email, description, date, total, listProducts, userId } =
+      req.body;
 
     const dateObject = new Date();
     const day = ("0" + dateObject.getDate()).slice(-2);
@@ -94,9 +85,7 @@ async function updateOrderStatus(id, status) {
   const newStatusIndex = validStatuses.indexOf(status);
 
   if (newStatusIndex <= currentStatusIndex) {
-    throw new Error(
-      "Không thể chuyển trạng thái đơn hàng về trạng thái trước đó."
-    );
+    throw new Error("Không thể chuyển trạng thái đơn hàng về trạng thái trước đó.");
   }
 
   // Cập nhật trạng thái và thời gian cập nhật
@@ -152,6 +141,32 @@ async function getOrdersByUserId(userId) {
     throw error;
   }
 }
+
+// async function getOrdersByUserId(userId) {
+//   try {
+//     // Kiểm tra xem userId có phải là Firebase UID hay không
+//     let orders;
+
+//     // Firebase UID thường là một chuỗi dài (24 ký tự hoặc hơn)
+//     // MongoDB ObjectId là một chuỗi 24 ký tự
+//     if (userId.length === 28) {
+//       // Đây là _id MongoDB truyền thống
+//       orders = await orderModel.find({ userId: userId });
+//     } else {
+//       // Đây là Firebase UID (uid từ Google login)
+//       orders = await orderModel.find({ firebaseUid: userId });
+//     }
+
+//     if (!orders || orders.length === 0) {
+//       throw new Error("Không tìm thấy đơn hàng cho người dùng này");
+//     }
+
+//     return orders;
+//   } catch (error) {
+//     console.log("Lỗi khi lấy đơn hàng:", error);
+//     throw error;
+//   }
+// }
 
 async function getOrderById(id) {
   try {

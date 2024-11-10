@@ -15,7 +15,6 @@ const Profile = () => {
     // Xử lý logout, ví dụ xóa cookie và chuyển hướng người dùng
     Cookies.remove("user");
     setUser(null);
-    // Chuyển hướng hoặc cập nhật state để hiển thị UI phù hợp
     navigate("/sign-in");
     window.location.reload();
   };
@@ -45,8 +44,11 @@ const Profile = () => {
   const [image, setImage] = useState(null);
 
   const userCookie = JSON.parse(Cookies.get("user"));
-  const userUid = userCookie?.user?.uid; // UID của Firebase
-  const userId = userCookie?.user?._id; // ID của hệ thống khác (nếu có)
+  const userUid = userCookie?.uid; // UID từ Firebase (nếu có)
+  const userId = userCookie?.user?._id; // ID của hệ thống (nếu có)
+
+  console.log("userUid:", userUid);
+  console.log("userId:", userId);
 
   const navigate = useNavigate();
   const { register, handleSubmit, setValue, watch, getValues } = useForm({
@@ -72,6 +74,10 @@ const Profile = () => {
     }
   }, []);
 
+  const userData = Cookies.get("user");
+  const parsedUser = JSON.parse(userData);
+  console.log(parsedUser.email);
+
   // Lấy dữ liệu người dùng từ cookie
   useEffect(() => {
     const userData = Cookies.get("user");
@@ -86,17 +92,16 @@ const Profile = () => {
     const getUser = async () => {
       try {
         let res;
-        if (userUid) {
-          // Nếu có uid, lấy thông tin người dùng bằng UID từ Firebase
-          res = await axios.get(`${URL_API}/users/${userUid}`);
-        } else if (userId) {
-          // Nếu có _id, lấy thông tin người dùng bằng _id từ hệ thống của bạn
+
+        // Kiểm tra nếu có UID hoặc _ID và gọi API tương ứng
+        if (userId) {
+          // Nếu có _id, lấy thông tin người dùng từ hệ thống của bạn
           res = await axios.get(`${URL_API}/users/${userId}`);
         }
 
         if (res?.status === 200) {
           const data = res.data;
-          setValue("name", data.name);
+          setValue("name", data.name || user.displayName);
           setValue("username", data.username);
           setValue("date", data.date);
           setValue("email", data.email);
@@ -104,6 +109,8 @@ const Profile = () => {
           setValue("address", data.address);
           // Hiển thị hình ảnh hiện tại
           setImage(data.image ? `${URL_API}/images/${data.image}` : defaultAvatar);
+        } else {
+          console.error("Không thể lấy dữ liệu người dùng");
         }
       } catch (error) {
         console.error("Error fetching user details:", error);
@@ -112,6 +119,23 @@ const Profile = () => {
 
     getUser();
   }, [userUid, userId, setValue]);
+
+  // lay du lieu tu cookie show len
+  useEffect(() => {
+    const user = Cookies.get("user");
+    if (user) {
+      const userData = JSON.parse(user);
+
+      // Kiểm tra xem người dùng đăng nhập qua Google (Firebase) hay đăng nhập thông qua hệ thống truyền thống
+      if (userData.uid) {
+        // Nếu có trường 'uid', tức là người dùng đăng nhập qua Firebase (Google)
+        setValue("name", userData.displayName); // Gán tên từ Firebase
+        setValue("email", userData.email); // Gán email từ Firebase
+        setValue("phone", ""); // Bạn có thể để trống hoặc yêu cầu người dùng nhập lại
+        setValue("address", ""); // Bạn có thể để trống hoặc yêu cầu người dùng nhập lại
+      }
+    }
+  }, [setValue]);
 
   const onSubmit = async (data) => {
     try {
@@ -128,14 +152,14 @@ const Profile = () => {
 
       let res;
       if (userUid) {
-        // Nếu có uid, cập nhật thông tin người dùng bằng UID
+        // Nếu có uid, cập nhật thông tin người dùng từ Firebase
         res = await axios.put(`${URL_API}/users/${userUid}`, formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
         });
       } else if (userId) {
-        // Nếu có _id, cập nhật thông tin người dùng bằng _id
+        // Nếu có _id, cập nhật thông tin người dùng từ hệ thống của bạn
         res = await axios.put(`${URL_API}/users/${userId}`, formData, {
           headers: {
             "Content-Type": "multipart/form-data",
@@ -179,8 +203,7 @@ const Profile = () => {
                 alt="Avatar"
               />
               <div>
-                <h3 className="font-semibold">{user?.email || "Chưa có email"}</h3>{" "}
-                {/* Sử dụng optional chaining */}
+                <h3 className="font-semibold">{user?.email || parsedUser.email}</h3>
                 <p className="flex items-center gap-1 text-grayText">
                   <FaRegEdit />
                   Sửa hồ sơ
