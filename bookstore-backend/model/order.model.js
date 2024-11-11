@@ -35,16 +35,20 @@ const orderSchema = new Schema({
     },
   ],
   updatedAt: { type: Date, default: Date.now },
-  userId: {
-    type: Schema.Types.Mixed, // Chấp nhận cả ObjectId và String (Firebase UID)
-    ref: "users",
-    required: false,
+  userId: { type: ObjectId, ref: "users", required: false },
+  paymentStatus: {
+    type: String,
+    enum: ["Đã thanh toán", "Chưa thanh toán"],
   },
-
-  firebaseUid: { type: String, required: false }, // Để lưu Firebase UID nếu đăng nhập qua Firebase
   status: {
     type: String,
-    enum: ["Chờ xác nhận", "Đang xử lý", "Đang vận chuyển", "Giao thành công", "Đã hủy"],
+    enum: [
+      "Chờ xác nhận",
+      "Đang xử lý",
+      "Đang vận chuyển",
+      "Giao thành công",
+      "Đã hủy",
+    ],
     default: "Chờ xác nhận",
   },
 });
