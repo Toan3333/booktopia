@@ -26,7 +26,33 @@ const DetailOrder = () => {
   const { id } = useParams();
   const [order, setOrder] = useState({ listProducts: [] });
   const [collapsed, setCollapsed] = useState(false);
+  const statusOptions = [
+    "Chờ xác nhận",
+    "Đang xử lý",
+    "Đang vận chuyển",
+    "Giao thành công",
+    "Đã hủy",
+  ]; // Danh sách trạng thái
 
+  const handleStatusChange = async (orderId, newStatus) => {
+    try {
+      await axios.put(`${URL_API}/orders/${orderId}/status`, {
+        status: newStatus,
+      });
+      // Cập nhật trực tiếp trạng thái đơn hàng
+      setOrder({ ...order, status: newStatus });
+      Swal.fire({
+        icon: 'success',
+        title: 'Cập nhật thành công!',
+        text: `Trạng thái đơn hàng đã được cập nhật thành:   ${newStatus}`,
+        timer: 2000,
+        showConfirmButton: false,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+ 
+  };
   useEffect(() => {
     const fetchOrderDetails = async () => {
       try {
@@ -216,10 +242,24 @@ const DetailOrder = () => {
                 </div>
                 <div className="w-[48%] flex flex-col gap-2">
                   <label htmlFor="">Trạng thái</label>
+                  <select
+            value={order.status || ""}
+            className="input input-bordered w-full"
+            onChange={(e) => handleStatusChange(order._id, e.target.value)}
+          >
+            {statusOptions.map((status) => (
+              <option key={status} value={status}>
+                {status}
+              </option>
+            ))}
+          </select>
+                </div>
+                <div className="w-[48%] flex flex-col gap-2">
+                  <label htmlFor="">Trạng thái thanh toán</label>
                   <input
                     type="text"
                     placeholder="Type here"
-                    value={order.status || ""}
+                    value={order.paymentStatus || ""}
                     className="input input-bordered w-full"
                     readOnly
                   />
@@ -272,6 +312,7 @@ const DetailOrder = () => {
                         <div className="">
                           Thể loại: {order.category.categoryName}
                         </div>
+                      
                       </div>
                     </td>
                     <td>

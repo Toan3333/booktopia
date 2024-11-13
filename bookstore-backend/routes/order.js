@@ -57,7 +57,7 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-router.delete("/:id", [authen([1])], async (req, res) => {
+router.delete("/:id", async (req, res) => {
   try {
     const { id } = req.params;
 

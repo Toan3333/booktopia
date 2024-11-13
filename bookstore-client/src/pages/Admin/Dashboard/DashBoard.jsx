@@ -436,9 +436,7 @@ const DashBoard = () => {
                 {filteredOrders.map((order, index) => (
                   <tr key={order._id}>
                     <td>{index + 1}</td>
-                    <td>
-                      <Link to={`/admin/manage-order`}>{order.orderId}</Link>
-                    </td>
+                    <td><Link to={`/admin/detail-order/${order._id}`}>{order.orderId}</Link></td>
                     <td>{format(new Date(order.date), "dd/MM/yyyy")}</td>
                     <td>{order.name}</td>
                     <td>{order.address}</td>
