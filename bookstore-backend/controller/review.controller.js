@@ -1,5 +1,4 @@
 const reviewModel = require("../model/review.model");
-const orderController = require("../controller/order.controller");
 const productModel = require("../model/product.model");
 const userModel = require("../model/user.model");
 
@@ -10,7 +9,6 @@ module.exports = {
   getReviewByProduct,
   getReviewById,
   deleteReview,
-  createReview,
 };
 
 // Show tất cả bình luận
@@ -100,28 +98,5 @@ async function getReviewById(id) {
   } catch (error) {
     console.log("Lỗi lấy chi tiết bình luận", error);
     throw error;
-  }
-}
-
-async function createReview(req, res) {
-  const { userId, productId, rating, content } = req.body;
-
-  try {
-    // Kiểm tra trạng thái thanh toán và giao hàng của đơn hàng
-    await orderController.checkOrderPaidAndShipped(userId, productId);
-
-    // Nếu đơn hàng hợp lệ, tạo đánh giá
-    const newReview = new reviewModel({
-      userId,
-      productId,
-      rating,
-      content,
-      day: Date.now(),
-    });
-
-    const savedReview = await newReview.save();
-    res.status(201).json(savedReview);
-  } catch (error) {
-    res.status(400).json({ message: error.message });
   }
 }
