@@ -34,6 +34,7 @@ const orderSchema = new Schema({
       quantity: { type: Number, required: true },
     },
   ],
+
   updatedAt: { type: Date, default: Date.now },
   userId: { type: ObjectId, ref: "users", required: false },
   paymentStatus: {
@@ -42,13 +43,7 @@ const orderSchema = new Schema({
   },
   status: {
     type: String,
-    enum: [
-      "Chờ xác nhận",
-      "Đang xử lý",
-      "Đang vận chuyển",
-      "Giao thành công",
-      "Đã hủy",
-    ],
+    enum: ["Chờ xác nhận", "Đang xử lý", "Đang vận chuyển", "Giao thành công", "Đã hủy"],
     default: "Chờ xác nhận",
   },
 });

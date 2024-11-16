@@ -93,11 +93,11 @@ const ProductList = ({
   );
 
   const settings = {
-    dots: true,
+    // dots: true,
     infinite: true,
     speed: 600,
     slidesToShow: 5,
-    slidesToScroll: 5,
+    slidesToScroll: 1,
     arrows: false,
     autoplay: true,
     autoplaySpeed: 4000,
@@ -136,25 +136,27 @@ const ProductList = ({
         <ul className="custom-dots">{dots}</ul>
       </div>
     ),
-    customPaging: (i) => (
-      <div
-        className="w-3 h-3 rounded-full max-md:w-2 max-md:h-2"
-        style={{
-          backgroundColor:
-            i === Math.floor(sliderRef.current?.innerSlider?.state.currentSlide / 5)
-              ? "#166534"
-              : "#ccc",
-        }}></div>
-    ),
+    // customPaging: (i) => (
+    //   <div
+    //     className="w-3 h-3 rounded-full max-md:w-2 max-md:h-2"
+    //     style={{
+    //       backgroundColor:
+    //         i === Math.floor(sliderRef.current?.innerSlider?.state.currentSlide / 5)
+    //           ? "#166534"
+    //           : "#ccc",
+    //     }}></div>
+    // ),
   };
 
   const customViewSetting = {
-    ...settings,
+    // ...settings,
     slidesToShow: 3,
     dots: false,
-    slidesToScroll: 4,
+    slidesToScroll: 1,
     autoplay: true,
-    autoplaySpeed: 4000,
+    autoplaySpeed: 3000,
+    infinite: true,
+    cssEase: "linear",
   };
 
   return (

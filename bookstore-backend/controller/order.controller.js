@@ -32,8 +32,18 @@ async function getPendingOrders() {
 }
 async function create(req, res) {
   try {
-    const { name, phone, address, email, description, date, total, listProducts, userId,  paymentStatus } =
-      req.body;
+    const {
+      name,
+      phone,
+      address,
+      email,
+      description,
+      date,
+      total,
+      listProducts,
+      userId,
+      paymentStatus,
+    } = req.body;
 
     const dateObject = new Date();
     const day = ("0" + dateObject.getDate()).slice(-2);
@@ -56,7 +66,7 @@ async function create(req, res) {
       total,
       listProducts,
       userId,
-      paymentStatus
+      paymentStatus,
     });
 
     const result = await newOrder.save();
