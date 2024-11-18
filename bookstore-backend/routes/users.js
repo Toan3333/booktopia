@@ -32,7 +32,7 @@ router.post("/login", async (req, res) => {
   }
 });
 
-// Cập nhật user
+// cap nhat
 router.put("/:id", upload.single("image"), async (req, res) => {
   try {
     const { id } = req.params;
@@ -46,9 +46,7 @@ router.put("/:id", upload.single("image"), async (req, res) => {
     return res.status(200).json({ userUpdate });
   } catch (error) {
     console.log("lỗi update user ", error);
-    return res
-      .status(400)
-      .json({ message: error.message || "Lỗi cập nhật user" });
+    return res.status(400).json({ message: error.message || "Lỗi cập nhật user" });
   }
 });
 
@@ -60,9 +58,7 @@ router.get("/:id", async (req, res) => {
     return res.status(200).json(users);
   } catch (error) {
     console.log("Lỗi lấy chi tiết User", error);
-    return res
-      .status(404)
-      .json({ message: error.message || "Không tìm thấy user" });
+    return res.status(404).json({ message: error.message || "Không tìm thấy user" });
   }
 });
 
@@ -89,9 +85,7 @@ router.post("/refresh-token", async (req, res) => {
         );
 
         // Trả về accessToken mới
-        return res
-          .status(200)
-          .json({ user, accessToken: accessToken, refreshToken: refreshToken });
+        return res.status(200).json({ user, accessToken: accessToken, refreshToken: refreshToken });
       }
     });
   } catch (error) {
@@ -107,14 +101,12 @@ router.get("/", async (req, res) => {
     return res.status(200).json(users);
   } catch (error) {
     console.log("Load user không thành công", error);
-    return res
-      .status(500)
-      .json({ message: error.message || "Lỗi khi lấy danh sách users" });
+    return res.status(500).json({ message: error.message || "Lỗi khi lấy danh sách users" });
   }
 });
 
 //routing xóa user
-router.delete("/:id", [authen([1])], async (req, res) => {
+router.delete("/:id", async (req, res) => {
   try {
     const { id } = req.params;
     const userDel = await usersController.remove(id);

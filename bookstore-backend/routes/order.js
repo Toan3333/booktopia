@@ -27,9 +27,7 @@ router.post("/", async (req, res) => {
     return res.status(201).json(result);
   } catch (error) {
     console.log("Tạo đơn hàng không thành công", error);
-    res
-      .status(500)
-      .json({ message: "Lỗi khi tạo đơn hàng", error: error.message });
+    res.status(500).json({ message: "Lỗi khi tạo đơn hàng", error: error.message });
   }
 });
 
@@ -46,7 +44,7 @@ router.put("/:id/status", async (req, res) => {
   }
 });
 
-router.put("/:id", [authen([1])], async (req, res) => {
+router.put("/:id", async (req, res) => {
   try {
     const { id } = req.params;
     const body = req.body;
@@ -59,7 +57,7 @@ router.put("/:id", [authen([1])], async (req, res) => {
   }
 });
 
-router.delete("/:id", [authen([1])], async (req, res) => {
+router.delete("/:id", async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -80,6 +78,7 @@ router.get("/user/:userId", async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 });
+
 router.get("/:id", async (req, res) => {
   try {
     const { id } = req.params;

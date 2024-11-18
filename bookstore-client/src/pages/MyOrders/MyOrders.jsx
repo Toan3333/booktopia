@@ -190,6 +190,7 @@ const MyOrders = () => {
                   <th>Số điện thoại</th>
                   <th>Tổng tiền</th>
                   <th>Trạng thái</th>
+                  <th>Thanh toán</th>
                   <th></th>
                 </tr>
               </thead>
@@ -214,6 +215,7 @@ const MyOrders = () => {
                     <td>{order.phone}</td>
                     <td>{order.total} đ</td>
                     <td>{order.status}</td>
+                    <td>{order.paymentStatus}</td>
                     <td>
                       <button onClick={() => handleDelete(order._id)}>
                         Hủy đơn

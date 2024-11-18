@@ -15,12 +15,13 @@ const Profile = () => {
     // Xử lý logout, ví dụ xóa cookie và chuyển hướng người dùng
     Cookies.remove("user");
     setUser(null);
-    // Chuyển hướng hoặc cập nhật state để hiển thị UI phù hợp
     navigate("/sign-in");
     window.location.reload();
   };
+
   const defaultAvatar =
     "https://images.unsplash.com/photo-1686170287433-c95faf6d3608?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1wYXJ0bmVy";
+
   const profileMenuList = [
     { id: 1, name: "Tài khoản của tôi", icon: <FaUser />, link: "/profile" },
     {
@@ -41,12 +42,23 @@ const Profile = () => {
   const [user, setUser] = useState({});
   const [selectedImage, setSelectedImage] = useState(null);
   const [image, setImage] = useState(null);
-  const userId = JSON.parse(Cookies.get("user")).user._id;
+
+  const userCookie = JSON.parse(Cookies.get("user"));
+  const userUid = userCookie?.uid; // UID từ Firebase (nếu có)
+  const userId = userCookie?.user?._id; // ID của hệ thống (nếu có)
+
+  console.log("userUid:", userUid);
+  console.log("userId:", userId);
+
   const navigate = useNavigate();
   const { register, handleSubmit, setValue, watch, getValues } = useForm({
     defaultValues: {
       phone: "",
       address: "",
+      email: "",
+      name: "",
+      username: "",
+      date: "",
     },
   });
 
@@ -62,12 +74,16 @@ const Profile = () => {
     }
   }, []);
 
+  const userData = Cookies.get("user");
+  const parsedUser = JSON.parse(userData);
+  console.log(parsedUser.email);
+
   // Lấy dữ liệu người dùng từ cookie
   useEffect(() => {
     const userData = Cookies.get("user");
     if (userData) {
       const parsedUser = JSON.parse(userData);
-      setUser(parsedUser.user);
+      setUser(parsedUser.user || {}); // Cung cấp giá trị mặc định là đối tượng rỗng
     }
   }, []);
 
@@ -75,29 +91,51 @@ const Profile = () => {
   useEffect(() => {
     const getUser = async () => {
       try {
-        const res = await axios.get(`${URL_API}/users/${userId}`);
-        if (res.status === 200) {
+        let res;
+
+        // Kiểm tra nếu có UID hoặc _ID và gọi API tương ứng
+        if (userId) {
+          // Nếu có _id, lấy thông tin người dùng từ hệ thống của bạn
+          res = await axios.get(`${URL_API}/users/${userId}`);
+        }
+
+        if (res?.status === 200) {
           const data = res.data;
-          setValue("name", data.name);
+          setValue("name", data.name || user.displayName);
           setValue("username", data.username);
           setValue("date", data.date);
           setValue("email", data.email);
           setValue("phone", data.phone);
           setValue("address", data.address);
           // Hiển thị hình ảnh hiện tại
-          setImage(
-            data.image ? `${URL_API}/images/${data.image}` : defaultAvatar
-          );
-
-          // console.log("Image URL:", image);
-          // console.log("Selected Image Preview:", selectedImage?.preview);
+          setImage(data.image ? `${URL_API}/images/${data.image}` : defaultAvatar);
+        } else {
+          console.error("Không thể lấy dữ liệu người dùng");
         }
       } catch (error) {
         console.error("Error fetching user details:", error);
       }
     };
+
     getUser();
-  }, [userId, setValue]);
+  }, [userUid, userId, setValue]);
+
+  // lay du lieu tu cookie show len
+  useEffect(() => {
+    const user = Cookies.get("user");
+    if (user) {
+      const userData = JSON.parse(user);
+
+      // Kiểm tra xem người dùng đăng nhập qua Google (Firebase) hay đăng nhập thông qua hệ thống truyền thống
+      if (userData.uid) {
+        // Nếu có trường 'uid', tức là người dùng đăng nhập qua Firebase (Google)
+        setValue("name", userData.displayName); // Gán tên từ Firebase
+        setValue("email", userData.email); // Gán email từ Firebase
+        setValue("phone", ""); // Bạn có thể để trống hoặc yêu cầu người dùng nhập lại
+        setValue("address", ""); // Bạn có thể để trống hoặc yêu cầu người dùng nhập lại
+      }
+    }
+  }, [setValue]);
 
   const onSubmit = async (data) => {
     try {
@@ -112,17 +150,28 @@ const Profile = () => {
         formData.append("image", selectedImage.file);
       }
 
-      const res = await axios.put(`${URL_API}/users/${userId}`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      let res;
+      if (userUid) {
+        // Nếu có uid, cập nhật thông tin người dùng từ Firebase
+        res = await axios.put(`${URL_API}/users/${userUid}`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+      } else if (userId) {
+        // Nếu có _id, cập nhật thông tin người dùng từ hệ thống của bạn
+        res = await axios.put(`${URL_API}/users/${userId}`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+      }
 
-      if (res.status === 200) {
+      if (res?.status === 200) {
         const updatedUser = res.data.userUpdate;
         Cookies.set(
           "user",
-          JSON.stringify({ user: { _id: updatedUser._id, ...updatedUser } }),
+          JSON.stringify({ user: { _id: updatedUser._id, uid: updatedUser.uid, ...updatedUser } }),
           {
             expires: 1,
           }
@@ -154,7 +203,7 @@ const Profile = () => {
                 alt="Avatar"
               />
               <div>
-                <h3 className="font-semibold">{user.email}</h3>
+                <h3 className="font-semibold">{user?.email || parsedUser.email}</h3>
                 <p className="flex items-center gap-1 text-grayText">
                   <FaRegEdit />
                   Sửa hồ sơ
@@ -171,16 +220,14 @@ const Profile = () => {
                         isActive
                           ? "text-mainDark flex items-center gap-2 font-normal leading-normal"
                           : "flex items-center text-black hover:text-mainDark gap-2 font-normal leading-normal"
-                      }
-                    >
+                      }>
                       {item.icon}
                       {item.name}
                     </NavLink>
                   ) : (
                     <button
                       onClick={item.action}
-                      className="flex items-center text-black hover:text-mainDark gap-2 font-normal leading-normal"
-                    >
+                      className="flex items-center text-black hover:text-mainDark gap-2 font-normal leading-normal">
                       {item.icon}
                       {item.name}
                     </button>
@@ -190,17 +237,11 @@ const Profile = () => {
             </ul>
           </div>
           <div className="w-3/5">
-            <PageTitle
-              title="Cập nhật tài khoản"
-              className="text-mainDark mb-2"
-            ></PageTitle>
+            <PageTitle title="Cập nhật tài khoản" className="text-mainDark mb-2"></PageTitle>
             <div className="text-grayText leading-normal font-normal mb-5">
               Chỉnh sửa thông tin cá nhân, tài khoản và mật khẩu
             </div>
-            <form
-              onSubmit={handleSubmit(onSubmit)}
-              className="flex flex-col gap-6"
-            >
+            <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
               <div className="flex items-center justify-center gap-5">
                 <div className="w-full">
                   <label htmlFor="name">Họ và tên</label>
@@ -223,80 +264,59 @@ const Profile = () => {
                   />
                 </div>
               </div>
-              <div className="w-full">
-                <label htmlFor="date">Ngày sinh</label>
-                <input
-                  type="date"
-                  id="date"
-                  placeholder="dd/mm/yyyy"
-                  className="input input-bordered w-full mt-2"
-                  value={watch("date") || ""}
-                  {...register("date")}
-                />
+              <div className="flex items-center justify-center gap-5">
+                <div className="w-full">
+                  <label htmlFor="email">Email</label>
+                  <input
+                    type="email"
+                    id="email"
+                    placeholder="Email"
+                    className="input input-bordered w-full mt-2"
+                    {...register("email")}
+                  />
+                </div>
+                <div className="w-full">
+                  <label htmlFor="phone">Số điện thoại</label>
+                  <input
+                    type="text"
+                    id="phone"
+                    placeholder="Số điện thoại"
+                    className="input input-bordered w-full mt-2"
+                    {...register("phone")}
+                  />
+                </div>
               </div>
-              <div className="w-full">
-                <label htmlFor="image">Hình ảnh</label>
-                <img
-                  src={selectedImage?.preview || image}
-                  className="w-[50px] h-[50px] rounded-full"
-                  alt="Avatar"
-                />
+              <div className="flex items-center justify-center gap-5">
+                <div className="w-full">
+                  <label htmlFor="address">Địa chỉ</label>
+                  <input
+                    type="text"
+                    id="address"
+                    placeholder="Địa chỉ"
+                    className="input input-bordered w-full mt-2"
+                    {...register("address")}
+                  />
+                </div>
+                <div className="w-full">
+                  <label htmlFor="date">Ngày sinh</label>
+                  <input
+                    type="date"
+                    id="date"
+                    className="input input-bordered w-full mt-2"
+                    {...register("date")}
+                  />
+                </div>
+              </div>
+              <div className="mb-6">
+                <label htmlFor="image">Ảnh đại diện</label>
                 <input
                   type="file"
                   id="image"
-                  className="file-input file-input-bordered w-full"
+                  className="input input-bordered w-full mt-2"
                   onChange={handleImgChange}
                 />
               </div>
-              <div className="w-full">
-                <label htmlFor="email">Email</label>
-                <input
-                  type="email"
-                  id="email"
-                  placeholder="Email"
-                  className="input input-bordered w-full mt-2"
-                  {...register("email")}
-                />
-              </div>
-              <div className="w-full">
-                <label htmlFor="password">Password</label>
-                <input
-                  type="password"
-                  id="password"
-                  placeholder="Password"
-                  className="input input-bordered w-full mt-2"
-                  {...register("password")}
-                />
-              </div>
-              <div className="w-full">
-                <label htmlFor="phone">Số điện thoại</label>
-                <input
-                  type="text"
-                  id="phone"
-                  placeholder="Số điện thoại"
-                  className="input input-bordered w-full mt-2"
-                  defaultValue={getValues("phone") || ""} 
-                  {...register("phone")}
-                />
-              </div>
-              <div className="w-full">
-                <label htmlFor="address">Địa chỉ</label>
-                <input
-                  type="text"
-                  id="address"
-                  placeholder="Địa chỉ"
-                  className="input input-bordered w-full mt-2"
-                  value={watch("address") || ""}
-                  {...register("address")}
-                />
-              </div>
-              <div className="mt-6">
-                <Button
-                  children="Cập nhật tài khoản"
-                  className="bg-mainDark text-white text-center rounded-2xl w-full py-2"
-                  type="submit"
-                />
-              </div>
+              <Button type="submit">Cập nhật</Button>
             </form>
           </div>
         </div>

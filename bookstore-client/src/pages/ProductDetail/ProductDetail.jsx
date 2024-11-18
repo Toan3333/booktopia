@@ -27,6 +27,7 @@ import "lightgallery/css/lg-thumbnail.css";
 import lgThumbnail from "lightgallery/plugins/thumbnail";
 import lgZoom from "lightgallery/plugins/zoom";
 import { URL_API } from "../../constants/constants";
+import ReviewList from "../../components/Review/ReviewList";
 
 const ProductDetail = () => {
   const [activeTab, setActiveTab] = useState("info");
@@ -34,6 +35,7 @@ const ProductDetail = () => {
   const { id } = useParams();
   const [productDetailData, setProductDetailData] = useState(null);
   const [commentDetailData, setCommentDetailData] = useState(null);
+  const [reviewDetailData, setReviewDetailData] = useState(null);
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -41,6 +43,8 @@ const ProductDetail = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [contentComment, setContentComment] = useState("");
+  const [contentReview, setContentReview] = useState("");
+  const [rating, setRating] = useState(0); // Thêm state cho rating (sao)
 
   const favouriteItems = useSelector((state) => state.favourite?.items) || [];
   // lấy thong tin user trên coookie
@@ -72,6 +76,7 @@ const ProductDetail = () => {
     fetchProductDetail();
   }, [id]);
 
+  // show bình luận
   const fetchComment = async () => {
     try {
       const response = await axios.get(`${URL_API}/comment/product/${id}`);
@@ -82,7 +87,33 @@ const ProductDetail = () => {
       setLoading(false);
     }
   };
+
+  // show đánh giá
+  const fetchReview = async () => {
+    try {
+      const response = await axios.get(`${URL_API}/review/product/${id}`);
+      console.log("Review data:", response.data); // Kiểm tra dữ liệu review nhận được từ API
+      if (response.data === null) {
+        setReviewDetailData([]); // Nếu API trả về null, gán dữ liệu rỗng
+      } else {
+        setReviewDetailData(response.data); // Lưu dữ liệu vào state nếu có
+      }
+    } catch (error) {
+      setError("Unable to fetch product details. Please try again later.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // useEffect(() => {
+  //   console.log("Product ID:", id);
+  //   fetchReview();
+  // }, [id]);
+
+  // lát nữa show cái fetchReview ra đây vào useEffect
+
   useEffect(() => {
+    fetchReview();
     fetchComment();
   }, [id]);
   if (loading) {
@@ -161,12 +192,52 @@ const ProductDetail = () => {
     fetchComment();
   };
 
+  // lấy thông tin user để cho đánh giá
+  const handleReview = async () => {
+    if (!inforUser) {
+      toast.error("Vui lòng đăng nhập và mua hàng để đánh giá");
+      return;
+    }
+    if (!contentReview) {
+      toast.error("Vui lòng nhập nội dung đánh giá");
+      return;
+    }
+
+    if (!rating) {
+      // Kiểm tra nếu rating chưa được chọn
+      toast.error("Vui lòng chọn đánh giá sao");
+      return;
+    }
+    const data = {
+      content: contentReview,
+      user: inforUser?._id,
+      book: id,
+      rating: rating,
+    };
+    await axios.post(`${URL_API}/review`, data);
+    toast.success("Đánh giá thành công");
+    setContentReview("");
+    fetchReview();
+    window.location.reload(true);
+  };
+
+  // xóa bình luận
   const handleDeleteComment = async (id) => {
     console.log(id);
 
     await axios.delete(`${URL_API}/comment/${id}`);
     toast.success("Xóa thành công");
     fetchComment();
+  };
+
+  // xóa đánh giá
+
+  const handleDeleteReview = async (id) => {
+    console.log(id);
+
+    await axios.delete(`${URL_API}/review/${id}`);
+    toast.success("Xóa thành công");
+    fetchReview();
   };
 
   const handleAddToFavourite = () => {
@@ -353,7 +424,14 @@ const ProductDetail = () => {
               activeTab === "comments" ? "text-text" : "text-grayText"
             }`}
             onClick={() => setActiveTab("comments")}>
-            Đánh giá sản phẩm
+            Bình luận
+          </h3>
+          <h3
+            className={`text-[18px] font-semibold cursor-pointer ${
+              activeTab === "reviews" ? "text-text" : "text-grayText"
+            }`}
+            onClick={() => setActiveTab("reviews")}>
+            Đánh giá
           </h3>
         </div>
         {activeTab === "info" && (
@@ -362,9 +440,8 @@ const ProductDetail = () => {
           </div>
         )}
         {activeTab === "comments" && (
-          <div className="mt-4">
-            <PageTitle title={`${commentDetailData.length} lượt đánh giá`} />
-            
+          <div className="mt-10">
+            <PageTitle title={`${commentDetailData.length} lượt bình luận`} />
 
             <CommentList
               handleDeleteComment={handleDeleteComment}
@@ -378,11 +455,60 @@ const ProductDetail = () => {
                     type="text"
                     placeholder="Hãy nhận xét gì đó ...."
                     className="input input-bordered w-full "
-                    
                   />
-                  <Button className="text-nowrap" onClick={() => handleConment()}>Đánh giá</Button>
+                  <Button className="text-nowrap" onClick={() => handleConment()}>
+                    Gửi
+                  </Button>
                 </div>
-               
+              </div>
+            </form>
+          </div>
+        )}
+        {activeTab === "reviews" && (
+          <div className="mt-10">
+            <PageTitle title={`${reviewDetailData.length} lượt đánh giá`} />
+            <ReviewList
+              handleDeleteReview={handleDeleteReview}
+              reviewDetailData={reviewDetailData || []}
+            />
+            <form action="" className="mt-7">
+              <div className="flex items-center">
+                <span
+                  onClick={() => setRating(1)}
+                  className={`cursor-pointer ${rating >= 1 ? "text-yellow-500" : "text-gray-400"}`}>
+                  ★
+                </span>
+                <span
+                  onClick={() => setRating(2)}
+                  className={`cursor-pointer ${rating >= 2 ? "text-yellow-500" : "text-gray-400"}`}>
+                  ★
+                </span>
+                <span
+                  onClick={() => setRating(3)}
+                  className={`cursor-pointer ${rating >= 3 ? "text-yellow-500" : "text-gray-400"}`}>
+                  ★
+                </span>
+                <span
+                  onClick={() => setRating(4)}
+                  className={`cursor-pointer ${rating >= 4 ? "text-yellow-500" : "text-gray-400"}`}>
+                  ★
+                </span>
+                <span
+                  onClick={() => setRating(5)}
+                  className={`cursor-pointer ${rating >= 5 ? "text-yellow-500" : "text-gray-400"}`}>
+                  ★
+                </span>
+              </div>
+              <div className="w-[100%] flex gap-2 mt-3">
+                <input
+                  onChange={(e) => setContentReview(e.target.value)}
+                  type="text"
+                  placeholder="Hãy nhập đánh giá của bạn..."
+                  className="input input-bordered w-full "
+                />
+                <Button className="text-nowrap" onClick={() => handleReview()}>
+                  Gửi
+                </Button>
               </div>
             </form>
           </div>

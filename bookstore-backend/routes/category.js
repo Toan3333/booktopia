@@ -32,7 +32,7 @@ router.get("/categoryId/:category", async (req, res, next) => {
 });
 
 // Thêm danh mục mơi
-router.post("/",[authen([1])], async (req, res) => {
+router.post("/", [authen([1])], async (req, res) => {
   try {
     const body = req.body;
     const result = await categoryController.insert(body);
@@ -44,7 +44,7 @@ router.post("/",[authen([1])], async (req, res) => {
 });
 
 //Sửa danh mục theo id
-router.put("/:id",[authen([1])], async (req, res) => {
+router.put("/:id", [authen([1])], async (req, res) => {
   try {
     const { id } = req.params;
     const body = req.body;
@@ -71,7 +71,7 @@ router.get("/:id", async (req, res) => {
 });
 
 //Xóa danh mục theo id
-router.delete("/delete/:id",[authen([1])], async (req, res) => {
+router.delete("/delete/:id", [authen([1])], async (req, res) => {
   try {
     const { id } = req.params; // lấy đượccái id mà người dùng gửi lên
     const cateDel = await categoryController.deleteCate(id);

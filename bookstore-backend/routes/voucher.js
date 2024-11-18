@@ -15,7 +15,7 @@ router.get("/", async (req, res) => {
 });
 
 // Thêm danh mục mơi
-router.post("/", [authen([1])], async (req, res) => {
+router.post("/", async (req, res) => {
   try {
     const body = req.body;
     const result = await voucherController.insertVoucher(body);
@@ -27,7 +27,7 @@ router.post("/", [authen([1])], async (req, res) => {
 });
 
 // update voucher
-router.put("/:id", [authen([1])], async (req, res) => {
+router.put("/:id", async (req, res) => {
   try {
     const { id } = req.params;
     const body = req.body;
@@ -40,7 +40,7 @@ router.put("/:id", [authen([1])], async (req, res) => {
 });
 
 // xóa voucher
-router.delete("/:id", [authen([1])], async (req, res) => {
+router.delete("/:id", async (req, res) => {
   try {
     const { id } = req.params;
     const voucher = await voucherController.deleteVoucher(id);
@@ -76,7 +76,7 @@ router.put("/deactivate/:id", async (req, res) => {
 
 router.get("/:id", async (req, res) => {
   try {
-    const { id } = req.params; 
+    const { id } = req.params;
     const voucher = await voucherController.getVoucherById(id);
     return res.status(200).json(voucher);
   } catch (error) {

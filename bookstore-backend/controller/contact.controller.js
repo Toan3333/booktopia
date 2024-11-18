@@ -1,3 +1,4 @@
+const path = require("path"); // Đảm bảo bạn đã import module 'path'
 const Contact = require("../model/contact.model");
 const nodemailer = require("nodemailer");
 require("dotenv").config();
@@ -21,8 +22,11 @@ const contactController = {
           pass: process.env.EMAIL_PASS,
         },
       });
-      const imgLogo = `https://res.cloudinary.com/dufekzvxl/image/upload/f_auto,q_auto/mydizuu...ffuzqpvp
-`;
+
+      // Sử dụng path.join() để đảm bảo tính tương thích giữa Windows và macOS
+      const logoPath = path.join(__dirname, "..", "public", "images", "logo1.png");
+      console.log("Đường dẫn đến logo:", logoPath); // Bạn có thể in ra để kiểm tra đường dẫn đúng
+
       const mailOptions = {
         from: process.env.EMAIL_USER,
         to: process.env.RECEIVING_EMAIL,
@@ -31,12 +35,12 @@ const contactController = {
         attachments: [
           {
             filename: "logo1.png",
-            path: `public\\images\\logo1.png`, // Đường dẫn đến file trên server của bạn
+            path: logoPath, // Sử dụng đường dẫn đã được xử lý với path.join
             cid: "unique@logo", // Sử dụng CID để tham chiếu trong HTML
           },
         ],
         html: `
-       <div
+        <div
           style="font-family: Arial, sans-serif; color: #2c3e50; padding: 20px; max-width: 500px; margin: auto; border: 1px solid #ecf0f1; border-radius: 8px; box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1); background-color: #ffffff;">
           <h2 style="color: #166534; text-align: center; font-size: 20px; margin: 0;">Thông liên hệ từ khách hàng</h2>
 
@@ -104,13 +108,10 @@ const contactController = {
         return res.status(404).json({ message: "Liên hệ không tồn tại" });
       }
 
-      contact.status =
-        contact.status === "Chưa phản hồi" ? "Đã phản hồi" : "Chưa phản hồi";
+      contact.status = contact.status === "Chưa phản hồi" ? "Đã phản hồi" : "Chưa phản hồi";
       await contact.save();
 
-      res
-        .status(200)
-        .json({ message: "Cập nhật trạng thái thành công", contact });
+      res.status(200).json({ message: "Cập nhật trạng thái thành công", contact });
     } catch (error) {
       res.status(500).json({
         message: "Có lỗi xảy ra khi cập nhật trạng thái",

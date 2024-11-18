@@ -1,7 +1,14 @@
 const userModel = require("../model/user.model");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-module.exports = { gettAll, updateById, register, login, getUserById, remove };
+module.exports = {
+  gettAll,
+  updateById,
+  register,
+  getUserById,
+  login,
+  remove,
+};
 
 // Đăng ký
 async function register(body) {
@@ -79,17 +86,7 @@ async function updateById(id, body) {
       throw { statusCode: 404, message: "Không tìm thấy user" }; // 404 Not Found
     }
 
-    const {
-      name,
-      username,
-      image,
-      password,
-      email,
-      phone,
-      date,
-      address,
-      role,
-    } = body;
+    const { name, username, image, password, email, phone, date, address, role } = body;
 
     let updatedFields = { name, username, email, phone, date, address, role };
 

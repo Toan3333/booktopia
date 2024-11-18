@@ -9,9 +9,7 @@ router.post("/api/contact", async (req, res) => {
     const result = await contactController.createContact(body);
     return res.status(201).json(result);
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Có lỗi xảy ra khi gửi form", error: error.message });
+    res.status(500).json({ message: "Có lỗi xảy ra khi gửi form", error: error.message });
   }
 });
 

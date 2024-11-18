@@ -10,6 +10,9 @@ import axios from "axios";
 import { clearCart } from "../../redux/slices/cartslide";
 import Swal from "sweetalert2";
 import "./Checkout.css";
+import Paypal from "../../components/Paypal/Paypal";
+import { current } from "@reduxjs/toolkit";
+
 const Checkout = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -17,6 +20,7 @@ const Checkout = () => {
     register,
     handleSubmit,
     setValue,
+    getValues,
     reset,
     formState: { errors },
   } = useForm();
@@ -29,16 +33,40 @@ const Checkout = () => {
       ),
     [listProducts]
   );
+  const address = getValues("address");
 
   const [data, setData] = useState([]);
   const [cities, setCities] = useState([]);
   const [selectedCity, setSelectedCity] = useState("");
   const [selectedDistrict, setSelectedDistrict] = useState("");
   const [selectedWard, setSelectedWard] = useState("");
-  const [voucherCode, setVoucherCode] = useState("");
-  const [discount, setDiscount] = useState(0);
-  const shippingFee = 30000;
-
+  const [selectedOption, setSelectedOption] = useState(null);
+  const [paymentStatus, setPaymentStatus] = useState("Chưa thanh toán");
+  const handleCheckboxChange = (option) => {
+    setSelectedOption((prev) => (prev === option ? null : option));
+    const checkbox = document.getElementById(option);
+    if (option === "tructiep") {
+      setPaymentStatus("Chưa thanh toán");
+    } else if (option === "paypal") {
+      setPaymentStatus("");
+    }
+    if (checkbox) {
+      const isClicked = checkbox.dataset.clicked;
+      if (!isClicked) {
+        checkbox.dataset.clicked = "true";
+        checkbox.click();
+        setTimeout(() => {
+          checkbox.click();
+        }, 20);
+        setTimeout(() => {
+          checkbox.click();
+        }, 20);
+      }
+    }
+  };
+  const handlePaymentComplete = (status) => {
+    setPaymentStatus(status);
+  };
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -64,9 +92,31 @@ const Checkout = () => {
       setValue("address", userData.user.address);
     }
   }, [setValue]);
-
+  // console.log((total + 30000).toLocaleString("vi-VN", {
+  //   style: "currency",
+  //   currency: "VND",
+  // }));
   const onSubmit = async (data) => {
     try {
+      if (!selectedOption) {
+        Swal.fire({
+          title: "Chưa chọn phương thức thanh toán!",
+          text: "Vui lòng chọn phương thức thanh toán trước khi tiếp tục.",
+          icon: "warning",
+        });
+        return;  // Dừng lại nếu chưa chọn phương thức thanh toán
+      }
+
+      if (selectedOption === "paypal" && paymentStatus !== "Đã thanh toán") {
+        Swal.fire({
+          title: "Thanh toán chưa thành công!",
+          text: "Vui lòng thanh toán qua PayPal trước khi đặt hàng.",
+          icon: "warning",
+        });
+        return;
+      }
+      if (selectedOption === "tructiep") {
+      }
       const user = Cookies.get("user");
       let userId = null;
       if (user) {
@@ -84,6 +134,7 @@ const Checkout = () => {
           total,
           userId,
           address: `${data.address}, ${selectedWard}, ${selectedDistrict}, ${selectedCity}`,
+          paymentStatus,
         }),
       });
 
@@ -105,14 +156,14 @@ const Checkout = () => {
                     method: "PUT",
                   })
                 );
-    
+
                 //giống cái ở trên
                 const salePromises = Array.from({ length: quantity }).map(() =>
                   fetch(`${URL_API}/products/${productId}/sale`, {
                     method: "PUT",
                   })
                 );
-    
+
                 //chờ gọi api xong
                 await Promise.all([...hotPromises, ...salePromises]);
               } catch (error) {
@@ -120,9 +171,8 @@ const Checkout = () => {
               }
             })
           )
-        )
-  
-        
+        );
+
         dispatch(clearCart());
         reset();
         Swal.fire({
@@ -143,45 +193,6 @@ const Checkout = () => {
       }
     } catch (error) {
       console.error("Error creating order", error);
-    }
-  };
-
-  const applyVoucher = async (voucherCode) => {
-    debugger;
-    try {
-      const response = await axios.post(`${URL_API}/vouchers/apply`, {
-        code: voucherCode,
-        orderValue: total + shippingFee,
-      });
-
-      const res = response.data.data
-      setDiscount(res.voucher.discountValue);
-      
-      return Swal.fire({
-        icon: "success",
-        title: "Áp dụng voucher thành công",
-      });
-    } catch (error) {
-      console.error("Error applying voucher:", error);
-      Swal.fire({
-        icon: "error",
-        title: "Không thành công",
-        text: error.message,
-      });
-      return 0; // Nếu có lỗi, trả về 0
-    }
-  };
-
-  const handleApplyVoucher = async () => {
-    debugger;
-    const discount = await applyVoucher(voucherCode);
-    if (discount > 0) {
-      setDiscount(discount);
-      Swal.fire({
-        icon: "success",
-        title: "Áp dụng voucher thành công!",
-        text: `Bạn đã nhận được giảm giá ${discount}%`,
-      });
     }
   };
 
@@ -375,23 +386,39 @@ const Checkout = () => {
                           name="tructiep"
                           id="tructiep"
                           className="checkbox-input"
+                          checked={selectedOption === "tructiep"}
+                          onChange={() => handleCheckboxChange("tructiep")}
                         />
                         <div className="checkbox-box"></div>
                       </label>
                       <div className="">Thanh toán trực tiếp khi nhận hàng</div>
                     </div>
                     <div className="flex items-center gap-3">
-                      <label htmlFor="tructiep" className="checkbox-style">
+                      <label htmlFor="paypal" className="checkbox-style">
                         <input
                           type="checkbox"
-                          name="tructiep"
-                          id="tructiep"
+                          name="paypal"
+                          id="paypal"
                           className="checkbox-input"
+                          checked={selectedOption === "paypal"}
+                          onChange={() => handleCheckboxChange("paypal")}
                         />
                         <div className="checkbox-box"></div>
                       </label>
-                      <div className="">Thanh toán bằng</div>
-                    </div>
+                      <div className="">Thanh toán bằng Paypal</div>
+                    </div>{" "}
+                    {selectedOption === "paypal" && (
+                      <Paypal
+                        payload={{
+                          products: listProducts,
+                          total: total + 30000,
+                          address: address,
+                        }}
+                        currency="USD"
+                        amount={Number(total) + 30000}
+                        onPaymentComplete={handlePaymentComplete}
+                      />
+                    )}
                   </div>
                 </div>
               </div>
@@ -435,16 +462,19 @@ const Checkout = () => {
                 ))}
                 <div className="border-t">
                   <div className="flex items-center justify-between gap-3 mt-7 pb-7 border-b">
-                    <input
-                      type="text"
-                      placeholder="Mã giảm giá"
-                      className="input input-bordered w-full"
-                      value={voucherCode}
-                      onChange={(e) => setVoucherCode(e.target.value)}
-                    />
-                    <Button type="button" onClick={handleApplyVoucher}>
-                      Áp dụng Voucher
-                    </Button>
+                    <div className="w-[70%]">
+                      <input
+                        type="text"
+                        placeholder="Mã giảm giá"
+                        className="input input-bordered w-full"
+                      />
+                    </div>
+                    <div className="w-[30%]">
+                      <Button
+                        children="Sử dụng"
+                        className="rounded-[5px] px-5 py-4 w-full max-md:px-2 max-md:py-3 max-md:text-sm"
+                      />
+                    </div>
                   </div>
                 </div>
                 <div className="pb-7 border-b">
@@ -461,25 +491,20 @@ const Checkout = () => {
                   </div>
                   <div className="flex justify-between text-text font-normal leading-normal">
                     <span>Phí vận chuyển:</span>
-                    <span>{shippingFee}đ</span>
+                    <span>30.000đ</span>
                   </div>
                 </div>
-                {discount > 0 && (
-                  <div className="flex items-center justify-between gap-3">
-                    <p className="text-sm text-gray-500">Giảm giá</p>
-                    <p className="font-semibold">{discount} đ</p>
-                  </div>
-                )}
                 <div className="flex justify-between text-text font-normal leading-normal mt-10">
                   <span>Tổng cộng:</span>
                   <span className="text-mainDark font-semibold leading-normal">
-                    {(
-                      (total + shippingFee) - discount
-                    ).toLocaleString("vi-VN")}
-                    đ
+                    {(total + 30000).toLocaleString("vi-VN", {
+                      style: "currency",
+                      currency: "VND",
+                    })}
                   </span>
                 </div>
               </div>
+
               <div className="flex items-center mt-7">
                 <div className="w-1/2">
                   <Button className="rounded-[5px] bg-white button-add max-md:py-2 max-md:px-5 max-md:text-sm">
