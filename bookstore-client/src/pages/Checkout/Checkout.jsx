@@ -41,6 +41,10 @@ const Checkout = () => {
   const [selectedDistrict, setSelectedDistrict] = useState("");
   const [selectedWard, setSelectedWard] = useState("");
   const [selectedOption, setSelectedOption] = useState(null);
+  const [voucherCode, setVoucherCode] = useState("");
+  const [discount, setDiscount] = useState(0);
+  const shippingFee = 30000;
+
   const [paymentStatus, setPaymentStatus] = useState("Chưa thanh toán");
   const handleCheckboxChange = (option) => {
     setSelectedOption((prev) => (prev === option ? null : option));
@@ -64,6 +68,7 @@ const Checkout = () => {
       }
     }
   };
+
   const handlePaymentComplete = (status) => {
     setPaymentStatus(status);
   };
@@ -123,6 +128,7 @@ const Checkout = () => {
         const userData = JSON.parse(user);
         userId = userData.user._id;
       }
+      const finalTotal = total + shippingFee - discount;
       const response = await fetch(`${URL_API}/orders`, {
         method: "POST",
         headers: {
@@ -131,7 +137,7 @@ const Checkout = () => {
         body: JSON.stringify({
           ...data,
           listProducts,
-          total,
+          total: finalTotal,
           userId,
           address: `${data.address}, ${selectedWard}, ${selectedDistrict}, ${selectedCity}`,
           paymentStatus,
@@ -195,7 +201,40 @@ const Checkout = () => {
       console.error("Error creating order", error);
     }
   };
+  const applyVoucher = async (voucherCode) => {
+    try {
+      const response = await axios.post(`${URL_API}/vouchers/apply`, {
+        code: voucherCode,
+        orderValue: total + shippingFee,
+      });
+      const res = response.data.data;
+      setDiscount(res.voucher.discountValue);
 
+      return Swal.fire({
+        icon: "success",
+        title: "Áp dụng voucher thành công",
+      });
+    } catch (error) {
+      console.error("Error applying voucher:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Không thành công",
+        text: error.message,
+      });
+      return 0; // Nếu có lỗi, trả về 0
+    }
+  };
+  const handleApplyVoucher = async () => {
+    const discount = await applyVoucher(voucherCode);
+    if (discount > 0) {
+      setDiscount(discount);
+      Swal.fire({
+        icon: "success",
+        title: "Áp dụng voucher thành công!",
+        text: `Bạn đã nhận được giảm giá ${discount}%`,
+      });
+    }
+  };
   const handleCityChange = (e) => {
     setSelectedCity(e.target.value);
     setSelectedDistrict("");
@@ -405,17 +444,19 @@ const Checkout = () => {
                         />
                         <div className="checkbox-box"></div>
                       </label>
-                      <div className="">Thanh toán bằng Paypal</div>
-                    </div>{" "}
+                      <div>Thanh toán bằng Paypal</div>
+                    </div>
+
+                    {/* Hiển thị Paypal khi selectedOption là 'paypal' */}
                     {selectedOption === "paypal" && (
                       <Paypal
                         payload={{
                           products: listProducts,
-                          total: total + 30000,
+                          total: total + shippingFee - discount, 
                           address: address,
                         }}
                         currency="USD"
-                        amount={Number(total) + 30000}
+                        amount={Number(total) + shippingFee - discount}
                         onPaymentComplete={handlePaymentComplete}
                       />
                     )}
@@ -462,19 +503,16 @@ const Checkout = () => {
                 ))}
                 <div className="border-t">
                   <div className="flex items-center justify-between gap-3 mt-7 pb-7 border-b">
-                    <div className="w-[70%]">
-                      <input
-                        type="text"
-                        placeholder="Mã giảm giá"
-                        className="input input-bordered w-full"
-                      />
-                    </div>
-                    <div className="w-[30%]">
-                      <Button
-                        children="Sử dụng"
-                        className="rounded-[5px] px-5 py-4 w-full max-md:px-2 max-md:py-3 max-md:text-sm"
-                      />
-                    </div>
+                    <input
+                      type="text"
+                      placeholder="Mã giảm giá"
+                      className="input input-bordered w-full"
+                      value={voucherCode}
+                      onChange={(e) => setVoucherCode(e.target.value)}
+                    />
+                    <Button type="button" onClick={handleApplyVoucher}>
+                      Áp dụng Voucher
+                    </Button>
                   </div>
                 </div>
                 <div className="pb-7 border-b">
@@ -491,16 +529,21 @@ const Checkout = () => {
                   </div>
                   <div className="flex justify-between text-text font-normal leading-normal">
                     <span>Phí vận chuyển:</span>
-                    <span>30.000đ</span>
+                    <span>{shippingFee}đ</span>
                   </div>
                 </div>
+                {discount > 0 && (
+                  <div className="flex items-center justify-between gap-3 mt-3">
+                    <p className="text-text font-normal leading-normal">
+                      Giảm giá:
+                    </p>
+                    <p className="font-semibold">{discount}đ</p>
+                  </div>
+                )}
                 <div className="flex justify-between text-text font-normal leading-normal mt-10">
                   <span>Tổng cộng:</span>
                   <span className="text-mainDark font-semibold leading-normal">
-                    {(total + 30000).toLocaleString("vi-VN", {
-                      style: "currency",
-                      currency: "VND",
-                    })}
+                    {(total + shippingFee - discount).toLocaleString("vi-VN")}đ
                   </span>
                 </div>
               </div>

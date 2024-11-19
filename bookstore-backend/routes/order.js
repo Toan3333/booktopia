@@ -117,8 +117,6 @@ router.put("/review/:productId", async (req, res) => {
     if (product.reviewStatus === "Đã đánh giá") {
       return res.status(400).json({ message: "Sản phẩm này đã được đánh giá." });
     }
-
-    // Cập nhật trạng thái reviewStatus của sản phẩm
     const result = await orderModel.updateOne(
       { "listProducts._id": productId },
       { $set: { "listProducts.$.reviewStatus": "Đã đánh giá" } }

@@ -53,10 +53,8 @@ const ProductDetail = () => {
   const [isReviewed, setIsReviewed] = useState(false);
   const favouriteItems = useSelector((state) => state.favourite?.items) || [];
 
-  
   const userId = inforUser?._id;
-  const { id: productId } = useParams(); 
-
+  const { id: productId } = useParams();
 
   useEffect(() => {}, [favouriteItems]);
 
@@ -74,10 +72,12 @@ const ProductDetail = () => {
 
     fetchProductDetail();
   }, [id]);
- 
+
   const fetchOrderStatus = async (userId, productId) => {
     try {
-      const response = await fetch(`${URL_API}/orders/status/${userId}/${productId}`);
+      const response = await fetch(
+        `${URL_API}/orders/status/${userId}/${productId}`
+      );
       const data = await response.json();
       console.log("Trạng thái đơn hàng:", data);
 
@@ -254,38 +254,40 @@ const ProductDetail = () => {
       setIsReviewed(true); // Ẩn form khi đã đánh giá
       return;
     }
-  
+
     if (!inforUser) {
       toast.error("Vui lòng đăng nhập và mua hàng để đánh giá");
       return;
     }
-  
+
     if (!contentReview) {
       toast.error("Vui lòng nhập nội dung đánh giá");
       return;
     }
-  
+
     if (!rating) {
       toast.error("Vui lòng chọn đánh giá sao");
       return;
     }
-  
+
     if (orderStatus !== "Giao thành công") {
-      toast.error("Bạn chỉ có thể đánh giá sản phẩm khi đơn hàng đã được giao thành công.");
+      toast.error(
+        "Bạn chỉ có thể đánh giá sản phẩm khi đơn hàng đã được giao thành công."
+      );
       return;
     }
-  
+
     const data = {
       content: contentReview,
       user: inforUser?._id,
       book: id,
       rating: rating,
     };
-  
+
     try {
       // Gửi đánh giá
       const response = await axios.post(`${URL_API}/review`, data);
-  
+
       if (response.status === 201) {
         toast.success("Đánh giá thành công");
         setOrderStatus("Đã đánh giá");
@@ -298,24 +300,23 @@ const ProductDetail = () => {
             "Content-Type": "application/json",
           },
         });
-  
+
         if (updateResponse.ok) {
           toast.success("Trạng thái đơn hàng đã được cập nhật.");
         } else {
           const errorData = await updateResponse.json();
           console.error("Lỗi khi cập nhật trạng thái:", errorData);
         }
-  
+
         setContentReview("");
         setRating(0);
-        fetchReview(); 
+        fetchReview();
       }
     } catch (error) {
       toast.error("Có lỗi xảy ra, vui lòng thử lại.");
       console.error("Error posting review:", error);
     }
   };
-  
 
   // xóa bình luận
   const handleDeleteComment = async (id) => {
@@ -585,50 +586,56 @@ const ProductDetail = () => {
           </div>
         )}
         {activeTab === "reviews" && (
-  <div className="mt-10">
-    <PageTitle title={`${reviewDetailData.length} lượt đánh giá`} />
-    <ReviewList
-      handleDeleteReview={handleDeleteReview}
-      reviewDetailData={reviewDetailData || []}
-    />
+          <div className="mt-10">
+            <PageTitle title={`${reviewDetailData.length} lượt đánh giá`} />
+            <ReviewList
+              handleDeleteReview={handleDeleteReview}
+              reviewDetailData={reviewDetailData || []}
+            />
 
-{!isReviewed && orderStatus === "Giao thành công" ? (
-  <form action="" className="mt-7">
-    {/* Form đánh giá */}
-    <div className="flex items-center">
-      {[1, 2, 3, 4, 5].map((value) => (
-        <span
-          key={value}
-          onClick={() => setRating(value)}
-          className={`cursor-pointer ${
-            rating >= value ? "text-yellow-500" : "text-gray-400"
-          }`}
-        >
-          ★
-        </span>
-      ))}
-    </div>
-    <div className="w-[100%] flex gap-2 mt-3">
-      <input
-        onChange={(e) => setContentReview(e.target.value)}
-        type="text"
-        placeholder="Hãy nhập đánh giá của bạn..."
-        className="input input-bordered w-full"
-      />
-      <Button className="text-nowrap" onClick={() => handleReview()}>
-        Gửi
-      </Button>
-    </div>
-  </form>
-) : orderStatus === "Đã đánh giá" ? (
-  <p className="text-gray-500 mt-5">Bạn đã đánh giá sản phẩm này.</p>
-) : (
-  <p className="text-gray-500 mt-5">Bạn chỉ có thể đánh giá sản phẩm khi đơn hàng đã được giao thành công.</p>
-)}
-
-  </div>
-)}
-
+            {!isReviewed && orderStatus === "Giao thành công" ? (
+              <form action="" className="mt-7">
+                {/* Form đánh giá */}
+                <div className="flex items-center">
+                  {[1, 2, 3, 4, 5].map((value) => (
+                    <span
+                      key={value}
+                      onClick={() => setRating(value)}
+                      className={`cursor-pointer ${
+                        rating >= value ? "text-yellow-500" : "text-gray-400"
+                      }`}
+                    >
+                      ★
+                    </span>
+                  ))}
+                </div>
+                <div className="w-[100%] flex gap-2 mt-3">
+                  <input
+                    onChange={(e) => setContentReview(e.target.value)}
+                    type="text"
+                    placeholder="Hãy nhập đánh giá của bạn..."
+                    className="input input-bordered w-full"
+                  />
+                  <Button
+                    className="text-nowrap"
+                    onClick={() => handleReview()}
+                  >
+                    Gửi
+                  </Button>
+                </div>
+              </form>
+            ) : orderStatus === "Đã đánh giá" ? (
+              <p className="text-gray-500 mt-5">
+                Bạn đã đánh giá sản phẩm này.
+              </p>
+            ) : (
+              <p className="text-gray-500 mt-5">
+                Bạn chỉ có thể đánh giá sản phẩm khi đơn hàng đã được giao thành
+                công.
+              </p>
+            )}
+          </div>
+        )}
 
         <div>
           <ProductRelated id={id} />

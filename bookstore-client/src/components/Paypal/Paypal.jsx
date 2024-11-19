@@ -105,9 +105,6 @@ import {
             currency={"USD"}
             amount={amount}
             showSpinner={false}
-        //     onPaymentComplete={handlePaymentComplete} 
-        //   setPaymentStatus={setPaymentStatus}  
-        //   onPaymentComplete={onPaymentComplete}
         onPaymentComplete={handlePaymentComplete}
           />
         </PayPalScriptProvider>

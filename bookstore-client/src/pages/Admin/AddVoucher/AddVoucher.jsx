@@ -24,7 +24,7 @@ const AddVoucher = () => {
   };
 
   const {
-    register,
+    register, setValue, getValues,
     handleSubmit,
     formState: { errors },
   } = useForm();
@@ -170,36 +170,58 @@ const AddVoucher = () => {
               </div>
               
               <div className="w-2/4 flex flex-col gap-3">
-                <label htmlFor="">*Loại voucher</label>
-                <select
-                  {...register("type", { required: true })}
-                  id="type"
-                  className="select select-bordered w-full"
-                >
-                  <option value="" disabled selected hidden>
-                    Chọn loại voucher
-                  </option>
-                  <option value="Discount">Discount</option>
-                  <option value="Shipping">Shipping</option>
-                </select>
-                {errors.type && (
-                  <span className="text-red-500">
-                    Vui lòng chọn loại voucher
-                  </span>
-                )}
-              </div>
-              <div className="w-2/4 flex flex-col gap-3">
-                <label htmlFor="code">*Giảm giá</label>
-                <input
-                  type="text"
-                  {...register("discountValue", { required: "Giá trị voucher là bắt buộc" })}
-                  id="discountValue"
-                  className="input input-bordered w-full"
-                />
-                {errors.code && (
-                  <p className="text-red-500">{errors.code.message}</p>
-                )}
-              </div>
+  <label htmlFor="">*Loại voucher</label>
+  <select
+    {...register("type", { required: true })}
+    id="type"
+    className="select select-bordered w-full"
+    onChange={(e) => {
+      // Xử lý khi loại voucher thay đổi
+      setValue("discountValue", ""); // Reset giá trị voucher khi thay đổi loại voucher
+    }}
+  >
+    <option value="" disabled selected hidden>
+      Chọn loại voucher
+    </option>
+    <option value="Discount">Discount</option>
+    <option value="Shipping">Shipping</option>
+  </select>
+  {errors.type && (
+    <span className="text-red-500">Vui lòng chọn loại voucher</span>
+  )}
+</div>
+
+<div className="w-2/4 flex flex-col gap-3">
+  <label htmlFor="code">*Giảm giá</label>
+  <input
+    type="number"
+    {...register("discountValue", {
+      required: "Giá trị voucher là bắt buộc",
+      validate: (value) => {
+        const type = getValues("type");
+        if (type === "Discount") {
+          if (value > 100) {
+            return "Giảm giá discount không thể vượt quá 100%";
+          }
+          if (value < 0) {
+            return "Giảm giá không thể nhỏ hơn 0";
+          }
+        } else if (type === "Shipping") {
+          if (value < 0) {
+            return "Giảm giá vận chuyển không thể nhỏ hơn 0";
+          }
+        }
+        return true;
+      },
+    })}
+    id="discountValue"
+    className="input input-bordered w-full"
+  />
+  {errors.discountValue && (
+    <p className="text-red-500">{errors.discountValue.message}</p>
+  )}
+</div>
+
             </div>
             <div className="flex items-center gap-12">
               <div className="w-2/6 flex flex-col gap-3">
