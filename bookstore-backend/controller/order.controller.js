@@ -10,7 +10,7 @@ module.exports = {
   getOrderById,
   getPendingOrders,
   getOrderStatusByProduct,
-  handleReview
+  handleReview,
 };
 
 async function getAll() {
@@ -25,7 +25,9 @@ async function getAll() {
 
 async function getPendingOrders() {
   try {
-    const result = await orderModel.find({ status: "Chờ xác nhận" }).sort({ date: 1 });
+    const result = await orderModel
+      .find({ status: "Chờ xác nhận" })
+      .sort({ date: 1 });
     return result;
   } catch (error) {
     console.log("Lỗi lấy danh sách đơn hàng chờ xác nhận", error);
@@ -73,6 +75,9 @@ async function create(req, res) {
 
     const result = await newOrder.save();
 
+    const io = require("../socket").getIO();
+    io.emit("newOrder", newOrder);
+
     res.status(201).json(result);
   } catch (error) {
     res.status(500).json({
@@ -98,7 +103,9 @@ async function updateOrderStatus(id, status) {
   const newStatusIndex = validStatuses.indexOf(status);
 
   if (newStatusIndex <= currentStatusIndex) {
-    throw new Error("Không thể chuyển trạng thái đơn hàng về trạng thái trước đó.");
+    throw new Error(
+      "Không thể chuyển trạng thái đơn hàng về trạng thái trước đó."
+    );
   }
 
   // Cập nhật trạng thái và thời gian cập nhật
@@ -205,10 +212,16 @@ async function getOrderStatusByProduct(req, res) {
     });
 
     if (!order) {
-      return res.status(404).json({ message: "Không tìm thấy sản phẩm trong đơn hàng thành công." });
+      return res
+        .status(404)
+        .json({
+          message: "Không tìm thấy sản phẩm trong đơn hàng thành công.",
+        });
     }
 
-    const product = order.listProducts.find((item) => item._id.toString() === productId);
+    const product = order.listProducts.find(
+      (item) => item._id.toString() === productId
+    );
     if (!product) {
       return res.status(404).json({ message: "Sản phẩm không tồn tại." });
     }
@@ -230,7 +243,9 @@ async function getOrderStatusByProduct(req, res) {
 
 async function handleReview() {
   try {
-    const response = await fetch(`${URL_API}/review/${productId}`, { method: "PUT" });
+    const response = await fetch(`${URL_API}/review/${productId}`, {
+      method: "PUT",
+    });
 
     if (!response.ok) {
       const errorData = await response.json();
@@ -245,4 +260,3 @@ async function handleReview() {
     toast.error("Không thể gửi đánh giá. Vui lòng thử lại.");
   }
 }
-
