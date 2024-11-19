@@ -40,7 +40,7 @@ const ProductItem = ({ className = "", item }) => {
   };
 
   if (!item) {
-    return null; 
+    return null;
   }
   const handleNavigateToDetail = async () => {
     try {
@@ -62,8 +62,8 @@ const ProductItem = ({ className = "", item }) => {
           className={`flex ${
             isHorizontal ? "flex-row border justify-start max-lg:flex-col" : "flex-col"
           } items-center gap-4 text-center cursor-pointer py-5 px-2 relative max-md:py-2 max-md:px-0`}>
-          <div className="w-10 h-10 rounded-full bg-yellow-400 flex items-center justify-center text-white absolute left-0 top-0 ">
-            20%
+          <div className="w-10 h-10 rounded-full bg-yellow-400 flex items-center justify-center text-white absolute left-6 top-0 ">
+            {`${Math.round(((price1 - price2) / price1) * 100)}%`}
           </div>
           <img
             src={`${URL_API}/images/${image1}`}
@@ -91,23 +91,23 @@ const ProductItem = ({ className = "", item }) => {
                   isHorizontal ? "justify-start" : "justify-center max-md:text-sm"
                 }`}>
                 <div className="text-red text-lg font-semibold leading-normal">
-    {price2 != null
-      ? price2.toLocaleString("vi-VN", {
-          style: "currency",
-          currency: "VND",
-        })
-      : "N/A"}
-  </div>
-  <div className="line-through text-grayText">
-    {price1 != null
-      ? price1.toLocaleString("vi-VN", {
-          style: "currency",
-          currency: "VND",
-        })
-      : "N/A"}
-  </div>
+                  {price2 != null
+                    ? price2.toLocaleString("vi-VN", {
+                        style: "currency",
+                        currency: "VND",
+                      })
+                    : "N/A"}
+                </div>
+                <div className="line-through text-grayText">
+                  {price1 != null
+                    ? price1.toLocaleString("vi-VN", {
+                        style: "currency",
+                        currency: "VND",
+                      })
+                    : "N/A"}
+                </div>
               </div>
-              <ProductViews views={view}/>
+              <ProductViews views={view} />
             </div>
           </div>
         </div>
