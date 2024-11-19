@@ -34,10 +34,7 @@ app.use(cors());
 
 // Connect to MongoDB
 mongoose
-  .connect(process.env.MONGODB_URI || "mongodb://localhost:27017/booktopia", {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
+  .connect(process.env.MONGODB_URI || "mongodb://localhost:27017/booktopia")
   .then(() => console.log("Kết nối database thành công"))
   .catch((err) => {
     console.error("Kết nối database thất bại", err);

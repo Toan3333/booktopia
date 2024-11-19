@@ -23,11 +23,13 @@ router.get("/pending", async (req, res) => {
 });
 router.post("/", async (req, res) => {
   try {
-    const result = await orderController.create(req, res);
+    const result = await orderController.create(req, res, req.io);
     return res.status(201).json(result);
   } catch (error) {
     console.log("Tạo đơn hàng không thành công", error);
-    res.status(500).json({ message: "Lỗi khi tạo đơn hàng", error: error.message });
+    res
+      .status(500)
+      .json({ message: "Lỗi khi tạo đơn hàng", error: error.message });
   }
 });
 

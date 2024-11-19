@@ -23,7 +23,9 @@ async function getAll() {
 
 async function getPendingOrders() {
   try {
-    const result = await orderModel.find({ status: "Chờ xác nhận" }).sort({ date: 1 });
+    const result = await orderModel
+      .find({ status: "Chờ xác nhận" })
+      .sort({ date: 1 });
     return result;
   } catch (error) {
     console.log("Lỗi lấy danh sách đơn hàng chờ xác nhận", error);
@@ -71,6 +73,9 @@ async function create(req, res) {
 
     const result = await newOrder.save();
 
+    const io = require("../socket").getIO();
+    io.emit("newOrder", newOrder);
+
     res.status(201).json(result);
   } catch (error) {
     res.status(500).json({
@@ -96,7 +101,9 @@ async function updateOrderStatus(id, status) {
   const newStatusIndex = validStatuses.indexOf(status);
 
   if (newStatusIndex <= currentStatusIndex) {
-    throw new Error("Không thể chuyển trạng thái đơn hàng về trạng thái trước đó.");
+    throw new Error(
+      "Không thể chuyển trạng thái đơn hàng về trạng thái trước đó."
+    );
   }
 
   // Cập nhật trạng thái và thời gian cập nhật

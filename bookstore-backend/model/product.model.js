@@ -13,8 +13,8 @@ const productSchema = new Schema({
   description: { type: String, required: true },
   quantity: { type: Number, required: true },
   sale: { type: Number, required: false },
-  hot: { type: Number, default: 0},
-  view: { type: Number, default: 0},
+  hot: { type: Number, default: 0 },
+  view: { type: Number, default: 0 },
   publish: {
     type: {
       publishId: { type: ObjectId, required: true },

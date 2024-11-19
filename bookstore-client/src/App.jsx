@@ -41,6 +41,7 @@ import ManageVoucher from "./pages/Admin/ManageVoucher/ManageVoucher";
 import AddVoucher from "./pages/Admin/AddVoucher/AddVoucher";
 import EditVoucher from "./pages/Admin/EditVoucher/EditVoucher";
 import ManageContact from "./pages/Admin/ManageContact/ManageContact";
+import Notification from "./pages/Admin/Notification/Notification";
 
 function App() {
   return (
@@ -85,6 +86,7 @@ function App() {
         <Route path="/admin/add-blog" element={<AddBlog />} />
         <Route path="/admin/add-voucher" element={<AddVoucher />} />
         <Route path="/admin/edit-voucher/:id" element={<EditVoucher />} />
+        <Route path="/notification" element={<Notification />} />
         {/* <Route
           path="/admin/edit-voucher"
           element={
