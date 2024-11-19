@@ -32,6 +32,11 @@ const orderSchema = new Schema({
       price2: { type: Number, required: true },
       price1: { type: Number, required: true },
       quantity: { type: Number, required: true },
+      reviewStatus: {
+        type: String,
+        enum: ["Chưa đánh giá", "Đã đánh giá"],
+        default: "Chưa đánh giá", 
+      },
     },
   ],
 

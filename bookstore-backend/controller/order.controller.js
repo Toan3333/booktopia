@@ -9,6 +9,8 @@ module.exports = {
   getOrdersByUserId,
   getOrderById,
   getPendingOrders,
+  getOrderStatusByProduct,
+  handleReview
 };
 
 async function getAll() {
@@ -191,3 +193,56 @@ async function getOrderById(id) {
     throw error;
   }
 }
+async function getOrderStatusByProduct(req, res) {
+  try {
+    const { userId, productId } = req.params;
+
+    // Tìm đơn hàng thành công có chứa sản phẩm với productId
+    const order = await orderModel.findOne({
+      userId,
+      status: "Giao thành công",
+      "listProducts._id": productId, // Lọc theo productId
+    });
+
+    if (!order) {
+      return res.status(404).json({ message: "Không tìm thấy sản phẩm trong đơn hàng thành công." });
+    }
+
+    const product = order.listProducts.find((item) => item._id.toString() === productId);
+    if (!product) {
+      return res.status(404).json({ message: "Sản phẩm không tồn tại." });
+    }
+
+    const reviewStatus = product.reviewStatus || "Chưa đánh giá";
+
+    return res.status(200).json({
+      orderId: order.orderId,
+      product: {
+        productId: productId,
+        status: reviewStatus, // Trả trạng thái đánh giá
+      },
+    });
+  } catch (error) {
+    console.log("Lỗi khi lấy trạng thái sản phẩm trong đơn hàng:", error);
+    return res.status(500).json({ message: error.message });
+  }
+}
+
+async function handleReview() {
+  try {
+    const response = await fetch(`${URL_API}/review/${productId}`, { method: "PUT" });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      toast.error(errorData.message);
+      return;
+    }
+
+    setOrderStatus("Đã đánh giá");
+    toast.success("Đánh giá đã được ghi nhận.");
+  } catch (error) {
+    console.error("Lỗi khi gửi đánh giá:", error);
+    toast.error("Không thể gửi đánh giá. Vui lòng thử lại.");
+  }
+}
+

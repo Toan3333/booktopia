@@ -52,7 +52,7 @@ const ProductItem = ({ className = "", item }) => {
   };
 
   const isHorizontal = className.includes("horizontal");
-  const { name, image1, price1, price2, author, view } = item;
+  const { name, image1, price1 = 0, price2 = 0, author, view } = item;
 
   return (
     <div className={`py-4 max-md:py-0 ${isHorizontal ? "py-0" : ""}`}>
@@ -91,17 +91,21 @@ const ProductItem = ({ className = "", item }) => {
                   isHorizontal ? "justify-start" : "justify-center max-md:text-sm"
                 }`}>
                 <div className="text-red text-lg font-semibold leading-normal">
-                  {price2.toLocaleString("vi-VN", {
-                    style: "currency",
-                    currency: "VND",
-                  })}
-                </div>
-                <div className="line-through text-grayText">
-                  {price1.toLocaleString("vi-VN", {
-                    style: "currency",
-                    currency: "VND",
-                  })}
-                </div>
+    {price2 != null
+      ? price2.toLocaleString("vi-VN", {
+          style: "currency",
+          currency: "VND",
+        })
+      : "N/A"}
+  </div>
+  <div className="line-through text-grayText">
+    {price1 != null
+      ? price1.toLocaleString("vi-VN", {
+          style: "currency",
+          currency: "VND",
+        })
+      : "N/A"}
+  </div>
               </div>
               <ProductViews views={view}/>
             </div>

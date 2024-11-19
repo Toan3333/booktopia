@@ -14,7 +14,10 @@ import Swal from "sweetalert2";
 import axios from "axios";
 import ProductItem from "../../components/Product/ProductItem";
 import { useDispatch, useSelector } from "react-redux";
-import { addToCart, updateCartItemQuantity } from "../../redux/slices/cartslide";
+import {
+  addToCart,
+  updateCartItemQuantity,
+} from "../../redux/slices/cartslide";
 import LightGallery from "lightgallery/react";
 import "react-image-gallery/styles/css/image-gallery.css";
 import { ToastContainer, toast } from "react-toastify";
@@ -31,7 +34,7 @@ import ReviewList from "../../components/Review/ReviewList";
 
 const ProductDetail = () => {
   const [activeTab, setActiveTab] = useState("info");
-  const [inforUser, setInforUser] = useState(null);
+  const [inforUser, setInforUser] = useState({});
   const { id } = useParams();
   const [productDetailData, setProductDetailData] = useState(null);
   const [commentDetailData, setCommentDetailData] = useState(null);
@@ -44,20 +47,16 @@ const ProductDetail = () => {
   const navigate = useNavigate();
   const [contentComment, setContentComment] = useState("");
   const [contentReview, setContentReview] = useState("");
-  const [rating, setRating] = useState(0); // Thêm state cho rating (sao)
-
+  const [rating, setRating] = useState(0);
+  const [orderStatus, setOrderStatus] = useState(null);
+  const [orderId, setOrderId] = useState(null);
+  const [isReviewed, setIsReviewed] = useState(false);
   const favouriteItems = useSelector((state) => state.favourite?.items) || [];
-  // lấy thong tin user trên coookie
 
-  useEffect(() => {
-    const userCookie = Cookies.get("user");
-    if (userCookie) {
-      const userData = JSON.parse(userCookie);
-      setInforUser(userData?.user);
-    } else {
-      console.log("User not found in cookie");
-    }
-  }, []);
+  
+  const userId = inforUser?._id;
+  const { id: productId } = useParams(); 
+
 
   useEffect(() => {}, [favouriteItems]);
 
@@ -75,6 +74,52 @@ const ProductDetail = () => {
 
     fetchProductDetail();
   }, [id]);
+ 
+  const fetchOrderStatus = async (userId, productId) => {
+    try {
+      const response = await fetch(`${URL_API}/orders/status/${userId}/${productId}`);
+      const data = await response.json();
+      console.log("Trạng thái đơn hàng:", data);
+
+      if (data.product?.status === "Chưa đánh giá") {
+        setOrderStatus("Giao thành công");
+      } else if (data.product?.status === "Đã đánh giá") {
+        setOrderStatus("Đã đánh giá");
+      } else {
+        setOrderStatus("Không tìm thấy");
+      }
+    } catch (error) {
+      console.error("Lỗi khi lấy trạng thái:", error);
+      setOrderStatus("Không tìm thấy");
+    }
+  };
+
+  useEffect(() => {
+    const userCookie = Cookies.get("user");
+    if (userCookie) {
+      try {
+        const userData = JSON.parse(userCookie);
+        if (userData?.user?._id) {
+          setInforUser(userData.user);
+        } else {
+          console.error("Không tìm thấy userId trong cookie");
+        }
+      } catch (err) {
+        console.error("Lỗi khi parse cookie:", err);
+      }
+    } else {
+      console.log("Cookie không tồn tại");
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!userId) {
+      console.warn("userId chưa được xác định.");
+    } else if (id) {
+      console.log("userId đã xác định:", userId);
+      fetchOrderStatus(userId, id); // Chỉ gọi khi đủ điều kiện
+    }
+  }, [userId, id]);
 
   // show bình luận
   const fetchComment = async () => {
@@ -138,13 +183,23 @@ const ProductDetail = () => {
   const handleIncreaseQuantity = () => {
     const newQuantity = quantityDetail + 1;
     setQuantityDetail(newQuantity);
-    dispatch(updateCartItemQuantity({ id: productDetailData._id, quantity: newQuantity }));
+    dispatch(
+      updateCartItemQuantity({
+        id: productDetailData._id,
+        quantity: newQuantity,
+      })
+    );
   };
 
   const handleDecreaseQuantity = () => {
     const newQuantity = Math.max(quantityDetail - 1, 1); // Đảm bảo số lượng không nhỏ hơn 1
     setQuantityDetail(newQuantity);
-    dispatch(updateCartItemQuantity({ id: productDetailData._id, quantity: newQuantity }));
+    dispatch(
+      updateCartItemQuantity({
+        id: productDetailData._id,
+        quantity: newQuantity,
+      })
+    );
   };
 
   const handleBuyNow = () => {
@@ -192,34 +247,75 @@ const ProductDetail = () => {
     fetchComment();
   };
 
-  // lấy thông tin user để cho đánh giá
   const handleReview = async () => {
+    const reviewStatus = localStorage.getItem(`reviewed-${id}`);
+    if (reviewStatus === "true") {
+      toast.info("Bạn đã đánh giá sản phẩm này rồi.");
+      setIsReviewed(true); // Ẩn form khi đã đánh giá
+      return;
+    }
+  
     if (!inforUser) {
       toast.error("Vui lòng đăng nhập và mua hàng để đánh giá");
       return;
     }
+  
     if (!contentReview) {
       toast.error("Vui lòng nhập nội dung đánh giá");
       return;
     }
-
+  
     if (!rating) {
-      // Kiểm tra nếu rating chưa được chọn
       toast.error("Vui lòng chọn đánh giá sao");
       return;
     }
+  
+    if (orderStatus !== "Giao thành công") {
+      toast.error("Bạn chỉ có thể đánh giá sản phẩm khi đơn hàng đã được giao thành công.");
+      return;
+    }
+  
     const data = {
       content: contentReview,
       user: inforUser?._id,
       book: id,
       rating: rating,
     };
-    await axios.post(`${URL_API}/review`, data);
-    toast.success("Đánh giá thành công");
-    setContentReview("");
-    fetchReview();
-    window.location.reload(true);
+  
+    try {
+      // Gửi đánh giá
+      const response = await axios.post(`${URL_API}/review`, data);
+  
+      if (response.status === 201) {
+        toast.success("Đánh giá thành công");
+        setOrderStatus("Đã đánh giá");
+        setIsReviewed(true);
+        localStorage.setItem(`reviewed-${id}`, "true");
+        const updateResponse = await fetch(`${URL_API}/order/${orderId}`, {
+          method: "PUT",
+          body: JSON.stringify({ status: "Đã đánh giá" }),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+  
+        if (updateResponse.ok) {
+          toast.success("Trạng thái đơn hàng đã được cập nhật.");
+        } else {
+          const errorData = await updateResponse.json();
+          console.error("Lỗi khi cập nhật trạng thái:", errorData);
+        }
+  
+        setContentReview("");
+        setRating(0);
+        fetchReview(); 
+      }
+    } catch (error) {
+      toast.error("Có lỗi xảy ra, vui lòng thử lại.");
+      console.error("Error posting review:", error);
+    }
   };
+  
 
   // xóa bình luận
   const handleDeleteComment = async (id) => {
@@ -276,7 +372,8 @@ const ProductDetail = () => {
                           plugins={[lgZoom, lgThumbnail]}
                           mode="lg-fade"
                           thumbnail={true}
-                          elementClassNames={"gallery"}>
+                          elementClassNames={"gallery"}
+                        >
                           <a href={`${URL_API}/images/${img}`}>
                             <img
                               src={`${URL_API}/images/${img}`}
@@ -309,7 +406,8 @@ const ProductDetail = () => {
                     plugins={[lgZoom, lgThumbnail]}
                     mode="lg-fade"
                     elementClassNames={"gallery"}
-                    thumbnail={true}>
+                    thumbnail={true}
+                  >
                     <a href={`${URL_API}/images/${image1}`}>
                       <img
                         src={`${URL_API}/images/${image1}`}
@@ -334,7 +432,10 @@ const ProductDetail = () => {
             </div>
           </div>
           <div className="w-[45%] max-md:w-full">
-            <PageTitle title={name} className="mb-5 max-xl:text-xl text-2xl leading-8" />
+            <PageTitle
+              title={name}
+              className="mb-5 max-xl:text-xl text-2xl leading-8"
+            />
             <div className="flex items-center gap-8 max-md:gap-2 max-lg:gap-2">
               <div className="text-red">
                 {price1.toLocaleString("vi-VN", {
@@ -356,15 +457,22 @@ const ProductDetail = () => {
             <div className="flex justify-between mt-8 gap-5 max-md:hidden max-lg:gap-3">
               <div className="w-full flex flex-col gap-3 text-text">
                 <div>
-                  Tác giả: <span className="text-mainDark leading-normal">{author.authorName}</span>
+                  Tác giả:{" "}
+                  <span className="text-mainDark leading-normal">
+                    {author.authorName}
+                  </span>
                 </div>
                 <div>
                   Nhà xuất bản:{" "}
-                  <span className="text-mainDark leading-normal">{publish.publishName}</span>
+                  <span className="text-mainDark leading-normal">
+                    {publish.publishName}
+                  </span>
                 </div>
                 <div>
                   Danh mục:{" "}
-                  <span className="text-mainDark leading-normal">{category.categoryName}</span>
+                  <span className="text-mainDark leading-normal">
+                    {category.categoryName}
+                  </span>
                 </div>
                 <div>Kho: {quantity}</div>
               </div>
@@ -393,7 +501,10 @@ const ProductDetail = () => {
                   </button>
                 </div>
                 <div className="flex items-center gap-2 ml-4 text-text font-normal">
-                  <CiHeart className="w-8 h-8 cursor-pointer" onClick={handleAddToFavourite} />
+                  <CiHeart
+                    className="w-8 h-8 cursor-pointer"
+                    onClick={handleAddToFavourite}
+                  />
                   Yêu thích
                 </div>
               </div>
@@ -404,7 +515,8 @@ const ProductDetail = () => {
               </Button>
               <Button
                 onClick={handleAddToCart}
-                className="rounded-md button-add w-full bg-white flex items-center justify-center gap-2">
+                className="rounded-md button-add w-full bg-white flex items-center justify-center gap-2"
+              >
                 <HiOutlineShoppingBag />
                 Thêm vào giỏ hàng
               </Button>
@@ -416,27 +528,32 @@ const ProductDetail = () => {
             className={`text-[18px] font-semibold cursor-pointer ${
               activeTab === "info" ? "text-text" : "text-grayText"
             }`}
-            onClick={() => setActiveTab("info")}>
+            onClick={() => setActiveTab("info")}
+          >
             Thông tin sản phẩm
           </h3>
           <h3
             className={`text-[18px] font-semibold cursor-pointer ${
               activeTab === "comments" ? "text-text" : "text-grayText"
             }`}
-            onClick={() => setActiveTab("comments")}>
+            onClick={() => setActiveTab("comments")}
+          >
             Bình luận
           </h3>
           <h3
             className={`text-[18px] font-semibold cursor-pointer ${
               activeTab === "reviews" ? "text-text" : "text-grayText"
             }`}
-            onClick={() => setActiveTab("reviews")}>
+            onClick={() => setActiveTab("reviews")}
+          >
             Đánh giá
           </h3>
         </div>
         {activeTab === "info" && (
           <div className="mt-7">
-            <p className="text-text font-normal leading-normal">{description}</p>
+            <p className="text-text font-normal leading-normal">
+              {description}
+            </p>
           </div>
         )}
         {activeTab === "comments" && (
@@ -456,7 +573,10 @@ const ProductDetail = () => {
                     placeholder="Hãy nhận xét gì đó ...."
                     className="input input-bordered w-full "
                   />
-                  <Button className="text-nowrap" onClick={() => handleConment()}>
+                  <Button
+                    className="text-nowrap"
+                    onClick={() => handleConment()}
+                  >
                     Gửi
                   </Button>
                 </div>
@@ -465,54 +585,51 @@ const ProductDetail = () => {
           </div>
         )}
         {activeTab === "reviews" && (
-          <div className="mt-10">
-            <PageTitle title={`${reviewDetailData.length} lượt đánh giá`} />
-            <ReviewList
-              handleDeleteReview={handleDeleteReview}
-              reviewDetailData={reviewDetailData || []}
-            />
-            <form action="" className="mt-7">
-              <div className="flex items-center">
-                <span
-                  onClick={() => setRating(1)}
-                  className={`cursor-pointer ${rating >= 1 ? "text-yellow-500" : "text-gray-400"}`}>
-                  ★
-                </span>
-                <span
-                  onClick={() => setRating(2)}
-                  className={`cursor-pointer ${rating >= 2 ? "text-yellow-500" : "text-gray-400"}`}>
-                  ★
-                </span>
-                <span
-                  onClick={() => setRating(3)}
-                  className={`cursor-pointer ${rating >= 3 ? "text-yellow-500" : "text-gray-400"}`}>
-                  ★
-                </span>
-                <span
-                  onClick={() => setRating(4)}
-                  className={`cursor-pointer ${rating >= 4 ? "text-yellow-500" : "text-gray-400"}`}>
-                  ★
-                </span>
-                <span
-                  onClick={() => setRating(5)}
-                  className={`cursor-pointer ${rating >= 5 ? "text-yellow-500" : "text-gray-400"}`}>
-                  ★
-                </span>
-              </div>
-              <div className="w-[100%] flex gap-2 mt-3">
-                <input
-                  onChange={(e) => setContentReview(e.target.value)}
-                  type="text"
-                  placeholder="Hãy nhập đánh giá của bạn..."
-                  className="input input-bordered w-full "
-                />
-                <Button className="text-nowrap" onClick={() => handleReview()}>
-                  Gửi
-                </Button>
-              </div>
-            </form>
-          </div>
-        )}
+  <div className="mt-10">
+    <PageTitle title={`${reviewDetailData.length} lượt đánh giá`} />
+    <ReviewList
+      handleDeleteReview={handleDeleteReview}
+      reviewDetailData={reviewDetailData || []}
+    />
+
+{!isReviewed && orderStatus === "Giao thành công" ? (
+  <form action="" className="mt-7">
+    {/* Form đánh giá */}
+    <div className="flex items-center">
+      {[1, 2, 3, 4, 5].map((value) => (
+        <span
+          key={value}
+          onClick={() => setRating(value)}
+          className={`cursor-pointer ${
+            rating >= value ? "text-yellow-500" : "text-gray-400"
+          }`}
+        >
+          ★
+        </span>
+      ))}
+    </div>
+    <div className="w-[100%] flex gap-2 mt-3">
+      <input
+        onChange={(e) => setContentReview(e.target.value)}
+        type="text"
+        placeholder="Hãy nhập đánh giá của bạn..."
+        className="input input-bordered w-full"
+      />
+      <Button className="text-nowrap" onClick={() => handleReview()}>
+        Gửi
+      </Button>
+    </div>
+  </form>
+) : orderStatus === "Đã đánh giá" ? (
+  <p className="text-gray-500 mt-5">Bạn đã đánh giá sản phẩm này.</p>
+) : (
+  <p className="text-gray-500 mt-5">Bạn chỉ có thể đánh giá sản phẩm khi đơn hàng đã được giao thành công.</p>
+)}
+
+  </div>
+)}
+
+
         <div>
           <ProductRelated id={id} />
         </div>
@@ -527,7 +644,9 @@ const ProductRelated = ({ id }) => {
   useEffect(() => {
     const fetchProductListRelated = async () => {
       try {
-        const response = await axios.get(`${URL_API}/products/related/${id}/related`);
+        const response = await axios.get(
+          `${URL_API}/products/related/${id}/related`
+        );
         setProductListRelated(response.data);
       } catch (error) {
         console.error("Failed to fetch related products:", error);
