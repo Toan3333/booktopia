@@ -89,4 +89,51 @@ router.get("/:id", async (req, res) => {
     return res.status(500).json(error);
   }
 });
+router.get("/status/:userId/:productId", async (req, res) => {
+  try {
+    // Gọi controller mà không trả kết quả lại trong route
+    await orderController.getOrderStatusByProduct(req, res);
+  } catch (error) {
+    console.log("Lỗi khi lấy trạng thái đơn hàng:", error);
+    return res.status(500).json({ message: error.message });
+  }
+});
+// Route cập nhật đánh giá
+router.put("/review/:productId", async (req, res) => {
+  try {
+    const { productId } = req.params;
+
+    // Tìm đơn hàng của người dùng có chứa sản phẩm và trạng thái "Giao thành công"
+    const order = await orderModel.findOne({
+      "listProducts._id": productId,
+    });
+
+    if (!order) {
+      return res.status(404).json({ message: "Không tìm thấy sản phẩm trong đơn hàng." });
+    }
+
+    const product = order.listProducts.find((item) => item._id.toString() === productId);
+
+    if (product.reviewStatus === "Đã đánh giá") {
+      return res.status(400).json({ message: "Sản phẩm này đã được đánh giá." });
+    }
+
+    // Cập nhật trạng thái reviewStatus của sản phẩm
+    const result = await orderModel.updateOne(
+      { "listProducts._id": productId },
+      { $set: { "listProducts.$.reviewStatus": "Đã đánh giá" } }
+    );
+
+    if (result.modifiedCount === 0) {
+      return res.status(404).json({ message: "Không tìm thấy sản phẩm để cập nhật." });
+    }
+
+    return res.status(200).json({ message: "Đánh giá đã được ghi nhận." });
+  } catch (error) {
+    console.error("Lỗi khi cập nhật trạng thái đánh giá:", error);
+    return res.status(500).json({ message: error.message });
+  }
+});
+
+
 module.exports = router;

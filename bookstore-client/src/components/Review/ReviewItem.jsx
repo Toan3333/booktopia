@@ -11,7 +11,7 @@ const renderStars = (rating) => {
   return stars.join(""); // Trả về chuỗi các sao
 };
 
-const ReviewItem = ({ dataReview, handleDeleteReview }) => {
+const ReviewItem = ({ dataReview, handleDeleteReview}) => {
   const [inforUser, setInforUser] = useState(null);
 
   useEffect(() => {
@@ -24,8 +24,8 @@ const ReviewItem = ({ dataReview, handleDeleteReview }) => {
     }
   }, []);
 
-  console.log("dataReview:", dataReview); // Debugging log to see the structure
-
+  console.log("dataReview:", dataReview);
+  
   return (
     <div className="mt-10">
       <div className="">
@@ -83,6 +83,7 @@ const ReviewItem = ({ dataReview, handleDeleteReview }) => {
           <h1>Không có đánh giá</h1> // Hiển thị khi không có đánh giá
         )}
       </div>
+    
     </div>
   );
 };
