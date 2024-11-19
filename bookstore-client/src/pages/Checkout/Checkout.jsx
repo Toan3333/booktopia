@@ -86,10 +86,10 @@ const Checkout = () => {
     const user = Cookies.get("user");
     if (user) {
       const userData = JSON.parse(user);
-      setValue("name", userData.user.name);
-      setValue("email", userData.user.email);
-      setValue("phone", userData.user.phone);
-      setValue("address", userData.user.address);
+      setValue("name", userData?.user?.name || "");
+      setValue("email", userData?.user?.email || "");
+      setValue("phone", userData?.user?.phone || "");
+      setValue("address", userData?.user?.address || "");
     }
   }, [setValue]);
   // console.log((total + 30000).toLocaleString("vi-VN", {
@@ -104,7 +104,7 @@ const Checkout = () => {
           text: "Vui lòng chọn phương thức thanh toán trước khi tiếp tục.",
           icon: "warning",
         });
-        return;  // Dừng lại nếu chưa chọn phương thức thanh toán
+        return; // Dừng lại nếu chưa chọn phương thức thanh toán
       }
 
       if (selectedOption === "paypal" && paymentStatus !== "Đã thanh toán") {
