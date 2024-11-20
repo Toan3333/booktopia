@@ -1,5 +1,6 @@
 const userModel = require("../model/user.model");
 const bcrypt = require("bcryptjs");
+const { v4: uuidv4 } = require("uuid");
 const jwt = require("jsonwebtoken");
 module.exports = {
   gettAll,
@@ -25,6 +26,7 @@ async function register(body) {
     const hash = bcrypt.hashSync(password, salt);
 
     user = new userModel({
+      uid: uuidv4(), // Tạo một uid duy nhất (UUID) cho người dùng
       name,
       username,
       email,
