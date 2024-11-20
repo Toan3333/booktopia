@@ -33,7 +33,9 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(cors());
 
 // Connect to MongoDB
+
 const DB = process.env.DATABASE.replace("<PASSWORD>", process.env.DATABASE_PASSWORD);
+
 mongoose
   .connect(DB)
   .then(() => console.log("Kết nối database thành công"))
