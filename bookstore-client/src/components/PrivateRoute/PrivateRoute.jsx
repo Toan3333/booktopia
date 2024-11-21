@@ -33,9 +33,9 @@ const PrivateRoute = ({ children, allowedRoles }) => {
     const userRole = user ? user.user.role : null; //role từ user
 
     // // Kiểm tra role
-    // if (allowedRoles.includes(userRole) || (!user && allowedRoles.includes(0))) {
-    //   return children; // Cho phép truy cập
-    // }
+    if (allowedRoles.includes(userRole) || (!user && allowedRoles.includes(0))) {
+      return children; // Cho phép truy cập
+    }
 
     //về trang đăng nhập, không có quyền
     return <Navigate to="/sign-in" replace />;

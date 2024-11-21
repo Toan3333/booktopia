@@ -30,7 +30,6 @@ const PurchaseHistory = () => {
 
   const fetchOrders = async (userId) => {
     try {
-      debugger
       const response = await axios.get(`${URL_API}/orders/user/${userId}`);
       setOrders(response.data);
       console.log(response.data);
