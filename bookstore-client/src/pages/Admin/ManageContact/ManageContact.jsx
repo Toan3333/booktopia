@@ -18,7 +18,7 @@ import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import { showSwalFireDelete } from "../../../helpers/helpers";
 import { MdMarkEmailRead } from "react-icons/md";
-
+import { MdInventory } from "react-icons/md";
 
 const ManageContact = () => {
   const navigate = useNavigate();
@@ -123,6 +123,12 @@ const ManageContact = () => {
               <div className="flex items-center gap-4">
                 <MdMarkEmailRead />
                 Quản lý liên hệ
+              </div>
+            </MenuItem>
+            <MenuItem component={<Link to="/admin/stock" />}>
+              <div className="flex items-center gap-4">
+              <MdInventory />
+                Quản lý tồn kho
               </div>
             </MenuItem>
             <MenuItem onClick={handleLogout}>

@@ -169,9 +169,16 @@ const Checkout = () => {
                     method: "PUT",
                   })
                 );
+                //giống cái ở trên
+                const quantityPromises = Array.from({ length: quantity }).map(
+                  () =>
+                    fetch(`${URL_API}/products/${productId}/quantity`, {
+                      method: "PUT",
+                    })
+                );
 
                 //chờ gọi api xong
-                await Promise.all([...hotPromises, ...salePromises]);
+                await Promise.all([...hotPromises, ...salePromises, ...quantityPromises]);
               } catch (error) {
                 console.error(`Error processing product ${productId}:`, error);
               }
@@ -452,7 +459,7 @@ const Checkout = () => {
                       <Paypal
                         payload={{
                           products: listProducts,
-                          total: total + shippingFee - discount, 
+                          total: total + shippingFee - discount,
                           address: address,
                         }}
                         currency="USD"

@@ -13,7 +13,7 @@ import Swal from "sweetalert2";
 import { URL_API } from "../../../constants/constants";
 import { showSwalFireSuccess } from "../../../helpers/helpers";
 import { MdMarkEmailRead } from "react-icons/md";
-
+import { MdInventory } from "react-icons/md";
 const AddCategory = () => {
   const navigate = useNavigate();
   const [collapsed, setCollapsed] = useState(false);
@@ -102,8 +102,14 @@ const AddCategory = () => {
             </SubMenu>
             <MenuItem component={<Link to="/admin/manage-contact" />}>
               <div className="flex items-center gap-4">
-                <MdMarkEmailRead />
+              <MdInventory />
                 Quản lý liên hệ
+              </div>
+            </MenuItem>
+            <MenuItem component={<Link to="/admin/stock" />}>
+              <div className="flex items-center gap-4">
+                <MdMarkEmailRead />
+                Quản lý tồn kho
               </div>
             </MenuItem>
             <MenuItem onClick={handleLogout}>

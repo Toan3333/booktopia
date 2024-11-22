@@ -15,7 +15,7 @@ import { AiFillDashboard, AiOutlineBars } from "react-icons/ai";
 import PageTitle from "../../../components/PageTitle/PageTitle";
 import HeaderAdmin from "../../../components/HeaderAdmin/HeaderAdmin";
 import axios from "axios";
-
+import { MdInventory } from "react-icons/md";
 import { URL_API } from "../../../constants/constants";
 import { showSwalFireDelete } from "../../../helpers/helpers";
 import { MdMarkEmailRead } from "react-icons/md";
@@ -107,6 +107,12 @@ const ManageUser = () => {
               <div className="flex items-center gap-4">
                 <MdMarkEmailRead />
                 Quản lý liên hệ
+              </div>
+            </MenuItem>
+            <MenuItem component={<Link to="/admin/stock" />}>
+              <div className="flex items-center gap-4">
+              <MdInventory />
+                Quản lý tồn kho
               </div>
             </MenuItem>
             <MenuItem onClick={handleLogout}>

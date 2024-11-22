@@ -4,58 +4,58 @@ import { Sidebar, Menu, MenuItem, SubMenu } from "react-pro-sidebar";
 import {
   FaBook,
   FaClipboardList,
-  FaPlus,
+  FaGift,
+  FaMoneyBill,
   FaRegEdit,
+  FaShoppingBag,
   FaTrashAlt,
   FaUser,
   FaUserEdit,
-  FaGift
+  FaUsers,
+  FaPlus
 } from "react-icons/fa";
+import { MdInventory } from "react-icons/md";
 import { MdLogout } from "react-icons/md";
 import { AiFillDashboard, AiOutlineBars } from "react-icons/ai";
-import { MdMarkEmailRead } from "react-icons/md";
-import { MdInventory } from "react-icons/md";
-import PageTitle from "../../../components/PageTitle/PageTitle";
+import { format } from "date-fns";
 import HeaderAdmin from "../../../components/HeaderAdmin/HeaderAdmin";
+import PageTitle from "../../../components/PageTitle/PageTitle";
+
 import axios from "axios";
 import { URL_API } from "../../../constants/constants";
-import { showSwalFireDelete } from "../../../helpers/helpers";
+import Cookies from "js-cookie";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Rectangle } from "recharts";
+import { PieChart, Pie } from "recharts";
+import { MdMarkEmailRead } from "react-icons/md";
 
-const ManageCategory = () => {
-  const isAdmin = true;
-  const navigate = useNavigate();
-  const [collapsed, setCollapsed] = useState(false);
-  const handleLogout = () => {
-    // Perform logout operations here (e.g., clearing authentication tokens)
-    // Then navigate to the home page
-    navigate("/");
-  };
+const Stock = () => {
+    const isAdmin = true;
+    const navigate = useNavigate();
+    const [collapsed, setCollapsed] = useState(false);
+    const handleLogout = () => {
+      // Perform logout operations here (e.g., clearing authentication tokens)
+      // Then navigate to the home page
+      navigate("/");
+    };
+    const [allProductList, setAllProductList] = useState([]);
 
-  const [listCategory, setListCategory] = useState([]);
   useEffect(() => {
-    const fetchCategory = async () => {
+    const fetchProductList = async () => {
       try {
-        const response = await axios.get(`${URL_API}/category`);
+        const response = await axios.get(`${URL_API}/products`);
         const data = response.data;
-        setListCategory(data);
+        setAllProductList(data);
+        console.log(data);
       } catch (error) {
         console.log(error);
+        setAllProductList([]); // Đặt mảng rỗng trong trường hợp lỗi
       }
     };
-    fetchCategory();
+    fetchProductList();
   }, []);
-
-  const handleDelete = async (id) => {
-    try {
-      await axios.delete(`${URL_API}/category/delete/${id}`);
-      showSwalFireDelete("Xóa danh mục thành công");
-    } catch (error) {
-      console.log(error);
-    }
-  };
   return (
     <div>
-      <div className="flex min-h-screen border">
+        <div className="flex min-h-screen border">
         {/* Sidebar */}
         <Sidebar
           className={`relative border p-3 bg-white ${collapsed ? "collapsed" : "expanded"}`}
@@ -139,55 +139,77 @@ const ManageCategory = () => {
             />
           </svg>
         </button>
-        {/* Main Content */}
         <div className="flex-1 p-6">
           <HeaderAdmin />
-          <div className="flex items-center justify-between pb-8 border-b pt-3">
-            <PageTitle title="Quản lý danh mục" className="text-mainDark" />
-            <div>
-              <Link to="/admin/add-category">
-                <button className="flex items-center gap-2 bg-mainDark py-3 px-5 text-white font-semibold leading-normal rounded-[10px]">
-                  <FaPlus></FaPlus>Thêm
-                </button>
-              </Link>
-            </div>
+          <div className="flex items-center justify-between pb-5 border-b">
+            <PageTitle title="Danh sách tồn kho" className="text-mainDark" />
+            
           </div>
           <div className="mt-6 border rounded-[30px] p-5">
             <table className="table w-full">
               <thead className="text-[16px] font-semibold text-black">
                 <tr>
                   <th>#</th>
-                  <th>Tên danh mục</th>
-                  <th>Mô tả</th>
-                  <th className="text-center">Thao tác</th>
+                  <th>Hình ảnh</th>
+                  <th>Tên sách</th>
+                  <th>Tác giả</th>
+                  <th>Danh mục</th>
+                  <th>Nhà xuất bản</th>
+                  <th className="text-center">Giá</th>
+                  <th>Số lượng</th>
+                
                 </tr>
               </thead>
               <tbody>
-                {listCategory.map((item, index) => (
+                {allProductList.map((item, index) => (
                   <tr key={item._id}>
                     <td>{index + 1}</td>
-                    <td>{item.name}</td>
-                    <td className="max-w-[300px]">{item.description}</td>
                     <td>
-                      <div className="flex items-center justify-center gap-3">
-                        <Link to={`/admin/edit-category/${item._id}`}>
-                          <FaUserEdit className="w-5 h-5 text-main" />
-                        </Link>
-                        <button onClick={(e) => handleDelete(item._id)}>
-                          <FaTrashAlt className="w-5 h-4 text-red" />
-                        </button>
+                      <img
+                        src={`${URL_API}/images/${item.image1}`}
+                        className="w-20 h-20"
+                        alt={item.name}
+                      />
+                    </td>
+                    <td>{item.name}</td>
+                    <td>{item.author?.authorName || "Chưa có"}</td>
+                    <td>{item.category?.categoryName || "Chưa có"}</td>
+                    <td>{item.publish?.publishName || "Chưa có"}</td>
+                    <td>
+                      <div className="flex items-center justify-center gap-4">
+                        <div>
+                          {item.price1.toLocaleString("vi-VN", {
+                            style: "currency",
+                            currency: "VND",
+                          })}
+                        </div>
+                        <div className="text-red">
+                          {item.price2?.toLocaleString("vi-VN", {
+                            style: "currency",
+                            currency: "VND",
+                          }) || "chưa có"}
+                        </div>
                       </div>
                     </td>
+                    {item.quantity === 0 ? (
+                    <td className="text-red px-3 text-center">Hết hàng</td>
+                  ) : (
+                 
+                    <td className="px-3 text-center">{item.quantity}</td>
+                  )}
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
-          {/* Content goes here */}
         </div>
-      </div>
+
+
+
+        </div>
     </div>
+
   );
 };
 
-export default ManageCategory;
+export default Stock;

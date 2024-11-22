@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { Sidebar, Menu, MenuItem, SubMenu } from "react-pro-sidebar";
-
+import { MdInventory } from "react-icons/md";
 import {
   FaBook,
   FaClipboardList,
@@ -120,6 +120,12 @@ const PurchaseHistory = () => {
               <div className="flex items-center gap-4">
                 <MdMarkEmailRead />
                 Quản lý liên hệ
+              </div>
+            </MenuItem>
+            <MenuItem component={<Link to="/admin/stock" />}>
+              <div className="flex items-center gap-4">
+              <MdInventory />
+                Quản lý tồn kho
               </div>
             </MenuItem>
             <MenuItem onClick={handleLogout}>

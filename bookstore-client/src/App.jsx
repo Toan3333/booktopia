@@ -42,7 +42,7 @@ import AddVoucher from "./pages/Admin/AddVoucher/AddVoucher";
 import EditVoucher from "./pages/Admin/EditVoucher/EditVoucher";
 import ManageContact from "./pages/Admin/ManageContact/ManageContact";
 import Notification from "./pages/Admin/Notification/Notification";
-
+import Stock from "./pages/Admin/Stock/Stock";
 function App() {
   return (
     // <Fragment>
@@ -154,6 +154,7 @@ function App() {
       <Route path="/admin/edit-blog/:id" element={<PrivateRoute allowedRoles={[1]}><EditBlog /></PrivateRoute>} />
       <Route path="/admin/manage-contact" element={<PrivateRoute allowedRoles={[1]}><ManageContact /></PrivateRoute>} />
 <Route path="/admin/notification" element={<PrivateRoute allowedRoles={[1]}><Notification /></PrivateRoute>} />
+<Route path="/admin/stock" element={<PrivateRoute allowedRoles={[1]}><Stock /></PrivateRoute>} />
     </Routes>
   </Fragment>
   );

@@ -19,7 +19,7 @@ import "./DashBoard.css";
 import { format } from "date-fns";
 import HeaderAdmin from "../../../components/HeaderAdmin/HeaderAdmin";
 import PageTitle from "../../../components/PageTitle/PageTitle";
-
+import { MdInventory } from "react-icons/md";
 import axios from "axios";
 import { URL_API } from "../../../constants/constants";
 import Cookies from "js-cookie";
@@ -263,6 +263,12 @@ const DashBoard = () => {
               <div className="flex items-center gap-4">
                 <MdMarkEmailRead />
                 Quản lý liên hệ
+              </div>
+            </MenuItem>
+            <MenuItem component={<Link to="/admin/stock" />}>
+              <div className="flex items-center gap-4">
+              <MdInventory />
+                Quản lý tồn kho
               </div>
             </MenuItem>
             <MenuItem onClick={handleLogout}>

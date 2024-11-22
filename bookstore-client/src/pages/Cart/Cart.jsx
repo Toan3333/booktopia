@@ -17,10 +17,34 @@ const Cart = () => {
     [cartItems]
   );
 
-  const handleIncreaseQuantity = (itemId) => {
-    dispatch(updateCartItemQuantity({ id: itemId, quantity: 1 }));
+  // const handleIncreaseQuantity = (itemId) => {
+  //   dispatch(updateCartItemQuantity({ id: itemId, quantity: 1 }));
+  // };
+  const handleIncreaseQuantity = async (itemId) => {
+    try {
+      // Gọi API để lấy thông tin sản phẩm
+      const response = await fetch(`${URL_API}/products/${itemId}`);
+      const product = await response.json();
+  
+      // Kiểm tra nếu số lượng trong giỏ hàng nhỏ hơn số lượng tồn kho
+      const itemInCart = cartItems.find((item) => item._id === itemId);
+  
+      if (itemInCart.quantity < product.quantity) {
+        // Cập nhật số lượng trong giỏ hàng
+        dispatch(updateCartItemQuantity({ id: itemId, quantity: 1 }));
+      } else {
+        // Thay alert bằng Swal để hiển thị thông báo đẹp
+        Swal.fire({
+          title: 'Không thể tăng số lượng!',
+          text: `Chỉ còn ${product.quantity} sản phẩm trong kho!`,
+          icon: 'warning',
+          confirmButtonText: 'OK'
+        });
+      }
+    } catch (error) {
+      console.error("Lỗi khi lấy thông tin sản phẩm:", error);
+    }
   };
-
   const handleDecreaseQuantity = (itemId) => {
     dispatch(updateCartItemQuantity({ id: itemId, quantity: -1 }));
   };

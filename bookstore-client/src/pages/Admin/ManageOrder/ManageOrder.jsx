@@ -23,7 +23,7 @@ import { MdMarkEmailRead } from "react-icons/md";
 
 import axios from "axios";
 import Swal from "sweetalert2";
-
+import { MdInventory } from "react-icons/md";
 import PageTitle from "../../../components/PageTitle/PageTitle";
 import HeaderAdmin from "../../../components/HeaderAdmin/HeaderAdmin";
 import { URL_API } from "../../../constants/constants";
@@ -183,6 +183,12 @@ const ManageOrder = () => {
               <div className="flex items-center gap-4">
                 <MdMarkEmailRead />
                 Quản lý liên hệ
+              </div>
+            </MenuItem>
+            <MenuItem component={<Link to="/admin/stock" />}>
+              <div className="flex items-center gap-4">
+              <MdInventory />
+                Quản lý tồn kho
               </div>
             </MenuItem>
             <MenuItem onClick={handleLogout}>

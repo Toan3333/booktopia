@@ -5,7 +5,7 @@ import { FaBook, FaClipboardList, FaRegEdit, FaUser, FaGift } from "react-icons/
 import { MdLogout } from "react-icons/md";
 import { AiFillDashboard, AiOutlineBars } from "react-icons/ai";
 import { MdMarkEmailRead } from "react-icons/md";
-
+import { MdInventory } from "react-icons/md";
 import PageTitle from "../../../components/PageTitle/PageTitle";
 
 import Button from "../../../components/Button/Button";
@@ -177,8 +177,14 @@ const AddProduct = () => {
           </SubMenu>
           <MenuItem component={<Link to="/admin/manage-contact" />}>
               <div className="flex items-center gap-4">
-                <MdMarkEmailRead />
+              <MdInventory />
                 Quản lý liên hệ
+              </div>
+            </MenuItem>
+            <MenuItem component={<Link to="/admin/stock" />}>
+              <div className="flex items-center gap-4">
+                <MdMarkEmailRead />
+                Quản lý tồn kho
               </div>
             </MenuItem>
           <MenuItem onClick={handleLogout}>

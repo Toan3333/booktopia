@@ -25,7 +25,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "lightgallery/css/lightgallery.css";
 import "lightgallery/css/lg-zoom.css";
 import "lightgallery/css/lg-thumbnail.css";
-
+import { showSwalFireSuccess } from "../../helpers/helpers";
 // import plugins if you need
 import lgThumbnail from "lightgallery/plugins/thumbnail";
 import lgZoom from "lightgallery/plugins/zoom";
@@ -55,7 +55,7 @@ const ProductDetail = () => {
 
   const userId = inforUser?._id;
   const { id: productId } = useParams();
-
+  const cartItems = useSelector((state) => state.cart?.items) || [];  // Lấy cartItems ngoài hàm
   useEffect(() => {}, [favouriteItems]);
 
   useEffect(() => {
@@ -169,42 +169,62 @@ const ProductDetail = () => {
     return <div>{error}</div>;
   }
 
-  const handleAddToCart = () => {
-    Swal.fire({
-      position: "top-end",
-      icon: "success",
-      title: "Thêm sản phẩm thành công",
-      showConfirmButton: false,
-      timer: 1500,
-    });
-    dispatch(addToCart({ item: productDetailData, quantity: quantityDetail }));
+  const handleAddToCart = (item) => {
+    const itemInCart = cartItems.find((cartItem) => cartItem._id === item._id);
+  
+    if (itemInCart) {
+      const currentQuantity = itemInCart.quantity;
+      if (currentQuantity >= item.quantity) {
+        showSwalFireError(`Sản phẩm này chỉ còn ${item.quantity} sản phẩm trong kho.`);
+        return;
+      } else {
+        showSwalFireSuccess();
+        dispatch(addToCart({ item, quantity: quantityDetail }));
+      }
+    } else {
+      showSwalFireSuccess();
+      dispatch(addToCart({ item: productDetailData, quantity: quantityDetail }));
+    }
   };
-
+  
   const handleIncreaseQuantity = () => {
     const newQuantity = quantityDetail + 1;
-    setQuantityDetail(newQuantity);
-    dispatch(
-      updateCartItemQuantity({
-        id: productDetailData._id,
-        quantity: newQuantity,
-      })
-    );
+    if (newQuantity <= quantity) { // Kiểm tra không vượt quá số lượng trong kho
+      setQuantityDetail(newQuantity);
+    }
   };
-
+  
   const handleDecreaseQuantity = () => {
     const newQuantity = Math.max(quantityDetail - 1, 1); // Đảm bảo số lượng không nhỏ hơn 1
     setQuantityDetail(newQuantity);
-    dispatch(
-      updateCartItemQuantity({
-        id: productDetailData._id,
-        quantity: newQuantity,
-      })
-    );
   };
-
-  const handleBuyNow = () => {
-    dispatch(addToCart({ item: productDetailData, quantity: quantityDetail }));
+  
+  const handleBuyNow = (item) => {
+    const itemInCart = cartItems.find((cartItem) => cartItem._id === item._id);
+  
+    if (itemInCart) {
+      const currentQuantity = itemInCart.quantity;
+      if (currentQuantity >= item.quantity) {
+        showSwalFireError(`Sản phẩm này chỉ còn ${item.quantity} sản phẩm trong kho.`);
+        return;
+      } else {
+        showSwalFireSuccess();
+        dispatch(addToCart({ item, quantity: quantityDetail }));
+      }
+    } else {
+      showSwalFireSuccess();
+      dispatch(addToCart({ item: productDetailData, quantity: quantityDetail }));
+    }
+  
     navigate("/cart");
+  };
+  const showSwalFireError = (message) => {
+    Swal.fire({
+      title: 'Không thể thêm',
+      text: message,
+      icon: 'error',
+      confirmButtonText: 'OK',
+    });
   };
   if (!productDetailData) {
     return <div>Product details not available.</div>;
@@ -475,7 +495,14 @@ const ProductDetail = () => {
                     {category.categoryName}
                   </span>
                 </div>
-                <div>Kho: {quantity}</div>
+                <div>
+                  Kho:{" "}
+                  {quantity === 0 ? (
+                    <span className="text-red">Hết hàng</span>
+                  ) : (
+                    quantity
+                  )}
+                </div>
               </div>
               <div className="w-full flex flex-col gap-6">
                 <div>Năm xuất bản: 2023</div>
@@ -498,7 +525,10 @@ const ProductDetail = () => {
                     readOnly
                   />
                   <button className="px-3 py-1">
-                    <FaPlus onClick={handleIncreaseQuantity} />
+                    <FaPlus
+                      onClick={handleIncreaseQuantity}
+                      disabled={quantityDetail >= quantity}
+                    />
                   </button>
                 </div>
                 <div className="flex items-center gap-2 ml-4 text-text font-normal">
@@ -511,16 +541,25 @@ const ProductDetail = () => {
               </div>
             </div>
             <div className="flex flex-col gap-5 mt-10">
-              <Button onClick={handleBuyNow} className="rounded-md w-full">
-                Mua ngay
-              </Button>
-              <Button
-                onClick={handleAddToCart}
-                className="rounded-md button-add w-full bg-white flex items-center justify-center gap-2"
-              >
-                <HiOutlineShoppingBag />
-                Thêm vào giỏ hàng
-              </Button>
+              {quantity === 0 || quantityDetail > quantity ? (
+                <div className="text-red font-bold mt-3">Không đủ số lượng</div>
+              ) : (
+                <>
+                  <Button
+                    onClick={() => handleBuyNow(productDetailData)}
+                    className="rounded-md w-full"
+                  >
+                    Mua ngay
+                  </Button>
+                  <Button
+                    onClick={() => handleAddToCart(productDetailData)}
+                    className="rounded-md button-add w-full bg-white flex items-center justify-center gap-2"
+                  >
+                    <HiOutlineShoppingBag />
+                    Thêm vào giỏ hàng
+                  </Button>
+                </>
+              )}
             </div>
           </div>
         </div>

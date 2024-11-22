@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { FaEye, FaShoppingBag } from "react-icons/fa";
+import { FaEye, FaShoppingBag,FaTimesCircle  } from "react-icons/fa";
 import "../../index.css";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -23,11 +23,35 @@ const ProductItem = ({ className = "", item }) => {
 
   useEffect(() => {}, [favouriteItems]);
 
+  // const handleAddToCart = () => {
+  //   showSwalFireSuccess();
+  //   dispatch(addToCart({ item, quantity: 1 }));
+  // };
   const handleAddToCart = () => {
-    showSwalFireSuccess();
-    dispatch(addToCart({ item, quantity: 1 }));
+    const itemInCart = cartItems.find((cartItem) => cartItem._id === item._id);
+    if (itemInCart) {
+      const currentQuantity = itemInCart.quantity;
+      if (currentQuantity >= item.quantity) {
+        showSwalFireError(`Sản phẩm này chỉ còn ${item.quantity} sản phẩm trong kho.`);
+        return;
+      } else {
+        // Nếu có thể thêm sản phẩm, tăng số lượng
+        showSwalFireSuccess();
+        dispatch(addToCart({ item, quantity: 1 }));
+      }
+    } else {
+      showSwalFireSuccess();
+      dispatch(addToCart({ item, quantity: 1 }));
+    }
   };
-
+  const showSwalFireError = (message) => {
+    Swal.fire({
+      title: 'Không thể thêm',
+      text: message,
+      icon: 'error',
+      confirmButtonText: 'OK',
+    });
+  };
   const handleAddToFavourite = () => {
     Swal.fire({
       position: "top-end",
@@ -121,10 +145,12 @@ const ProductItem = ({ className = "", item }) => {
             onClick={handleAddToFavourite}
             className="text-mainDark w-9 h-10 text-2xl bg-white border bg-opacity-50 p-2 rounded-full transform translate-x-full group-hover:translate-x-0 transition-transform duration-300 hover:bg-grayText hover:text-white hover:cursor-pointer"
           />
-          <FaShoppingBag
+               {item.quantity === 0 ? (
+          <FaTimesCircle     className="text-mainDark w-10 h-10 text-2xl bg-white border bg-opacity-50 p-2 rounded-full transform translate-x-full group-hover:translate-x-0 transition-transform duration-300 hover:bg-grayText hover:text-white cursor-pointer"/>
+          ) : ( <FaShoppingBag
             onClick={handleAddToCart}
             className="text-mainDark w-10 h-10 text-2xl bg-white border bg-opacity-50 p-2 rounded-full transform translate-x-full group-hover:translate-x-0 transition-transform duration-300 hover:bg-grayText hover:text-white cursor-pointer"
-          />
+          />   )}
         </div>
       </div>
     </div>
