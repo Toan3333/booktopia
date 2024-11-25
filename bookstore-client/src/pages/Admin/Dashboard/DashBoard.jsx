@@ -4,6 +4,7 @@ import { Sidebar, Menu, MenuItem, SubMenu } from "react-pro-sidebar";
 import {
   FaBook,
   FaClipboardList,
+  FaCommentAlt,
   FaGift,
   FaMoneyBill,
   FaRegEdit,
@@ -13,7 +14,7 @@ import {
   FaUserEdit,
   FaUsers,
 } from "react-icons/fa";
-import { MdLogout } from "react-icons/md";
+import { MdLogout, MdOutlinePreview } from "react-icons/md";
 import { AiFillDashboard, AiOutlineBars } from "react-icons/ai";
 import "./DashBoard.css";
 import { format } from "date-fns";
@@ -267,8 +268,20 @@ const DashBoard = () => {
             </MenuItem>
             <MenuItem component={<Link to="/admin/stock" />}>
               <div className="flex items-center gap-4">
-              <MdInventory />
+                <MdInventory />
                 Quản lý tồn kho
+              </div>
+            </MenuItem>
+            <MenuItem component={<Link to="/admin/manage-comment" />}>
+              <div className="flex items-center gap-4">
+                <FaCommentAlt />
+                Quản lý bình luận
+              </div>
+            </MenuItem>
+            <MenuItem component={<Link to="/admin/manage-review" />}>
+              <div className="flex items-center gap-4">
+                <MdOutlinePreview />
+                Quản lý đánh giá
               </div>
             </MenuItem>
             <MenuItem onClick={handleLogout}>
@@ -442,7 +455,9 @@ const DashBoard = () => {
                 {filteredOrders.map((order, index) => (
                   <tr key={order._id}>
                     <td>{index + 1}</td>
-                    <td><Link to={`/admin/detail-order/${order._id}`}>{order.orderId}</Link></td>
+                    <td>
+                      <Link to={`/admin/detail-order/${order._id}`}>{order.orderId}</Link>
+                    </td>
                     <td>{format(new Date(order.date), "dd/MM/yyyy")}</td>
                     <td>{order.name}</td>
                     <td>{order.address}</td>

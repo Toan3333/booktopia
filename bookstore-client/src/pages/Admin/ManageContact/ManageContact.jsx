@@ -8,9 +8,10 @@ import {
   FaTrashAlt,
   FaUser,
   FaUserClock,
-  FaGift
+  FaGift,
+  FaCommentAlt,
 } from "react-icons/fa";
-import { MdLogout } from "react-icons/md";
+import { MdLogout, MdOutlinePreview } from "react-icons/md";
 import { AiFillDashboard, AiOutlineBars } from "react-icons/ai";
 import PageTitle from "../../../components/PageTitle/PageTitle";
 import HeaderAdmin from "../../../components/HeaderAdmin/HeaderAdmin";
@@ -50,9 +51,7 @@ const ManageContact = () => {
           contact._id === updatedContact._id ? updatedContact : contact
         )
       );
-      toast.success('Thay đổi trạng thái thành công!');
-
-
+      toast.success("Thay đổi trạng thái thành công!");
     } catch (error) {
       console.error("Lỗi khi cập nhật trạng thái:", error);
     }
@@ -61,21 +60,19 @@ const ManageContact = () => {
     try {
       await axios.delete(`http://localhost:3000/contact/api/contact/${id}`);
       setContacts((prevContacts) => prevContacts.filter((contact) => contact._id !== id));
-      toast.success('Xóa thành công!');
+      toast.success("Xóa thành công!");
     } catch (error) {
-      toast.error('Liên hệ chưa phản hồi không được xóa!');
+      toast.error("Liên hệ chưa phản hồi không được xóa!");
     }
-  }
+  };
   return (
-
     <div>
       <ToastContainer autoClose={3000} />
 
       <div className="flex min-h-screen border">
         <Sidebar
           className={`relative border p-3 bg-white ${collapsed ? "collapsed" : "expanded"}`}
-          width={collapsed ? "0px" : "270px"}
-        >
+          width={collapsed ? "0px" : "270px"}>
           <Menu className="bg-white">
             <div className="flex items-center justify-center mb-6">
               <img src="./images/logo.png" alt="Logo" />
@@ -127,8 +124,20 @@ const ManageContact = () => {
             </MenuItem>
             <MenuItem component={<Link to="/admin/stock" />}>
               <div className="flex items-center gap-4">
-              <MdInventory />
+                <MdInventory />
                 Quản lý tồn kho
+              </div>
+            </MenuItem>
+            <MenuItem component={<Link to="/admin/manage-comment" />}>
+              <div className="flex items-center gap-4">
+                <FaCommentAlt />
+                Quản lý bình luận
+              </div>
+            </MenuItem>
+            <MenuItem component={<Link to="/admin/manage-review" />}>
+              <div className="flex items-center gap-4">
+                <MdOutlinePreview />
+                Quản lý đánh giá
               </div>
             </MenuItem>
             <MenuItem onClick={handleLogout}>
@@ -145,8 +154,7 @@ const ManageContact = () => {
             fill="none"
             viewBox="0 0 24 24"
             strokeWidth={1.5}
-            stroke="currentColor"
-          >
+            stroke="currentColor">
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -183,10 +191,14 @@ const ManageContact = () => {
                     {/* <td>{contact.status}</td> */}
                     <td>
                       <div className="flex items-center justify-center gap-3">
-                        <button type="button"
+                        <button
+                          type="button"
                           onClick={() => handleUpdateStatus(contact._id)}
                           className="w-28 text-[12px] justify-items-center p-1 rounded-lg text-white cursor-pointer"
-                          style={{ backgroundColor: contact.status === "Chưa phản hồi" ? "#ef4444" : "#166534", }}>
+                          style={{
+                            backgroundColor:
+                              contact.status === "Chưa phản hồi" ? "#ef4444" : "#166534",
+                          }}>
                           {contact.status === "Đã phản hồi" ? "Đã phản hồi" : "Chưa phản hồi"}
                         </button>
                       </div>
@@ -199,7 +211,6 @@ const ManageContact = () => {
                           <FaTrashAlt className="w-5 h-4 text-red" />
                         </button>
                       </div>
-
                     </td>
                   </tr>
                 ))}

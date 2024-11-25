@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Sidebar, Menu, MenuItem, SubMenu } from "react-pro-sidebar";
-import { FaBook, FaClipboardList, FaRegEdit, FaUser, FaGift } from "react-icons/fa";
-import { MdLogout } from "react-icons/md";
+import { FaBook, FaClipboardList, FaRegEdit, FaUser, FaGift, FaCommentAlt } from "react-icons/fa";
+import { MdLogout, MdOutlinePreview } from "react-icons/md";
 import { AiFillDashboard, AiOutlineBars } from "react-icons/ai";
 import { MdMarkEmailRead } from "react-icons/md";
 
@@ -119,7 +119,7 @@ const AddBlog = () => {
             </SubMenu>
             <MenuItem component={<Link to="/admin/manage-contact" />}>
               <div className="flex items-center gap-4">
-              <MdInventory />
+                <MdInventory />
                 Quản lý liên hệ
               </div>
             </MenuItem>
@@ -127,6 +127,18 @@ const AddBlog = () => {
               <div className="flex items-center gap-4">
                 <MdMarkEmailRead />
                 Quản lý tồn kho
+              </div>
+            </MenuItem>
+            <MenuItem component={<Link to="/admin/manage-comment" />}>
+              <div className="flex items-center gap-4">
+                <FaCommentAlt />
+                Quản lý bình luận
+              </div>
+            </MenuItem>
+            <MenuItem component={<Link to="/admin/manage-review" />}>
+              <div className="flex items-center gap-4">
+                <MdOutlinePreview />
+                Quản lý đánh giá
               </div>
             </MenuItem>
             <MenuItem onClick={handleLogout}>

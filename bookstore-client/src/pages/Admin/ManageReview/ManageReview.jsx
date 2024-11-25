@@ -4,25 +4,27 @@ import { Sidebar, Menu, MenuItem, SubMenu } from "react-pro-sidebar";
 import {
   FaBook,
   FaClipboardList,
-  FaPlus,
   FaRegEdit,
   FaTrashAlt,
   FaUser,
+  FaUserClock,
   FaGift,
+  FaEye,
+  FaStar,
+  FaRegStar,
   FaCommentAlt,
 } from "react-icons/fa";
 import { MdLogout, MdOutlinePreview } from "react-icons/md";
 import { AiFillDashboard, AiOutlineBars } from "react-icons/ai";
-import { MdInventory } from "react-icons/md";
 import PageTitle from "../../../components/PageTitle/PageTitle";
 import HeaderAdmin from "../../../components/HeaderAdmin/HeaderAdmin";
 import axios from "axios";
-import { MdMarkEmailRead } from "react-icons/md";
-
+import { MdInventory } from "react-icons/md";
 import { URL_API } from "../../../constants/constants";
 import { showSwalFireDelete } from "../../../helpers/helpers";
+import { MdMarkEmailRead } from "react-icons/md";
 
-const ManagePublishes = () => {
+const ManageReview = () => {
   const isAdmin = true;
   const navigate = useNavigate();
   const [collapsed, setCollapsed] = useState(false);
@@ -31,25 +33,24 @@ const ManagePublishes = () => {
     // Then navigate to the home page
     navigate("/");
   };
-
-  const [listPublishes, setListPublishes] = useState([]);
+  const [listReview, setListReview] = useState([]);
   useEffect(() => {
-    const fetchListPublishes = async () => {
+    const fetchDataReview = async () => {
       try {
-        const response = await axios.get(`${URL_API}/publishes`);
+        const response = await axios.get(`${URL_API}/review`);
         const data = response.data;
-        setListPublishes(data);
+        setListReview(data);
       } catch (error) {
         console.log(error);
       }
     };
-    fetchListPublishes();
+    fetchDataReview();
   }, []);
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`${URL_API}/publishes/delete/${id}`);
-      showSwalFireDelete("Xóa nhà xuất bản thành công");
+      await axios.delete(`${URL_API}/users/${id}`);
+      showSwalFireDelete("Xóa người dùng thành công");
     } catch (error) {
       console.log(error);
     }
@@ -85,7 +86,7 @@ const ManagePublishes = () => {
               <MenuItem component={<Link to="/admin/manage-author" />}>Tác giả</MenuItem>
               <MenuItem component={<Link to="/admin/manage-publishes" />}>Nhà xuất bản</MenuItem>
             </SubMenu>
-            <MenuItem component={<Link to="/admin/manage-items" />}>
+            <MenuItem component={<Link to="/admin/manage-order" />}>
               <div className="flex items-center gap-4">
                 <FaClipboardList className="w-5 h-5" />
                 Quản lý đơn hàng
@@ -133,7 +134,7 @@ const ManagePublishes = () => {
             <MenuItem onClick={handleLogout}>
               <div className="flex items-center gap-4">
                 <MdLogout />
-                Đăng xuất
+                Logout
               </div>
             </MenuItem>
           </Menu>
@@ -156,42 +157,55 @@ const ManagePublishes = () => {
         {/* Main Content */}
         <div className="flex-1 p-6">
           <HeaderAdmin />
-          <div className="flex items-center justify-between pb-8 border-b">
-            <PageTitle title="Danh sách nhà xuất bản" className="text-mainDark" />
-            <div>
-              <Link to="/admin/add-publishes">
-                <button className="flex items-center gap-2 bg-mainDark py-3 px-5 text-white font-semibold leading-normal rounded-[10px]">
-                  <FaPlus></FaPlus>Thêm
-                </button>
-              </Link>
-            </div>
+          <div className="flex items-center justify-between pb-8 border-b pt-3">
+            <PageTitle title="Quản lý đánh giá" className="text-mainDark" />
           </div>
           <div className="mt-6 border rounded-[30px] p-5">
             <table className="table w-full">
               <thead className="text-[16px] font-semibold text-black">
                 <tr>
                   <th>#</th>
-                  <th>Tên nhà xuất bản</th>
+                  <th>Tên người dùng</th>
+                  <th>Nội dung</th>
+                  <th>Sao</th>
+                  <th>Ngày</th>
                   <th className="text-center">Thao tác</th>
                 </tr>
               </thead>
               <tbody>
-                {listPublishes.map((item, index) => (
-                  <tr key={item._id}>
-                    <td>{index + 1}</td>
-                    <td>{item.name}</td>
-                    <td>
-                      <div className="flex items-center justify-center gap-3">
-                        <div>
-                          <FaTrashAlt
-                            onClick={(e) => handleDelete(item._id)}
-                            className="w-5 h-4 text-red cursor-pointer"
-                          />
+                {listReview.map((item, index) => {
+                  const dateObj = new Date(item.day); // Chắc bạn muốn lấy ngày từ `item.date` chứ không phải `order.date`
+                  const formattedDate = dateObj.toLocaleDateString("vi-VN"); // 'vi-VN' for dd/mm/yyyy format
+                  return (
+                    <tr key={item._id}>
+                      <td>{index + 1}</td>
+                      <td>{item.user.name}</td>
+                      <td>{item.content}</td>
+                      <td className="flex items-center">
+                        {/* Hiển thị sao tùy theo giá trị rating */}
+                        {Array.from({ length: 5 }, (_, i) => (
+                          <span key={i}>
+                            {i < item.rating ? (
+                              <FaStar className="text-yellow-500" />
+                            ) : (
+                              <FaRegStar className="text-yellow-500" />
+                            )}
+                          </span>
+                        ))}
+                      </td>
+                      <td>{formattedDate}</td> {/* Sửa phần hiển thị ngày */}
+                      <td>
+                        <div className="flex items-center justify-center gap-3">
+                          <button>
+                            <Link>
+                              <FaEye className="w-5 h-4 text-mainDark" />
+                            </Link>
+                          </button>
                         </div>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
@@ -202,4 +216,4 @@ const ManagePublishes = () => {
   );
 };
 
-export default ManagePublishes;
+export default ManageReview;
