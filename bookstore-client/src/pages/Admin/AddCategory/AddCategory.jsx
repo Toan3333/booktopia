@@ -141,32 +141,33 @@ const AddCategory = () => {
             <PageTitle title="Thêm danh mục" className="text-mainDark" />
           </div>
           <div className="border rounded-[10px] py-8 px-5 mt-7">
-            <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
-              <div className="w-full flex flex-col gap-2">
-                <label htmlFor="category">*Danh mục</label>
-                <input
-                  {...register("name", { required: true })}
-                  type="text"
-                  id="category"
-                  className="input input-bordered w-full"
-                />
-              </div>
-              <div className="w-full flex flex-col gap-2">
-                <label htmlFor="publisher">Mô tả</label>
-                <textarea
-                  {...register("description", { required: true })}
-                  type="text"
-                  id="publisher"
-                  className="input input-bordered w-full h-32"
-                />
-              </div>
-              <div className="flex items-center gap-3">
-                <Button>Lưu</Button>
-                <Button className="bg-secondary" onClick={handleCancel}>
-                  Hủy
-                </Button>
-              </div>
-            </form>
+          <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
+          <div className="w-full flex flex-col gap-2">
+            <label htmlFor="category-name">*Tên danh mục</label>
+            <input
+              type="text"
+              {...register("name", { required: "Tên danh mục là bắt buộc" })}
+              id="category-name"
+              className={`input input-bordered w-full ${errors.name ? "border-red-500" : ""}`}
+            />
+            {errors.name && <span className="text-red">{errors.name.message}</span>}
+          </div>
+          <div className="w-full flex flex-col gap-2">
+            <label htmlFor="description">*Mô tả</label>
+            <textarea
+              id="description"
+              className={`textarea textarea-bordered w-full ${errors.description ? "border-red-500" : ""}`}
+              {...register("description", { required: "Mô tả là bắt buộc" })}
+            ></textarea>
+            {errors.description && <span className="text-red">{errors.description.message}</span>}
+          </div>
+          <div className="flex items-center gap-3">
+            <Button>Lưu</Button>
+            <Button className="bg-secondary" onClick={handleCancel} type="button">
+              Hủy
+            </Button>
+          </div>
+        </form>
           </div>
         </div>
       </div>
