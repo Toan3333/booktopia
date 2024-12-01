@@ -261,7 +261,7 @@ const Menu = () => {
               {loading ? (
                 <div className="text-center">Đang tải sản phẩm...</div>
               ) : products.length > 0 ? (
-                <div className="grid grid-cols-4 gap-4">
+                <div className="grid grid-cols-4 gap-4 max-md:grid-cols-2">
                   {products.map((item) => (
                     <ProductItem key={item._id} item={item} />
                   ))}

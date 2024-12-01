@@ -1,11 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  FaCalendar,
-  FaHeart,
-  FaRegEdit,
-  FaUser,
-  FaTrashAlt,
-} from "react-icons/fa";
+import { FaCalendar, FaHeart, FaRegEdit, FaUser, FaTrashAlt } from "react-icons/fa";
 import { FiLogOut } from "react-icons/fi";
 import { Link, NavLink } from "react-router-dom";
 import PageTitle from "../../components/PageTitle/PageTitle";
@@ -104,8 +98,7 @@ const MyOrders = () => {
     } catch (error) {
       Swal.fire({
         title: "Lỗi!",
-        text:
-          error.response?.data?.message || "Có lỗi xảy ra khi xóa đơn hàng.",
+        text: error.response?.data?.message || "Có lỗi xảy ra khi xóa đơn hàng.",
         icon: "error",
       });
     }
@@ -114,15 +107,13 @@ const MyOrders = () => {
   return (
     <div className="py-10">
       <div className="container">
-        <div className="flex gap-6">
+        <div className="flex gap-6 max-md:flex-col">
           <div className="max-w-[250px] w-full">
             {/* Thông tin tài khoản */}
             <div className="flex items-center gap-2">
               <img
                 src={
-                  user.image
-                    ? `${URL_API}/images/${user.image}`
-                    : "https://via.placeholder.com/50"
+                  user.image ? `${URL_API}/images/${user.image}` : "https://via.placeholder.com/50"
                 }
                 className="w-[50px] h-[50px] rounded-full"
                 alt="Avatar"
@@ -145,8 +136,7 @@ const MyOrders = () => {
                       isActive
                         ? "text-mainDark flex items-center gap-2 font-normal leading-normal"
                         : "flex items-center hover:text-mainDark gap-2 font-normal leading-normal"
-                    }
-                  >
+                    }>
                     {item.icon}
                     {item.name}
                   </NavLink>
@@ -155,10 +145,7 @@ const MyOrders = () => {
             </ul>
           </div>
           <div className="w-[90%]">
-            <PageTitle
-              title="Đơn hàng của tôi"
-              className="text-mainDark mb-2"
-            ></PageTitle>
+            <PageTitle title="Đơn hàng của tôi" className="text-mainDark mb-2"></PageTitle>
             <div className="text-grayText leading-normal font-normal mb-5">
               Theo dõi thông tin đơn hàng của bạn
             </div>
@@ -171,8 +158,7 @@ const MyOrders = () => {
                         onClick={() => handleStatusChange(item.id)}
                         className={`${
                           selectedStatus === item.id ? "font-bold" : ""
-                        } cursor-pointer`} 
-                      >
+                        } cursor-pointer`}>
                         {item.name}
                       </a>
                     </li>
@@ -209,7 +195,10 @@ const MyOrders = () => {
                 {filteredOrders.map((order, index) => (
                   <tr key={order._id}>
                     <td>{index + 1}</td>
-                    <td> <Link to={`/order-detail/${order._id}`}>{order.orderId}</Link></td>
+                    <td>
+                      {" "}
+                      <Link to={`/order-detail/${order._id}`}>{order.orderId}</Link>
+                    </td>
                     <td>{format(new Date(order.date), "dd/MM/yyyy")}</td>
                     <td>{order.address}</td>
                     <td>{order.phone}</td>
@@ -217,12 +206,10 @@ const MyOrders = () => {
                     <td>{order.status}</td>
                     <td>{order.paymentStatus}</td>
                     <td>
-                      <button onClick={() => handleDelete(order._id)}>
-                        Hủy đơn
-                      </button>
+                      <button onClick={() => handleDelete(order._id)}>Hủy đơn</button>
                     </td>
                   </tr>
-                ))} 
+                ))}
               </tbody>
             </table>
           </div>

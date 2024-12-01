@@ -10,7 +10,11 @@ const BlogItem = ({ item }) => {
     <div>
       <div className="">
         <Link to={`/blog-detail/${_id}`} className="w-full">
-          <img src={`${URL_API}/images/${image}`} className="w-full object-cover" alt="" />
+          <img
+            src={`${URL_API}/images/${image}`}
+            className="w-full h-[172px] object-cover"
+            alt=""
+          />
         </Link>
         <div className="flex flex-col gap-1 bg-white border px-4 py-3">
           <p className="text-gray-400 font-light text-sm">{formatDate(date)}</p>

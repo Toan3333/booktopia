@@ -12,9 +12,10 @@ import {
   FaUser,
   FaUserEdit,
   FaUsers,
-  FaPlus
+  FaPlus,
+  FaCommentAlt,
 } from "react-icons/fa";
-import { MdInventory } from "react-icons/md";
+import { MdInventory, MdOutlinePreview } from "react-icons/md";
 import { MdLogout } from "react-icons/md";
 import { AiFillDashboard, AiOutlineBars } from "react-icons/ai";
 import { format } from "date-fns";
@@ -29,15 +30,15 @@ import { PieChart, Pie } from "recharts";
 import { MdMarkEmailRead } from "react-icons/md";
 
 const Stock = () => {
-    const isAdmin = true;
-    const navigate = useNavigate();
-    const [collapsed, setCollapsed] = useState(false);
-    const handleLogout = () => {
-      // Perform logout operations here (e.g., clearing authentication tokens)
-      // Then navigate to the home page
-      navigate("/");
-    };
-    const [allProductList, setAllProductList] = useState([]);
+  const isAdmin = true;
+  const navigate = useNavigate();
+  const [collapsed, setCollapsed] = useState(false);
+  const handleLogout = () => {
+    // Perform logout operations here (e.g., clearing authentication tokens)
+    // Then navigate to the home page
+    navigate("/");
+  };
+  const [allProductList, setAllProductList] = useState([]);
 
   useEffect(() => {
     const fetchProductList = async () => {
@@ -55,7 +56,7 @@ const Stock = () => {
   }, []);
   return (
     <div>
-        <div className="flex min-h-screen border">
+      <div className="flex min-h-screen border">
         {/* Sidebar */}
         <Sidebar
           className={`relative border p-3 bg-white ${collapsed ? "collapsed" : "expanded"}`}
@@ -112,8 +113,20 @@ const Stock = () => {
             </MenuItem>
             <MenuItem component={<Link to="/admin/stock" />}>
               <div className="flex items-center gap-4">
-              <MdInventory />
+                <MdInventory />
                 Quản lý tồn kho
+              </div>
+            </MenuItem>
+            <MenuItem component={<Link to="/admin/manage-comment" />}>
+              <div className="flex items-center gap-4">
+                <FaCommentAlt />
+                Quản lý bình luận
+              </div>
+            </MenuItem>
+            <MenuItem component={<Link to="/admin/manage-review" />}>
+              <div className="flex items-center gap-4">
+                <MdOutlinePreview />
+                Quản lý đánh giá
               </div>
             </MenuItem>
             <MenuItem onClick={handleLogout}>
@@ -143,7 +156,6 @@ const Stock = () => {
           <HeaderAdmin />
           <div className="flex items-center justify-between pb-5 border-b">
             <PageTitle title="Danh sách tồn kho" className="text-mainDark" />
-            
           </div>
           <div className="mt-6 border rounded-[30px] p-5">
             <table className="table w-full">
@@ -157,7 +169,6 @@ const Stock = () => {
                   <th>Nhà xuất bản</th>
                   <th className="text-center">Giá</th>
                   <th>Số lượng</th>
-                
                 </tr>
               </thead>
               <tbody>
@@ -192,23 +203,18 @@ const Stock = () => {
                       </div>
                     </td>
                     {item.quantity === 0 ? (
-                    <td className="text-red px-3 text-center">Hết hàng</td>
-                  ) : (
-                 
-                    <td className="px-3 text-center">{item.quantity}</td>
-                  )}
+                      <td className="text-red px-3 text-center">Hết hàng</td>
+                    ) : (
+                      <td className="px-3 text-center">{item.quantity}</td>
+                    )}
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
         </div>
-
-
-
-        </div>
+      </div>
     </div>
-
   );
 };
 

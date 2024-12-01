@@ -11,7 +11,7 @@ import {
   FaGift,
   FaEye,
 } from "react-icons/fa";
-import { MdLogout } from "react-icons/md";
+import { MdLogout, MdOutlinePreview } from "react-icons/md";
 import { AiFillDashboard, AiOutlineBars } from "react-icons/ai";
 import PageTitle from "../../../components/PageTitle/PageTitle";
 import HeaderAdmin from "../../../components/HeaderAdmin/HeaderAdmin";
@@ -122,6 +122,12 @@ const ManageComment = () => {
                 Quản lý bình luận
               </div>
             </MenuItem>
+            <MenuItem component={<Link to="/admin/manage-review" />}>
+              <div className="flex items-center gap-4">
+                <MdOutlinePreview />
+                Quản lý đánh giá
+              </div>
+            </MenuItem>
             <MenuItem onClick={handleLogout}>
               <div className="flex items-center gap-4">
                 <MdLogout />
@@ -163,27 +169,35 @@ const ManageComment = () => {
                 </tr>
               </thead>
               <tbody>
-                {listComment.map((item, index) => {
-                  const dateObj = new Date(item.day); // Chắc bạn muốn lấy ngày từ `item.date` chứ không phải `order.date`
-                  const formattedDate = dateObj.toLocaleDateString("vi-VN"); // 'vi-VN' for dd/mm/yyyy format
-                  return (
-                    <tr key={item._id}>
-                      <td>{index + 1}</td>
-                      <td>{item.user.name}</td>
-                      <td>{item.content}</td>
-                      <td>{formattedDate}</td> {/* Sửa phần hiển thị ngày */}
-                      <td>
-                        <div className="flex items-center justify-center gap-3">
-                          <button>
-                            <Link>
-                              <FaEye className="w-5 h-4 text-mainDark" />
-                            </Link>
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })}
+                {listComment && listComment.length > 0 ? (
+                  listComment.map((item, index) => {
+                    const dateObj = new Date(item.date);
+                    const formattedDate = dateObj.toLocaleDateString("vi-VN");
+                    return (
+                      <tr key={item._id}>
+                        <td>{index + 1}</td>
+                        <td>{item?.user?.name}</td>
+                        <td>{item.content}</td>
+                        <td>{formattedDate}</td>
+                        <td>
+                          <div className="flex items-center justify-center gap-3">
+                            <button>
+                              <Link to={`/admin/comment/${item._id}`}>
+                                <FaEye className="w-5 h-4 text-mainDark" />
+                              </Link>
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })
+                ) : (
+                  <tr>
+                    <td colSpan="5" className="text-center">
+                      Không có bình luận nào.
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>
