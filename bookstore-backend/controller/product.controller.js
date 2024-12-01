@@ -654,6 +654,7 @@ async function search(name) {
         publish: 1,
         price1: 1,
         price2: 1,
+        quantity: 1,
       }
     );
     return result;

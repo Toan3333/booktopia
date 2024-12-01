@@ -28,7 +28,7 @@ router.get("/:id", async (req, res, next) => {
 });
 
 //thêm bài viết mới
-router.post("/", upload.single("image"),[authen([1])], async (req, res) => {
+router.post("/", upload.single("image"),async (req, res) => {
   try {
     const body = req.body;
     // Kiểm tra xem req.file có tồn tại không trước khi truy cập thuộc tính originalname
@@ -44,7 +44,7 @@ router.post("/", upload.single("image"),[authen([1])], async (req, res) => {
 });
 
 //sửa bài viết
-router.put("/:id", upload.single("image"),[authen([1])], async (req, res) => {
+router.put("/:id", upload.single("image"), async (req, res) => {
   try {
     const { id } = req.params;
     const body = req.body;
@@ -61,7 +61,7 @@ router.put("/:id", upload.single("image"),[authen([1])], async (req, res) => {
 });
 
 //xóa bài viết
-router.delete("/:id",[authen([1])], async (req, res) => {
+router.delete("/:id", async (req, res) => {
   try {
     const { id } = req.params;
     const blogDel = await blogController.remove(id);

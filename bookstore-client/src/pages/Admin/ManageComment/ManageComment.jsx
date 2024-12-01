@@ -169,7 +169,7 @@ const ManageComment = () => {
                   return (
                     <tr key={item._id}>
                       <td>{index + 1}</td>
-                      <td>{item.user}</td>
+                      <td>{item.user.name}</td>
                       <td>{item.content}</td>
                       <td>{formattedDate}</td> {/* Sửa phần hiển thị ngày */}
                       <td>

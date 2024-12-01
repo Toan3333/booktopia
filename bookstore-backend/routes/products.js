@@ -144,7 +144,6 @@ router.post(
     { name: "image3", maxCount: 1 },
     { name: "image4", maxCount: 1 },
   ]),
-  [authen([1])],
   async (req, res) => {
     try {
       const body = req.body;
@@ -210,7 +209,6 @@ router.put(
     { name: "image3", maxCount: 1 },
     { name: "image4", maxCount: 1 },
   ]),
-  [authen([1])],
   async (req, res) => {
     try {
       const { id } = req.params;
@@ -236,7 +234,7 @@ router.put(
 
 //Router xóa sản phẩm
 
-router.delete("/:id", [authen([1])], async (req, res) => {
+router.delete("/:id", async (req, res) => {
   try {
     const { id } = req.params; // lấy đượccái id mà người dùng gửi lên
     const proDel = await productController.remove(id);
