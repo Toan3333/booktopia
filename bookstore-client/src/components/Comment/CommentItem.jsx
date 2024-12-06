@@ -11,7 +11,7 @@ const CommentItem = ({ dataComent, handleDeleteComment }) => {
       const userData = JSON.parse(userCookie);
       setInforUser(userData?.user);
     } else {
-      console.log("User not found in cookie");
+      console.log("Không có user trong cookie");
     }
   }, []);
 

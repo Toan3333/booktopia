@@ -21,7 +21,7 @@ async function gettAll() {
   }
 }
 
-//
+// lấy sản phẩm theo danh mục
 async function getByCategory(category) {
   try {
     const productsCategory = await productModel.find({
@@ -29,7 +29,7 @@ async function getByCategory(category) {
     });
     return productsCategory;
   } catch (error) {
-    console.log("Lỗi lấy sản phẩm  theo ID danh mục", error);
+    console.log("Lỗi lấy sản phẩm theo ID danh mục", error);
     throw error;
   }
 }
@@ -104,7 +104,7 @@ async function getCategoryById(id) {
     const proId = await categoryModel.findById(id);
     return proId;
   } catch (error) {
-    console.log("LỖI LAAYS CHI TIẾT SP", error);
+    console.log("LỖI LẤY CHI TIẾT SP", error);
     throw error;
   }
 }

@@ -11,52 +11,54 @@ import {
   FaGift,
   FaCommentAlt,
 } from "react-icons/fa";
-import { MdLogout, MdOutlinePreview } from "react-icons/md";
+import { MdLogout, MdOutlinePreview, MdMarkEmailRead, MdInventory } from "react-icons/md";
 import { AiFillDashboard, AiOutlineBars } from "react-icons/ai";
-import { MdInventory } from "react-icons/md";
 import PageTitle from "../../../components/PageTitle/PageTitle";
 import HeaderAdmin from "../../../components/HeaderAdmin/HeaderAdmin";
 import axios from "axios";
-import { MdMarkEmailRead } from "react-icons/md";
-
 import { URL_API } from "../../../constants/constants";
-import { showSwalFireDelete } from "../../../helpers/helpers";
+import { ToastContainer, toast } from "react-toastify";
 
 const ManagePublishes = () => {
-  const isAdmin = true;
   const navigate = useNavigate();
   const [collapsed, setCollapsed] = useState(false);
+  const [listPublishes, setListPublishes] = useState([]);
+
   const handleLogout = () => {
-    // Perform logout operations here (e.g., clearing authentication tokens)
-    // Then navigate to the home page
     navigate("/");
   };
 
-  const [listPublishes, setListPublishes] = useState([]);
+  const fetchListPublishes = async () => {
+    try {
+      const response = await axios.get(`${URL_API}/publishes`);
+      setListPublishes(response.data);
+    } catch (error) {
+      console.error("Error fetching publishes:", error);
+    }
+  };
+
   useEffect(() => {
-    const fetchListPublishes = async () => {
-      try {
-        const response = await axios.get(`${URL_API}/publishes`);
-        const data = response.data;
-        setListPublishes(data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
     fetchListPublishes();
   }, []);
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`${URL_API}/publishes/delete/${id}`);
-      showSwalFireDelete("Xóa nhà xuất bản thành công");
+      const response = await axios.delete(`${URL_API}/publishes/delete/${id}`);
+      if (response.data.mess) {
+        toast.error(response.data.mess); // Hiển thị thông báo lỗi
+      } else {
+        toast.success("Xóa nhà xuất bản thành công!");
+        fetchListPublishes(); // Làm mới danh sách sau khi xóa thành công
+      }
     } catch (error) {
-      console.log(error);
+      console.error("Error deleting publisher:", error);
+      toast.error("Xóa nhà xuất bản thất bại!");
     }
   };
 
   return (
     <div>
+      <ToastContainer autoClose={3000} />
       <div className="flex min-h-screen border">
         {/* Sidebar */}
         <Sidebar
@@ -72,16 +74,11 @@ const ManagePublishes = () => {
                 Dashboard
               </div>
             </MenuItem>
-
             <SubMenu label="Quản lý danh mục" icon={<AiOutlineBars className="w-5 h-5" />}>
-              <MenuItem component={<Link to="/admin/manage-category" />}>
-                Danh sách danh mục
-              </MenuItem>
+              <MenuItem component={<Link to="/admin/manage-category" />}>Danh sách danh mục</MenuItem>
             </SubMenu>
             <SubMenu label="Quản lý sản phẩm" icon={<FaBook className="w-5 h-5" />}>
-              <MenuItem component={<Link to="/admin/manage-product" />}>
-                Danh sách sản phẩm
-              </MenuItem>
+              <MenuItem component={<Link to="/admin/manage-product" />}>Danh sách sản phẩm</MenuItem>
               <MenuItem component={<Link to="/admin/manage-author" />}>Tác giả</MenuItem>
               <MenuItem component={<Link to="/admin/manage-publishes" />}>Nhà xuất bản</MenuItem>
             </SubMenu>
@@ -138,19 +135,10 @@ const ManagePublishes = () => {
             </MenuItem>
           </Menu>
         </Sidebar>
-        {/* Nút toggle nằm bên ngoài Sidebar */}
+        {/* Nút toggle */}
         <button onClick={() => setCollapsed(!collapsed)} className="toggle-button">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth={1.5}
-            stroke="currentColor">
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M3.75 6.75h16.5M3.75 12h16.5M12 17.25h8.25"
-            />
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5M12 17.25h8.25" />
           </svg>
         </button>
         {/* Main Content */}
@@ -161,7 +149,8 @@ const ManagePublishes = () => {
             <div>
               <Link to="/admin/add-publishes">
                 <button className="flex items-center gap-2 bg-mainDark py-3 px-5 text-white font-semibold leading-normal rounded-[10px]">
-                  <FaPlus></FaPlus>Thêm
+                  <FaPlus />
+                  Thêm
                 </button>
               </Link>
             </div>
@@ -182,12 +171,10 @@ const ManagePublishes = () => {
                     <td>{item.name}</td>
                     <td>
                       <div className="flex items-center justify-center gap-3">
-                        <div>
-                          <FaTrashAlt
-                            onClick={(e) => handleDelete(item._id)}
-                            className="w-5 h-4 text-red cursor-pointer"
-                          />
-                        </div>
+                        <FaTrashAlt
+                          onClick={() => handleDelete(item._id)}
+                          className="w-5 h-4 text-red cursor-pointer"
+                        />
                       </div>
                     </td>
                   </tr>
@@ -195,7 +182,6 @@ const ManagePublishes = () => {
               </tbody>
             </table>
           </div>
-          {/* Content goes here */}
         </div>
       </div>
     </div>

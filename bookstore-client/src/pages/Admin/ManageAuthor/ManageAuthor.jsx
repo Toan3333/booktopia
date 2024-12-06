@@ -11,51 +11,58 @@ import {
   FaGift,
   FaCommentAlt,
 } from "react-icons/fa";
-import { MdLogout, MdOutlinePreview } from "react-icons/md";
+import { MdLogout, MdOutlinePreview, MdMarkEmailRead, MdInventory } from "react-icons/md";
 import { AiFillDashboard, AiOutlineBars } from "react-icons/ai";
 import PageTitle from "../../../components/PageTitle/PageTitle";
 import HeaderAdmin from "../../../components/HeaderAdmin/HeaderAdmin";
 import axios from "axios";
-import { MdMarkEmailRead } from "react-icons/md";
-import { MdInventory } from "react-icons/md";
 import { URL_API } from "../../../constants/constants";
-import { showSwalFireDelete } from "../../../helpers/helpers";
+import { ToastContainer, toast } from "react-toastify";
 
 const ManageAuthor = () => {
-  const isAdmin = true;
   const navigate = useNavigate();
   const [collapsed, setCollapsed] = useState(false);
-  const handleLogout = () => {
-    // Perform logout operations here (e.g., clearing authentication tokens)
-    // Then navigate to the home page
-    navigate("/");
+  const [listAuthor, setListAuthor] = useState([]);
+
+  // Hàm lấy danh sách tác giả
+  const fetchListAuthor = async () => {
+    try {
+      const response = await axios.get(`${URL_API}/authors`);
+      setListAuthor(response.data);
+    } catch (error) {
+      console.error("Error fetching authors:", error);
+    }
   };
 
-  const [listAuthor, setListAuthor] = useState([]);
+  // Gọi API lấy danh sách khi component được mount
   useEffect(() => {
-    const fetchListAuthor = async () => {
-      try {
-        const response = await axios.get(`${URL_API}/authors`);
-        const data = response.data;
-        setListAuthor(data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
     fetchListAuthor();
   }, []);
 
+  // Hàm xử lý xóa tác giả
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`${URL_API}/authors/delete/${id}`);
-      showSwalFireDelete("Xóa tác giả thành công");
+      const response = await axios.delete(`${URL_API}/authors/delete/${id}`);
+      if (response.data.mess) {
+        toast.error(response.data.mess); // Thông báo lỗi
+      } else {
+        toast.success("Xóa tác giả thành công!");
+        fetchListAuthor(); // Làm mới danh sách
+      }
     } catch (error) {
-      console.log(error);
+      console.error("Error deleting author:", error);
+      toast.error("Xóa tác giả thất bại!");
     }
+  };
+
+  // Hàm xử lý đăng xuất
+  const handleLogout = () => {
+    navigate("/");
   };
 
   return (
     <div>
+      <ToastContainer autoClose={3000} />
       <div className="flex min-h-screen border">
         {/* Sidebar */}
         <Sidebar
@@ -71,7 +78,6 @@ const ManageAuthor = () => {
                 Dashboard
               </div>
             </MenuItem>
-
             <SubMenu label="Quản lý danh mục" icon={<AiOutlineBars className="w-5 h-5" />}>
               <MenuItem component={<Link to="/admin/manage-category" />}>
                 Danh sách danh mục
@@ -111,7 +117,6 @@ const ManageAuthor = () => {
                 Quản lý liên hệ
               </div>
             </MenuItem>
-
             <MenuItem component={<Link to="/admin/stock" />}>
               <div className="flex items-center gap-4">
                 <MdInventory />
@@ -138,7 +143,7 @@ const ManageAuthor = () => {
             </MenuItem>
           </Menu>
         </Sidebar>
-        {/* Nút toggle nằm bên ngoài Sidebar */}
+        {/* Toggle Button */}
         <button onClick={() => setCollapsed(!collapsed)} className="toggle-button">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -158,13 +163,12 @@ const ManageAuthor = () => {
           <HeaderAdmin />
           <div className="flex items-center justify-between pb-8 border-b">
             <PageTitle title="Danh sách tác giả" className="text-mainDark" />
-            <div>
-              <Link to="/admin/add-author">
-                <button className="flex items-center gap-2 bg-mainDark py-3 px-5 text-white font-semibold leading-normal rounded-[10px]">
-                  <FaPlus></FaPlus>Thêm
-                </button>
-              </Link>
-            </div>
+            <Link to="/admin/add-author">
+              <button className="flex items-center gap-2 bg-mainDark py-3 px-5 text-white font-semibold leading-normal rounded-[10px]">
+                <FaPlus />
+                Thêm
+              </button>
+            </Link>
           </div>
           <div className="mt-6 border rounded-[30px] p-5">
             <table className="table w-full">
@@ -182,12 +186,10 @@ const ManageAuthor = () => {
                     <td>{item.name}</td>
                     <td>
                       <div className="flex items-center justify-center gap-3">
-                        <div>
-                          <FaTrashAlt
-                            onClick={(e) => handleDelete(item._id)}
-                            className="w-5 h-4 text-red cursor-pointer"
-                          />
-                        </div>
+                        <FaTrashAlt
+                          onClick={() => handleDelete(item._id)}
+                          className="w-5 h-4 text-red cursor-pointer"
+                        />
                       </div>
                     </td>
                   </tr>
@@ -195,7 +197,6 @@ const ManageAuthor = () => {
               </tbody>
             </table>
           </div>
-          {/* Content goes here */}
         </div>
       </div>
     </div>

@@ -15,7 +15,6 @@ module.exports = {
 async function getAllComments() {
   try {
     const result = await commentModel.find().populate("user", "name image");
-
     return result;
   } catch (error) {
     console.log("Lỗi lấy bình luận", error);

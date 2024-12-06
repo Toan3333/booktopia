@@ -38,6 +38,10 @@ const AddPublishes = () => {
     }
   };
 
+  const handleCancel = () => {
+    navigate("/admin/manage-publishes");
+  };
+
   return (
     <div>
       <div className="flex min-h-screen border">
@@ -143,7 +147,9 @@ const AddPublishes = () => {
 
               <div className="flex items-center gap-3">
                 <Button>Lưu</Button>
-                <Button className="bg-secondary">Hủy</Button>
+                <Button className="bg-secondary" onClick={handleCancel} type="button">
+              Hủy
+            </Button>
               </div>
             </form>
           </div>

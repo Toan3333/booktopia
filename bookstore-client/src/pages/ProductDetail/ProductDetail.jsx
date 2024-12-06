@@ -55,7 +55,7 @@ const ProductDetail = () => {
 
   const userId = inforUser?._id;
   const { id: productId } = useParams();
-  const cartItems = useSelector((state) => state.cart?.items) || [];  // Lấy cartItems ngoài hàm
+  const cartItems = useSelector((state) => state.cart?.items) || []; // Lấy cartItems ngoài hàm
   useEffect(() => {}, [favouriteItems]);
 
   useEffect(() => {
@@ -171,11 +171,13 @@ const ProductDetail = () => {
 
   const handleAddToCart = (item) => {
     const itemInCart = cartItems.find((cartItem) => cartItem._id === item._id);
-  
+
     if (itemInCart) {
       const currentQuantity = itemInCart.quantity;
       if (currentQuantity >= item.quantity) {
-        showSwalFireError(`Sản phẩm này chỉ còn ${item.quantity} sản phẩm trong kho.`);
+        showSwalFireError(
+          `Sản phẩm này chỉ còn ${item.quantity} sản phẩm trong kho.`
+        );
         return;
       } else {
         showSwalFireSuccess();
@@ -183,29 +185,34 @@ const ProductDetail = () => {
       }
     } else {
       showSwalFireSuccess();
-      dispatch(addToCart({ item: productDetailData, quantity: quantityDetail }));
+      dispatch(
+        addToCart({ item: productDetailData, quantity: quantityDetail })
+      );
     }
   };
-  
+
   const handleIncreaseQuantity = () => {
     const newQuantity = quantityDetail + 1;
-    if (newQuantity <= quantity) { // Kiểm tra không vượt quá số lượng trong kho
+    if (newQuantity <= quantity) {
+      // Kiểm tra không vượt quá số lượng trong kho
       setQuantityDetail(newQuantity);
     }
   };
-  
+
   const handleDecreaseQuantity = () => {
     const newQuantity = Math.max(quantityDetail - 1, 1); // Đảm bảo số lượng không nhỏ hơn 1
     setQuantityDetail(newQuantity);
   };
-  
+
   const handleBuyNow = (item) => {
     const itemInCart = cartItems.find((cartItem) => cartItem._id === item._id);
-  
+
     if (itemInCart) {
       const currentQuantity = itemInCart.quantity;
       if (currentQuantity >= item.quantity) {
-        showSwalFireError(`Sản phẩm này chỉ còn ${item.quantity} sản phẩm trong kho.`);
+        showSwalFireError(
+          `Sản phẩm này chỉ còn ${item.quantity} sản phẩm trong kho.`
+        );
         return;
       } else {
         showSwalFireSuccess();
@@ -213,17 +220,19 @@ const ProductDetail = () => {
       }
     } else {
       showSwalFireSuccess();
-      dispatch(addToCart({ item: productDetailData, quantity: quantityDetail }));
+      dispatch(
+        addToCart({ item: productDetailData, quantity: quantityDetail })
+      );
     }
-  
+
     navigate("/cart");
   };
   const showSwalFireError = (message) => {
     Swal.fire({
-      title: 'Không thể thêm',
+      title: "Không thể thêm",
       text: message,
-      icon: 'error',
-      confirmButtonText: 'OK',
+      icon: "error",
+      confirmButtonText: "OK",
     });
   };
   if (!productDetailData) {
@@ -246,7 +255,7 @@ const ProductDetail = () => {
     category,
   } = productDetailData;
 
-  // lấy thông tin user
+  // lấy thông tin user, kt đã đăng nhập chưa
   const handleConment = async () => {
     if (!inforUser) {
       toast.error("Vui lòng đăng nhập để bình luận");
