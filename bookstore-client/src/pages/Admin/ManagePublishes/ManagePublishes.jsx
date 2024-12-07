@@ -75,14 +75,18 @@ const ManagePublishes = () => {
               </div>
             </MenuItem>
             <SubMenu label="Quản lý danh mục" icon={<AiOutlineBars className="w-5 h-5" />}>
-              <MenuItem component={<Link to="/admin/manage-category" />}>Danh sách danh mục</MenuItem>
+              <MenuItem component={<Link to="/admin/manage-category" />}>
+                Danh sách danh mục
+              </MenuItem>
             </SubMenu>
             <SubMenu label="Quản lý sản phẩm" icon={<FaBook className="w-5 h-5" />}>
-              <MenuItem component={<Link to="/admin/manage-product" />}>Danh sách sản phẩm</MenuItem>
+              <MenuItem component={<Link to="/admin/manage-product" />}>
+                Danh sách sản phẩm
+              </MenuItem>
               <MenuItem component={<Link to="/admin/manage-author" />}>Tác giả</MenuItem>
               <MenuItem component={<Link to="/admin/manage-publishes" />}>Nhà xuất bản</MenuItem>
             </SubMenu>
-            <MenuItem component={<Link to="/admin/manage-items" />}>
+            <MenuItem component={<Link to="/admin/manage-order" />}>
               <div className="flex items-center gap-4">
                 <FaClipboardList className="w-5 h-5" />
                 Quản lý đơn hàng
@@ -137,8 +141,17 @@ const ManagePublishes = () => {
         </Sidebar>
         {/* Nút toggle */}
         <button onClick={() => setCollapsed(!collapsed)} className="toggle-button">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5M12 17.25h8.25" />
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor">
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M3.75 6.75h16.5M3.75 12h16.5M12 17.25h8.25"
+            />
           </svg>
         </button>
         {/* Main Content */}

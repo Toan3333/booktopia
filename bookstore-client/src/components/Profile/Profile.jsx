@@ -52,7 +52,7 @@ const Profile = () => {
   const userImage = parsedUser?.user?.image || user?.photoURL || user?.image;
 
   return (
-    <div className="drawer-end z-50">
+    <div className="drawer-end z-50 max-md:block">
       <input id="my-drawer-4" type="checkbox" className="drawer-toggle" />
       <div className="drawer-content">
         {/* Nút avatar để mở sidebar */}
@@ -72,17 +72,17 @@ const Profile = () => {
         <ul className="menu bg-base-200 text-base-content min-h-full w-80 p-4">
           <li>
             <Link to="/profile" onClick={closeSidebar}>
-              Profile
+              Thông tin tài khoản
             </Link>
           </li>
           <li>
             <Link to="/orders" onClick={closeSidebar}>
-              Orders
+              Đơn hàng của tôi
             </Link>
           </li>
           <li>
             <Link to="/settings" onClick={closeSidebar}>
-              Settings
+              Cài đặt
             </Link>
           </li>
           {user?.role === "admin" && (
@@ -98,7 +98,7 @@ const Profile = () => {
                 handleLogout();
                 closeSidebar();
               }}>
-              Logout
+              Đăng xuất
             </a>
           </li>
         </ul>

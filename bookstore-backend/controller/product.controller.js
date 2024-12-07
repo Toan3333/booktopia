@@ -78,12 +78,7 @@ async function getPaginatedAndSortedProducts(pageNumber, limit, sortBy) {
 }
 
 /*Phân trang*/
-async function getPaginatedProductsByCategorySorted(
-  category,
-  pageNumber,
-  limit,
-  sortBy
-) {
+async function getPaginatedProductsByCategorySorted(category, pageNumber, limit, sortBy) {
   try {
     // Kiểm tra category xem có hợp lệ không
     const categoryObjectId = mongoose.Types.ObjectId.isValid(category)
@@ -139,12 +134,7 @@ async function getPaginatedProductsByCategorySorted(
 }
 
 /*Phân trang*/
-async function getPaginatedProductsByAuthorSorted(
-  author,
-  pageNumber,
-  limit,
-  sortBy
-) {
+async function getPaginatedProductsByAuthorSorted(author, pageNumber, limit, sortBy) {
   try {
     const totalProducts = await productModel.countDocuments({
       "author.authorId": new mongoose.Types.ObjectId(author),
@@ -183,12 +173,7 @@ async function getPaginatedProductsByAuthorSorted(
 }
 
 /*Phân trang*/
-async function getPaginatedProductsByPublisherSorted(
-  publisher,
-  pageNumber,
-  limit,
-  sortBy
-) {
+async function getPaginatedProductsByPublisherSorted(publisher, pageNumber, limit, sortBy) {
   try {
     const totalProducts = await productModel.countDocuments({
       "publisher.publisherId": new mongoose.Types.ObjectId(publisher),
@@ -651,7 +636,7 @@ async function search(name) {
         name: 1,
         image1: 1,
         publish: 1,
-        publish: 1,
+        author: 1,
         price1: 1,
         price2: 1,
         quantity: 1,
