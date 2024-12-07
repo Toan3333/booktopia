@@ -186,9 +186,18 @@ const Header = () => {
                     </div>
                   </Link>
                 </div>
-                <Link to="/sign-in">
-                  <FaUser className="w-8 h-8" />
-                </Link>
+                {/* Kiểm tra người dùng đã đăng nhập hay chưa */}
+                {userInfo || user ? (
+                  // Nếu đã đăng nhập, điều hướng đến trang Profile
+                  <Link to="/profile">
+                    <FaUser className="w-7 h-7 hover:text-mainDark cursor-pointer" />
+                  </Link>
+                ) : (
+                  // Nếu chưa đăng nhập, hiển thị biểu tượng người dùng dẫn đến trang đăng nhập
+                  <Link to="/sign-in">
+                    <FaUser className="w-7 h-7 hover:text-mainDark cursor-pointer" />
+                  </Link>
+                )}
               </div>
             </div>
             <div

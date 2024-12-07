@@ -151,7 +151,7 @@ const MyOrders = () => {
             </div>
             <div className="bg-[#f9f9f9] py-4 px-3">
               <div className="">
-                <ul className="flex items-center justify-between gap-10">
+                <ul className="flex items-center justify-between gap-10 max-md:flex-wrap">
                   {statusOrderlist.map((item) => (
                     <li key={item.id}>
                       <a
@@ -166,22 +166,23 @@ const MyOrders = () => {
                 </ul>
               </div>
             </div>
-            <table className="table">
-              <thead className="text-[16px] font-semibold leading-normal text-black">
-                <tr>
-                  <th>#</th>
-                  <th>Mã đơn hàng</th>
-                  <th>Ngày lập</th>
-                  <th>Địa chỉ</th>
-                  <th>Số điện thoại</th>
-                  <th>Tổng tiền</th>
-                  <th>Trạng thái</th>
-                  <th>Thanh toán</th>
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody className="font-normal text-[16px]">
-                {/* <tr>
+            <div className="overflow-x-auto">
+              <table className="table">
+                <thead className="text-[16px] font-semibold leading-normal text-black max-md:overflow-hidden max-md:overflow-x-auto">
+                  <tr className="max-md:w-[400px]">
+                    <th>#</th>
+                    <th>Mã đơn hàng</th>
+                    <th>Ngày lập</th>
+                    <th>Địa chỉ</th>
+                    <th>Số điện thoại</th>
+                    <th>Tổng tiền</th>
+                    <th>Trạng thái</th>
+                    <th>Thanh toán</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody className="font-normal text-[16px]">
+                  {/* <tr>
                   <td>1</td>
                   <td>
                     <Link to="/order-detail">BOKTOPIA001</Link>
@@ -192,26 +193,27 @@ const MyOrders = () => {
                   <td>199000 đ</td>
                   <td>Chưa xác nhận</td>
                 </tr> */}
-                {filteredOrders.map((order, index) => (
-                  <tr key={order._id}>
-                    <td>{index + 1}</td>
-                    <td>
-                      {" "}
-                      <Link to={`/order-detail/${order._id}`}>{order.orderId}</Link>
-                    </td>
-                    <td>{format(new Date(order.date), "dd/MM/yyyy")}</td>
-                    <td>{order.address}</td>
-                    <td>{order.phone}</td>
-                    <td>{order.total} đ</td>
-                    <td>{order.status}</td>
-                    <td>{order.paymentStatus}</td>
-                    <td>
-                      <button onClick={() => handleDelete(order._id)}>Hủy đơn</button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                  {filteredOrders.map((order, index) => (
+                    <tr key={order._id}>
+                      <td>{index + 1}</td>
+                      <td>
+                        {" "}
+                        <Link to={`/order-detail/${order._id}`}>{order.orderId}</Link>
+                      </td>
+                      <td>{format(new Date(order.date), "dd/MM/yyyy")}</td>
+                      <td>{order.address}</td>
+                      <td>{order.phone}</td>
+                      <td>{order.total} đ</td>
+                      <td>{order.status}</td>
+                      <td>{order.paymentStatus}</td>
+                      <td>
+                        <button onClick={() => handleDelete(order._id)}>Hủy đơn</button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>

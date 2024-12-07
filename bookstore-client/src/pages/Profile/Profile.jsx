@@ -103,10 +103,10 @@ const Profile = () => {
           const data = res.data;
           setValue("name", data.name || user.displayName);
           setValue("username", data.username);
-          setValue("date", data.date);
+          setValue("date", data.date || "");
           setValue("email", data.email);
           setValue("phone", data.phone);
-          setValue("address", data.address);
+          setValue("address", data.address || "");
           // Hiển thị hình ảnh hiện tại
           setImage(data.image ? `${URL_API}/images/${data.image}` : defaultAvatar);
         } else {
@@ -303,7 +303,9 @@ const Profile = () => {
                     type="date"
                     id="date"
                     className="input input-bordered w-full mt-2"
-                    {...register("date")}
+                    {...register("date", {
+                      value: user?.date || "", // Nếu user.date là undefined, sử dụng giá trị mặc định là chuỗi rỗng
+                    })}
                   />
                 </div>
               </div>
