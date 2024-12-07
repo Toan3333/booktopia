@@ -21,6 +21,7 @@ import HeaderAdmin from "../../../components/HeaderAdmin/HeaderAdmin";
 import axios from "axios";
 import { URL_API } from "../../../constants/constants";
 import { showSwalFireDelete } from "../../../helpers/helpers";
+import ReactPaginate from "react-paginate"; // Import thư viện React Paginate
 
 const ManageProduct = () => {
   const location = useLocation();
@@ -32,13 +33,17 @@ const ManageProduct = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const [collapsed, setCollapsed] = useState(false);
+
+  // Phân trang
+  const [currentPage, setCurrentPage] = useState(0);
+  const [productsPerPage] = useState(10); // Số sản phẩm hiển thị trên mỗi trang
+  const [pageCount, setPageCount] = useState(0);
+
   const handleLogout = () => {
-    // Perform logout operations here (e.g., clearing authentication tokens)
-    // Then navigate to the home page
+    // Thực hiện các thao tác đăng xuất ở đây (ví dụ: xóa token xác thực)
+    // Sau đó điều hướng đến trang chủ
     navigate("/");
   };
-
-  const [allProductList, setAllProductList] = useState([]);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -49,6 +54,9 @@ const ManageProduct = () => {
           : `${URL_API}/products`;
         const response = await axios.get(url);
         setProducts(response.data);
+
+        // Cập nhật tổng số trang
+        setPageCount(Math.ceil(response.data.length / productsPerPage));
       } catch (error) {
         console.error("Lỗi khi tìm kiếm sản phẩm", error);
       } finally {
@@ -57,22 +65,7 @@ const ManageProduct = () => {
     };
 
     fetchProducts();
-  }, [searchTerm,location.search]);
-
-  // useEffect(() => {
-  //   const fetchProductList = async () => {
-  //     try {
-  //       const response = await axios.get("http://localhost:3000/products");
-  //       const data = response.data;
-  //       setAllProductList(data);
-  //       console.log(data);
-  //     } catch (error) {
-  //       console.log(error);
-  //       setAllProductList([]); // Đặt mảng rỗng trong trường hợp lỗi
-  //     }
-  //   };
-  //   fetchProductList();
-  // }, []);
+  }, [searchTerm, location.search]);
 
   const handleDelete = async (id) => {
     try {
@@ -82,6 +75,15 @@ const ManageProduct = () => {
       console.log(error);
     }
   };
+
+  // Hàm xử lý khi chuyển trang
+  const handlePageClick = (event) => {
+    setCurrentPage(event.selected);
+  };
+
+  // Lấy danh sách sản phẩm cho trang hiện tại
+  const offset = currentPage * productsPerPage;
+  const currentProducts = products.slice(offset, offset + productsPerPage);
 
   return (
     <div>
@@ -232,9 +234,9 @@ const ManageProduct = () => {
                 </tr>
               </thead>
               <tbody>
-                {products.map((item, index) => (
+                {currentProducts.map((item, index) => (
                   <tr key={item._id} item={item}>
-                    <td>{index + 1}</td>
+                    <td>{offset + index + 1}</td> {/* Hiển thị STT chính xác */}
                     <td>
                       <img
                         src={`${URL_API}/images/${item.image1}`}
@@ -277,6 +279,35 @@ const ManageProduct = () => {
                 ))}
               </tbody>
             </table>
+            {/* Phân trang */}
+            <ReactPaginate
+              previousLabel={"Trước"}
+              nextLabel={"Sau"}
+              breakLabel={
+                <span className="px-3 py-2 leading-tight text-gray-500">
+                  ...
+                </span>
+              } // Thêm style cho breakLabel
+              pageCount={pageCount}
+              marginPagesDisplayed={1}//xác định số lượng nút số trang hiển thị ở đầu và cuối danh sách phân trang
+              pageRangeDisplayed={3} //xác định số lượng nút số trang hiển thị xung quanh trang hiện tại.
+              onPageChange={handlePageClick}
+              containerClassName={"flex justify-center items-center"} // Thêm class items-center
+              pageClassName={
+                "px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700"
+              }
+              previousLinkClassName={
+                "px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 rounded-l-lg"
+              }
+              nextLinkClassName={
+                "px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 rounded-r-lg"
+              }
+              disabledClassName={"opacity-50 cursor-not-allowed"}
+              activeClassName={
+                "px-3 py-2 text-blue-600 border border-gray-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700"
+              }
+              forcePage={currentPage} // Giữ trạng thái trang hiện tại
+            />
           </div>
         </div>
       </div>
