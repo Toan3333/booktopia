@@ -359,21 +359,14 @@ function App() {
           }
         />
         <Route
-          path="/admin/edit-voucher"
+          path="/admin/edit-voucher/:id"
           element={
             <PrivateRoute allowedRoles={[1]}>
               <EditVoucher />
             </PrivateRoute>
           }
         />
-        <Route
-          path="/admin/edit-voucher"
-          element={
-            <PrivateRoute allowedRoles={[1]}>
-              <EditVoucher />
-            </PrivateRoute>
-          }
-        />
+     
         <Route
           path="/admin/edit-product/:id"
           element={
