@@ -61,14 +61,32 @@ const DetailOrder = () => {
 
         setOrder(response.data);
       } catch (error) {
-        console.error("Error fetching order details:", error.response?.data || error.message);
+        console.error(
+          "Error fetching order details:",
+          error.response?.data || error.message
+        );
       }
     };
     fetchOrderDetails();
   }, [id]);
+  const [user, setUser] = useState({});
+  // Lấy dữ liệu người dùng từ cookie
+  useEffect(() => {
+    const userData = Cookies.get("user");
+    if (userData) {
+      const parsedUser = JSON.parse(userData);
+      setUser(parsedUser.user);
+    }
+  }, []);
 
+  // Đăng xuất xóa cookie người dùng
   const handleLogout = () => {
-    navigate("/");
+    // Xử lý logout, ví dụ xóa cookie và chuyển hướng người dùng
+    Cookies.remove("user");
+    setUser(null);
+    // Chuyển hướng hoặc cập nhật state để hiển thị UI phù hợp
+    navigate("/sign-in");
+    window.location.reload();
   };
 
   return (
@@ -76,8 +94,11 @@ const DetailOrder = () => {
       <div className="flex min-h-screen border">
         {/* Sidebar */}
         <Sidebar
-          className={`relative border p-3 bg-white ${collapsed ? "collapsed" : "expanded"}`}
-          width={collapsed ? "0px" : "270px"}>
+          className={`relative border p-3 bg-white ${
+            collapsed ? "collapsed" : "expanded"
+          }`}
+          width={collapsed ? "0px" : "270px"}
+        >
           <Menu className="bg-white">
             <div className="flex items-center justify-center mb-6">
               <img src="./images/logo.png" alt="Logo" />
@@ -89,17 +110,27 @@ const DetailOrder = () => {
               </div>
             </MenuItem>
 
-            <SubMenu label="Quản lý danh mục" icon={<AiOutlineBars className="w-5 h-5" />}>
+            <SubMenu
+              label="Quản lý danh mục"
+              icon={<AiOutlineBars className="w-5 h-5" />}
+            >
               <MenuItem component={<Link to="/admin/manage-category" />}>
                 Danh sách danh mục
               </MenuItem>
             </SubMenu>
-            <SubMenu label="Quản lý sản phẩm" icon={<FaBook className="w-5 h-5" />}>
+            <SubMenu
+              label="Quản lý sản phẩm"
+              icon={<FaBook className="w-5 h-5" />}
+            >
               <MenuItem component={<Link to="/admin/manage-product" />}>
                 Danh sách sản phẩm
               </MenuItem>
-              <MenuItem component={<Link to="/admin/manage-author" />}>Tác giả</MenuItem>
-              <MenuItem component={<Link to="/admin/manage-publishes" />}>Nhà xuất bản</MenuItem>
+              <MenuItem component={<Link to="/admin/manage-author" />}>
+                Tác giả
+              </MenuItem>
+              <MenuItem component={<Link to="/admin/manage-publishes" />}>
+                Nhà xuất bản
+              </MenuItem>
             </SubMenu>
             <MenuItem component={<Link to="/admin/manage-order" />}>
               <div className="flex items-center gap-4">
@@ -119,8 +150,13 @@ const DetailOrder = () => {
                 Quản lý voucher
               </div>
             </MenuItem>
-            <SubMenu label="Quản lý bài viết" icon={<FaRegEdit className="w-5 h-5" />}>
-              <MenuItem component={<Link to="/admin/manage-blog" />}>Danh sách bài viết</MenuItem>
+            <SubMenu
+              label="Quản lý bài viết"
+              icon={<FaRegEdit className="w-5 h-5" />}
+            >
+              <MenuItem component={<Link to="/admin/manage-blog" />}>
+                Danh sách bài viết
+              </MenuItem>
             </SubMenu>
             <MenuItem component={<Link to="/admin/manage-contact" />}>
               <div className="flex items-center gap-4">
@@ -155,13 +191,17 @@ const DetailOrder = () => {
           </Menu>
         </Sidebar>
         {/* Nút toggle nằm bên ngoài Sidebar */}
-        <button onClick={() => setCollapsed(!collapsed)} className="toggle-button">
+        <button
+          onClick={() => setCollapsed(!collapsed)}
+          className="toggle-button"
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
             strokeWidth={1.5}
-            stroke="currentColor">
+            stroke="currentColor"
+          >
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -173,7 +213,10 @@ const DetailOrder = () => {
         <div className="flex-1 p-6">
           <HeaderAdmin />
           <div className="flex items-center justify-between pb-8 border-b pt-3">
-            <PageTitle title={`Chi tiết đơn hàng [${order.orderId}]`} className="text-mainDark" />
+            <PageTitle
+              title={`Chi tiết đơn hàng [${order.orderId}]`}
+              className="text-mainDark"
+            />
           </div>
           <div className="mt-6 border rounded-[30px] p-5">
             <form action="" className="flex flex-col gap-6">
@@ -235,7 +278,10 @@ const DetailOrder = () => {
                   <select
                     value={order.status || ""}
                     className="input input-bordered w-full"
-                    onChange={(e) => handleStatusChange(order._id, e.target.value)}>
+                    onChange={(e) =>
+                      handleStatusChange(order._id, e.target.value)
+                    }
+                  >
                     {statusOptions.map((status) => (
                       <option key={status} value={status}>
                         {status}
@@ -262,7 +308,8 @@ const DetailOrder = () => {
                 margin: "20px 8px",
                 fontSize: "20px",
                 fontWeight: "bold",
-              }}>
+              }}
+            >
               Danh sách sản phẩm
             </h1>
             <table className="table w-full">
@@ -281,7 +328,11 @@ const DetailOrder = () => {
                   <tr>
                     <td>{index + 1}</td>
                     <td className="flex items-center justify-center max-w-[150px]">
-                      <img src={`${URL_API}/images/${order.image1}`} className="w-full" alt="" />
+                      <img
+                        src={`${URL_API}/images/${order.image1}`}
+                        className="w-full"
+                        alt=""
+                      />
                     </td>
                     <td>
                       <div className="flex flex-col  gap-3">
@@ -290,14 +341,20 @@ const DetailOrder = () => {
                             {order.name} x{order.quantity}
                           </b>
                         </div>
-                        <div className="">Tác giả: {order.author.authorName}</div>
-                        <div className="">Thể loại: {order.category.categoryName}</div>
+                        <div className="">
+                          Tác giả: {order.author.authorName}
+                        </div>
+                        <div className="">
+                          Thể loại: {order.category.categoryName}
+                        </div>
                       </div>
                     </td>
                     <td>
                       <div style={{ display: "flex" }}>
                         <del>{order.price1}đ</del>
-                        <div style={{ fontSize: "16px", marginLeft: "10px" }}>{order.price2}đ</div>
+                        <div style={{ fontSize: "16px", marginLeft: "10px" }}>
+                          {order.price2}đ
+                        </div>
                       </div>
                     </td>
                   </tr>

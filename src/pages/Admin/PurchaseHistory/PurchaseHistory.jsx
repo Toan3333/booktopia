@@ -9,7 +9,7 @@ import {
   FaTrashAlt,
   FaUser,
   FaUserClock,
-  FaGift
+  FaGift,
 } from "react-icons/fa";
 import { MdLogout } from "react-icons/md";
 import { AiFillDashboard, AiOutlineBars } from "react-icons/ai";
@@ -40,11 +40,27 @@ const PurchaseHistory = () => {
 
   useEffect(() => {
     if (id) {
-      fetchOrders(id); 
+      fetchOrders(id);
     }
   }, [id]);
+  const [user, setUser] = useState({});
+  // Lấy dữ liệu người dùng từ cookie
+  useEffect(() => {
+    const userData = Cookies.get("user");
+    if (userData) {
+      const parsedUser = JSON.parse(userData);
+      setUser(parsedUser.user);
+    }
+  }, []);
+
+  // Đăng xuất xóa cookie người dùng
   const handleLogout = () => {
-    navigate("/");
+    // Xử lý logout, ví dụ xóa cookie và chuyển hướng người dùng
+    Cookies.remove("user");
+    setUser(null);
+    // Chuyển hướng hoặc cập nhật state để hiển thị UI phù hợp
+    navigate("/sign-in");
+    window.location.reload();
   };
 
   return (
@@ -124,8 +140,20 @@ const PurchaseHistory = () => {
             </MenuItem>
             <MenuItem component={<Link to="/admin/stock" />}>
               <div className="flex items-center gap-4">
-              <MdInventory />
+                <MdInventory />
                 Quản lý tồn kho
+              </div>
+            </MenuItem>
+            <MenuItem component={<Link to="/admin/manage-comment" />}>
+              <div className="flex items-center gap-4">
+                <FaCommentAlt />
+                Quản lý bình luận
+              </div>
+            </MenuItem>
+            <MenuItem component={<Link to="/admin/manage-review" />}>
+              <div className="flex items-center gap-4">
+                <MdOutlinePreview />
+                Quản lý đánh giá
               </div>
             </MenuItem>
             <MenuItem onClick={handleLogout}>
@@ -169,32 +197,51 @@ const PurchaseHistory = () => {
                   <span>{order.orderId}</span>
                 </div>
                 <div className="flex items-center">
-                  <span className="pr-3">Ngày đặt: {new Date(order.date).toLocaleDateString()}</span>
-                  <span className="text-mainDark border-l border-l-gray-300 pl-3 font-medium">{order.status}</span>
+                  <span className="pr-3">
+                    Ngày đặt: {new Date(order.date).toLocaleDateString()}
+                  </span>
+                  <span className="text-mainDark border-l border-l-gray-300 pl-3 font-medium">
+                    {order.status}
+                  </span>
                 </div>
               </div>
               {order.listProducts.map((product, index) => (
-                <div key={index} className="flex items-center justify-between py-3 border-b border-b-gray-300">
+                <div
+                  key={index}
+                  className="flex items-center justify-between py-3 border-b border-b-gray-300"
+                >
                   <div className="flex items-center">
                     <div className="max-w-[120px]">
-                      <img className="w-full" src={`${URL_API}/images/${product.image1}`} alt={product.name} />
+                      <img
+                        className="w-full"
+                        src={`${URL_API}/images/${product.image1}`}
+                        alt={product.name}
+                      />
                     </div>
                     <div className="flex flex-col gap-3">
                       <h3 className="font-normal">{product.name}</h3>
-                      <div className="text-sm text-gray-400">{product.author.authorName}</div>
+                      <div className="text-sm text-gray-400">
+                        {product.author.authorName}
+                      </div>
                       <span className="text-sm">x{product.quantity}</span>
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
-                    <div className="text-sm text-gray-400 line-through">{product.price1} đ</div>
-                    <div className="text-lg text-red font-semibold">{product.price2} đ</div>
+                    <div className="text-sm text-gray-400 line-through">
+                      {product.price1} đ
+                    </div>
+                    <div className="text-lg text-red font-semibold">
+                      {product.price2} đ
+                    </div>
                   </div>
                 </div>
               ))}
               <div className="flex justify-end mt-4">
                 <div className="flex items-center">
                   <span>Thành tiền: </span>
-                  <div className="text-xl text-red font-semibold ml-3">{order.total} đ</div>
+                  <div className="text-xl text-red font-semibold ml-3">
+                    {order.total} đ
+                  </div>
                 </div>
               </div>
             </div>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Sidebar, Menu, MenuItem, SubMenu } from "react-pro-sidebar";
 import {
@@ -21,14 +21,29 @@ import Swal from "sweetalert2";
 import axios from "axios";
 import { URL_API } from "../../../constants/constants";
 import { showSwalFireSuccess } from "../../../helpers/helpers";
-
+import Cookies from "js-cookie";
 const AddBlog = () => {
   const [selectedImage, setSelectedImage] = useState(null);
   const navigate = useNavigate();
   const [collapsed, setCollapsed] = useState(false);
+  const [user, setUser] = useState({});
+  // Lấy dữ liệu người dùng từ cookie
+  useEffect(() => {
+    const userData = Cookies.get("user");
+    if (userData) {
+      const parsedUser = JSON.parse(userData);
+      setUser(parsedUser.user);
+    }
+  }, []);
 
+  // Đăng xuất xóa cookie người dùng
   const handleLogout = () => {
-    navigate("/");
+    // Xử lý logout, ví dụ xóa cookie và chuyển hướng người dùng
+    Cookies.remove("user");
+    setUser(null);
+    // Chuyển hướng hoặc cập nhật state để hiển thị UI phù hợp
+    navigate("/sign-in");
+    window.location.reload();
   };
 
   const handleImageChange = (e) => {
@@ -73,6 +88,9 @@ const AddBlog = () => {
       });
     }
   };
+  const handleCancel = () => {
+    navigate("/admin/manage-blog");
+  };
 
   return (
     <div>
@@ -116,7 +134,7 @@ const AddBlog = () => {
                 Nhà xuất bản
               </MenuItem>
             </SubMenu>
-            <MenuItem component={<Link to="/admin/manage-items" />}>
+            <MenuItem component={<Link to="/admin/manage-order" />}>
               <div className="flex items-center gap-4">
                 <FaClipboardList className="w-5 h-5" />
                 Quản lý đơn hàng
@@ -144,13 +162,13 @@ const AddBlog = () => {
             </SubMenu>
             <MenuItem component={<Link to="/admin/manage-contact" />}>
               <div className="flex items-center gap-4">
-                <MdInventory />
+                <MdMarkEmailRead />
                 Quản lý liên hệ
               </div>
             </MenuItem>
             <MenuItem component={<Link to="/admin/stock" />}>
               <div className="flex items-center gap-4">
-                <MdMarkEmailRead />
+                <MdInventory />
                 Quản lý tồn kho
               </div>
             </MenuItem>
@@ -212,7 +230,7 @@ const AddBlog = () => {
                   className="input input-bordered w-full"
                 />
                 {errors.name && (
-                  <p className="text-red-500">Tên bài viết là bắt buộc</p>
+                  <p className="text-red">Tên bài viết là bắt buộc</p>
                 )}
               </div>
               <div className="w-full flex flex-col gap-2">
@@ -224,7 +242,7 @@ const AddBlog = () => {
                   className="input input-bordered w-full"
                 />
                 {errors.date && (
-                  <p className="text-red-500">Ngày viết là bắt buộc</p>
+                  <p className="text-red">Ngày viết là bắt buộc</p>
                 )}{" "}
                 {/* Sửa lỗi cho trường date */}
               </div>
@@ -245,7 +263,7 @@ const AddBlog = () => {
                   onChange={handleImageChange}
                 />
                 {errors.image && (
-                  <p className="text-red-500">Hình ảnh là bắt buộc</p>
+                  <p className="text-red">Hình ảnh là bắt buộc</p>
                 )}
               </div>
               <div className="w-full flex flex-col gap-2">
@@ -256,12 +274,14 @@ const AddBlog = () => {
                   className="input input-bordered w-full h-32"
                 />
                 {errors.content && (
-                  <p className="text-red-500">Nội dung là bắt buộc</p>
+                  <p className="text-red">Nội dung là bắt buộc</p>
                 )}
               </div>
               <div className="flex items-center gap-3">
                 <Button>Lưu</Button>
-                <Button className="bg-secondary">Hủy</Button>
+                <Button className="bg-secondary" onClick={handleCancel}>
+                  Hủy
+                </Button>
               </div>
             </form>
           </div>
