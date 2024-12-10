@@ -76,15 +76,16 @@ const Profile = () => {
             </Link>
           </li>
           <li>
-            <Link to="/orders" onClick={closeSidebar}>
+            <Link to="/my-orders" onClick={closeSidebar}>
               Orders
             </Link>
           </li>
-          <li>
+          {/*<li>
             <Link to="/settings" onClick={closeSidebar}>
               Settings
             </Link>
           </li>
+          */}
           {user?.role === "admin" && (
             <li>
               <Link to="/dashboard" onClick={closeSidebar}>
