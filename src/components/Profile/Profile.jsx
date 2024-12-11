@@ -88,12 +88,7 @@ const Profile = () => {
               Đơn hàng của tôi
             </Link>
           </li>
-          {/*<li>
-            <Link to="/settings" onClick={closeSidebar}>
-              Cài đặt
-            </Link>
-          </li>
-          */}
+
           {user?.role === "admin" && (
             <li>
               <Link to="/dashboard" onClick={closeSidebar}>
