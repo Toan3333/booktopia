@@ -39,6 +39,17 @@ router.put("/:id", async (req, res) => {
   }
 });
 
+router.put("/:id/status", async (req, res) => {
+  const { id } = req.params;
+  const { isActive } = req.body;
+  try {
+    const updatedVoucher = await voucherController.updateStatusById(id, isActive);
+    res.status(200).json({ message: "Cập nhật trạng thái thành công", data: updatedVoucher });
+  } catch (error) {
+    res.status(500).json({ message: "Lỗi khi cập nhật trạng thái", error: error.message });
+  }
+});
+
 // xóa voucher
 router.delete("/:id", async (req, res) => {
   try {

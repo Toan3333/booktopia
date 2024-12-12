@@ -56,6 +56,16 @@ router.put("/:id",  async (req, res) => {
   }
 });
 
+router.put("/:id/status", async (req, res) => {
+  const { id } = req.params;
+  const { isActive } = req.body;
+  try {
+    const updatedCategory = await categoryController.updateStatusById(id, isActive);
+    res.status(200).json({ message: "Cập nhật trạng thái thành công", data: updatedCategory });
+  } catch (error) {
+    res.status(500).json({ message: "Lỗi khi cập nhật trạng thái", error: error.message });
+  }
+});
 // chi tiết category
 
 router.get("/:id", async (req, res) => {

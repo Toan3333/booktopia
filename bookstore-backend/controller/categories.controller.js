@@ -8,6 +8,7 @@ module.exports = {
   getCategoryByName,
   deleteCate,
   getCategoryById,
+  updateStatusById
 };
 
 // Show tất cả danh mục
@@ -76,6 +77,23 @@ async function updateById(id, body) {
     return result;
   } catch (error) {
     console.log("lỗi update", error);
+    throw error;
+  }
+}
+// update trạng thái isactive của category
+async function updateStatusById(id, isActive) {
+  try {
+    const cate = await categoryModel.findById(id);
+    if (!cate) {
+      throw new Error("Không tìm thấy danh mục");
+    }
+    const result = await categoryModel.findByIdAndUpdate(
+      id,
+      { isActive },
+      { new: true } 
+    );
+    return result;
+  } catch (error) {
     throw error;
   }
 }

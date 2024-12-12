@@ -36,6 +36,7 @@ module.exports = {
   getPaginatedProductsByAuthorSorted,
   getPaginatedProductsByCategorySorted,
   getPaginatedAndSortedProducts,
+  updateStatusById
 };
 
 /*Phân trang*/
@@ -384,6 +385,23 @@ async function updateById(id, body) {
     return result;
   } catch (error) {
     console.log("Sửa sản phẩm không thành công", error);
+    throw error;
+  }
+}
+
+async function updateStatusById(id, isActive) {
+  try {
+    const cate = await productModel.findById(id);
+    if (!cate) {
+      throw new Error("Không tìm thấy sản phẩm");
+    }
+    const result = await productModel.findByIdAndUpdate(
+      id,
+      { isActive },
+      { new: true } 
+    );
+    return result;
+  } catch (error) {
     throw error;
   }
 }
