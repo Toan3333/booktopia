@@ -6,7 +6,9 @@ const PrivateRoute = ({ children, allowedRoles }) => {
     const userCookie = Cookies.get("user");
     const user = userCookie ? JSON.parse(userCookie) : null;
     const userRole = user?.user?.role;
-
+    if (userRole === 1 && !allowedRoles.includes(1)) {
+      return <Navigate to="/sign-in" replace />;
+    }
     if (
       (user && allowedRoles.includes(-1) && userRole !== 1) ||
       allowedRoles.includes(userRole) ||
