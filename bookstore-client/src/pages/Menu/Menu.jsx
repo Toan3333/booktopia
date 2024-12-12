@@ -26,7 +26,9 @@ const Menu = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageGroup, setPageGroup] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
-  const [currentCategoryName, setCurrentCategoryName] = useState("Tất cả sản phẩm");
+  const [totalProducts, setTotalProducts] = useState(0);
+  const [currentCategoryName, setCurrentCategoryName] =
+    useState("Tất cả sản phẩm");
   const navigate = useNavigate();
   const pagesPerGroup = 3;
 
@@ -204,21 +206,75 @@ const Menu = () => {
       setLoading(false);
     }
   };
+  const handleNextGroup = () => {
+    const nextPageGroup = pageGroup + 1;
+    const totalPages = Math.ceil(totalProducts / pagesPerGroup);
+    const firstPageOfNextGroup = nextPageGroup * pagesPerGroup;
+    if (nextPageGroup < totalPages && products.length > 0) {
+      setPageGroup(nextPageGroup);
+      setCurrentPage(firstPageOfNextGroup + 1);
+    }
+  };
 
+  //khong cho chuyen trang khong có san pham
+  const isNextGroupDisabled = () => {
+    const nextPageGroup = pageGroup + 1;
+    const totalPages = Math.ceil(totalProducts / pagesPerGroup);
+    const firstPageOfNextGroup = nextPageGroup * pagesPerGroup;
+    return nextPageGroup >= totalPages || firstPageOfNextGroup >= totalProducts;
+  };
+
+  useEffect(() => {
+    const fetchTotalProducts = async () => {
+      try {
+        const url = "http://localhost:3000/products/products/total";
+        const response = await axios.get(url);
+
+        if (response.status === 200) {
+          setTotalProducts(response.data.total);
+        }
+      } catch (error) {
+        console.error("Lỗi khi lấy tổng số sản phẩm:", error);
+      }
+    };
+
+    fetchTotalProducts();
+  }, []);
   const renderPageButtons = () => {
     const startPage = pageGroup * pagesPerGroup + 1;
-    const pages = Array.from({ length: pagesPerGroup }, (_, i) => startPage + i);
+    const pages = Array.from(
+      { length: pagesPerGroup },
+      (_, i) => startPage + i
+    );
 
     return pages.map((page) => (
       <span
         key={page}
         className={`w-10 h-10 rounded-full flex items-center justify-center ${
-          currentPage === page ? "bg-mainDark text-white" : "border text-grayText"
+          currentPage === page
+            ? "bg-mainDark text-white"
+            : "border text-grayText"
         } text-[20px] font-semibold cursor-pointer`}
-        onClick={() => setCurrentPage(page)}>
+        onClick={() => setCurrentPage(page)}
+      >
         {page}
       </span>
     ));
+  };
+  const handlePrevGroup = () => {
+    if (pageGroup > 0) {
+      const prevPageGroup = pageGroup - 1;
+      setPageGroup(prevPageGroup); // Quay về nhóm trước
+      setCurrentPage(prevPageGroup * pagesPerGroup + 1); // Đặt trang đầu của nhóm trước
+    }
+  };
+
+  const handlePageClick = (pageNumber) => {
+    setCurrentPage(pageNumber);
+    const newGroup = Math.floor((pageNumber - 1) / pagesPerGroup);
+    if (newGroup !== pageGroup) {
+      setPageGroup(newGroup); // Đồng bộ nhóm nếu trang thay đổi vượt nhóm
+    }
   };
 
   return (
@@ -234,7 +290,11 @@ const Menu = () => {
                     items={categories}
                     onCategoryClick={categoryClick}
                   />
-                  <CategoryItem title="Tác giả" items={authors} onAuthorClick={authorClick} />
+                  <CategoryItem
+                    title="Tác giả"
+                    items={authors}
+                    onAuthorClick={authorClick}
+                  />
                   <CategoryItem
                     title="Nhà xuất bản"
                     items={publishers}
@@ -250,7 +310,8 @@ const Menu = () => {
                   <select
                     className="select select-bordered w-full max-w-xs custom-select"
                     value={sortOption}
-                    onChange={(e) => setSortOption(e.target.value)}>
+                    onChange={(e) => setSortOption(e.target.value)}
+                  >
                     <option value="Mới nhất">Mới nhất</option>
                     <option value="Giá tăng dần">Giá tăng dần</option>
                     <option value="Giá giảm dần">Giá giảm dần</option>
@@ -272,7 +333,25 @@ const Menu = () => {
                 </div>
               )}
               <div className="flex items-center justify-center gap-5 mt-6">
+                <span
+                  className="w-10 h-10 rounded-full flex items-center justify-center border text-grayText text-[20px] font-semibold hover:bg-mainDark hover:text-white cursor-pointer"
+                  onClick={handlePrevGroup}
+                >
+                  <FaLongArrowAltLeft />
+                </span>
+
                 {renderPageButtons()}
+
+                <span
+                  className={`w-10 h-10 rounded-full flex items-center justify-center border text-grayText text-[20px] font-semibold ${
+                    isNextGroupDisabled()
+                      ? "cursor-not-allowed opacity-50"
+                      : "hover:bg-mainDark hover:text-white cursor-pointer"
+                  }`}
+                  onClick={isNextGroupDisabled() ? null : handleNextGroup} // Ngăn chặn sự kiện click nếu nút bị vô hiệu hóa
+                >
+                  <FaLongArrowAltRight />
+                </span>
               </div>
             </div>
           </div>

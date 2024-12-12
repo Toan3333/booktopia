@@ -1,7 +1,13 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { Sidebar, Menu, MenuItem, SubMenu } from "react-pro-sidebar";
-import { FaBook, FaClipboardList, FaRegEdit, FaUser, FaGift } from "react-icons/fa";
+import {
+  FaBook,
+  FaClipboardList,
+  FaRegEdit,
+  FaUser,
+  FaGift,
+} from "react-icons/fa";
 import { MdLogout } from "react-icons/md";
 import { AiFillDashboard, AiOutlineBars } from "react-icons/ai";
 import { MdMarkEmailRead } from "react-icons/md";
@@ -15,13 +21,29 @@ import Swal from "sweetalert2";
 import HeaderAdmin from "../../../components/HeaderAdmin/HeaderAdmin";
 import { URL_API } from "../../../constants/constants";
 import { showSwalFireSuccess } from "../../../helpers/helpers";
-
+import Cookies from "js-cookie";
 const EditVoucher = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const [collapsed, setCollapsed] = useState(false);
+  const [user, setUser] = useState({});
+  // Lấy dữ liệu người dùng từ cookie
+  useEffect(() => {
+    const userData = Cookies.get("user");
+    if (userData) {
+      const parsedUser = JSON.parse(userData);
+      setUser(parsedUser.user);
+    }
+  }, []);
+
+  // Đăng xuất xóa cookie người dùng
   const handleLogout = () => {
-    navigate("/");
+    // Xử lý logout, ví dụ xóa cookie và chuyển hướng người dùng
+    Cookies.remove("user");
+    setUser(null);
+    // Chuyển hướng hoặc cập nhật state để hiển thị UI phù hợp
+    navigate("/sign-in");
+    window.location.reload();
   };
 
   const {
@@ -123,7 +145,7 @@ const EditVoucher = () => {
               Nhà xuất bản
             </MenuItem>
           </SubMenu>
-          <MenuItem component={<Link to="/admin/manage-items" />}>
+          <MenuItem component={<Link to="/admin/manage-order" />}>
             <div className="flex items-center gap-4">
               <FaClipboardList className="w-5 h-5" />
               Quản lý đơn hàng
@@ -136,11 +158,11 @@ const EditVoucher = () => {
             </div>
           </MenuItem>
           <MenuItem component={<Link to="/admin/manage-voucher" />}>
-              <div className="flex items-center gap-4">
-                <FaGift />
-                Quản lý voucher
-              </div>
-            </MenuItem>
+            <div className="flex items-center gap-4">
+              <FaGift />
+              Quản lý voucher
+            </div>
+          </MenuItem>
           <SubMenu
             label="Quản lý bài viết"
             icon={<FaRegEdit className="w-5 h-5" />}
@@ -150,17 +172,29 @@ const EditVoucher = () => {
             </MenuItem>
           </SubMenu>
           <MenuItem component={<Link to="/admin/manage-contact" />}>
-              <div className="flex items-center gap-4">
-                <MdMarkEmailRead />
-                Quản lý liên hệ
-              </div>
-            </MenuItem>
-            <MenuItem component={<Link to="/admin/stock" />}>
-              <div className="flex items-center gap-4">
+            <div className="flex items-center gap-4">
+              <MdMarkEmailRead />
+              Quản lý liên hệ
+            </div>
+          </MenuItem>
+          <MenuItem component={<Link to="/admin/stock" />}>
+            <div className="flex items-center gap-4">
               <MdInventory />
-                Quản lý tồn kho
-              </div>
-            </MenuItem>
+              Quản lý tồn kho
+            </div>
+          </MenuItem>
+          <MenuItem component={<Link to="/admin/manage-comment" />}>
+            <div className="flex items-center gap-4">
+              <FaCommentAlt />
+              Quản lý bình luận
+            </div>
+          </MenuItem>
+          <MenuItem component={<Link to="/admin/manage-review" />}>
+            <div className="flex items-center gap-4">
+              <MdOutlinePreview />
+              Quản lý đánh giá
+            </div>
+          </MenuItem>
           <MenuItem onClick={handleLogout}>
             <div className="flex items-center gap-4">
               <MdLogout />

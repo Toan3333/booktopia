@@ -1,8 +1,15 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Sidebar, Menu, MenuItem, SubMenu } from "react-pro-sidebar";
-import { FaBook, FaClipboardList, FaRegEdit, FaUser, FaGift } from "react-icons/fa";
-import { MdLogout } from "react-icons/md";
+import {
+  FaBook,
+  FaClipboardList,
+  FaRegEdit,
+  FaUser,
+  FaGift,
+  FaCommentAlt,
+} from "react-icons/fa";
+import { MdLogout, MdOutlinePreview } from "react-icons/md";
 import { AiFillDashboard, AiOutlineBars } from "react-icons/ai";
 import { MdMarkEmailRead } from "react-icons/md";
 import { MdInventory } from "react-icons/md";
@@ -15,16 +22,34 @@ import Swal from "sweetalert2";
 import HeaderAdmin from "../../../components/HeaderAdmin/HeaderAdmin";
 import { URL_API } from "../../../constants/constants";
 import { showSwalFireSuccess } from "../../../helpers/helpers";
-
+import Cookies from "js-cookie";
 const AddVoucher = () => {
   const navigate = useNavigate();
   const [collapsed, setCollapsed] = useState(false);
+  const [user, setUser] = useState({});
+  // Lấy dữ liệu người dùng từ cookie
+  useEffect(() => {
+    const userData = Cookies.get("user");
+    if (userData) {
+      const parsedUser = JSON.parse(userData);
+      setUser(parsedUser.user);
+    }
+  }, []);
+
+  // Đăng xuất xóa cookie người dùng
   const handleLogout = () => {
-    navigate("/");
+    // Xử lý logout, ví dụ xóa cookie và chuyển hướng người dùng
+    Cookies.remove("user");
+    setUser(null);
+    // Chuyển hướng hoặc cập nhật state để hiển thị UI phù hợp
+    navigate("/sign-in");
+    window.location.reload();
   };
 
   const {
-    register, setValue, getValues,
+    register,
+    setValue,
+    getValues,
     handleSubmit,
     formState: { errors },
   } = useForm();
@@ -33,8 +58,8 @@ const AddVoucher = () => {
     try {
       const response = await axios.post(`${URL_API}/vouchers`, data);
       if (response.status === 200) {
-        await showSwalFireSuccess("Thêm mới voucher thành công"); 
-        navigate("/admin/manage-voucher"); 
+        await showSwalFireSuccess("Thêm mới voucher thành công");
+        navigate("/admin/manage-voucher");
       }
     } catch (error) {
       console.error("Error creating product:", error);
@@ -86,7 +111,7 @@ const AddVoucher = () => {
               Nhà xuất bản
             </MenuItem>
           </SubMenu>
-          <MenuItem component={<Link to="/admin/manage-items" />}>
+          <MenuItem component={<Link to="/admin/manage-order" />}>
             <div className="flex items-center gap-4">
               <FaClipboardList className="w-5 h-5" />
               Quản lý đơn hàng
@@ -99,11 +124,11 @@ const AddVoucher = () => {
             </div>
           </MenuItem>
           <MenuItem component={<Link to="/admin/manage-voucher" />}>
-              <div className="flex items-center gap-4">
-                <FaGift />
-                Quản lý voucher
-              </div>
-            </MenuItem>
+            <div className="flex items-center gap-4">
+              <FaGift />
+              Quản lý voucher
+            </div>
+          </MenuItem>
           <SubMenu
             label="Quản lý bài viết"
             icon={<FaRegEdit className="w-5 h-5" />}
@@ -113,17 +138,29 @@ const AddVoucher = () => {
             </MenuItem>
           </SubMenu>
           <MenuItem component={<Link to="/admin/manage-contact" />}>
-              <div className="flex items-center gap-4">
+            <div className="flex items-center gap-4">
+              <MdMarkEmailRead />
+              Quản lý liên hệ
+            </div>
+          </MenuItem>
+          <MenuItem component={<Link to="/admin/stock" />}>
+            <div className="flex items-center gap-4">
               <MdInventory />
-                Quản lý liên hệ
-              </div>
-            </MenuItem>
-            <MenuItem component={<Link to="/admin/stock" />}>
-              <div className="flex items-center gap-4">
-                <MdMarkEmailRead />
-                Quản lý tồn kho
-              </div>
-            </MenuItem>
+              Quản lý tồn kho
+            </div>
+          </MenuItem>
+          <MenuItem component={<Link to="/admin/manage-comment" />}>
+            <div className="flex items-center gap-4">
+              <FaCommentAlt />
+              Quản lý bình luận
+            </div>
+          </MenuItem>
+          <MenuItem component={<Link to="/admin/manage-review" />}>
+            <div className="flex items-center gap-4">
+              <MdOutlinePreview />
+              Quản lý đánh giá
+            </div>
+          </MenuItem>
           <MenuItem onClick={handleLogout}>
             <div className="flex items-center gap-4">
               <MdLogout />
@@ -174,60 +211,61 @@ const AddVoucher = () => {
                   <p className="text-red-500">{errors.code.message}</p>
                 )}
               </div>
-              
+
               <div className="w-2/4 flex flex-col gap-3">
-  <label htmlFor="">*Loại voucher</label>
-  <select
-    {...register("type", { required: true })}
-    id="type"
-    className="select select-bordered w-full"
-    onChange={(e) => {
-      // Xử lý khi loại voucher thay đổi
-      setValue("discountValue", ""); // Reset giá trị voucher khi thay đổi loại voucher
-    }}
-  >
-    <option value="" disabled selected hidden>
-      Chọn loại voucher
-    </option>
-    <option value="Discount">Discount</option>
-    <option value="Shipping">Shipping</option>
-  </select>
-  {errors.type && (
-    <span className="text-red-500">Vui lòng chọn loại voucher</span>
-  )}
-</div>
+                <label htmlFor="">*Loại voucher</label>
+                <select
+                  {...register("type", { required: true })}
+                  id="type"
+                  className="select select-bordered w-full"
+                  onChange={(e) => {
+                    // Xử lý khi loại voucher thay đổi
+                    setValue("discountValue", ""); // Reset giá trị voucher khi thay đổi loại voucher
+                  }}
+                >
+                  <option value="" disabled selected hidden>
+                    Chọn loại voucher
+                  </option>
+                  <option value="Discount">Discount</option>
+                  <option value="Shipping">Shipping</option>
+                </select>
+                {errors.type && (
+                  <span className="text-red-500">
+                    Vui lòng chọn loại voucher
+                  </span>
+                )}
+              </div>
 
-<div className="w-2/4 flex flex-col gap-3">
-  <label htmlFor="code">*Giảm giá</label>
-  <input
-    type="number"
-    {...register("discountValue", {
-      required: "Giá trị voucher là bắt buộc",
-      validate: (value) => {
-        const type = getValues("type");
-        if (type === "Discount") {
-          if (value > 100) {
-            return "Giảm giá discount không thể vượt quá 100%";
-          }
-          if (value < 0) {
-            return "Giảm giá không thể nhỏ hơn 0";
-          }
-        } else if (type === "Shipping") {
-          if (value < 0) {
-            return "Giảm giá vận chuyển không thể nhỏ hơn 0";
-          }
-        }
-        return true;
-      },
-    })}
-    id="discountValue"
-    className="input input-bordered w-full"
-  />
-  {errors.discountValue && (
-    <p className="text-red-500">{errors.discountValue.message}</p>
-  )}
-</div>
-
+              <div className="w-2/4 flex flex-col gap-3">
+                <label htmlFor="code">*Giảm giá</label>
+                <input
+                  type="number"
+                  {...register("discountValue", {
+                    required: "Giá trị voucher là bắt buộc",
+                    validate: (value) => {
+                      const type = getValues("type");
+                      if (type === "Discount") {
+                        if (value > 100) {
+                          return "Giảm giá discount không thể vượt quá 100%";
+                        }
+                        if (value < 0) {
+                          return "Giảm giá không thể nhỏ hơn 0";
+                        }
+                      } else if (type === "Shipping") {
+                        if (value < 0) {
+                          return "Giảm giá vận chuyển không thể nhỏ hơn 0";
+                        }
+                      }
+                      return true;
+                    },
+                  })}
+                  id="discountValue"
+                  className="input input-bordered w-full"
+                />
+                {errors.discountValue && (
+                  <p className="text-red-500">{errors.discountValue.message}</p>
+                )}
+              </div>
             </div>
             <div className="flex items-center gap-12">
               <div className="w-2/6 flex flex-col gap-3">
