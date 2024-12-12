@@ -1,112 +1,325 @@
-import React, { useEffect, useState, useContext } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useEffect, useState, useCallback } from "react";
+import { FaRegEdit, FaUser, FaHeart, FaCalendar } from "react-icons/fa";
+import { FiLogOut } from "react-icons/fi";
+import { NavLink, useNavigate } from "react-router-dom";
+import PageTitle from "../../components/PageTitle/PageTitle";
+import Button from "../../components/Button/Button";
+import { useForm } from "react-hook-form";
 import Cookies from "js-cookie";
+import axios from "axios";
 import { URL_API } from "../../constants/constants";
-import { AuthContext } from "../../contexts/AuthProvider"; // Import AuthContext
-import "./Profile.css";
+import { showSwalFireSuccess } from "../../helpers/helpers";
+
 const Profile = () => {
-  const { user, logOut } = useContext(AuthContext); // Lấy thông tin người dùng và hàm logOut từ AuthContext
-  const navigate = useNavigate();
-
-  // Avatar mặc định nếu không có ảnh người dùng
-  const defaultAvatar =
-    "https://images.unsplash.com/photo-1686170287433-c95faf6d3608?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1wYXJ0bmVy";
-
-  // Hàm lấy URL của ảnh đại diện
-  const getAvatarUrl = (image) => {
-    if (!image) return defaultAvatar;
-    if (image.startsWith("http://") || image.startsWith("https://"))
-      return image;
-    return `${URL_API}/images/${image}`;
-  };
-
   const handleLogout = () => {
-    // Gọi phương thức logOut từ AuthContext để đăng xuất
-    logOut();
-    // Xóa cookie người dùng
+    // Xử lý logout, ví dụ xóa cookie và chuyển hướng người dùng
     Cookies.remove("user");
-    navigate("/sign-in"); // Chuyển hướng đến trang đăng nhập
+    setUser(null);
+    navigate("/sign-in");
     window.location.reload();
   };
 
-  const closeSidebar = () => {
-    // Đóng sidebar khi người dùng nhấp vào menu
-    document.getElementById("my-drawer-4").checked = false;
+  const defaultAvatar =
+    "https://images.unsplash.com/photo-1686170287433-c95faf6d3608?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1wYXJ0bmVy";
+
+  const profileMenuList = [
+    { id: 1, name: "Tài khoản của tôi", icon: <FaUser />, link: "/profile" },
+    {
+      id: 2,
+      name: "Sản phẩm yêu thích",
+      icon: <FaHeart />,
+      link: "/favorites",
+    },
+    {
+      id: 3,
+      name: "Đơn hàng của bạn",
+      icon: <FaCalendar />,
+      link: "/my-orders",
+    },
+    { id: 4, name: "Đăng xuất", icon: <FiLogOut />, action: handleLogout },
+  ];
+
+  const [user, setUser] = useState({});
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [image, setImage] = useState(null);
+
+  const userCookie = JSON.parse(Cookies.get("user"));
+  const userUid = userCookie?.uid; // UID từ Firebase (nếu có)
+  const userId = userCookie?.user?._id; // ID của hệ thống (nếu có)
+
+  console.log("userUid:", userUid);
+  console.log("userId:", userId);
+
+  const navigate = useNavigate();
+  const { register, handleSubmit, setValue, watch, getValues } = useForm({
+    defaultValues: {
+      phone: "",
+      address: "",
+      email: "",
+      name: "",
+      username: "",
+      date: "",
+    },
+  });
+
+  // Xử lý khi người dùng chọn hình ảnh mới
+  const handleImgChange = useCallback((e) => {
+    const { files } = e.target;
+    if (files && files[0]) {
+      const imageUrl = URL.createObjectURL(files[0]);
+      setSelectedImage({
+        file: files[0],
+        preview: imageUrl,
+      });
+    }
+  }, []);
+
+  const userData = Cookies.get("user");
+  const parsedUser = JSON.parse(userData);
+  console.log(parsedUser.email);
+
+  // Lấy dữ liệu người dùng từ cookie
+  useEffect(() => {
+    const userData = Cookies.get("user");
+    if (userData) {
+      const parsedUser = JSON.parse(userData);
+      setUser(parsedUser.user || {}); // Cung cấp giá trị mặc định là đối tượng rỗng
+    }
+  }, []);
+
+  // Lấy thông tin người dùng từ API khi component mount
+  useEffect(() => {
+    const getUser = async () => {
+      try {
+        let res;
+
+        // Kiểm tra nếu có UID hoặc _ID và gọi API tương ứng
+        if (userId) {
+          // Nếu có _id, lấy thông tin người dùng từ hệ thống của bạn
+          res = await axios.get(`${URL_API}/users/${userId}`);
+        }
+
+        if (res?.status === 200) {
+          const data = res.data;
+          setValue("name", data.name || user.displayName);
+          setValue("username", data.username);
+          setValue("date", data.date);
+          setValue("email", data.email);
+          setValue("phone", data.phone);
+          setValue("address", data.address);
+          // Hiển thị hình ảnh hiện tại
+          setImage(data.image ? `${URL_API}/images/${data.image}` : defaultAvatar);
+        } else {
+          console.error("Không thể lấy dữ liệu người dùng");
+        }
+      } catch (error) {
+        console.error("Error fetching user details:", error);
+      }
+    };
+
+    getUser();
+  }, [userUid, userId, setValue]);
+
+  // lay du lieu tu cookie show len
+  useEffect(() => {
+    const user = Cookies.get("user");
+    if (user) {
+      const userData = JSON.parse(user);
+
+      // Kiểm tra xem người dùng đăng nhập qua Google (Firebase) hay đăng nhập thông qua hệ thống truyền thống
+      if (userData.uid) {
+        // Nếu có trường 'uid', tức là người dùng đăng nhập qua Firebase (Google)
+        setValue("name", userData.displayName); // Gán tên từ Firebase
+        setValue("email", userData.email); // Gán email từ Firebase
+        setValue("phone", ""); // Bạn có thể để trống hoặc yêu cầu người dùng nhập lại
+        setValue("address", ""); // Bạn có thể để trống hoặc yêu cầu người dùng nhập lại
+      }
+    }
+  }, [setValue]);
+
+  const onSubmit = async (data) => {
+    try {
+      const formData = new FormData();
+      formData.append("name", data.name);
+      formData.append("username", data.username);
+      formData.append("date", data.date);
+      formData.append("email", data.email);
+      formData.append("phone", data.phone);
+      formData.append("address", data.address);
+      if (selectedImage?.file) {
+        formData.append("image", selectedImage.file);
+      }
+
+      let res;
+      if (userUid) {
+        // Nếu có uid, cập nhật thông tin người dùng từ Firebase
+        res = await axios.put(`${URL_API}/users/${userUid}`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+      } else if (userId) {
+        // Nếu có _id, cập nhật thông tin người dùng từ hệ thống của bạn
+        res = await axios.put(`${URL_API}/users/${userId}`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+      }
+
+      if (res?.status === 200) {
+        const updatedUser = res.data.userUpdate;
+        Cookies.set(
+          "user",
+          JSON.stringify({ user: { _id: updatedUser._id, uid: updatedUser.uid, ...updatedUser } }),
+          {
+            expires: 1,
+          }
+        );
+        setUser(updatedUser);
+        setImage(`${URL_API}/images/${updatedUser.image}`);
+        showSwalFireSuccess("Thông tin hồ sơ của bạn đã được cập nhật.");
+
+        setTimeout(() => {
+          window.location.reload();
+        }, 1500);
+      } else {
+        console.error("Failed to update profile");
+      }
+    } catch (error) {
+      console.error("Error updating profile:", error);
+    }
   };
 
-  // Kiểm tra cookie trước khi phân tích JSON
-  const userCookie = Cookies.get("user");
-  let parsedUser = null;
-
-  if (userCookie) {
-    try {
-      parsedUser = JSON.parse(userCookie);
-    } catch (error) {
-      console.error("Lỗi khi phân tích cookie user:", error);
-    }
-  }
-
-  // Lấy thông tin UID từ cookie hoặc AuthContext
-  const userUid = parsedUser?.user?.uid || user?.uid;
-
-  // Lấy ảnh người dùng từ cookie hoặc AuthContext
-  const userImage = parsedUser?.user?.image || user?.photoURL || user?.image;
-
   return (
-    <div className="drawer-end z-50 max-md:drawer-end">
-      <input id="my-drawer-4" type="checkbox" className="drawer-toggle" />
-      <div className="drawer-content">
-        {/* Nút avatar để mở sidebar */}
-        <label
-          htmlFor="my-drawer-4"
-          className="drawer-button btn btn-circle btn-ghost avatar"
-        >
-          <div className="w-10 rounded-full">
-            {/* Hiển thị ảnh của người dùng (photoURL nếu có, nếu không thì dùng ảnh mặc định) */}
-            <img
-              alt="User avatar"
-              src={getAvatarUrl(userImage)}
-              className="object-cover w-full h-full rounded-full"
-            />
+    <div className="py-10">
+      <div className="container">
+        <div className="flex gap-10 max-md:flex-col">
+          <div className="max-w-[300px] w-full max-md:w-full">
+            <div className="flex items-center gap-2 max-md:flex-col">
+              <img
+                src={selectedImage?.preview || image}
+                className="w-[50px] h-[50px] rounded-full"
+                alt="Avatar"
+              />
+              <div>
+                <h3 className="font-semibold">{user?.email || parsedUser.email}</h3>
+                <p className="flex items-center gap-1 text-grayText">
+                  <FaRegEdit />
+                  Sửa hồ sơ
+                </p>
+              </div>
+            </div>
+            <ul className="flex flex-col gap-7 mt-10">
+              {profileMenuList.map((item) => (
+                <li key={item.id}>
+                  {item.link ? (
+                    <NavLink
+                      to={item.link}
+                      className={({ isActive }) =>
+                        isActive
+                          ? "text-mainDark flex items-center gap-2 font-normal leading-normal"
+                          : "flex items-center text-black hover:text-mainDark gap-2 font-normal leading-normal"
+                      }>
+                      {item.icon}
+                      {item.name}
+                    </NavLink>
+                  ) : (
+                    <button
+                      onClick={item.action}
+                      className="flex items-center text-black hover:text-mainDark gap-2 font-normal leading-normal">
+                      {item.icon}
+                      {item.name}
+                    </button>
+                  )}
+                </li>
+              ))}
+            </ul>
           </div>
-        </label>
-      </div>
-      <div className="drawer-side">
-        <label
-          htmlFor="my-drawer-4"
-          aria-label="close sidebar"
-          className="drawer-overlay"
-        ></label>
-        <ul className="menu bg-base-200 text-base-content min-h-full w-80 p-4">
-          <li>
-            <Link to="/profile" onClick={closeSidebar}>
-              Thông tin tài khoản
-            </Link>
-          </li>
-          <li>
-            <Link to="/my-orders" onClick={closeSidebar}>
-              Đơn hàng của tôi
-            </Link>
-          </li>
-
-          {user?.role === "admin" && (
-            <li>
-              <Link to="/dashboard" onClick={closeSidebar}>
-                Dashboard
-              </Link>
-            </li>
-          )}
-          <li>
-            <a
-              onClick={() => {
-                handleLogout();
-                closeSidebar();
-              }}
-            >
-              Đăng xuất
-            </a>
-          </li>
-        </ul>
+          <div className="w-3/5 max-md:w-full">
+            <PageTitle title="Cập nhật tài khoản" className="text-mainDark mb-2"></PageTitle>
+            <div className="text-grayText leading-normal font-normal mb-5">
+              Chỉnh sửa thông tin cá nhân, tài khoản và mật khẩu
+            </div>
+            <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
+              <div className="flex items-center justify-center gap-5 max-md:flex-col">
+                <div className="w-full">
+                  <label htmlFor="name">Họ và tên</label>
+                  <input
+                    type="text"
+                    id="name"
+                    placeholder="Họ và tên"
+                    className="input input-bordered w-full mt-2"
+                    {...register("name")}
+                  />
+                </div>
+                <div className="w-full">
+                  <label htmlFor="username">Tên người dùng</label>
+                  <input
+                    type="text"
+                    id="username"
+                    placeholder="Tên người dùng"
+                    className="input input-bordered w-full mt-2"
+                    {...register("username")}
+                  />
+                </div>
+              </div>
+              <div className="flex items-center justify-center gap-5 max-md:flex-col">
+                <div className="w-full">
+                  <label htmlFor="email">Email</label>
+                  <input
+                    type="email"
+                    id="email"
+                    placeholder="Email"
+                    className="input input-bordered w-full mt-2"
+                    {...register("email")}
+                  />
+                </div>
+                <div className="w-full">
+                  <label htmlFor="phone">Số điện thoại</label>
+                  <input
+                    type="text"
+                    id="phone"
+                    placeholder="Số điện thoại"
+                    className="input input-bordered w-full mt-2"
+                    {...register("phone")}
+                  />
+                </div>
+              </div>
+              <div className="flex items-center justify-center gap-5 max-md:flex-col">
+                <div className="w-full">
+                  <label htmlFor="address">Địa chỉ</label>
+                  <input
+                    type="text"
+                    id="address"
+                    placeholder="Địa chỉ"
+                    className="input input-bordered w-full mt-2"
+                    {...register("address")}
+                  />
+                </div>
+                <div className="w-full">
+                  <label htmlFor="date">Ngày sinh</label>
+                  <input
+                    type="date"
+                    id="date"
+                    className="input input-bordered w-full mt-2"
+                    {...register("date")}
+                  />
+                </div>
+              </div>
+              <div className="mb-6">
+                <label htmlFor="image">Ảnh đại diện</label>
+                <input
+                  type="file"
+                  id="image"
+                  className="input input-bordered w-full mt-2"
+                  onChange={handleImgChange}
+                />
+              </div>
+              <Button type="submit">Cập nhật</Button>
+            </form>
+          </div>
+        </div>
       </div>
     </div>
   );
