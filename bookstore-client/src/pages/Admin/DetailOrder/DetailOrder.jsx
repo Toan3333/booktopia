@@ -24,6 +24,7 @@ import { URL_API } from "../../../constants/constants";
 import Button from "../../../components/Button/Button";
 
 const DetailOrder = () => {
+  const navigate = useNavigate();
   const [user, setUser] = useState({});
   const { id } = useParams();
   const [order, setOrder] = useState({ listProducts: [] });
@@ -37,21 +38,48 @@ const DetailOrder = () => {
   ]; // Danh sách trạng thái
 
   const handleStatusChange = async (orderId, newStatus) => {
+    const currentStatusIndex = statusOptions.indexOf(order.status);
+    const newStatusIndex = statusOptions.indexOf(newStatus);
+
+    // Kiểm tra nếu trạng thái được chọn không phải là trạng thái tiếp theo hợp lệ
+    if (
+      newStatusIndex !== currentStatusIndex + 1 &&
+      newStatus !== "Chờ xác nhận"
+    ) {
+      Swal.fire({
+        icon: "error",
+        title: "Lỗi",
+        text: "Trạng thái bạn chọn không hợp lệ, vui lòng chọn trạng thái tiếp theo theo thứ tự.",
+        timer: 2000,
+        showConfirmButton: false,
+      });
+      return;
+    }
+
     try {
       await axios.put(`${URL_API}/orders/${orderId}/status`, {
         status: newStatus,
       });
-      // Cập nhật trực tiếp trạng thái đơn hàng
+
+      // Cập nhật trạng thái trong state
       setOrder({ ...order, status: newStatus });
+
       Swal.fire({
         icon: "success",
         title: "Cập nhật thành công!",
-        text: `Trạng thái đơn hàng đã được cập nhật thành:   ${newStatus}`,
+        text: `Trạng thái đơn hàng đã được cập nhật thành: ${newStatus}`,
         timer: 2000,
         showConfirmButton: false,
       });
     } catch (error) {
       console.log(error);
+      Swal.fire({
+        icon: "error",
+        title: "Cập nhật thất bại!",
+        text: "Đã xảy ra lỗi khi cập nhật trạng thái.",
+        timer: 2000,
+        showConfirmButton: false,
+      });
     }
   };
   useEffect(() => {
@@ -281,6 +309,9 @@ const DetailOrder = () => {
                       handleStatusChange(order._id, e.target.value)
                     }
                   >
+                    <option value="" disabled>
+                      Chọn trạng thái
+                    </option>
                     {statusOptions.map((status) => (
                       <option key={status} value={status}>
                         {status}

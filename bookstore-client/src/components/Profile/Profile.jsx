@@ -15,7 +15,8 @@ const Profile = () => {
   // Hàm lấy URL của ảnh đại diện
   const getAvatarUrl = (image) => {
     if (!image) return defaultAvatar;
-    if (image.startsWith("http://") || image.startsWith("https://")) return image;
+    if (image.startsWith("http://") || image.startsWith("https://"))
+      return image;
     return `${URL_API}/images/${image}`;
   };
 
@@ -56,7 +57,10 @@ const Profile = () => {
       <input id="my-drawer-4" type="checkbox" className="drawer-toggle" />
       <div className="drawer-content">
         {/* Nút avatar để mở sidebar */}
-        <label htmlFor="my-drawer-4" className="drawer-button btn btn-circle btn-ghost avatar">
+        <label
+          htmlFor="my-drawer-4"
+          className="drawer-button btn btn-circle btn-ghost avatar"
+        >
           <div className="w-10 rounded-full">
             {/* Hiển thị ảnh của người dùng (photoURL nếu có, nếu không thì dùng ảnh mặc định) */}
             <img
@@ -68,7 +72,11 @@ const Profile = () => {
         </label>
       </div>
       <div className="drawer-side">
-        <label htmlFor="my-drawer-4" aria-label="close sidebar" className="drawer-overlay"></label>
+        <label
+          htmlFor="my-drawer-4"
+          aria-label="close sidebar"
+          className="drawer-overlay"
+        ></label>
         <ul className="menu bg-base-200 text-base-content min-h-full w-80 p-4">
           <li>
             <Link to="/profile" onClick={closeSidebar}>
@@ -76,8 +84,8 @@ const Profile = () => {
             </Link>
           </li>
           <li>
-            <Link to="/orders" onClick={closeSidebar}>
-              Orders
+            <Link to="/my-orders" onClick={closeSidebar}>
+              Đơn hàng của tôi
             </Link>
           </li>
           {/*<li>
@@ -98,7 +106,8 @@ const Profile = () => {
               onClick={() => {
                 handleLogout();
                 closeSidebar();
-              }}>
+              }}
+            >
               Đăng xuất
             </a>
           </li>

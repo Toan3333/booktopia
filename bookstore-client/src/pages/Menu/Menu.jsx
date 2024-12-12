@@ -14,6 +14,7 @@ const Menu = () => {
   const [searchTerm, setSearchTerm] = useState(
     new URLSearchParams(location.search).get("search") || ""
   );
+  const [hiddens, setHiddens] = useState([]);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState([]);

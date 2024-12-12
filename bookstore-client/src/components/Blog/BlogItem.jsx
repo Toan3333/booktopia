@@ -19,7 +19,10 @@ const BlogItem = ({ item }) => {
         <div className="flex flex-col gap-1 bg-white border px-4 py-3">
           <p className="text-gray-400 font-light text-sm">{formatDate(date)}</p>
           <h3 className="font-semibold leading-normal max-md:leading-none max-md:text-sm max-md:line-clamp-2">
-            <a href="#" className="cursor-pointer hover:text-mainDark max-md:text-sm line-clamp-1">
+            <a
+              href="#"
+              className="cursor-pointer hover:text-mainDark max-md:text-sm line-clamp-1"
+            >
               {name}
             </a>
           </h3>

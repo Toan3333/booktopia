@@ -11,6 +11,8 @@ import {
   FaUserEdit,
   FaGift,
   FaCommentAlt,
+  FaToggleOff,
+  FaToggleOn,
 } from "react-icons/fa";
 import { MdLogout, MdOutlinePreview } from "react-icons/md";
 import { AiFillDashboard, AiOutlineBars } from "react-icons/ai";
@@ -23,6 +25,7 @@ import { URL_API } from "../../../constants/constants";
 import { showSwalFireDelete } from "../../../helpers/helpers";
 import ReactPaginate from "react-paginate"; // Import thư viện React Paginate
 import Cookies from "js-cookie";
+import Swal from "sweetalert2";
 const ManageProduct = () => {
   const location = useLocation();
   const isAdmin = true;
@@ -97,6 +100,37 @@ const ManageProduct = () => {
   // Lấy danh sách sản phẩm cho trang hiện tại
   const offset = currentPage * productsPerPage;
   const currentProducts = products.slice(offset, offset + productsPerPage);
+
+  const handleUpdateStatus = async (id, currentStatus) => {
+    try {
+      const updatedStatus = !currentStatus;
+      await axios.put(`${URL_API}/products/${id}/status`, {
+        isActive: updatedStatus,
+      });
+
+      // Cập nhật trạng thái trong UI sau khi thành công
+      const updatedProducts = products.map((product) =>
+        product._id === id ? { ...product, isActive: updatedStatus } : product
+      );
+      setProducts(updatedProducts);
+
+      // Hiển thị thông báo thành công bằng Swal
+      Swal.fire({
+        icon: "success",
+        title: "Cập nhật trạng thái thành công!",
+        text: `Sản phẩm đã được ${
+          updatedStatus ? "kích hoạt" : "ẩn"
+        } thành công.`,
+      });
+    } catch (error) {
+      console.error("Lỗi khi cập nhật trạng thái sản phẩm", error);
+      Swal.fire({
+        icon: "error",
+        title: "Cập nhật trạng thái thất bại!",
+        text: "Đã có lỗi xảy ra khi cập nhật trạng thái sản phẩm.",
+      });
+    }
+  };
 
   return (
     <div>
@@ -244,6 +278,7 @@ const ManageProduct = () => {
                   <th className="text-center">Giá</th>
                   <th>Số lượng</th>
                   <th className="text-center">Thao tác</th>
+                  <th className="text-center">Trạng thái</th>
                 </tr>
               </thead>
               <tbody>
@@ -283,8 +318,26 @@ const ManageProduct = () => {
                         <Link to={`/admin/edit-product/${item._id}`}>
                           <FaUserEdit className="w-5 h-5 text-main" />
                         </Link>
-                        <button onClick={(e) => handleDelete(item._id)}>
+                        {/* <button onClick={(e) => handleDelete(item._id)}>
                           <FaTrashAlt className="w-5 h-4 text-red" />
+                        </button> */}
+                      </div>
+                    </td>
+                    <td>
+                      <div className="flex items-center justify-center gap-3">
+                        <button
+                          type="button"
+                          onClick={() =>
+                            handleUpdateStatus(item._id, item.isActive)
+                          }
+                          className="w-28 text-[12px] justify-items-center p-2 rounded-lg text-white cursor-pointer flex items-center justify-center gap-2"
+                          style={{
+                            backgroundColor: item.isActive
+                              ? "#166534"
+                              : "#ef4444",
+                          }}
+                        >
+                          {item.isActive ? "Đang hoạt động" : "Ngưng hoạt động"}
                         </button>
                       </div>
                     </td>

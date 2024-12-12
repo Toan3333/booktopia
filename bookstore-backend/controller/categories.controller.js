@@ -8,7 +8,7 @@ module.exports = {
   getCategoryByName,
   deleteCate,
   getCategoryById,
-  updateStatusById
+  updateStatusById,
 };
 
 // Show tất cả danh mục
@@ -90,7 +90,7 @@ async function updateStatusById(id, isActive) {
     const result = await categoryModel.findByIdAndUpdate(
       id,
       { isActive },
-      { new: true } 
+      { new: true }
     );
     return result;
   } catch (error) {

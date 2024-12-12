@@ -11,6 +11,8 @@ import {
   FaUserEdit,
   FaGift,
   FaCommentAlt,
+  FaToggleOff,
+  FaToggleOn,
 } from "react-icons/fa";
 import { MdLogout, MdOutlinePreview } from "react-icons/md";
 import { AiFillDashboard, AiOutlineBars } from "react-icons/ai";
@@ -21,7 +23,9 @@ import HeaderAdmin from "../../../components/HeaderAdmin/HeaderAdmin";
 import axios from "axios";
 import { URL_API } from "../../../constants/constants";
 import { showSwalFireDelete } from "../../../helpers/helpers";
+
 import Cookies from "js-cookie";
+import Swal from "sweetalert2";
 const ManageBlog = () => {
   const [getBlog, setGetBlog] = useState([]);
   const [collapsed, setCollapsed] = useState(false);
@@ -65,6 +69,48 @@ const ManageBlog = () => {
       showSwalFireDelete("Xóa bài viết thành công");
     } catch (error) {
       console.log(error);
+    }
+  };
+
+  const handleUpdateStatus = async (id, currentStatus) => {
+    try {
+      const updatedStatus = !currentStatus;
+
+      // Gửi yêu cầu cập nhật trạng thái bài viết
+      const response = await axios.put(`${URL_API}/blog/${id}/status`, {
+        isActive: updatedStatus,
+      });
+
+      if (response.status === 200) {
+        // Cập nhật trạng thái trong UI sau khi thành công
+        const updatedBlogs = getBlog.map((item) =>
+          item._id === id ? { ...item, isActive: updatedStatus } : item
+        );
+        setGetBlog(updatedBlogs);
+
+        // Hiển thị thông báo thành công bằng Swal
+        Swal.fire({
+          icon: "success",
+          title: "Cập nhật trạng thái thành công!",
+          text: `Bài viết đã được ${
+            updatedStatus ? "kích hoạt" : "ẩn"
+          } thành công.`,
+        });
+      } else {
+        // Nếu status không phải 200, hiển thị thông báo lỗi
+        Swal.fire({
+          icon: "error",
+          title: "Cập nhật trạng thái thất bại!",
+          text: "Đã có lỗi xảy ra khi cập nhật trạng thái bài viết.",
+        });
+      }
+    } catch (error) {
+      console.error("Lỗi khi cập nhật trạng thái bài viết", error);
+      Swal.fire({
+        icon: "error",
+        title: "Cập nhật trạng thái thất bại!",
+        text: "Đã có lỗi xảy ra khi cập nhật trạng thái bài viết.",
+      });
     }
   };
 
@@ -209,6 +255,7 @@ const ManageBlog = () => {
                   <th>Nội dung</th>
                   <th>Ngày viết</th>
                   <th className="text-center">Thao tác</th>
+                  <th className="text-center">Trạng thái</th>
                 </tr>
               </thead>
               <tbody>
@@ -234,8 +281,26 @@ const ManageBlog = () => {
                         <Link to={`/admin/edit-blog/${item._id}`}>
                           <FaUserEdit className="w-5 h-5 text-main" />
                         </Link>
-                        <button onClick={() => handleDelete(item._id)}>
+                        {/* <button onClick={() => handleDelete(item._id)}>
                           <FaTrashAlt className="w-5 h-4 text-red" />
+                        </button> */}
+                      </div>
+                    </td>
+                    <td>
+                      <div className="flex items-center justify-center gap-3">
+                        <button
+                          type="button"
+                          onClick={() =>
+                            handleUpdateStatus(item._id, item.isActive)
+                          } // Thêm currentStatus
+                          className="w-28 text-[12px] justify-items-center p-2 rounded-lg text-white cursor-pointer flex items-center justify-center gap-2"
+                          style={{
+                            backgroundColor: item.isActive
+                              ? "#166534"
+                              : "#ef4444", // Màu sắc thay đổi theo trạng thái
+                          }}
+                        >
+                          {item.isActive ? "Đang hoạt động" : "Ngưng hoạt động"}
                         </button>
                       </div>
                     </td>

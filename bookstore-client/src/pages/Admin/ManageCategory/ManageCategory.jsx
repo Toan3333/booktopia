@@ -79,7 +79,47 @@ const ManageCategory = () => {
       toast.error("Đã có lỗi xảy ra khi xóa danh mục!");
     }
   };
+  const handleUpdateStatus = async (id, currentStatus) => {
+    try {
+      const updatedStatus = !currentStatus;
+      const response = await axios.put(
+        `${URL_API}/category/categories/${id}/status`,
+        {
+          isActive: updatedStatus,
+        }
+      );
 
+      if (response.status === 200) {
+        const updateCategories = listCategory.map((item) =>
+          item._id === id ? { ...item, isActive: updatedStatus } : item
+        );
+        setListCategory(updateCategories);
+
+        // Hiển thị thông báo thành công bằng Swal
+        Swal.fire({
+          icon: "success",
+          title: "Cập nhật trạng thái thành công!",
+          text: `Danh mục đã được ${
+            updatedStatus ? "kích hoạt" : "ẩn"
+          } thành công.`,
+        });
+      } else {
+        // Nếu status không phải 200, hiển thị thông báo lỗi
+        Swal.fire({
+          icon: "error",
+          title: "Cập nhật trạng thái thất bại!",
+          text: "Đã có lỗi xảy ra khi cập nhật trạng thái Danh mục.",
+        });
+      }
+    } catch (error) {
+      console.error("Lỗi khi cập nhật trạng thái Danh mục", error);
+      Swal.fire({
+        icon: "error",
+        title: "Cập nhật trạng thái thất bại!",
+        text: "Đã có lỗi xảy ra khi cập nhật trạng thái.",
+      });
+    }
+  };
   return (
     <div>
       {/* Toast Container để hiển thị thông báo */}
@@ -227,6 +267,7 @@ const ManageCategory = () => {
                   <th>Tên danh mục</th>
                   <th>Mô tả</th>
                   <th className="text-center">Thao tác</th>
+                  <th>Trạng thái</th>
                 </tr>
               </thead>
               <tbody>
@@ -240,10 +281,32 @@ const ManageCategory = () => {
                         <Link to={`/admin/edit-category/${item._id}`}>
                           <FaUserEdit className="w-5 h-5 text-main" />
                         </Link>
-                        <button onClick={() => handleDelete(item._id)}>
+                        {/* <button onClick={() => handleDelete(item._id)}>
                           <FaTrashAlt className="w-5 h-4 text-red" />
-                        </button>
+                        </button> */}
                       </div>
+                    </td>
+                    <td>
+                      <td>
+                        <div className="flex items-center justify-center gap-3">
+                          <button
+                            type="button"
+                            onClick={() =>
+                              handleUpdateStatus(item._id, item.isActive)
+                            }
+                            className="w-28 text-[12px] justify-items-center p-2 rounded-lg text-white cursor-pointer flex items-center justify-center gap-2"
+                            style={{
+                              backgroundColor: item.isActive
+                                ? "#166534"
+                                : "#ef4444",
+                            }}
+                          >
+                            {item.isActive
+                              ? "Đang hoạt động"
+                              : "Ngưng hoạt động"}
+                          </button>
+                        </div>
+                      </td>
                     </td>
                   </tr>
                 ))}

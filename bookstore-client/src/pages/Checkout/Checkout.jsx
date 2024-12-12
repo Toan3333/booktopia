@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import "../../index.css";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Button from "../../components/Button/Button";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
@@ -178,7 +178,11 @@ const Checkout = () => {
                 );
 
                 //chờ gọi api xong
-                await Promise.all([...hotPromises, ...salePromises, ...quantityPromises]);
+                await Promise.all([
+                  ...hotPromises,
+                  ...salePromises,
+                  ...quantityPromises,
+                ]);
               } catch (error) {
                 console.error(`Error processing product ${productId}:`, error);
               }
@@ -288,7 +292,9 @@ const Checkout = () => {
                     placeholder="Nhập họ tên"
                   />
                   {errors.name && (
-                    <div className="errform">{errors.name.message}</div>
+                    <div className="errform text-red">
+                      {errors.name.message}
+                    </div>
                   )}
                 </div>
                 <div>
@@ -306,7 +312,9 @@ const Checkout = () => {
                     placeholder="Nhập email"
                   />
                   {errors.email && (
-                    <div className="errform">{errors.email.message}</div>
+                    <div className="errform text-red">
+                      {errors.email.message}
+                    </div>
                   )}
                 </div>
                 <div>
@@ -320,7 +328,9 @@ const Checkout = () => {
                     placeholder="Nhập số điện thoại"
                   />
                   {errors.phone && (
-                    <div className="errform">{errors.phone.message}</div>
+                    <div className="errform text-red">
+                      {errors.phone.message}
+                    </div>
                   )}
                 </div>
                 <div>
@@ -334,7 +344,9 @@ const Checkout = () => {
                     placeholder="Nhập địa chỉ"
                   />
                   {errors.address && (
-                    <div className="errform">{errors.address.message}</div>
+                    <div className="errform text-red">
+                      {errors.address.message}
+                    </div>
                   )}
                 </div>
 
@@ -557,9 +569,11 @@ const Checkout = () => {
 
               <div className="flex items-center mt-7">
                 <div className="w-1/2">
-                  <Button className="rounded-[5px] bg-white button-add max-md:py-2 max-md:px-5 max-md:text-sm">
-                    Tiếp tục mua hàng
-                  </Button>
+                  <Link to="/">
+                    <Button className="rounded-[5px] bg-white button-add max-md:py-2 max-md:px-5 max-md:text-sm">
+                      Tiếp tục mua hàng
+                    </Button>
+                  </Link>
                 </div>
                 <div className="w-1/2">
                   <Button

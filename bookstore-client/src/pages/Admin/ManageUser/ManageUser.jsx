@@ -21,6 +21,7 @@ import { URL_API } from "../../../constants/constants";
 import { showSwalFireDelete } from "../../../helpers/helpers";
 import { MdMarkEmailRead } from "react-icons/md";
 import Cookies from "js-cookie";
+import Swal from "sweetalert2";
 const ManageUser = () => {
   const isAdmin = true;
   const navigate = useNavigate();
@@ -66,7 +67,45 @@ const ManageUser = () => {
       console.log(error);
     }
   };
+  const [lstUser, setLstUser] = useState([]);
+  const handleUpdateStatus = async (id, currentStatus) => {
+    try {
+      const updatedStatus = !currentStatus;
+      const response = await axios.put(`${URL_API}/users/${id}/status`, {
+        isActive: updatedStatus,
+      });
 
+      if (response.status === 200) {
+        const updateUsers = lstUser.map((item) =>
+          item._id === id ? { ...item, isActive: updatedStatus } : item
+        );
+        setLstUser(updateUsers);
+
+        // Hiển thị thông báo thành công bằng Swal
+        Swal.fire({
+          icon: "success",
+          title: "Cập nhật trạng thái thành công!",
+          text: `Tài khoản đã được ${
+            updatedStatus ? "kích hoạt" : "ẩn"
+          } thành công.`,
+        });
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Cập nhật trạng thái thất bại!",
+          text: "Đã có lỗi xảy ra khi cập nhật trạng thái Tài khoản.",
+        });
+      }
+    } catch (error) {
+      console.error("Lỗi khi cập nhật trạng thái Tài khoản", error);
+      Swal.fire({
+        icon: "error",
+        title: "Cập nhật trạng thái thất bại!",
+        text: "Đã có lỗi xảy ra khi cập nhật trạng thái.",
+      });
+    }
+    window.location.reload();
+  };
   return (
     <div>
       <div className="flex min-h-screen border">
@@ -204,6 +243,7 @@ const ManageUser = () => {
                   <th>Địa chỉ</th>
                   <th>Số điện thoại</th>
                   <th className="text-center">Thao tác</th>
+                  <th>Trạng thái</th>
                 </tr>
               </thead>
               <tbody>
@@ -222,8 +262,26 @@ const ManageUser = () => {
                             <FaUserClock className="w-5 h-4 text-mainDark" />
                           </Link>
                         </button>
-                        <button onClick={(e) => handleDelete(user._id)}>
+                        {/* <button onClick={(e) => handleDelete(user._id)}>
                           <FaTrashAlt className="w-5 h-4 text-red" />
+                        </button> */}
+                      </div>
+                    </td>
+                    <td>
+                      <div className="flex items-center justify-center gap-3">
+                        <button
+                          type="button"
+                          onClick={() =>
+                            handleUpdateStatus(user._id, user.isActive)
+                          }
+                          className="w-28 text-[12px] justify-items-center p-2 rounded-lg text-white cursor-pointer flex items-center justify-center gap-2"
+                          style={{
+                            backgroundColor: user.isActive
+                              ? "#166534"
+                              : "#ef4444",
+                          }}
+                        >
+                          {user.isActive ? "Đang hoạt động" : "Ngưng hoạt động"}
                         </button>
                       </div>
                     </td>

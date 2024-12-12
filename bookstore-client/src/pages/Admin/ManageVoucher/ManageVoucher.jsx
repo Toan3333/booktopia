@@ -93,7 +93,44 @@ const ManageVoucher = () => {
       });
     }
   };
+  const handleUpdateStatus = async (id, currentStatus) => {
+    try {
+      const updatedStatus = !currentStatus;
+      const response = await axios.put(`${URL_API}/vouchers/${id}/status`, {
+        isActive: updatedStatus,
+      });
 
+      if (response.status === 200) {
+        const updateVouchers = lstVoucher.map((item) =>
+          item._id === id ? { ...item, isActive: updatedStatus } : item
+        );
+        setLstVoucher(updateVouchers);
+
+        // Hiển thị thông báo thành công bằng Swal
+        Swal.fire({
+          icon: "success",
+          title: "Cập nhật trạng thái thành công!",
+          text: `Voucher đã được ${
+            updatedStatus ? "kích hoạt" : "ẩn"
+          } thành công.`,
+        });
+      } else {
+        // Nếu status không phải 200, hiển thị thông báo lỗi
+        Swal.fire({
+          icon: "error",
+          title: "Cập nhật trạng thái thất bại!",
+          text: "Đã có lỗi xảy ra khi cập nhật trạng thái Voucher.",
+        });
+      }
+    } catch (error) {
+      console.error("Lỗi khi cập nhật trạng thái Voucher", error);
+      Swal.fire({
+        icon: "error",
+        title: "Cập nhật trạng thái thất bại!",
+        text: "Đã có lỗi xảy ra khi cập nhật trạng thái bài viết.",
+      });
+    }
+  };
   return (
     <div>
       <div className="flex min-h-screen border">
@@ -239,6 +276,7 @@ const ManageVoucher = () => {
                   <th>Ngày hiệu lực</th>
                   <th>Ngày kết thúc</th>
                   <th className="text-center">Thao tác</th>
+                  <th>Trạng thái</th>
                 </tr>
               </thead>
               <tbody>
@@ -278,8 +316,28 @@ const ManageVoucher = () => {
                           <Link to={`/admin/edit-voucher/${item._id}`}>
                             <FaUserEdit className="w-5 h-5 text-main" />
                           </Link>
-                          <button onClick={(e) => handleDelete(item._id)}>
+                          {/* <button onClick={(e) => handleDelete(item._id)}>
                             <FaTrashAlt className="w-5 h-4 text-red" />
+                          </button> */}
+                        </div>
+                      </td>
+                      <td>
+                        <div className="flex items-center justify-center gap-3">
+                          <button
+                            type="button"
+                            onClick={() =>
+                              handleUpdateStatus(item._id, item.isActive)
+                            }
+                            className="w-28 text-[12px] justify-items-center p-2 rounded-lg text-white cursor-pointer flex items-center justify-center gap-2"
+                            style={{
+                              backgroundColor: item.isActive
+                                ? "#166534"
+                                : "#ef4444",
+                            }}
+                          >
+                            {item.isActive
+                              ? "Đang hoạt động"
+                              : "Ngưng hoạt động"}
                           </button>
                         </div>
                       </td>
