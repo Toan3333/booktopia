@@ -7,7 +7,8 @@ module.exports = {
   deleteVoucher,
   applyVoucher,
   deactivateVoucher,
-  getVoucherById
+  getVoucherById,
+  updateStatusById
 };
 
 // danh sách voucher
@@ -87,6 +88,22 @@ async function deleteVoucher(id) {
   }
 }
 // áp dụng voucher
+async function updateStatusById(id, isActive) {
+  try {
+    const cate = await voucherModel.findById(id);
+    if (!cate) {
+      throw new Error("Không tìm thấy danh mục");
+    }
+    const result = await voucherModel.findByIdAndUpdate(
+      id,
+      { isActive },
+      { new: true } 
+    );
+    return result;
+  } catch (error) {
+    throw error;
+  }
+}
 
 async function applyVoucher(body) {
     try {

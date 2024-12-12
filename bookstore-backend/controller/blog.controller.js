@@ -8,6 +8,7 @@ module.exports = {
   remove,
   findByName,
   getNewBlog,
+  updateStatusById
 };
 
 //hiển thị tất cả bài viết
@@ -129,3 +130,20 @@ async function getBlogById(id) {
 //     throw error;
 //   }
 // }
+
+async function updateStatusById(id, isActive) {
+  try {
+    const cate = await blogModel.findById(id);
+    if (!cate) {
+      throw new Error("Không tìm thấy bài viết");
+    }
+    const result = await blogModel.findByIdAndUpdate(
+      id,
+      { isActive },
+      { new: true } 
+    );
+    return result;
+  } catch (error) {
+    throw error;
+  }
+}

@@ -257,6 +257,17 @@ router.get("/hot", async (req, res) => {
   }
 });
 
+router.put("/:id/status", async (req, res) => {
+  const { id } = req.params;
+  const { isActive } = req.body;
+  try {
+    const updatedProduct = await productController.updateStatusById(id, isActive);
+    res.status(200).json({ message: "Cập nhật trạng thái thành công", data: updatedProduct });
+  } catch (error) {
+    res.status(500).json({ message: "Lỗi khi cập nhật trạng thái", error: error.message });
+  }
+});
+
 router.put("/:id/hot", async (req, res) => {
   try {
     const { id } = req.params;

@@ -60,6 +60,17 @@ router.put("/:id", upload.single("image"), async (req, res) => {
   }
 });
 
+router.put("/:id/status", async (req, res) => {
+  const { id } = req.params;
+  const { isActive } = req.body;
+  try {
+    const updatedBlog = await blogController.updateStatusById(id, isActive);
+    res.status(200).json({ message: "Cập nhật trạng thái thành công", data: updatedBlog });
+  } catch (error) {
+    res.status(500).json({ message: "Lỗi khi cập nhật trạng thái", error: error.message });
+  }
+});
+
 //xóa bài viết
 router.delete("/:id", async (req, res) => {
   try {

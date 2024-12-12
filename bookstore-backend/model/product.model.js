@@ -36,6 +36,7 @@ const productSchema = new Schema({
     },
     required: true,
   },
+  isActive: { type: Boolean, default: true },
 });
 
 module.exports =
