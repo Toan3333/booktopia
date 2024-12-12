@@ -47,7 +47,6 @@ const ManagePublishes = () => {
     navigate("/sign-in");
     window.location.reload();
   };
-
   const fetchListPublishes = async () => {
     try {
       const response = await axios.get(`${URL_API}/publishes`);

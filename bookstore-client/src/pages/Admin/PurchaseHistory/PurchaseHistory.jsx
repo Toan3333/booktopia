@@ -25,7 +25,7 @@ const PurchaseHistory = () => {
   const navigate = useNavigate();
   const [collapsed, setCollapsed] = useState(false);
   const [orders, setOrders] = useState([]);
-
+  const [user, setUser] = useState({});
   const { id } = useParams();
 
   const fetchOrders = async (userId) => {
@@ -43,7 +43,6 @@ const PurchaseHistory = () => {
       fetchOrders(id);
     }
   }, [id]);
-  const [user, setUser] = useState({});
   // Lấy dữ liệu người dùng từ cookie
   useEffect(() => {
     const userData = Cookies.get("user");

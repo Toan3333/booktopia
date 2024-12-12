@@ -7,8 +7,9 @@ import {
   FaRegEdit,
   FaUser,
   FaGift,
+  FaCommentAlt,
 } from "react-icons/fa";
-import { MdLogout } from "react-icons/md";
+import { MdLogout, MdOutlinePreview } from "react-icons/md";
 import { AiFillDashboard, AiOutlineBars } from "react-icons/ai";
 import { MdMarkEmailRead } from "react-icons/md";
 import { MdInventory } from "react-icons/md";
@@ -44,7 +45,6 @@ const EditCategory = () => {
     navigate("/sign-in");
     window.location.reload();
   };
-
   const {
     register,
     handleSubmit,
@@ -225,7 +225,7 @@ const EditCategory = () => {
                   }`}
                 />
                 {errors.name && (
-                  <span className="text-red-500">{errors.name.message}</span>
+                  <span className="text-red">{errors.name.message}</span>
                 )}
               </div>
               <div className="w-full flex flex-col gap-2">
@@ -237,13 +237,11 @@ const EditCategory = () => {
                   })}
                   id="description"
                   className={`input input-bordered w-full h-32 ${
-                    errors.description ? "border-red-500" : ""
+                    errors.description ? "border-red" : ""
                   }`}
                 />
                 {errors.description && (
-                  <span className="text-red-500">
-                    {errors.description.message}
-                  </span>
+                  <span className="text-red">{errors.description.message}</span>
                 )}
               </div>
               <div className="flex items-center gap-3">

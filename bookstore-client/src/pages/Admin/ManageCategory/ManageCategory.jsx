@@ -185,6 +185,7 @@ const ManageCategory = () => {
             </MenuItem>
           </Menu>
         </Sidebar>
+
         {/* Nút toggle sidebar */}
         <button
           onClick={() => setCollapsed(!collapsed)}

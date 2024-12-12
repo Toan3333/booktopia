@@ -18,14 +18,14 @@ import HeaderAdmin from "../../../components/HeaderAdmin/HeaderAdmin";
 import Button from "../../../components/Button/Button";
 import { useForm } from "react-hook-form";
 import axios from "axios";
-
+import Cookies from "js-cookie";
 import { URL_API } from "../../../constants/constants";
 import { showSwalFireSuccess } from "../../../helpers/helpers";
-import Cookies from "js-cookie";
+
 const AddPublishes = () => {
+  const [user, setUser] = useState({});
   const navigate = useNavigate();
   const [collapsed, setCollapsed] = useState(false);
-  const [user, setUser] = useState({});
   // Lấy dữ liệu người dùng từ cookie
   useEffect(() => {
     const userData = Cookies.get("user");
@@ -44,7 +44,6 @@ const AddPublishes = () => {
     navigate("/sign-in");
     window.location.reload();
   };
-
   const {
     register,
     handleSubmit,
@@ -204,7 +203,7 @@ const AddPublishes = () => {
                   className="input input-bordered w-full"
                 />
                 {errors.name && (
-                  <span className="text-red">Product Name is required</span>
+                  <span className="text-red">Nhà xuất bản là bắt buộc</span>
                 )}
               </div>
 

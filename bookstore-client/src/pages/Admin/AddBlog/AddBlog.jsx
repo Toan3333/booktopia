@@ -9,7 +9,7 @@ import {
   FaGift,
   FaCommentAlt,
 } from "react-icons/fa";
-import { MdLogout, MdOutlinePreview, MdInventory } from "react-icons/md";
+import { MdLogout, MdInventory, MdOutlinePreview } from "react-icons/md";
 import { AiFillDashboard, AiOutlineBars } from "react-icons/ai";
 import { MdMarkEmailRead } from "react-icons/md";
 
@@ -91,7 +91,6 @@ const AddBlog = () => {
   const handleCancel = () => {
     navigate("/admin/manage-blog");
   };
-
   return (
     <div>
       <div className="flex min-h-screen border">

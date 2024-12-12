@@ -52,7 +52,6 @@ const DashBoard = () => {
   };
   const [productHot, setProductHot] = useState([]);
   const [productView, setProductView] = useState([]);
-
   useEffect(() => {
     const fetchProductHot = async () => {
       try {
@@ -89,6 +88,14 @@ const DashBoard = () => {
       console.log(error);
     }
   };
+  // Lấy dữ liệu người dùng từ cookie
+  useEffect(() => {
+    const userData = Cookies.get("user");
+    if (userData) {
+      const parsedUser = JSON.parse(userData);
+      setUser(parsedUser.user);
+    }
+  }, []);
   // Lấy dữ liệu người dùng từ cookie
   useEffect(() => {
     const userData = Cookies.get("user");

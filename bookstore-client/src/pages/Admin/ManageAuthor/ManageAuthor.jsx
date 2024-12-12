@@ -28,7 +28,7 @@ const ManageAuthor = () => {
   const navigate = useNavigate();
   const [collapsed, setCollapsed] = useState(false);
   const [listAuthor, setListAuthor] = useState([]);
-
+  const [user, setUser] = useState({});
   // Hàm lấy danh sách tác giả
   const fetchListAuthor = async () => {
     try {
@@ -59,7 +59,6 @@ const ManageAuthor = () => {
       toast.error("Xóa tác giả thất bại!");
     }
   };
-  const [user, setUser] = useState({});
   // Lấy dữ liệu người dùng từ cookie
   useEffect(() => {
     const userData = Cookies.get("user");

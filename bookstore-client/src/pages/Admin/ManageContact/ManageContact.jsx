@@ -43,7 +43,6 @@ const ManageContact = () => {
     navigate("/sign-in");
     window.location.reload();
   };
-
   const [contacts, setContacts] = useState([]);
 
   useEffect(() => {
@@ -233,7 +232,13 @@ const ManageContact = () => {
                     <td>{contact.name}</td>
                     <td>{contact.email}</td>
                     <td>{contact.message}</td>
-                    <td>{contact.createdAt}</td>
+                    <td>
+                      {new Date(contact.createdAt).toLocaleDateString("vi-VN", {
+                        day: "2-digit",
+                        month: "2-digit",
+                        year: "numeric",
+                      })}
+                    </td>
                     {/* <td>{contact.status}</td> */}
                     <td>
                       <div className="flex items-center justify-center gap-3">

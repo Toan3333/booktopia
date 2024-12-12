@@ -27,15 +27,6 @@ const AddProduct = () => {
   const [listAuthor, setListAuthor] = useState([]);
   const [listPublishes, setListPublishes] = useState([]);
   const [user, setUser] = useState({});
-  // Lấy dữ liệu người dùng từ cookie
-  useEffect(() => {
-    const userData = Cookies.get("user");
-    if (userData) {
-      const parsedUser = JSON.parse(userData);
-      setUser(parsedUser.user);
-    }
-  }, []);
-
   useEffect(() => {
     const fetchListCategory = async () => {
       try {
@@ -72,6 +63,15 @@ const AddProduct = () => {
 
   const navigate = useNavigate();
   const [collapsed, setCollapsed] = useState(false);
+  // Lấy dữ liệu người dùng từ cookie
+  useEffect(() => {
+    const userData = Cookies.get("user");
+    if (userData) {
+      const parsedUser = JSON.parse(userData);
+      setUser(parsedUser.user);
+    }
+  }, []);
+
   // Đăng xuất xóa cookie người dùng
   const handleLogout = () => {
     // Xử lý logout, ví dụ xóa cookie và chuyển hướng người dùng
@@ -81,7 +81,6 @@ const AddProduct = () => {
     navigate("/sign-in");
     window.location.reload();
   };
-
   const handleImageChange = (e) => {
     const { id, files } = e.target;
     if (files && files[0]) {
@@ -352,7 +351,7 @@ const AddProduct = () => {
                 )}
               </div>
               <div className="w-full flex flex-col gap-2">
-                <label htmlFor="price2">*Giá giảm</label>
+                <label htmlFor="price2">*Giá tiền bán</label>
                 <input
                   type="number"
                   {...register("price2")}

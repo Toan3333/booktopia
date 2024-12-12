@@ -45,7 +45,6 @@ const ManageVoucher = () => {
     navigate("/sign-in");
     window.location.reload();
   };
-
   const [lstVoucher, setLstVoucher] = useState([]);
   useEffect(() => {
     fetchVoucher();
@@ -256,10 +255,12 @@ const ManageVoucher = () => {
                       <td>{item.code}</td>
                       <td>{item.type}</td>
                       <td>
-                        {Number(item.discountValue).toLocaleString("vi-VN", {
-                          style: "currency",
-                          currency: "VND",
-                        })}
+                        {item.type === "Discount"
+                          ? `${item.discountValue}%`
+                          : Number(item.discountValue).toLocaleString("vi-VN", {
+                              style: "currency",
+                              currency: "VND",
+                            })}
                       </td>
                       <td>
                         {Number(item.minimumOrderValue).toLocaleString(

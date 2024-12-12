@@ -7,8 +7,9 @@ import {
   FaRegEdit,
   FaUser,
   FaGift,
+  FaCommentAlt,
 } from "react-icons/fa";
-import { MdLogout } from "react-icons/md";
+import { MdLogout, MdOutlinePreview } from "react-icons/md";
 import { AiFillDashboard, AiOutlineBars } from "react-icons/ai";
 import { MdMarkEmailRead } from "react-icons/md";
 import { MdInventory } from "react-icons/md";
@@ -29,6 +30,7 @@ const EditProduct = () => {
   const [listPublishes, setListPublishes] = useState([]);
   const navigate = useNavigate();
   const [collapsed, setCollapsed] = useState(false);
+  const [user, setUser] = useState({});
   useEffect(() => {
     const fetchListCategory = async () => {
       try {
@@ -61,7 +63,6 @@ const EditProduct = () => {
     fetchListAuthor();
     fetchListPublishes();
   }, []);
-  const [user, setUser] = useState({});
   // Lấy dữ liệu người dùng từ cookie
   useEffect(() => {
     const userData = Cookies.get("user");
@@ -80,7 +81,6 @@ const EditProduct = () => {
     navigate("/sign-in");
     window.location.reload();
   };
-
   const handleImageChange = (e) => {
     const { id, files } = e.target;
     if (files && files[0]) {
@@ -378,10 +378,10 @@ const EditProduct = () => {
                 )}
               </div>
               <div className="w-full flex flex-col gap-2">
-                <label htmlFor="price2">*Giá tiền bán</label>
+                <label htmlFor="price2">*Giá giảm</label>
                 <input
                   type="number"
-                  {...register("price2", { required: true })}
+                  {...register("price2")}
                   id="price2"
                   className={`input input-bordered w-full ${
                     errors.price2 ? "border-red-500" : ""

@@ -9,10 +9,10 @@ import {
   FaGift,
   FaCommentAlt,
 } from "react-icons/fa";
-import { MdLogout } from "react-icons/md";
+import { MdLogout, MdOutlinePreview } from "react-icons/md";
 import { AiFillDashboard, AiOutlineBars } from "react-icons/ai";
 import { MdMarkEmailRead } from "react-icons/md";
-import { MdInventory, MdOutlinePreview } from "react-icons/md";
+import { MdInventory } from "react-icons/md";
 import PageTitle from "../../../components/PageTitle/PageTitle";
 import HeaderAdmin from "../../../components/HeaderAdmin/HeaderAdmin";
 import Button from "../../../components/Button/Button";
@@ -46,7 +46,6 @@ const EditBlog = () => {
     navigate("/sign-in");
     window.location.reload();
   };
-
   const handleImageChange = (e) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
@@ -107,7 +106,6 @@ const EditBlog = () => {
   const handleCancel = () => {
     navigate("/admin/manage-blog");
   };
-
   return (
     <div>
       <div className="flex min-h-screen border">

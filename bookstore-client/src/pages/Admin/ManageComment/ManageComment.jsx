@@ -5,11 +5,10 @@ import {
   FaBook,
   FaClipboardList,
   FaRegEdit,
-  FaTrashAlt,
   FaUser,
-  FaUserClock,
-  FaGift,
   FaEye,
+  FaGift,
+  FaCommentAlt,
 } from "react-icons/fa";
 import { MdLogout, MdOutlinePreview } from "react-icons/md";
 import { AiFillDashboard, AiOutlineBars } from "react-icons/ai";
@@ -44,7 +43,6 @@ const ManageComment = () => {
     navigate("/sign-in");
     window.location.reload();
   };
-
   const [listComment, setListComment] = useState([]);
   useEffect(() => {
     const fetchDataComment = async () => {

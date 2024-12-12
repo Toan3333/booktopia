@@ -21,7 +21,6 @@ import HeaderAdmin from "../../../components/HeaderAdmin/HeaderAdmin";
 import axios from "axios";
 import { URL_API } from "../../../constants/constants";
 import { showSwalFireDelete } from "../../../helpers/helpers";
-
 import Cookies from "js-cookie";
 const ManageBlog = () => {
   const [getBlog, setGetBlog] = useState([]);
@@ -39,6 +38,9 @@ const ManageBlog = () => {
 
     fetchBlog();
   }, []);
+
+  const isAdmin = true;
+  const navigate = useNavigate();
   // Lấy dữ liệu người dùng từ cookie
   useEffect(() => {
     const userData = Cookies.get("user");
@@ -47,9 +49,6 @@ const ManageBlog = () => {
       setUser(parsedUser.user);
     }
   }, []);
-
-  const isAdmin = true;
-  const navigate = useNavigate();
 
   // Đăng xuất xóa cookie người dùng
   const handleLogout = () => {
@@ -60,7 +59,6 @@ const ManageBlog = () => {
     navigate("/sign-in");
     window.location.reload();
   };
-
   const handleDelete = async (id) => {
     try {
       await axios.delete(`${URL_API}/blog/${id}`);

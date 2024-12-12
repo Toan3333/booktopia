@@ -61,7 +61,6 @@ const Stock = () => {
     navigate("/sign-in");
     window.location.reload();
   };
-
   const [allProductList, setAllProductList] = useState([]);
 
   useEffect(() => {

@@ -24,6 +24,7 @@ import { URL_API } from "../../../constants/constants";
 import Button from "../../../components/Button/Button";
 
 const DetailOrder = () => {
+  const [user, setUser] = useState({});
   const { id } = useParams();
   const [order, setOrder] = useState({ listProducts: [] });
   const [collapsed, setCollapsed] = useState(false);
@@ -69,7 +70,6 @@ const DetailOrder = () => {
     };
     fetchOrderDetails();
   }, [id]);
-  const [user, setUser] = useState({});
   // Lấy dữ liệu người dùng từ cookie
   useEffect(() => {
     const userData = Cookies.get("user");
@@ -88,7 +88,6 @@ const DetailOrder = () => {
     navigate("/sign-in");
     window.location.reload();
   };
-
   return (
     <div>
       <div className="flex min-h-screen border">

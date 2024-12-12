@@ -47,7 +47,6 @@ const ManageReview = () => {
     navigate("/sign-in");
     window.location.reload();
   };
-
   const [listReview, setListReview] = useState([]);
   useEffect(() => {
     const fetchDataReview = async () => {

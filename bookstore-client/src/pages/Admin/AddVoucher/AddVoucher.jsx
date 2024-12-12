@@ -14,7 +14,7 @@ import { AiFillDashboard, AiOutlineBars } from "react-icons/ai";
 import { MdMarkEmailRead } from "react-icons/md";
 import { MdInventory } from "react-icons/md";
 import PageTitle from "../../../components/PageTitle/PageTitle";
-
+import Cookies from "js-cookie";
 import Button from "../../../components/Button/Button";
 import { useForm } from "react-hook-form";
 import axios from "axios";
@@ -22,11 +22,11 @@ import Swal from "sweetalert2";
 import HeaderAdmin from "../../../components/HeaderAdmin/HeaderAdmin";
 import { URL_API } from "../../../constants/constants";
 import { showSwalFireSuccess } from "../../../helpers/helpers";
-import Cookies from "js-cookie";
+
 const AddVoucher = () => {
+  const [user, setUser] = useState({});
   const navigate = useNavigate();
   const [collapsed, setCollapsed] = useState(false);
-  const [user, setUser] = useState({});
   // Lấy dữ liệu người dùng từ cookie
   useEffect(() => {
     const userData = Cookies.get("user");
@@ -208,7 +208,7 @@ const AddVoucher = () => {
                   className="input input-bordered w-full"
                 />
                 {errors.code && (
-                  <p className="text-red-500">{errors.code.message}</p>
+                  <p className="text-red">{errors.code.message}</p>
                 )}
               </div>
 
@@ -230,9 +230,7 @@ const AddVoucher = () => {
                   <option value="Shipping">Shipping</option>
                 </select>
                 {errors.type && (
-                  <span className="text-red-500">
-                    Vui lòng chọn loại voucher
-                  </span>
+                  <span className="text-red">Vui lòng chọn loại voucher</span>
                 )}
               </div>
 
@@ -263,7 +261,7 @@ const AddVoucher = () => {
                   className="input input-bordered w-full"
                 />
                 {errors.discountValue && (
-                  <p className="text-red-500">{errors.discountValue.message}</p>
+                  <p className="text-red">{errors.discountValue.message}</p>
                 )}
               </div>
             </div>
@@ -279,9 +277,7 @@ const AddVoucher = () => {
                   className="input input-bordered w-full"
                 />
                 {errors.minimumOrderValue && (
-                  <p className="text-red-500">
-                    {errors.minimumOrderValue.message}
-                  </p>
+                  <p className="text-red">{errors.minimumOrderValue.message}</p>
                 )}
               </div>
               <div className="w-2/6 flex flex-col gap-3">

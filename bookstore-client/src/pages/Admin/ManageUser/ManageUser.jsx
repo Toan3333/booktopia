@@ -44,7 +44,6 @@ const ManageUser = () => {
     navigate("/sign-in");
     window.location.reload();
   };
-
   const [listUser, setUser] = useState([]);
   useEffect(() => {
     const fetchUser = async () => {

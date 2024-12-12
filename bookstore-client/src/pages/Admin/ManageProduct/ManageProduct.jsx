@@ -33,12 +33,12 @@ const ManageProduct = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const [collapsed, setCollapsed] = useState(false);
+  const [user, setUser] = useState({});
 
   // Phân trang
   const [currentPage, setCurrentPage] = useState(0);
   const [productsPerPage] = useState(10); // Số sản phẩm hiển thị trên mỗi trang
   const [pageCount, setPageCount] = useState(0);
-  const [user, setUser] = useState({});
   // Lấy dữ liệu người dùng từ cookie
   useEffect(() => {
     const userData = Cookies.get("user");

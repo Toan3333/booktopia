@@ -43,7 +43,6 @@ const AddAuthor = () => {
     navigate("/sign-in");
     window.location.reload();
   };
-
   const {
     register,
     handleSubmit,
@@ -62,7 +61,9 @@ const AddAuthor = () => {
       console.error("Error creating product:", error);
     }
   };
-
+  const handleCancel = () => {
+    navigate("/admin/manage-author");
+  };
   return (
     <div>
       <div className="flex min-h-screen border">
@@ -201,13 +202,15 @@ const AddAuthor = () => {
                   className="input input-bordered w-full"
                 />
                 {errors.name && (
-                  <span className="text-red">Product Name is required</span>
+                  <span className="text-red">Tác giả là bắt buộc</span>
                 )}
               </div>
 
               <div className="flex items-center gap-3">
                 <Button>Lưu</Button>
-                <Button className="bg-secondary">Hủy</Button>
+                <Button className="bg-secondary" onClick={handleCancel}>
+                  Hủy
+                </Button>
               </div>
             </form>
           </div>

@@ -23,10 +23,10 @@ import { URL_API } from "../../../constants/constants";
 import { showSwalFireSuccess } from "../../../helpers/helpers";
 import Cookies from "js-cookie";
 const EditVoucher = () => {
+  const [user, setUser] = useState({});
   const navigate = useNavigate();
   const { id } = useParams();
   const [collapsed, setCollapsed] = useState(false);
-  const [user, setUser] = useState({});
   // Lấy dữ liệu người dùng từ cookie
   useEffect(() => {
     const userData = Cookies.get("user");
@@ -45,7 +45,6 @@ const EditVoucher = () => {
     navigate("/sign-in");
     window.location.reload();
   };
-
   const {
     register,
     handleSubmit,
