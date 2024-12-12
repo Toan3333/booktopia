@@ -22,7 +22,7 @@ import axios from "axios";
 import { URL_API } from "../../../constants/constants";
 import { showSwalFireDelete } from "../../../helpers/helpers";
 import ReactPaginate from "react-paginate"; // Import thư viện React Paginate
-
+import Cookies from "js-cookie";
 const ManageProduct = () => {
   const location = useLocation();
   const isAdmin = true;
@@ -38,11 +38,24 @@ const ManageProduct = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const [productsPerPage] = useState(10); // Số sản phẩm hiển thị trên mỗi trang
   const [pageCount, setPageCount] = useState(0);
+  const [user, setUser] = useState({});
+  // Lấy dữ liệu người dùng từ cookie
+  useEffect(() => {
+    const userData = Cookies.get("user");
+    if (userData) {
+      const parsedUser = JSON.parse(userData);
+      setUser(parsedUser.user);
+    }
+  }, []);
 
+  // Đăng xuất xóa cookie người dùng
   const handleLogout = () => {
-    // Thực hiện các thao tác đăng xuất ở đây (ví dụ: xóa token xác thực)
-    // Sau đó điều hướng đến trang chủ
-    navigate("/");
+    // Xử lý logout, ví dụ xóa cookie và chuyển hướng người dùng
+    Cookies.remove("user");
+    setUser(null);
+    // Chuyển hướng hoặc cập nhật state để hiển thị UI phù hợp
+    navigate("/sign-in");
+    window.location.reload();
   };
 
   useEffect(() => {
@@ -289,7 +302,7 @@ const ManageProduct = () => {
                 </span>
               } // Thêm style cho breakLabel
               pageCount={pageCount}
-              marginPagesDisplayed={1}//xác định số lượng nút số trang hiển thị ở đầu và cuối danh sách phân trang
+              marginPagesDisplayed={1} //xác định số lượng nút số trang hiển thị ở đầu và cuối danh sách phân trang
               pageRangeDisplayed={3} //xác định số lượng nút số trang hiển thị xung quanh trang hiện tại.
               onPageChange={handlePageClick}
               containerClassName={"flex justify-center items-center"} // Thêm class items-center

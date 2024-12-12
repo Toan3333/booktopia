@@ -21,13 +21,31 @@ import { URL_API } from "../../../constants/constants";
 import Swal from "sweetalert2";
 import { MdMarkEmailRead } from "react-icons/md";
 import { MdInventory } from "react-icons/md";
+import Cookies from "js-cookie";
 const ManageVoucher = () => {
   const isAdmin = true;
   const navigate = useNavigate();
   const [collapsed, setCollapsed] = useState(false);
+  const [user, setUser] = useState({});
+  // Lấy dữ liệu người dùng từ cookie
+  useEffect(() => {
+    const userData = Cookies.get("user");
+    if (userData) {
+      const parsedUser = JSON.parse(userData);
+      setUser(parsedUser.user);
+    }
+  }, []);
+
+  // Đăng xuất xóa cookie người dùng
   const handleLogout = () => {
-    navigate("/");
+    // Xử lý logout, ví dụ xóa cookie và chuyển hướng người dùng
+    Cookies.remove("user");
+    setUser(null);
+    // Chuyển hướng hoặc cập nhật state để hiển thị UI phù hợp
+    navigate("/sign-in");
+    window.location.reload();
   };
+
   const [lstVoucher, setLstVoucher] = useState([]);
   useEffect(() => {
     fetchVoucher();
@@ -238,12 +256,10 @@ const ManageVoucher = () => {
                       <td>{item.code}</td>
                       <td>{item.type}</td>
                       <td>
-                        {item.type === "Discount"
-                          ? `${item.discountValue}%`
-                          : Number(item.discountValue).toLocaleString("vi-VN", {
-                              style: "currency",
-                              currency: "VND",
-                            })}
+                        {Number(item.discountValue).toLocaleString("vi-VN", {
+                          style: "currency",
+                          currency: "VND",
+                        })}
                       </td>
                       <td>
                         {Number(item.minimumOrderValue).toLocaleString(

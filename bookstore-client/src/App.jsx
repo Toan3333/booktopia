@@ -145,7 +145,8 @@ function App() {
               <PrivateRoute allowedRoles={[0]}>
                 <Blog />
               </PrivateRoute>
-            }></Route>
+            }
+          ></Route>
           <Route
             path="/blog-detail/:id"
             element={
@@ -174,7 +175,7 @@ function App() {
           <Route
             path="/checkout"
             element={
-              <PrivateRoute allowedRoles={[0]}>
+              <PrivateRoute allowedRoles={[-1]}>
                 <Checkout />
               </PrivateRoute>
             }
@@ -206,7 +207,7 @@ function App() {
           <Route
             path="/favorites"
             element={
-              <PrivateRoute allowedRoles={[0]}>
+              <PrivateRoute allowedRoles={[-1]}>
                 <Favorite />
               </PrivateRoute>
             }
@@ -228,7 +229,8 @@ function App() {
             <PrivateRoute allowedRoles={[1]}>
               <DashBoard />
             </PrivateRoute>
-          }></Route>
+          }
+        ></Route>
         <Route
           path="/admin/manage-product"
           element={
@@ -359,14 +361,21 @@ function App() {
           }
         />
         <Route
-          path="/admin/edit-voucher/:id"
+          path="/admin/edit-voucher"
           element={
             <PrivateRoute allowedRoles={[1]}>
               <EditVoucher />
             </PrivateRoute>
           }
         />
-     
+        <Route
+          path="/admin/edit-voucher"
+          element={
+            <PrivateRoute allowedRoles={[1]}>
+              <EditVoucher />
+            </PrivateRoute>
+          }
+        />
         <Route
           path="/admin/edit-product/:id"
           element={

@@ -20,13 +20,30 @@ import { ToastContainer, toast } from "react-toastify";
 import { showSwalFireDelete } from "../../../helpers/helpers";
 import { MdMarkEmailRead } from "react-icons/md";
 import { MdInventory } from "react-icons/md";
-
+import Cookies from "js-cookie";
 const ManageContact = () => {
   const navigate = useNavigate();
   const [collapsed, setCollapsed] = useState(false);
+  const [user, setUser] = useState({});
+  // Lấy dữ liệu người dùng từ cookie
+  useEffect(() => {
+    const userData = Cookies.get("user");
+    if (userData) {
+      const parsedUser = JSON.parse(userData);
+      setUser(parsedUser.user);
+    }
+  }, []);
+
+  // Đăng xuất xóa cookie người dùng
   const handleLogout = () => {
-    navigate("/");
+    // Xử lý logout, ví dụ xóa cookie và chuyển hướng người dùng
+    Cookies.remove("user");
+    setUser(null);
+    // Chuyển hướng hoặc cập nhật state để hiển thị UI phù hợp
+    navigate("/sign-in");
+    window.location.reload();
   };
+
   const [contacts, setContacts] = useState([]);
 
   useEffect(() => {
@@ -92,6 +109,7 @@ const ManageContact = () => {
                 Dashboard
               </div>
             </MenuItem>
+
             <SubMenu
               label="Quản lý danh mục"
               icon={<AiOutlineBars className="w-5 h-5" />}
@@ -215,13 +233,7 @@ const ManageContact = () => {
                     <td>{contact.name}</td>
                     <td>{contact.email}</td>
                     <td>{contact.message}</td>
-                    <td>
-                      {new Date(contact.createdAt).toLocaleDateString("vi-VN", {
-                        day: "2-digit",
-                        month: "2-digit",
-                        year: "numeric",
-                      })}
-                    </td>
+                    <td>{contact.createdAt}</td>
                     {/* <td>{contact.status}</td> */}
                     <td>
                       <div className="flex items-center justify-center gap-3">

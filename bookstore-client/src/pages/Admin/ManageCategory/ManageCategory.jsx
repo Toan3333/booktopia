@@ -21,15 +21,30 @@ import HeaderAdmin from "../../../components/HeaderAdmin/HeaderAdmin";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import { URL_API } from "../../../constants/constants";
-
+import Cookies from "js-cookie";
 const ManageCategory = () => {
   const navigate = useNavigate();
   const [collapsed, setCollapsed] = useState(false);
   const [listCategory, setListCategory] = useState([]);
+  const [user, setUser] = useState({});
+  // Lấy dữ liệu người dùng từ cookie
+  useEffect(() => {
+    const userData = Cookies.get("user");
+    if (userData) {
+      const parsedUser = JSON.parse(userData);
+      setUser(parsedUser.user);
+    }
+  }, []);
 
   // Hàm đăng xuất
+  // Đăng xuất xóa cookie người dùng
   const handleLogout = () => {
-    navigate("/");
+    // Xử lý logout, ví dụ xóa cookie và chuyển hướng người dùng
+    Cookies.remove("user");
+    setUser(null);
+    // Chuyển hướng hoặc cập nhật state để hiển thị UI phù hợp
+    navigate("/sign-in");
+    window.location.reload();
   };
 
   // Hàm lấy danh sách danh mục
@@ -89,6 +104,7 @@ const ManageCategory = () => {
                 Dashboard
               </div>
             </MenuItem>
+
             <SubMenu
               label="Quản lý danh mục"
               icon={<AiOutlineBars className="w-5 h-5" />}
@@ -169,7 +185,6 @@ const ManageCategory = () => {
             </MenuItem>
           </Menu>
         </Sidebar>
-
         {/* Nút toggle sidebar */}
         <button
           onClick={() => setCollapsed(!collapsed)}
