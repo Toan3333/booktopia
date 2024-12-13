@@ -58,7 +58,6 @@ const DashBoard = () => {
         const response = await axios.get(`${URL_API}/products/hot`);
         const data = response.data;
         setProductHot(data);
-        console.log(data);
       } catch (error) {
         console.log(error);
         setProductHot([]);
@@ -72,7 +71,6 @@ const DashBoard = () => {
         const response = await axios.get(`${URL_API}/products/view`);
         const data = response.data;
         setProductView(data);
-        console.log(data);
       } catch (error) {
         console.log(error);
         setProductView([]);
@@ -124,8 +122,12 @@ const DashBoard = () => {
         ]);
         setTotalUser(getTotalUser.data.length);
         setTotalOrder(getTotalOrder.data.length);
+        
         const totalValue = getTotalOrder.data.reduce((acc, order) => {
-          return acc + (parseFloat(order.total) || 0);
+          if (order.status === "Giao thành công") {
+            return acc + (parseFloat(order.total) || 0);
+          }
+          return acc;
         }, 0);
         setTotalRevenue(totalValue);
       } catch (error) {

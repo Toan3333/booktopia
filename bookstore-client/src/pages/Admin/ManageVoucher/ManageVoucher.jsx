@@ -275,8 +275,8 @@ const ManageVoucher = () => {
                   <th>Đơn hàng tối thiểu</th>
                   <th>Ngày hiệu lực</th>
                   <th>Ngày kết thúc</th>
-                  <th className="text-center">Thao tác</th>
                   <th>Trạng thái</th>
+                  <th className="text-center">Thao tác</th>
                 </tr>
               </thead>
               <tbody>
@@ -313,16 +313,6 @@ const ManageVoucher = () => {
                       <td>{formatExpirationDate}</td>
                       <td>
                         <div className="flex items-center justify-center gap-3">
-                          <Link to={`/admin/edit-voucher/${item._id}`}>
-                            <FaUserEdit className="w-5 h-5 text-main" />
-                          </Link>
-                          {/* <button onClick={(e) => handleDelete(item._id)}>
-                            <FaTrashAlt className="w-5 h-4 text-red" />
-                          </button> */}
-                        </div>
-                      </td>
-                      <td>
-                        <div className="flex items-center justify-center gap-3">
                           <button
                             type="button"
                             onClick={() =>
@@ -341,6 +331,17 @@ const ManageVoucher = () => {
                           </button>
                         </div>
                       </td>
+                      <td>
+                        <div className="flex items-center justify-center gap-3">
+                          <Link to={`/admin/edit-voucher/${item._id}`}>
+                            <FaUserEdit className="w-5 h-5 text-main" />
+                          </Link>
+                          {/* <button onClick={(e) => handleDelete(item._id)}>
+                            <FaTrashAlt className="w-5 h-4 text-red" />
+                          </button> */}
+                        </div>
+                      </td>
+                      
                     </tr>
                   );
                 })}
