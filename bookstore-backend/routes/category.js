@@ -18,6 +18,16 @@ router.get("/", async (req, res) => {
   }
 });
 
+router.get("/admin", async (req, res) => {
+  try {
+    const category = await categoryController.getAllAdmin();
+    return res.status(200).json(category);
+  } catch (error) {
+    console.log("Load danh muc không thành công", error);
+    res.status(500).json({ mess: error });
+  }
+});
+
 //Show danh mục theo ID
 router.get("/categoryId/:category", async (req, res, next) => {
   try {

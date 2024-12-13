@@ -14,7 +14,7 @@ module.exports = {
 //hiển thị tất cả bài viết
 async function getAll() {
   try {
-    const result = await blogModel.find();
+    const result = await blogModel.find({ isActive: true });
     return result;
   } catch (error) {
     console.log("Lỗi lấy bài viết", error);

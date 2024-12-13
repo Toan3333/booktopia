@@ -9,12 +9,22 @@ module.exports = {
   deleteCate,
   getCategoryById,
   updateStatusById,
+  getAllAdmin
 };
 
 // Show tất cả danh mục
 async function gettAll() {
   try {
     const result = await categoryModel.find();
+    return result;
+  } catch (error) {
+    console.log("Lỗi lấy sp", error);
+    throw error;
+  }
+}
+async function getAllAdmin() {
+  try {
+    const result = await categoryModel.find({ isActive: true });
     return result;
   } catch (error) {
     console.log("Lỗi lấy sp", error);

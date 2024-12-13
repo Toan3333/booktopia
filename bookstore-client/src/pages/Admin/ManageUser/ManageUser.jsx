@@ -67,7 +67,7 @@ const ManageUser = () => {
       console.log(error);
     }
   };
-  const [lstUser, setLstUser] = useState([]);
+  // const [lstUser, setLstUser] = useState([]);
   const handleUpdateStatus = async (id, currentStatus) => {
     try {
       const updatedStatus = !currentStatus;
@@ -76,10 +76,10 @@ const ManageUser = () => {
       });
 
       if (response.status === 200) {
-        const updateUsers = lstUser.map((item) =>
+        const updateUsers = listUser.map((item) =>
           item._id === id ? { ...item, isActive: updatedStatus } : item
         );
-        setLstUser(updateUsers);
+        setUser(updateUsers);
 
         // Hiển thị thông báo thành công bằng Swal
         Swal.fire({
@@ -104,7 +104,6 @@ const ManageUser = () => {
         text: "Đã có lỗi xảy ra khi cập nhật trạng thái.",
       });
     }
-    window.location.reload();
   };
   return (
     <div>
@@ -242,8 +241,8 @@ const ManageUser = () => {
                   <th>Email</th>
                   <th>Địa chỉ</th>
                   <th>Số điện thoại</th>
-                  <th className="text-center">Thao tác</th>
                   <th>Trạng thái</th>
+                  <th className="text-center">Thao tác</th>
                 </tr>
               </thead>
               <tbody>
@@ -255,18 +254,6 @@ const ManageUser = () => {
                     <td>{user.email}</td>
                     <td>{user.address}</td>
                     <td>{user.phone}</td>
-                    <td>
-                      <div className="flex items-center justify-center gap-3">
-                        <button>
-                          <Link to={`/admin/purchase-history/${user._id}`}>
-                            <FaUserClock className="w-5 h-4 text-mainDark" />
-                          </Link>
-                        </button>
-                        {/* <button onClick={(e) => handleDelete(user._id)}>
-                          <FaTrashAlt className="w-5 h-4 text-red" />
-                        </button> */}
-                      </div>
-                    </td>
                     <td>
                       <div className="flex items-center justify-center gap-3">
                         <button
@@ -285,12 +272,24 @@ const ManageUser = () => {
                         </button>
                       </div>
                     </td>
+                    <td>
+                      <div className="flex items-center justify-center gap-3">
+                        <button>
+                          <Link to={`/admin/purchase-history/${user._id}`}>
+                            <FaUserClock className="w-5 h-4 text-mainDark" />
+                          </Link>
+                        </button>
+                        {/* <button onClick={(e) => handleDelete(user._id)}>
+                          <FaTrashAlt className="w-5 h-4 text-red" />
+                        </button> */}
+                      </div>
+                    </td>
+                    
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
-          {/* Content goes here */}
         </div>
       </div>
     </div>

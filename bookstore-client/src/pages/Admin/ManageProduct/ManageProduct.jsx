@@ -277,8 +277,8 @@ const ManageProduct = () => {
                   <th>Nhà xuất bản</th>
                   <th className="text-center">Giá</th>
                   <th>Số lượng</th>
-                  <th className="text-center">Thao tác</th>
                   <th className="text-center">Trạng thái</th>
+                  <th className="text-center">Thao tác</th>
                 </tr>
               </thead>
               <tbody>
@@ -315,16 +315,6 @@ const ManageProduct = () => {
                     <td className="px-3 text-center">{item.quantity}</td>
                     <td>
                       <div className="flex items-center justify-center gap-3">
-                        <Link to={`/admin/edit-product/${item._id}`}>
-                          <FaUserEdit className="w-5 h-5 text-main" />
-                        </Link>
-                        {/* <button onClick={(e) => handleDelete(item._id)}>
-                          <FaTrashAlt className="w-5 h-4 text-red" />
-                        </button> */}
-                      </div>
-                    </td>
-                    <td>
-                      <div className="flex items-center justify-center gap-3">
                         <button
                           type="button"
                           onClick={() =>
@@ -341,6 +331,17 @@ const ManageProduct = () => {
                         </button>
                       </div>
                     </td>
+                    <td>
+                      <div className="flex items-center justify-center gap-3">
+                        <Link to={`/admin/edit-product/${item._id}`}>
+                          <FaUserEdit className="w-5 h-5 text-main" />
+                        </Link>
+                        {/* <button onClick={(e) => handleDelete(item._id)}>
+                          <FaTrashAlt className="w-5 h-4 text-red" />
+                        </button> */}
+                      </div>
+                    </td>
+                    
                   </tr>
                 ))}
               </tbody>

@@ -83,7 +83,7 @@ const ManageCategory = () => {
     try {
       const updatedStatus = !currentStatus;
       const response = await axios.put(
-        `${URL_API}/category/categories/${id}/status`,
+        `${URL_API}/category/${id}/status`,
         {
           isActive: updatedStatus,
         }
@@ -94,7 +94,6 @@ const ManageCategory = () => {
           item._id === id ? { ...item, isActive: updatedStatus } : item
         );
         setListCategory(updateCategories);
-
         // Hiển thị thông báo thành công bằng Swal
         Swal.fire({
           icon: "success",
@@ -266,8 +265,8 @@ const ManageCategory = () => {
                   <th>#</th>
                   <th>Tên danh mục</th>
                   <th>Mô tả</th>
-                  <th className="text-center">Thao tác</th>
                   <th>Trạng thái</th>
+                  <th className="text-center">Thao tác</th>
                 </tr>
               </thead>
               <tbody>
@@ -276,16 +275,6 @@ const ManageCategory = () => {
                     <td>{index + 1}</td>
                     <td>{item.name}</td>
                     <td className="max-w-[300px]">{item.description}</td>
-                    <td>
-                      <div className="flex items-center justify-center gap-3">
-                        <Link to={`/admin/edit-category/${item._id}`}>
-                          <FaUserEdit className="w-5 h-5 text-main" />
-                        </Link>
-                        {/* <button onClick={() => handleDelete(item._id)}>
-                          <FaTrashAlt className="w-5 h-4 text-red" />
-                        </button> */}
-                      </div>
-                    </td>
                     <td>
                       <td>
                         <div className="flex items-center justify-center gap-3">
@@ -308,6 +297,17 @@ const ManageCategory = () => {
                         </div>
                       </td>
                     </td>
+                    <td>
+                      <div className="flex items-center justify-center gap-3">
+                        <Link to={`/admin/edit-category/${item._id}`}>
+                          <FaUserEdit className="w-5 h-5 text-main" />
+                        </Link>
+                        {/* <button onClick={() => handleDelete(item._id)}>
+                          <FaTrashAlt className="w-5 h-4 text-red" />
+                        </button> */}
+                      </div>
+                    </td>
+                    
                   </tr>
                 ))}
               </tbody>
