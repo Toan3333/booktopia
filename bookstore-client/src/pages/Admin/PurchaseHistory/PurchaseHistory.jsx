@@ -8,9 +8,11 @@ import {
   FaRegEdit,
   FaTrashAlt,
   FaUser,
+  FaCommentAlt,
   FaUserClock,
   FaGift,
 } from "react-icons/fa";
+import { MdOutlinePreview } from "react-icons/md";
 import { MdLogout } from "react-icons/md";
 import { AiFillDashboard, AiOutlineBars } from "react-icons/ai";
 import PageTitle from "../../../components/PageTitle/PageTitle";
@@ -32,7 +34,6 @@ const PurchaseHistory = () => {
     try {
       const response = await axios.get(`${URL_API}/orders/user/${userId}`);
       setOrders(response.data);
-      console.log(response.data);
     } catch (error) {
       console.error("Lỗi khi gọi API:", error);
     }
@@ -188,63 +189,69 @@ const PurchaseHistory = () => {
           <div className="flex items-center justify-between pb-8 border-b pt-3">
             <PageTitle title="Lịch sử mua hàng" className="text-mainDark" />
           </div>
-          {orders.map((order) => (
-            <div key={order._id} className="mt-6 border rounded-lg p-5">
-              <div className="flex items-center justify-between pb-3 border-b border-b-gray-300">
-                <div>
-                  <span>Mã đơn hàng: </span>
-                  <span>{order.orderId}</span>
-                </div>
-                <div className="flex items-center">
-                  <span className="pr-3">
-                    Ngày đặt: {new Date(order.date).toLocaleDateString()}
-                  </span>
-                  <span className="text-mainDark border-l border-l-gray-300 pl-3 font-medium">
-                    {order.status}
-                  </span>
-                </div>
-              </div>
-              {order.listProducts.map((product, index) => (
-                <div
-                  key={index}
-                  className="flex items-center justify-between py-3 border-b border-b-gray-300"
-                >
+          {orders.length > 0 ? (
+            orders.map((order) => (
+              <div key={order._id} className="mt-6 border rounded-lg p-5">
+                <div className="flex items-center justify-between pb-3 border-b border-b-gray-300">
+                  <div>
+                    <span>Mã đơn hàng: </span>
+                    <span>{order.orderId}</span>
+                  </div>
                   <div className="flex items-center">
-                    <div className="max-w-[120px]">
-                      <img
-                        className="w-full"
-                        src={`${URL_API}/images/${product.image1}`}
-                        alt={product.name}
-                      />
-                    </div>
-                    <div className="flex flex-col gap-3">
-                      <h3 className="font-normal">{product.name}</h3>
-                      <div className="text-sm text-gray-400">
-                        {product.author.authorName}
-                      </div>
-                      <span className="text-sm">x{product.quantity}</span>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className="text-sm text-gray-400 line-through">
-                      {product.price1} đ
-                    </div>
-                    <div className="text-lg text-red font-semibold">
-                      {product.price2} đ
-                    </div>
+                    <span className="pr-3">
+                      Ngày đặt: {new Date(order.date).toLocaleDateString()}
+                    </span>
+                    <span className="text-mainDark border-l border-l-gray-300 pl-3 font-medium">
+                      {order.status}
+                    </span>
                   </div>
                 </div>
-              ))}
-              <div className="flex justify-end mt-4">
-                <div className="flex items-center">
-                  <span>Thành tiền: </span>
-                  <div className="text-xl text-red font-semibold ml-3">
-                    {order.total} đ
+                {order.listProducts.map((product, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center justify-between py-3 border-b border-b-gray-300"
+                  >
+                    <div className="flex items-center">
+                      <div className="max-w-[120px]">
+                        <img
+                          className="w-full"
+                          src={`${URL_API}/images/${product.image1}`}
+                          alt={product.name}
+                        />
+                      </div>
+                      <div className="flex flex-col gap-3">
+                        <h3 className="font-normal">{product.name}</h3>
+                        <div className="text-sm text-gray-400">
+                          {product.author.authorName}
+                        </div>
+                        <span className="text-sm">x{product.quantity}</span>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div className="text-sm text-gray-400 line-through">
+                        {product.price1} đ
+                      </div>
+                      <div className="text-lg text-red font-semibold">
+                        {product.price2} đ
+                      </div>
+                    </div>
+                  </div>
+                ))}
+                <div className="flex justify-end mt-4">
+                  <div className="flex items-center">
+                    <span>Thành tiền: </span>
+                    <div className="text-xl text-red font-semibold ml-3">
+                      {order.total} đ
+                    </div>
                   </div>
                 </div>
               </div>
+            ))
+          ) : (
+            <div className="text-center text-gray-500 mt-6">
+              Chưa có lịch sử mua hàng
             </div>
-          ))}
+          )}
         </div>
       </div>
     </div>

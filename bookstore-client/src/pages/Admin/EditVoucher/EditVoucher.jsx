@@ -7,7 +7,9 @@ import {
   FaRegEdit,
   FaUser,
   FaGift,
+  FaCommentAlt,
 } from "react-icons/fa";
+import { MdOutlinePreview } from 'react-icons/md';
 import { MdLogout } from "react-icons/md";
 import { AiFillDashboard, AiOutlineBars } from "react-icons/ai";
 import { MdMarkEmailRead } from "react-icons/md";

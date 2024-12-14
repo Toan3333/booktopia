@@ -13,6 +13,15 @@ router.get("/", async (req, res) => {
     res.status(500).json({ mess: error });
   }
 });
+router.get("/admin", async (req, res) => {
+  try {
+    const vouchers = await voucherController.getAllAdmin();
+    return res.status(200).json(vouchers);
+  } catch (error) {
+    console.log("Load danh sách voucher không thành công", error);
+    res.status(500).json({ mess: error });
+  }
+});
 
 // Thêm danh mục mơi
 router.post("/", async (req, res) => {

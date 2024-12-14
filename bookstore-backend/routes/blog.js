@@ -14,6 +14,15 @@ router.get("/", async (req, res) => {
     res.status(500).json({ mess: error });
   }
 });
+router.get("/admin", async (req, res) => {
+  try {
+    const blog = await blogController.getAllAdmin();
+    return res.status(200).json(blog);
+  } catch (error) {
+    console.log("Không load được bài viết", error);
+    res.status(500).json({ mess: error });
+  }
+});
 
 //hiển thị bài viết theo id
 router.get("/:id", async (req, res, next) => {

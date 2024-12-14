@@ -33,7 +33,7 @@ const ManageBlog = () => {
   useEffect(() => {
     const fetchBlog = async () => {
       try {
-        const response = await axios.get(`${URL_API}/blog`);
+        const response = await axios.get(`${URL_API}/blog/admin`);
         setGetBlog(response.data);
       } catch (error) {
         console.log(error);
