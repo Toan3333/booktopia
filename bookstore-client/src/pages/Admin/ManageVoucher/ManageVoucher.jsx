@@ -51,7 +51,7 @@ const ManageVoucher = () => {
   }, []);
   const fetchVoucher = async () => {
     try {
-      const response = await axios.get(`${URL_API}/vouchers`);
+      const response = await axios.get(`${URL_API}/vouchers/admin`);
       const data = response.data;
       setLstVoucher(data);
     } catch (error) {
@@ -62,7 +62,6 @@ const ManageVoucher = () => {
   const handleDelete = async (id) => {
     try {
       const response = await axios.delete(`${URL_API}/vouchers/${id}`);
-
       if (response.status === 200) {
         Swal.fire({
           title: "Bạn có muốn xóa?",

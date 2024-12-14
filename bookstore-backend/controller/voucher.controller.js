@@ -8,11 +8,22 @@ module.exports = {
   applyVoucher,
   deactivateVoucher,
   getVoucherById,
-  updateStatusById
+  updateStatusById,
+  getAllAdmin
 };
 
 // danh sách voucher
 async function getAll() {
+  try {
+    const res = await voucherModel.find({isActive: true});
+    return res;
+  } catch (error) {
+    console.log("Lỗi lấy danh sách voucher", error);
+    throw error;
+  }
+}
+
+async function getAllAdmin() {
   try {
     const res = await voucherModel.find();
     return res;
