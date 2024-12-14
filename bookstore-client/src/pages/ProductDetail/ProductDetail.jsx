@@ -14,10 +14,7 @@ import Swal from "sweetalert2";
 import axios from "axios";
 import ProductItem from "../../components/Product/ProductItem";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  addToCart,
-  updateCartItemQuantity,
-} from "../../redux/slices/cartslide";
+import { addToCart, updateCartItemQuantity } from "../../redux/slices/cartslide";
 import LightGallery from "lightgallery/react";
 import "react-image-gallery/styles/css/image-gallery.css";
 import { ToastContainer, toast } from "react-toastify";
@@ -75,9 +72,7 @@ const ProductDetail = () => {
 
   const fetchOrderStatus = async (userId, productId) => {
     try {
-      const response = await fetch(
-        `${URL_API}/orders/status/${userId}/${productId}`
-      );
+      const response = await fetch(`${URL_API}/orders/status/${userId}/${productId}`);
       const data = await response.json();
       console.log("Trạng thái đơn hàng:", data);
 
@@ -175,9 +170,7 @@ const ProductDetail = () => {
     if (itemInCart) {
       const currentQuantity = itemInCart.quantity;
       if (currentQuantity >= item.quantity) {
-        showSwalFireError(
-          `Sản phẩm này chỉ còn ${item.quantity} sản phẩm trong kho.`
-        );
+        showSwalFireError(`Sản phẩm này chỉ còn ${item.quantity} sản phẩm trong kho.`);
         return;
       } else {
         showSwalFireSuccess();
@@ -185,9 +178,7 @@ const ProductDetail = () => {
       }
     } else {
       showSwalFireSuccess();
-      dispatch(
-        addToCart({ item: productDetailData, quantity: quantityDetail })
-      );
+      dispatch(addToCart({ item: productDetailData, quantity: quantityDetail }));
     }
   };
 
@@ -210,9 +201,7 @@ const ProductDetail = () => {
     if (itemInCart) {
       const currentQuantity = itemInCart.quantity;
       if (currentQuantity >= item.quantity) {
-        showSwalFireError(
-          `Sản phẩm này chỉ còn ${item.quantity} sản phẩm trong kho.`
-        );
+        showSwalFireError(`Sản phẩm này chỉ còn ${item.quantity} sản phẩm trong kho.`);
         return;
       } else {
         showSwalFireSuccess();
@@ -220,9 +209,7 @@ const ProductDetail = () => {
       }
     } else {
       showSwalFireSuccess();
-      dispatch(
-        addToCart({ item: productDetailData, quantity: quantityDetail })
-      );
+      dispatch(addToCart({ item: productDetailData, quantity: quantityDetail }));
     }
 
     navigate("/cart");
@@ -300,9 +287,7 @@ const ProductDetail = () => {
     }
 
     if (orderStatus !== "Giao thành công") {
-      toast.error(
-        "Bạn chỉ có thể đánh giá sản phẩm khi đơn hàng đã được giao thành công."
-      );
+      toast.error("Bạn chỉ có thể đánh giá sản phẩm khi đơn hàng đã được giao thành công.");
       return;
     }
 
@@ -402,8 +387,7 @@ const ProductDetail = () => {
                           plugins={[lgZoom, lgThumbnail]}
                           mode="lg-fade"
                           thumbnail={true}
-                          elementClassNames={"gallery"}
-                        >
+                          elementClassNames={"gallery"}>
                           <a href={`${URL_API}/images/${img}`}>
                             <img
                               src={`${URL_API}/images/${img}`}
@@ -436,8 +420,7 @@ const ProductDetail = () => {
                     plugins={[lgZoom, lgThumbnail]}
                     mode="lg-fade"
                     elementClassNames={"gallery"}
-                    thumbnail={true}
-                  >
+                    thumbnail={true}>
                     <a href={`${URL_API}/images/${image1}`}>
                       <img
                         src={`${URL_API}/images/${image1}`}
@@ -462,10 +445,7 @@ const ProductDetail = () => {
             </div>
           </div>
           <div className="w-[45%] max-md:w-full">
-            <PageTitle
-              title={name}
-              className="mb-5 max-xl:text-xl text-2xl leading-8"
-            />
+            <PageTitle title={name} className="mb-5 max-xl:text-xl text-2xl leading-8" />
             <div className="flex items-center gap-8 max-md:gap-2 max-lg:gap-2">
               <div className="text-red">
                 {price1.toLocaleString("vi-VN", {
@@ -487,30 +467,18 @@ const ProductDetail = () => {
             <div className="flex justify-between mt-8 gap-5 max-md:hidden max-lg:gap-3">
               <div className="w-full flex flex-col gap-3 text-text">
                 <div>
-                  Tác giả:{" "}
-                  <span className="text-mainDark leading-normal">
-                    {author.authorName}
-                  </span>
+                  Tác giả: <span className="text-mainDark leading-normal">{author.authorName}</span>
                 </div>
                 <div>
                   Nhà xuất bản:{" "}
-                  <span className="text-mainDark leading-normal">
-                    {publish.publishName}
-                  </span>
+                  <span className="text-mainDark leading-normal">{publish.publishName}</span>
                 </div>
                 <div>
                   Danh mục:{" "}
-                  <span className="text-mainDark leading-normal">
-                    {category.categoryName}
-                  </span>
+                  <span className="text-mainDark leading-normal">{category.categoryName}</span>
                 </div>
                 <div>
-                  Kho:{" "}
-                  {quantity === 0 ? (
-                    <span className="text-red">Hết hàng</span>
-                  ) : (
-                    quantity
-                  )}
+                  Kho: {quantity === 0 ? <span className="text-red">Hết hàng</span> : quantity}
                 </div>
               </div>
               <div className="w-full flex flex-col gap-6">
@@ -541,10 +509,7 @@ const ProductDetail = () => {
                   </button>
                 </div>
                 <div className="flex items-center gap-2 ml-4 text-text font-normal">
-                  <CiHeart
-                    className="w-8 h-8 cursor-pointer"
-                    onClick={handleAddToFavourite}
-                  />
+                  <CiHeart className="w-8 h-8 cursor-pointer" onClick={handleAddToFavourite} />
                   Yêu thích
                 </div>
               </div>
@@ -556,14 +521,12 @@ const ProductDetail = () => {
                 <>
                   <Button
                     onClick={() => handleBuyNow(productDetailData)}
-                    className="rounded-md w-full"
-                  >
+                    className="rounded-md w-full">
                     Mua ngay
                   </Button>
                   <Button
                     onClick={() => handleAddToCart(productDetailData)}
-                    className="rounded-md button-add w-full bg-white flex items-center justify-center gap-2"
-                  >
+                    className="rounded-md button-add w-full bg-white flex items-center justify-center gap-2">
                     <HiOutlineShoppingBag />
                     Thêm vào giỏ hàng
                   </Button>
@@ -572,37 +535,32 @@ const ProductDetail = () => {
             </div>
           </div>
         </div>
-        <div className="flex items-center gap-10">
+        <div className="flex items-center gap-10 max-md:gap-2">
           <h3
             className={`text-[18px] font-semibold cursor-pointer ${
               activeTab === "info" ? "text-text" : "text-grayText"
             }`}
-            onClick={() => setActiveTab("info")}
-          >
+            onClick={() => setActiveTab("info")}>
             Thông tin sản phẩm
           </h3>
           <h3
             className={`text-[18px] font-semibold cursor-pointer ${
               activeTab === "comments" ? "text-text" : "text-grayText"
             }`}
-            onClick={() => setActiveTab("comments")}
-          >
+            onClick={() => setActiveTab("comments")}>
             Bình luận
           </h3>
           <h3
             className={`text-[18px] font-semibold cursor-pointer ${
               activeTab === "reviews" ? "text-text" : "text-grayText"
             }`}
-            onClick={() => setActiveTab("reviews")}
-          >
+            onClick={() => setActiveTab("reviews")}>
             Đánh giá
           </h3>
         </div>
         {activeTab === "info" && (
           <div className="mt-7">
-            <p className="text-text font-normal leading-normal">
-              {description}
-            </p>
+            <p className="text-text font-normal leading-normal">{description}</p>
           </div>
         )}
         {activeTab === "comments" && (
@@ -622,10 +580,7 @@ const ProductDetail = () => {
                     placeholder="Hãy nhận xét gì đó ...."
                     className="input input-bordered w-full "
                   />
-                  <Button
-                    className="text-nowrap"
-                    onClick={() => handleConment()}
-                  >
+                  <Button className="text-nowrap" onClick={() => handleConment()}>
                     Gửi
                   </Button>
                 </div>
@@ -651,8 +606,7 @@ const ProductDetail = () => {
                       onClick={() => setRating(value)}
                       className={`cursor-pointer ${
                         rating >= value ? "text-yellow-500" : "text-gray-400"
-                      }`}
-                    >
+                      }`}>
                       ★
                     </span>
                   ))}
@@ -664,22 +618,16 @@ const ProductDetail = () => {
                     placeholder="Hãy nhập đánh giá của bạn..."
                     className="input input-bordered w-full"
                   />
-                  <Button
-                    className="text-nowrap"
-                    onClick={() => handleReview()}
-                  >
+                  <Button className="text-nowrap" onClick={() => handleReview()}>
                     Gửi
                   </Button>
                 </div>
               </form>
             ) : orderStatus === "Đã đánh giá" ? (
-              <p className="text-gray-500 mt-5">
-                Bạn đã đánh giá sản phẩm này.
-              </p>
+              <p className="text-gray-500 mt-5">Bạn đã đánh giá sản phẩm này.</p>
             ) : (
               <p className="text-gray-500 mt-5">
-                Bạn chỉ có thể đánh giá sản phẩm khi đơn hàng đã được giao thành
-                công.
+                Bạn chỉ có thể đánh giá sản phẩm khi đơn hàng đã được giao thành công.
               </p>
             )}
           </div>
@@ -699,9 +647,7 @@ const ProductRelated = ({ id }) => {
   useEffect(() => {
     const fetchProductListRelated = async () => {
       try {
-        const response = await axios.get(
-          `${URL_API}/products/related/${id}/related`
-        );
+        const response = await axios.get(`${URL_API}/products/related/${id}/related`);
         setProductListRelated(response.data);
       } catch (error) {
         console.error("Failed to fetch related products:", error);

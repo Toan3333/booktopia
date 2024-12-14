@@ -4,11 +4,7 @@ import { FaMinus, FaPlus, FaRegTrashAlt } from "react-icons/fa";
 import Button from "../../components/Button/Button";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  updateCartItemQuantity,
-  removeFromCart,
-  clearCart,
-} from "../../redux/slices/cartslide"; // Đảm bảo đường dẫn đúng
+import { updateCartItemQuantity, removeFromCart, clearCart } from "../../redux/slices/cartslide"; // Đảm bảo đường dẫn đúng
 import { URL_API } from "../../constants/constants";
 
 const Cart = () => {
@@ -17,8 +13,7 @@ const Cart = () => {
   const navigate = useNavigate();
 
   const total = useMemo(
-    () =>
-      cartItems.reduce((total, item) => total + item.price2 * item.quantity, 0),
+    () => cartItems.reduce((total, item) => total + item.price2 * item.quantity, 0),
     [cartItems]
   );
 
@@ -120,15 +115,11 @@ const Cart = () => {
                       <th className="text-left py-4 px-5 text-gray-700 max-md:hidden">
                         Thông tin sản phẩm
                       </th>
-                      <th className="py-4 px-5 text-gray-700 text-center max-md:hidden">
-                        Đơn giá
-                      </th>
+                      <th className="py-4 px-5 text-gray-700 text-center max-md:hidden">Đơn giá</th>
                       <th className="py-4 px-5 text-gray-700 text-center max-md:hidden">
                         Số lượng
                       </th>
-                      <th className="py-4 px-5 text-gray-700 text-center">
-                        Thành tiền
-                      </th>
+                      <th className="py-4 px-5 text-gray-700 text-center">Thành tiền</th>
                       <th></th>
                     </tr>
                   </thead>
@@ -140,9 +131,7 @@ const Cart = () => {
                             {" "}
                             {/* Kích thước cố định */}
                             <img
-                              onClick={() =>
-                                navigate(`/product-detail/${item._id}`)
-                              }
+                              onClick={() => navigate(`/product-detail/${item._id}`)}
                               src={`${URL_API}/images/${item.image1}`}
                               className="w-full h-full object-cover rounded-lg cursor-pointer"
                               alt="Product"
@@ -202,8 +191,7 @@ const Cart = () => {
                               <button
                                 className="px-3 py-2 text-gray-600 hover:text-gray-800 focus:outline-none"
                                 onClick={() => handleDecreaseQuantity(item._id)}
-                                disabled={item.quantity <= 1}
-                              >
+                                disabled={item.quantity <= 1}>
                                 <FaMinus />
                               </button>
                               <input
@@ -214,21 +202,17 @@ const Cart = () => {
                               />
                               <button
                                 className="px-3 py-2 text-gray-600 hover:text-gray-800 focus:outline-none"
-                                onClick={() => handleIncreaseQuantity(item._id)}
-                              >
+                                onClick={() => handleIncreaseQuantity(item._id)}>
                                 <FaPlus />
                               </button>
                             </div>
                           </div>
                         </td>
                         <td className="py-4 px-5 text-gray-700 text-center max-md:hidden">
-                          {(item.price2 * item.quantity).toLocaleString(
-                            "vi-VN",
-                            {
-                              style: "currency",
-                              currency: "VND",
-                            }
-                          )}
+                          {(item.price2 * item.quantity).toLocaleString("vi-VN", {
+                            style: "currency",
+                            currency: "VND",
+                          })}
                         </td>
                         <td className="py-4 px-5 text-mainDark">
                           <FaRegTrashAlt
@@ -244,16 +228,15 @@ const Cart = () => {
                   <div className="pt-8 flex items-center justify-between">
                     <div>
                       <Link to="/">
-                        <Button className="rounded-[5px] bg-white button-add max-md:hidden max-lg:h-10">
+                        <Button className="rounded-[5px] bg-white button-add max-md:hidden ">
                           Tiếp tục mua hàng
                         </Button>
                       </Link>
                     </div>
                     <div>
                       <Button
-                        className="rounded-[5px] bg-white button-add max-md:hidden max-lg:h-10"
-                        onClick={handleClearItem}
-                      >
+                        className="rounded-[5px] bg-white button-add max-md:hidden"
+                        onClick={handleClearItem}>
                         Xóa tất cả
                       </Button>
                     </div>
@@ -262,14 +245,8 @@ const Cart = () => {
               </div>
             ) : (
               <div className="text-center py-10">
-                <p className="text-lg font-semibold">
-                  Giỏ hàng của bạn đang trống!
-                </p>
-                <img
-                  src="./images/empty-cart.png"
-                  alt="Empty Cart"
-                  className="mx-auto mt-4"
-                />
+                <p className="text-lg font-semibold">Giỏ hàng của bạn đang trống!</p>
+                <img src="./images/empty-cart.png" alt="Empty Cart" className="mx-auto mt-4" />
                 <Button className="mt-4">
                   <Link to="/">Quay lại trang chủ</Link>
                 </Button>
@@ -282,9 +259,7 @@ const Cart = () => {
                 Thông tin đơn hàng
               </h2>
               <div className="flex justify-between mb-3 border-b pb-5">
-                <span className="text-text font-normal leading-normal">
-                  Tổng tiền:
-                </span>
+                <span className="text-text font-normal leading-normal">Tổng tiền:</span>
                 <span className="text-mainDark font-semibold leading-normal">
                   {total.toLocaleString("vi-VN", {
                     style: "currency",
@@ -293,17 +268,13 @@ const Cart = () => {
                 </span>
               </div>
               <div className="flex justify-between my-5">
-                <span className="text-text font-normal leading-normal">
-                  Giảm giá
-                </span>
+                <span className="text-text font-normal leading-normal">Giảm giá</span>
                 <span className="text-text font-normal leading-normal">
                   Áp dụng tại trang thanh toán
                 </span>
               </div>
               <div className="flex justify-between my-5">
-                <span className="text-text font-normal leading-normal">
-                  Phí vận chuyển:
-                </span>
+                <span className="text-text font-normal leading-normal">Phí vận chuyển:</span>
                 <span className="text-text font-normal leading-normal">
                   Áp dụng tại trang thanh toán
                 </span>
@@ -343,7 +314,7 @@ const Cart = () => {
             </span>
           </div>
           <Button className="rounded-lg bg-green-600 text-white px-4 py-2">
-            <Link to="{`/checkout?id=${item._id}`}">Thanh toán</Link>
+            <Link to="/checkout">Thanh toán</Link>
           </Button>
         </div>
       </div>

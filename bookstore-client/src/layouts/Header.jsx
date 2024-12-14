@@ -15,14 +15,8 @@ import { AuthContext } from "../contexts/AuthProvider";
 const Header = () => {
   const cartItems = useSelector((state) => state.cart.items);
   const favouriteItems = useSelector((state) => state.favourite.items);
-  const cartCount = cartItems.reduce(
-    (count, item) => count + Number(item.quantity),
-    0
-  );
-  const favouriteCount = favouriteItems.reduce(
-    (count, item) => count + Number(item.quantity),
-    0
-  );
+  const cartCount = cartItems.reduce((count, item) => count + Number(item.quantity), 0);
+  const favouriteCount = favouriteItems.reduce((count, item) => count + Number(item.quantity), 0);
   const navigate = useNavigate();
   const [isSticky, setIsSticky] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
@@ -138,11 +132,8 @@ const Header = () => {
 
       <div
         className={`shadow-custom ${
-          isSticky
-            ? "fixed top-0 left-0 w-full shadow-custom z-50 bg-white"
-            : "shadow-custom"
-        }`}
-      >
+          isSticky ? "fixed top-0 left-0 w-full shadow-custom z-50 bg-white" : "shadow-custom"
+        }`}>
         <div className="container">
           <div className="navbar py-3 justify-between flex max-md:flex-col max-md:py-5 max-lg:flex-col max-lg:py-5">
             <div>
@@ -164,8 +155,7 @@ const Header = () => {
                         isActive
                           ? "text-mainDark font-semibold"
                           : "hover:text-mainDark hover:font-semibold"
-                      }
-                    >
+                      }>
                       {item.name}
                     </NavLink>
                   </li>
@@ -173,10 +163,7 @@ const Header = () => {
               </ul>
             </div>
             <div className="w-full flex items-center justify-between gap-3 2xl:hidden max-2xl:hidden max-md:inline-flex max-sm:inline-flex max-lg:inline-flex">
-              <div
-                className="cursor-pointer"
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
-              >
+              <div className="cursor-pointer" onClick={() => setIsMenuOpen(!isMenuOpen)}>
                 <FaBars className="w-8 h-8" />
               </div>
               <label className="input input-bordered flex items-center gap-2">
@@ -215,12 +202,11 @@ const Header = () => {
             </div>
             <div
               ref={menuRef}
-              className={`fixed z-50 top-0 left-0 h-screen w-2/4 bg-white shadow-md transition-transform duration-300 block max-2xl:hidden max-sm:block ${
+              className={`fixed z-50 top-0 left-0 h-screen w-2/4 bg-white shadow-md transition-transform duration-300 block 2xl:hidden max-sm:block ${
                 isMenuOpen
                   ? "transform translate-x-0 max-sm:duration-300 max-sm:transition-transform"
                   : "transform -translate-x-full"
-              }`}
-            >
+              }`}>
               <ul className="flex flex-col">
                 {menuList.map((item) => (
                   <li key={item.id} className="p-4">
@@ -231,8 +217,7 @@ const Header = () => {
                           ? "text-mainDark font-semibold"
                           : "hover:text-mainDark hover:font-semibold"
                       }
-                      onClick={() => setIsMenuOpen(false)}
-                    >
+                      onClick={() => setIsMenuOpen(false)}>
                       {item.name}
                     </NavLink>
                   </li>

@@ -42,10 +42,7 @@ const DetailOrder = () => {
     const newStatusIndex = statusOptions.indexOf(newStatus);
 
     // Kiểm tra nếu trạng thái được chọn không phải là trạng thái tiếp theo hợp lệ
-    if (
-      newStatusIndex !== currentStatusIndex + 1 &&
-      newStatus !== "Chờ xác nhận"
-    ) {
+    if (newStatusIndex !== currentStatusIndex + 1 && newStatus !== "Chờ xác nhận") {
       Swal.fire({
         icon: "error",
         title: "Lỗi",
@@ -90,10 +87,7 @@ const DetailOrder = () => {
 
         setOrder(response.data);
       } catch (error) {
-        console.error(
-          "Error fetching order details:",
-          error.response?.data || error.message
-        );
+        console.error("Error fetching order details:", error.response?.data || error.message);
       }
     };
     fetchOrderDetails();
@@ -121,110 +115,96 @@ const DetailOrder = () => {
       <div className="flex min-h-screen border">
         {/* Sidebar */}
         <Sidebar
-          className={`relative border p-3 bg-white ${
-            collapsed ? "collapsed" : "expanded"
-          }`}
-          width={collapsed ? "0px" : "270px"}
-        >
-        <Menu className="bg-white">
-        <div className="flex items-center justify-center mb-6">
-          <img src="./images/logo.png" alt="Logo" />
-        </div>
-        <MenuItem component={<Link to="/admin/dashboard" />}>
-          <div className="flex items-center gap-4">
-            <AiFillDashboard className="w-5 h-5" />
-            Dashboard
-          </div>
-        </MenuItem>
-        <SubMenu
-          label="Quản lý sản phẩm"
-          icon={<FaBook className="w-5 h-5" />}
-        >
-          <MenuItem component={<Link to="/admin/manage-product" />}>
-            Danh sách sản phẩm
-          </MenuItem>
-          <MenuItem component={<Link to="/admin/manage-author" />}>
-            Tác giả
-          </MenuItem>
-          <MenuItem component={<Link to="/admin/manage-publishes" />}>
-            Nhà xuất bản
-          </MenuItem>
-        </SubMenu>
-        <MenuItem component={<Link to="/admin/manage-category" />}>
-          <div className="flex items-center gap-4">
-          <AiOutlineBars className="w-5 h-5" />
-            Quản lý danh mục
-          </div>
-        </MenuItem>
-        
-        <MenuItem component={<Link to="/admin/manage-order" />}>
-          <div className="flex items-center gap-4">
-            <FaClipboardList className="w-5 h-5" />
-            Quản lý đơn hàng
-          </div>
-        </MenuItem>
-        <MenuItem component={<Link to="/admin/manage-user" />}>
-          <div className="flex items-center gap-4">
-            <FaUser />
-            Quản lý tài khoản
-          </div>
-        </MenuItem>
-        <MenuItem component={<Link to="/admin/manage-voucher" />}>
-          <div className="flex items-center gap-4">
-            <FaGift />
-            Quản lý voucher
-          </div>
-        </MenuItem>
-        <MenuItem component={<Link to="/admin/manage-blog" />}>
-          <div className="flex items-center gap-4">
-          <FaRegEdit className="w-5 h-5" />
-            Quản lý bài viết
-          </div>
-        </MenuItem>
-        <MenuItem component={<Link to="/admin/manage-contact" />}>
-          <div className="flex items-center gap-4">
-            <MdMarkEmailRead />
-            Quản lý liên hệ
-          </div>
-        </MenuItem>
-        <MenuItem component={<Link to="/admin/stock" />}>
-          <div className="flex items-center gap-4">
-            <MdInventory />
-            Quản lý tồn kho
-          </div>
-        </MenuItem>
-        <MenuItem component={<Link to="/admin/manage-comment" />}>
-          <div className="flex items-center gap-4">
-            <FaCommentAlt />
-            Quản lý bình luận
-          </div>
-        </MenuItem>
-        <MenuItem component={<Link to="/admin/manage-review" />}>
-          <div className="flex items-center gap-4">
-            <MdOutlinePreview />
-            Quản lý đánh giá
-          </div>
-        </MenuItem>
-        <MenuItem onClick={handleLogout}>
-          <div className="flex items-center gap-4">
-            <MdLogout />
-            Đăng xuất
-          </div>
-        </MenuItem>
-      </Menu>
+          className={`relative border p-3 bg-white ${collapsed ? "collapsed" : "expanded"}`}
+          width={collapsed ? "0px" : "270px"}>
+          <Menu className="bg-white">
+            <div className="flex items-center justify-center mb-6">
+              <img src="./images/logo.png" alt="Logo" />
+            </div>
+            <MenuItem component={<Link to="/admin/dashboard" />}>
+              <div className="flex items-center gap-4">
+                <AiFillDashboard className="w-5 h-5" />
+                Dashboard
+              </div>
+            </MenuItem>
+            <SubMenu label="Quản lý sản phẩm" icon={<FaBook className="w-5 h-5" />}>
+              <MenuItem component={<Link to="/admin/manage-product" />}>
+                Danh sách sản phẩm
+              </MenuItem>
+              <MenuItem component={<Link to="/admin/manage-author" />}>Tác giả</MenuItem>
+              <MenuItem component={<Link to="/admin/manage-publishes" />}>Nhà xuất bản</MenuItem>
+            </SubMenu>
+            <MenuItem component={<Link to="/admin/manage-category" />}>
+              <div className="flex items-center gap-4">
+                <AiOutlineBars className="w-5 h-5" />
+                Quản lý danh mục
+              </div>
+            </MenuItem>
+
+            <MenuItem component={<Link to="/admin/manage-order" />}>
+              <div className="flex items-center gap-4">
+                <FaClipboardList className="w-5 h-5" />
+                Quản lý đơn hàng
+              </div>
+            </MenuItem>
+            <MenuItem component={<Link to="/admin/manage-user" />}>
+              <div className="flex items-center gap-4">
+                <FaUser />
+                Quản lý tài khoản
+              </div>
+            </MenuItem>
+            <MenuItem component={<Link to="/admin/manage-voucher" />}>
+              <div className="flex items-center gap-4">
+                <FaGift />
+                Quản lý voucher
+              </div>
+            </MenuItem>
+            <MenuItem component={<Link to="/admin/manage-blog" />}>
+              <div className="flex items-center gap-4">
+                <FaRegEdit className="w-5 h-5" />
+                Quản lý bài viết
+              </div>
+            </MenuItem>
+            <MenuItem component={<Link to="/admin/manage-contact" />}>
+              <div className="flex items-center gap-4">
+                <MdMarkEmailRead />
+                Quản lý liên hệ
+              </div>
+            </MenuItem>
+            <MenuItem component={<Link to="/admin/stock" />}>
+              <div className="flex items-center gap-4">
+                <MdInventory />
+                Quản lý tồn kho
+              </div>
+            </MenuItem>
+            <MenuItem component={<Link to="/admin/manage-comment" />}>
+              <div className="flex items-center gap-4">
+                <FaCommentAlt />
+                Quản lý bình luận
+              </div>
+            </MenuItem>
+            <MenuItem component={<Link to="/admin/manage-review" />}>
+              <div className="flex items-center gap-4">
+                <MdOutlinePreview />
+                Quản lý đánh giá
+              </div>
+            </MenuItem>
+            <MenuItem onClick={handleLogout}>
+              <div className="flex items-center gap-4">
+                <MdLogout />
+                Đăng xuất
+              </div>
+            </MenuItem>
+          </Menu>
         </Sidebar>
         {/* Nút toggle nằm bên ngoài Sidebar */}
-        <button
-          onClick={() => setCollapsed(!collapsed)}
-          className="toggle-button"
-        >
+        <button onClick={() => setCollapsed(!collapsed)} className="toggle-button">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
             strokeWidth={1.5}
-            stroke="currentColor"
-          >
+            stroke="currentColor">
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -236,10 +216,7 @@ const DetailOrder = () => {
         <div className="flex-1 p-6">
           <HeaderAdmin />
           <div className="flex items-center justify-between pb-8 border-b pt-3">
-            <PageTitle
-              title={`Chi tiết đơn hàng [${order.orderId}]`}
-              className="text-mainDark"
-            />
+            <PageTitle title={`Chi tiết đơn hàng [${order.orderId}]`} className="text-mainDark" />
           </div>
           <div className="mt-6 border rounded-[30px] p-5">
             <form action="" className="flex flex-col gap-6">
@@ -291,7 +268,14 @@ const DetailOrder = () => {
                   <input
                     type="text"
                     placeholder="Type here"
-                    value={`${order.total}đ` || ""}
+                    value={
+                      order.total
+                        ? Number(order.total).toLocaleString("vi-VN", {
+                            style: "currency",
+                            currency: "VND",
+                          })
+                        : ""
+                    }
                     className="input input-bordered w-full"
                     readOnly
                   />
@@ -301,10 +285,7 @@ const DetailOrder = () => {
                   <select
                     value={order.status || ""}
                     className="input input-bordered w-full"
-                    onChange={(e) =>
-                      handleStatusChange(order._id, e.target.value)
-                    }
-                  >
+                    onChange={(e) => handleStatusChange(order._id, e.target.value)}>
                     <option value="" disabled>
                       Chọn trạng thái
                     </option>
@@ -334,8 +315,7 @@ const DetailOrder = () => {
                 margin: "20px 8px",
                 fontSize: "20px",
                 fontWeight: "bold",
-              }}
-            >
+              }}>
               Danh sách sản phẩm
             </h1>
             <table className="table w-full">
@@ -354,11 +334,7 @@ const DetailOrder = () => {
                   <tr>
                     <td>{index + 1}</td>
                     <td className="flex items-center justify-center max-w-[150px]">
-                      <img
-                        src={`${URL_API}/images/${order.image1}`}
-                        className="w-full"
-                        alt=""
-                      />
+                      <img src={`${URL_API}/images/${order.image1}`} className="w-full" alt="" />
                     </td>
                     <td>
                       <div className="flex flex-col  gap-3">
@@ -367,19 +343,27 @@ const DetailOrder = () => {
                             {order.name} x{order.quantity}
                           </b>
                         </div>
-                        <div className="">
-                          Tác giả: {order.author.authorName}
-                        </div>
-                        <div className="">
-                          Thể loại: {order.category.categoryName}
-                        </div>
+                        <div className="">Tác giả: {order.author.authorName}</div>
+                        <div className="">Thể loại: {order.category.categoryName}</div>
                       </div>
                     </td>
                     <td>
                       <div style={{ display: "flex" }}>
-                        <del>{order.price1}đ</del>
+                        <del>
+                          {order
+                            ? Number(order.price1).toLocaleString("vi-VN", {
+                                style: "currency",
+                                currency: "VND",
+                              })
+                            : ""}
+                        </del>
                         <div style={{ fontSize: "16px", marginLeft: "10px" }}>
-                          {order.price2}đ
+                          {order
+                            ? Number(order.price2).toLocaleString("vi-VN", {
+                                style: "currency",
+                                currency: "VND",
+                              })
+                            : ""}
                         </div>
                       </div>
                     </td>

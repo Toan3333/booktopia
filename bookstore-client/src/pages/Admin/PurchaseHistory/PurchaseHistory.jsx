@@ -68,110 +68,96 @@ const PurchaseHistory = () => {
       <div className="flex min-h-screen border">
         {/* Sidebar */}
         <Sidebar
-          className={`relative border p-3 bg-white ${
-            collapsed ? "collapsed" : "expanded"
-          }`}
-          width={collapsed ? "0px" : "270px"}
-        >
-        <Menu className="bg-white">
-        <div className="flex items-center justify-center mb-6">
-          <img src="./images/logo.png" alt="Logo" />
-        </div>
-        <MenuItem component={<Link to="/admin/dashboard" />}>
-          <div className="flex items-center gap-4">
-            <AiFillDashboard className="w-5 h-5" />
-            Dashboard
-          </div>
-        </MenuItem>
-        <SubMenu
-          label="Quản lý sản phẩm"
-          icon={<FaBook className="w-5 h-5" />}
-        >
-          <MenuItem component={<Link to="/admin/manage-product" />}>
-            Danh sách sản phẩm
-          </MenuItem>
-          <MenuItem component={<Link to="/admin/manage-author" />}>
-            Tác giả
-          </MenuItem>
-          <MenuItem component={<Link to="/admin/manage-publishes" />}>
-            Nhà xuất bản
-          </MenuItem>
-        </SubMenu>
-        <MenuItem component={<Link to="/admin/manage-category" />}>
-          <div className="flex items-center gap-4">
-          <AiOutlineBars className="w-5 h-5" />
-            Quản lý danh mục
-          </div>
-        </MenuItem>
-        
-        <MenuItem component={<Link to="/admin/manage-order" />}>
-          <div className="flex items-center gap-4">
-            <FaClipboardList className="w-5 h-5" />
-            Quản lý đơn hàng
-          </div>
-        </MenuItem>
-        <MenuItem component={<Link to="/admin/manage-user" />}>
-          <div className="flex items-center gap-4">
-            <FaUser />
-            Quản lý tài khoản
-          </div>
-        </MenuItem>
-        <MenuItem component={<Link to="/admin/manage-voucher" />}>
-          <div className="flex items-center gap-4">
-            <FaGift />
-            Quản lý voucher
-          </div>
-        </MenuItem>
-        <MenuItem component={<Link to="/admin/manage-blog" />}>
-          <div className="flex items-center gap-4">
-          <FaRegEdit className="w-5 h-5" />
-            Quản lý bài viết
-          </div>
-        </MenuItem>
-        <MenuItem component={<Link to="/admin/manage-contact" />}>
-          <div className="flex items-center gap-4">
-            <MdMarkEmailRead />
-            Quản lý liên hệ
-          </div>
-        </MenuItem>
-        <MenuItem component={<Link to="/admin/stock" />}>
-          <div className="flex items-center gap-4">
-            <MdInventory />
-            Quản lý tồn kho
-          </div>
-        </MenuItem>
-        <MenuItem component={<Link to="/admin/manage-comment" />}>
-          <div className="flex items-center gap-4">
-            <FaCommentAlt />
-            Quản lý bình luận
-          </div>
-        </MenuItem>
-        <MenuItem component={<Link to="/admin/manage-review" />}>
-          <div className="flex items-center gap-4">
-            <MdOutlinePreview />
-            Quản lý đánh giá
-          </div>
-        </MenuItem>
-        <MenuItem onClick={handleLogout}>
-          <div className="flex items-center gap-4">
-            <MdLogout />
-            Đăng xuất
-          </div>
-        </MenuItem>
-      </Menu>
+          className={`relative border p-3 bg-white ${collapsed ? "collapsed" : "expanded"}`}
+          width={collapsed ? "0px" : "270px"}>
+          <Menu className="bg-white">
+            <div className="flex items-center justify-center mb-6">
+              <img src="./images/logo.png" alt="Logo" />
+            </div>
+            <MenuItem component={<Link to="/admin/dashboard" />}>
+              <div className="flex items-center gap-4">
+                <AiFillDashboard className="w-5 h-5" />
+                Dashboard
+              </div>
+            </MenuItem>
+            <SubMenu label="Quản lý sản phẩm" icon={<FaBook className="w-5 h-5" />}>
+              <MenuItem component={<Link to="/admin/manage-product" />}>
+                Danh sách sản phẩm
+              </MenuItem>
+              <MenuItem component={<Link to="/admin/manage-author" />}>Tác giả</MenuItem>
+              <MenuItem component={<Link to="/admin/manage-publishes" />}>Nhà xuất bản</MenuItem>
+            </SubMenu>
+            <MenuItem component={<Link to="/admin/manage-category" />}>
+              <div className="flex items-center gap-4">
+                <AiOutlineBars className="w-5 h-5" />
+                Quản lý danh mục
+              </div>
+            </MenuItem>
+
+            <MenuItem component={<Link to="/admin/manage-order" />}>
+              <div className="flex items-center gap-4">
+                <FaClipboardList className="w-5 h-5" />
+                Quản lý đơn hàng
+              </div>
+            </MenuItem>
+            <MenuItem component={<Link to="/admin/manage-user" />}>
+              <div className="flex items-center gap-4">
+                <FaUser />
+                Quản lý tài khoản
+              </div>
+            </MenuItem>
+            <MenuItem component={<Link to="/admin/manage-voucher" />}>
+              <div className="flex items-center gap-4">
+                <FaGift />
+                Quản lý voucher
+              </div>
+            </MenuItem>
+            <MenuItem component={<Link to="/admin/manage-blog" />}>
+              <div className="flex items-center gap-4">
+                <FaRegEdit className="w-5 h-5" />
+                Quản lý bài viết
+              </div>
+            </MenuItem>
+            <MenuItem component={<Link to="/admin/manage-contact" />}>
+              <div className="flex items-center gap-4">
+                <MdMarkEmailRead />
+                Quản lý liên hệ
+              </div>
+            </MenuItem>
+            <MenuItem component={<Link to="/admin/stock" />}>
+              <div className="flex items-center gap-4">
+                <MdInventory />
+                Quản lý tồn kho
+              </div>
+            </MenuItem>
+            <MenuItem component={<Link to="/admin/manage-comment" />}>
+              <div className="flex items-center gap-4">
+                <FaCommentAlt />
+                Quản lý bình luận
+              </div>
+            </MenuItem>
+            <MenuItem component={<Link to="/admin/manage-review" />}>
+              <div className="flex items-center gap-4">
+                <MdOutlinePreview />
+                Quản lý đánh giá
+              </div>
+            </MenuItem>
+            <MenuItem onClick={handleLogout}>
+              <div className="flex items-center gap-4">
+                <MdLogout />
+                Đăng xuất
+              </div>
+            </MenuItem>
+          </Menu>
         </Sidebar>
         {/* Nút toggle nằm bên ngoài Sidebar */}
-        <button
-          onClick={() => setCollapsed(!collapsed)}
-          className="toggle-button"
-        >
+        <button onClick={() => setCollapsed(!collapsed)} className="toggle-button">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
             strokeWidth={1.5}
-            stroke="currentColor"
-          >
+            stroke="currentColor">
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -205,10 +191,9 @@ const PurchaseHistory = () => {
                 {order.listProducts.map((product, index) => (
                   <div
                     key={index}
-                    className="flex items-center justify-between py-3 border-b border-b-gray-300"
-                  >
+                    className="flex items-center justify-between py-3 border-b border-b-gray-300">
                     <div className="flex items-center">
-                      <div className="max-w-[120px]">
+                      <div className="max-w-[110px]">
                         <img
                           className="w-full"
                           src={`${URL_API}/images/${product.image1}`}
@@ -217,18 +202,26 @@ const PurchaseHistory = () => {
                       </div>
                       <div className="flex flex-col gap-3">
                         <h3 className="font-normal">{product.name}</h3>
-                        <div className="text-sm text-gray-400">
-                          {product.author.authorName}
-                        </div>
+                        <div className="text-sm text-gray-400">{product.author.authorName}</div>
                         <span className="text-sm">x{product.quantity}</span>
                       </div>
                     </div>
                     <div className="flex items-center gap-3">
                       <div className="text-sm text-gray-400 line-through">
-                        {product.price1} đ
+                        {product
+                          ? Number(product.price1).toLocaleString("vi-VN", {
+                              style: "currency",
+                              currency: "VND",
+                            })
+                          : ""}
                       </div>
                       <div className="text-lg text-red font-semibold">
-                        {product.price2} đ
+                        {product
+                          ? Number(product.price2).toLocaleString("vi-VN", {
+                              style: "currency",
+                              currency: "VND",
+                            })
+                          : ""}
                       </div>
                     </div>
                   </div>
@@ -237,16 +230,19 @@ const PurchaseHistory = () => {
                   <div className="flex items-center">
                     <span>Thành tiền: </span>
                     <div className="text-xl text-red font-semibold ml-3">
-                      {order.total} đ
+                      {order
+                        ? Number(order.total).toLocaleString("vi-VN", {
+                            style: "currency",
+                            currency: "VND",
+                          })
+                        : ""}
                     </div>
                   </div>
                 </div>
               </div>
             ))
           ) : (
-            <div className="text-center text-gray-500 mt-6">
-              Chưa có lịch sử mua hàng
-            </div>
+            <div className="text-center text-gray-500 mt-6">Chưa có lịch sử mua hàng</div>
           )}
         </div>
       </div>
