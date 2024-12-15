@@ -25,6 +25,8 @@ const ManageComment = () => {
   const navigate = useNavigate();
   const [collapsed, setCollapsed] = useState(false);
   const [user, setUser] = useState({});
+  const [listComment, setListComment] = useState([]);
+
   // Lấy dữ liệu người dùng từ cookie
   useEffect(() => {
     const userData = Cookies.get("user");
@@ -34,16 +36,7 @@ const ManageComment = () => {
     }
   }, []);
 
-  // Đăng xuất xóa cookie người dùng
-  const handleLogout = () => {
-    // Xử lý logout, ví dụ xóa cookie và chuyển hướng người dùng
-    Cookies.remove("user");
-    setUser(null);
-    // Chuyển hướng hoặc cập nhật state để hiển thị UI phù hợp
-    navigate("/sign-in");
-    window.location.reload();
-  };
-  const [listComment, setListComment] = useState([]);
+ 
   useEffect(() => {
     const fetchDataComment = async () => {
       try {
@@ -57,22 +50,25 @@ const ManageComment = () => {
     fetchDataComment();
   }, []);
 
-  const handleDelete = async (id) => {
-    try {
-      await axios.delete(`${URL_API}/users/${id}`);
-      showSwalFireDelete("Xóa người dùng thành công");
-    } catch (error) {
-      console.log(error);
-    }
+   // Đăng xuất xóa cookie người dùng
+   const handleLogout = () => {
+    // Xử lý logout, ví dụ xóa cookie và chuyển hướng người dùng
+    Cookies.remove("user");
+    setUser(null);
+    // Chuyển hướng hoặc cập nhật state để hiển thị UI phù hợp
+    navigate("/sign-in");
+    window.location.reload();
   };
-
   return (
     <div>
       <div className="flex min-h-screen border">
         {/* Sidebar */}
         <Sidebar
-          className={`relative border p-3 bg-white ${collapsed ? "collapsed" : "expanded"}`}
-          width={collapsed ? "0px" : "270px"}>
+          className={`relative border p-3 bg-white ${
+            collapsed ? "collapsed" : "expanded"
+          }`}
+          width={collapsed ? "0px" : "270px"}
+        >
           <Menu className="bg-white">
             <div className="flex items-center justify-center mb-6">
               <img src="./images/logo.png" alt="Logo" />
@@ -83,12 +79,19 @@ const ManageComment = () => {
                 Dashboard
               </div>
             </MenuItem>
-            <SubMenu label="Quản lý sản phẩm" icon={<FaBook className="w-5 h-5" />}>
+            <SubMenu
+              label="Quản lý sản phẩm"
+              icon={<FaBook className="w-5 h-5" />}
+            >
               <MenuItem component={<Link to="/admin/manage-product" />}>
                 Danh sách sản phẩm
               </MenuItem>
-              <MenuItem component={<Link to="/admin/manage-author" />}>Tác giả</MenuItem>
-              <MenuItem component={<Link to="/admin/manage-publishes" />}>Nhà xuất bản</MenuItem>
+              <MenuItem component={<Link to="/admin/manage-author" />}>
+                Tác giả
+              </MenuItem>
+              <MenuItem component={<Link to="/admin/manage-publishes" />}>
+                Nhà xuất bản
+              </MenuItem>
             </SubMenu>
             <MenuItem component={<Link to="/admin/manage-category" />}>
               <div className="flex items-center gap-4">
@@ -154,13 +157,17 @@ const ManageComment = () => {
           </Menu>
         </Sidebar>
         {/* Nút toggle nằm bên ngoài Sidebar */}
-        <button onClick={() => setCollapsed(!collapsed)} className="toggle-button">
+        <button
+          onClick={() => setCollapsed(!collapsed)}
+          className="toggle-button"
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
             strokeWidth={1.5}
-            stroke="currentColor">
+            stroke="currentColor"
+          >
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -188,7 +195,7 @@ const ManageComment = () => {
               <tbody>
                 {listComment && listComment.length > 0 ? (
                   listComment.map((item, index) => {
-                    const dateObj = new Date(item.day); // Chắc bạn muốn lấy ngày từ `item.date` chứ không phải `order.date`
+                    const dateObj = new Date(item.day);
                     const formattedDate = dateObj.toLocaleDateString("vi-VN"); // 'vi-VN' for dd/mm/yyyy format
                     return (
                       <tr key={item._id}>
