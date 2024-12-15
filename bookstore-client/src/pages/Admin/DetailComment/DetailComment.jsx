@@ -25,24 +25,30 @@ import Button from "../../../components/Button/Button";
 
 const DetailComment = () => {
   const navigate = useNavigate();
-  const [user, setUser] = useState({});
+  const [comment, setComment] = useState(null);
+  const [collapsed, setCollapsed] = useState(false);
   const { id } = useParams();
 
-  const [collapsed, setCollapsed] = useState(false);
-
+  // Fetch the comment details when the component mounts
   useEffect(() => {
-    const fetchOrderDetails = async () => {
+    const fetchCommentDetails = async () => {
       try {
-        const response = await axios.get(`${URL_API}/orders/${id}`);
-        console.log(response.data);
-
-        setOrder(response.data);
+        const response = await axios.get(`${URL_API}/comment/${id}`);
+        setComment(response.data);
       } catch (error) {
-        console.error("Error fetching order details:", error.response?.data || error.message);
+        console.error("Error fetching comment details", error);
+        Swal.fire("Error", "Lỗi.", "error");
       }
     };
-    fetchOrderDetails();
+
+    fetchCommentDetails();
   }, [id]);
+
+  if (!comment) {
+    return <div>Loading...</div>;
+  }
+
+
   // Lấy dữ liệu người dùng từ cookie
   useEffect(() => {
     const userData = Cookies.get("user");
@@ -176,8 +182,8 @@ const DetailComment = () => {
                   <label htmlFor="">*Mã đơn hàng</label>
                   <input
                     type="text"
-                    placeholder="Type here"
-                    value="BOKTOPIA001"
+                    
+                    value={comment.commentId}
                     className="input input-bordered w-full"
                     readOnly
                   />
@@ -186,8 +192,8 @@ const DetailComment = () => {
                   <label htmlFor="">*Tên khách hàng</label>
                   <input
                     type="text"
-                    placeholder="Trần Anh Toàn"
-                    value="Trần Anh Toàn"
+                    
+                    value={comment.customerName}
                     className="input input-bordered w-full"
                     readOnly
                   />
@@ -196,7 +202,7 @@ const DetailComment = () => {
                   <label htmlFor="">Ngày lập</label>
                   <input
                     type="date"
-                    value="15/07/2024"
+                    value={comment.createdAt}
                     className="input input-bordered w-full"
                     readOnly
                   />
@@ -207,8 +213,8 @@ const DetailComment = () => {
                 <label htmlFor="">*Nội dung</label>
                 <input
                   type="text"
-                  placeholder="Q12, TPHCM"
-                  value="Sách hay, bổ ích"
+                  
+                  value={comment.content} 
                   className="input input-bordered w-full"
                   readOnly
                 />
@@ -222,7 +228,7 @@ const DetailComment = () => {
                 fontSize: "20px",
                 fontWeight: "bold",
               }}>
-              Danh sách sản phẩm
+              Sản phẩm
             </h1>
             <table className="table w-full">
               <thead className="text-[16px] font-semibold text-black">
@@ -236,31 +242,29 @@ const DetailComment = () => {
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>1</td>
+              {comment.productDetails.map((product, index) => (
+                <tr key={index}>
+                  <td>{index + 1}</td>
                   <td className="flex items-center justify-center max-w-[150px]">
-                    <img src={`${URL_API}/images/s44.jpg`} className="w-full" alt="" />
+                    <img src={`${URL_API}/images/${product.image}`} className="w-full" alt={product.name} />
                   </td>
                   <td>
-                    <div className="flex flex-col  gap-3">
-                      <div className="" style={{ fontSize: "16px" }}>
-                        <b>
-                          Sử Ký FPT 35 Năm - Từ Tay Trắng Đến Tập Đoàn Toàn Cầu - Bìa Cứng x1 x1
-                        </b>
+                    <div className="flex flex-col gap-3">
+                      <div style={{ fontSize: "16px" }}>
+                        <b>{product.name}</b>
                       </div>
-                      <div className="">
-                        Tác giả: Sử Ký FPT 35 Năm - Từ Tay Trắng Đến Tập Đoàn Toàn Cầu - Bìa Cứng 
-                      </div>
-                      <div className="">Thể loại; Tiểu sử - Hồi kí</div>
+                      <div>{`Tác giả: ${product.author}`}</div>
+                      <div>{`Thể loại: ${product.category}`}</div>
                     </div>
                   </td>
                   <td>
                     <div style={{ display: "flex" }}>
-                      <del>199000đ</del>
-                      <div style={{ fontSize: "16px", marginLeft: "10px" }}>199000đ</div>
+                      <del>{product.originalPrice}đ</del>
+                      <div style={{ fontSize: "16px", marginLeft: "10px" }}>{product.price}đ</div>
                     </div>
                   </td>
                 </tr>
+              ))}
               </tbody>
             </table>
           </div>
