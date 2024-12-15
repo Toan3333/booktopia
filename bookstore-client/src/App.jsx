@@ -44,7 +44,6 @@ import ManageContact from "./pages/Admin/ManageContact/ManageContact";
 import Notification from "./pages/Admin/Notification/Notification";
 import Stock from "./pages/Admin/Stock/Stock";
 import ManageComment from "./pages/Admin/ManageComment/ManageComment";
-import ManageReview from "./pages/Admin/ManageReview/ManageReview";
 import DetailComment from "./pages/Admin/DetailComment/DetailComment";
 import DetailReview from "./pages/Admin/DetailReview/DetailReview";
 function App() {
@@ -437,14 +436,6 @@ function App() {
           element={
             <PrivateRoute allowedRoles={[1]}>
               <ManageComment />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/admin/manage-review"
-          element={
-            <PrivateRoute allowedRoles={[1]}>
-              <ManageReview />
             </PrivateRoute>
           }
         />

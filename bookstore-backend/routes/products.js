@@ -74,6 +74,7 @@ router.get("/paginated/authorId/:author", async (req, res) => {
   }
 });
 /*Phân trang*/
+/*Phân trang*/
 router.get("/paginated/publishId/:publish", async (req, res) => {
   try {
     const publish = req.params.publish;
