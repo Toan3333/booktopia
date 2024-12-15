@@ -174,11 +174,10 @@ async function getPaginatedProductsByAuthorSorted(author, pageNumber, limit, sor
 }
 
 /*Phân trang*/
-/*Phân trang*/
-async function getPaginatedProductsByPublisherSorted(publish, pageNumber, limit, sortBy) {
+async function getPaginatedProductsByPublisherSorted(publisher, pageNumber, limit, sortBy) {
   try {
     const totalProducts = await productModel.countDocuments({
-      "publish.publishId": new mongoose.Types.ObjectId(publish),
+      "publisher.publisherId": new mongoose.Types.ObjectId(publisher),
     });
 
     // Sắp xếp theo yêu cầu
@@ -192,7 +191,7 @@ async function getPaginatedProductsByPublisherSorted(publish, pageNumber, limit,
     }
 
     const result = await productModel
-      .find({ "publish.publishId": new mongoose.Types.ObjectId(publish) })
+      .find({ "publisher.publisherId": new mongoose.Types.ObjectId(publisher) })
       .sort(sortOption)
       .skip(pageNumber * limit)
       .limit(limit)
