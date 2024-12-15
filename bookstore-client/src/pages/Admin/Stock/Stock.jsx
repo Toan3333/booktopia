@@ -37,6 +37,7 @@ import {
 } from "recharts";
 import { PieChart, Pie } from "recharts";
 import { MdMarkEmailRead } from "react-icons/md";
+import ReactPaginate from 'react-paginate'; // Import thư viện react-paginate
 
 const Stock = () => {
   const isAdmin = true;
@@ -62,6 +63,10 @@ const Stock = () => {
     window.location.reload();
   };
   const [allProductList, setAllProductList] = useState([]);
+  const [currentItems, setCurrentItems] = useState([]); // Danh sách sản phẩm hiển thị trên trang hiện tại
+  const [pageCount, setPageCount] = useState(0); // Tổng số trang
+  const [itemOffset, setItemOffset] = useState(0); // Vị trí bắt đầu của danh sách sản phẩm trên trang hiện tại
+  const itemsPerPage = 10; // Số lượng sản phẩm trên mỗi trang
 
   useEffect(() => {
     const fetchProductList = async () => {
@@ -70,13 +75,25 @@ const Stock = () => {
         const data = response.data;
         setAllProductList(data);
         console.log(data);
+
+        // Phân trang sau khi lấy dữ liệu sản phẩm
+        const endOffset = itemOffset + itemsPerPage;
+        setCurrentItems(data.slice(itemOffset, endOffset));
+        setPageCount(Math.ceil(data.length / itemsPerPage));
       } catch (error) {
         console.log(error);
         setAllProductList([]); // Đặt mảng rỗng trong trường hợp lỗi
       }
     };
     fetchProductList();
-  }, []);
+  }, [itemOffset, itemsPerPage]);
+
+  // Xử lý khi chuyển trang
+  const handlePageClick = (event) => {
+    const newOffset = (event.selected * itemsPerPage) % allProductList.length;
+    setItemOffset(newOffset);
+  };
+
   return (
     <div>
       <div className="flex min-h-screen border">
@@ -87,92 +104,92 @@ const Stock = () => {
           }`}
           width={collapsed ? "0px" : "270px"}
         >
-        <Menu className="bg-white">
-        <div className="flex items-center justify-center mb-6">
-          <img src="./images/logo.png" alt="Logo" />
-        </div>
-        <MenuItem component={<Link to="/admin/dashboard" />}>
-          <div className="flex items-center gap-4">
-            <AiFillDashboard className="w-5 h-5" />
-            Dashboard
-          </div>
-        </MenuItem>
-        <SubMenu
-          label="Quản lý sản phẩm"
-          icon={<FaBook className="w-5 h-5" />}
-        >
-          <MenuItem component={<Link to="/admin/manage-product" />}>
-            Danh sách sản phẩm
-          </MenuItem>
-          <MenuItem component={<Link to="/admin/manage-author" />}>
-            Tác giả
-          </MenuItem>
-          <MenuItem component={<Link to="/admin/manage-publishes" />}>
-            Nhà xuất bản
-          </MenuItem>
-        </SubMenu>
-        <MenuItem component={<Link to="/admin/manage-category" />}>
-          <div className="flex items-center gap-4">
-          <AiOutlineBars className="w-5 h-5" />
-            Quản lý danh mục
-          </div>
-        </MenuItem>
-        
-        <MenuItem component={<Link to="/admin/manage-order" />}>
-          <div className="flex items-center gap-4">
-            <FaClipboardList className="w-5 h-5" />
-            Quản lý đơn hàng
-          </div>
-        </MenuItem>
-        <MenuItem component={<Link to="/admin/manage-user" />}>
-          <div className="flex items-center gap-4">
-            <FaUser />
-            Quản lý tài khoản
-          </div>
-        </MenuItem>
-        <MenuItem component={<Link to="/admin/manage-voucher" />}>
-          <div className="flex items-center gap-4">
-            <FaGift />
-            Quản lý voucher
-          </div>
-        </MenuItem>
-        <MenuItem component={<Link to="/admin/manage-blog" />}>
-          <div className="flex items-center gap-4">
-          <FaRegEdit className="w-5 h-5" />
-            Quản lý bài viết
-          </div>
-        </MenuItem>
-        <MenuItem component={<Link to="/admin/manage-contact" />}>
-          <div className="flex items-center gap-4">
-            <MdMarkEmailRead />
-            Quản lý liên hệ
-          </div>
-        </MenuItem>
-        <MenuItem component={<Link to="/admin/stock" />}>
-          <div className="flex items-center gap-4">
-            <MdInventory />
-            Quản lý tồn kho
-          </div>
-        </MenuItem>
-        <MenuItem component={<Link to="/admin/manage-comment" />}>
-          <div className="flex items-center gap-4">
-            <FaCommentAlt />
-            Quản lý bình luận
-          </div>
-        </MenuItem>
-        <MenuItem component={<Link to="/admin/manage-review" />}>
-          <div className="flex items-center gap-4">
-            <MdOutlinePreview />
-            Quản lý đánh giá
-          </div>
-        </MenuItem>
-        <MenuItem onClick={handleLogout}>
-          <div className="flex items-center gap-4">
-            <MdLogout />
-            Đăng xuất
-          </div>
-        </MenuItem>
-      </Menu>
+          <Menu className="bg-white">
+            <div className="flex items-center justify-center mb-6">
+              <img src="./images/logo.png" alt="Logo" />
+            </div>
+            <MenuItem component={<Link to="/admin/dashboard" />}>
+              <div className="flex items-center gap-4">
+                <AiFillDashboard className="w-5 h-5" />
+                Dashboard
+              </div>
+            </MenuItem>
+            <SubMenu
+              label="Quản lý sản phẩm"
+              icon={<FaBook className="w-5 h-5" />}
+            >
+              <MenuItem component={<Link to="/admin/manage-product" />}>
+                Danh sách sản phẩm
+              </MenuItem>
+              <MenuItem component={<Link to="/admin/manage-author" />}>
+                Tác giả
+              </MenuItem>
+              <MenuItem component={<Link to="/admin/manage-publishes" />}>
+                Nhà xuất bản
+              </MenuItem>
+            </SubMenu>
+            <MenuItem component={<Link to="/admin/manage-category" />}>
+              <div className="flex items-center gap-4">
+                <AiOutlineBars className="w-5 h-5" />
+                Quản lý danh mục
+              </div>
+            </MenuItem>
+
+            <MenuItem component={<Link to="/admin/manage-order" />}>
+              <div className="flex items-center gap-4">
+                <FaClipboardList className="w-5 h-5" />
+                Quản lý đơn hàng
+              </div>
+            </MenuItem>
+            <MenuItem component={<Link to="/admin/manage-user" />}>
+              <div className="flex items-center gap-4">
+                <FaUser />
+                Quản lý tài khoản
+              </div>
+            </MenuItem>
+            <MenuItem component={<Link to="/admin/manage-voucher" />}>
+              <div className="flex items-center gap-4">
+                <FaGift />
+                Quản lý voucher
+              </div>
+            </MenuItem>
+            <MenuItem component={<Link to="/admin/manage-blog" />}>
+              <div className="flex items-center gap-4">
+                <FaRegEdit className="w-5 h-5" />
+                Quản lý bài viết
+              </div>
+            </MenuItem>
+            <MenuItem component={<Link to="/admin/manage-contact" />}>
+              <div className="flex items-center gap-4">
+                <MdMarkEmailRead />
+                Quản lý liên hệ
+              </div>
+            </MenuItem>
+            <MenuItem component={<Link to="/admin/stock" />}>
+              <div className="flex items-center gap-4">
+                <MdInventory />
+                Quản lý tồn kho
+              </div>
+            </MenuItem>
+            <MenuItem component={<Link to="/admin/manage-comment" />}>
+              <div className="flex items-center gap-4">
+                <FaCommentAlt />
+                Quản lý bình luận
+              </div>
+            </MenuItem>
+            <MenuItem component={<Link to="/admin/manage-review" />}>
+              <div className="flex items-center gap-4">
+                <MdOutlinePreview />
+                Quản lý đánh giá
+              </div>
+            </MenuItem>
+            <MenuItem onClick={handleLogout}>
+              <div className="flex items-center gap-4">
+                <MdLogout />
+                Đăng xuất
+              </div>
+            </MenuItem>
+          </Menu>
         </Sidebar>
         {/* Nút toggle nằm bên ngoài Sidebar */}
         <button
@@ -213,9 +230,9 @@ const Stock = () => {
                 </tr>
               </thead>
               <tbody>
-                {allProductList.map((item, index) => (
+                {currentItems.map((item, index) => ( // Sử dụng currentItems để hiển thị
                   <tr key={item._id}>
-                    <td>{index + 1}</td>
+                    <td>{(itemOffset + index) + 1}</td> {/* Hiển thị số thứ tự chính xác */}
                     <td>
                       <img
                         src={`${URL_API}/images/${item.image1}`}
@@ -252,6 +269,35 @@ const Stock = () => {
                 ))}
               </tbody>
             </table>
+            {/* Phân trang */}
+            <ReactPaginate
+            breakLabel={
+              <span className="px-3 py-2 leading-tight text-gray-500">
+                ...
+              </span>
+            } // Thêm style cho breakLabel
+            nextLabel={"Sau"}
+            onPageChange={handlePageClick}
+            marginPagesDisplayed={1}
+            pageRangeDisplayed={3}
+            pageCount={pageCount}
+            previousLabel={"Trước"}
+            renderOnZeroPageCount={null}
+            containerClassName={"flex justify-center items-center"} // Thêm class Tailwind CSS
+            pageClassName={
+              "px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700"
+            } // Thêm class cho từng nút trang
+            previousLinkClassName={
+              "px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 rounded-l-lg"
+            } // Thêm class cho nút "Trước"
+            nextLinkClassName={
+              "px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 rounded-r-lg"
+            }// Thêm class cho nút "Sau"
+            activeClassName={
+              "px-3 py-2 text-blue-600 border border-gray-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700"
+            } // Thêm class cho nút trang hiện tại
+            disabledClassName={"opacity-50 cursor-not-allowed"} // Thêm class cho nút bị vô hiệu hóa
+          />
           </div>
         </div>
       </div>

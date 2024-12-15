@@ -79,11 +79,33 @@ async function deleteComment(id) {
   }
 }
 
-// Chi tiết bình luận theo ID
+// Lấy chi tiết bình luận theo ID, bao gồm thông tin sản phẩm và người dùng
 async function getCommentById(id) {
   try {
-    const comment = await commentModel.findById(id);
-    return comment;
+    const comment = await commentModel
+      .findById(id)
+      .populate("user", "name image") // Lấy tên và ảnh người dùng
+      .populate("book", "name author price image category") // Lấy thông tin sản phẩm
+      .exec();
+
+    if (!comment) {
+      throw new Error("Bình luận không tồn tại");
+    }
+
+    return {
+      commentId: comment._id,
+      productCode: comment.book._id, // Mã sản phẩm (ID của sản phẩm)
+      customerName: comment.user.name, // Tên khách hàng
+      createdAt: comment.day, // Ngày lập
+      content: comment.content, // Nội dung bình luận
+      productDetails: {
+        image: comment.book.image, // Hình ảnh sản phẩm
+        name: comment.book.name, // Tên sản phẩm
+        author: comment.book.author, // Tác giả
+        category: comment.book.category, // Danh mục sản phẩm
+        price: comment.book.price, // Giá sản phẩm
+      },
+    };
   } catch (error) {
     console.log("Lỗi lấy chi tiết bình luận", error);
     throw error;
