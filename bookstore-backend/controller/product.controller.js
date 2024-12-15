@@ -652,12 +652,14 @@ async function search(name) {
       },
       {
         name: 1,
+        category:1,
         image1: 1,
         publish: 1,
         author: 1,
         price1: 1,
         price2: 1,
         quantity: 1,
+        isActive: 1,
       }
     );
     return result;
