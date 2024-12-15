@@ -288,9 +288,26 @@ const Cart = () => {
                   })}
                 </span>
               </div>
-              <Button className="w-full rounded-[5px] mt-5">
-                <Link to="/checkout">Thanh toán</Link>
-              </Button>
+              {hasItems ? (
+                <Button className="w-full rounded-[5px] mt-5">
+                  <Link to="/checkout">Thanh toán</Link>
+                </Button>
+              ) : (
+                <button
+                  disabled
+                  style={{
+                    padding: "15px 25px",
+                    borderRadius: "4px",
+                    color: "white",
+                    backgroundColor: "#6B7280",
+                    cursor: "not-allowed",
+                  }}
+                  className="w-full rounded-[5px] mt-5 bg-blue-500 text-white 
+             disabled:bg-gray-400 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  <span className="pointer-events-none">Thanh Toán</span>
+                </button>
+              )}
               {/* <div className="text-center my-5">Hỗ trợ thanh toán với</div>
               <div className="flex items-center justify-center gap-5">
                 <img src="./images/visa.png" alt="Visa" />
