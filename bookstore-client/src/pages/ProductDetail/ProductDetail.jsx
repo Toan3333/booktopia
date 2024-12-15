@@ -79,7 +79,6 @@ const ProductDetail = () => {
         `${URL_API}/orders/status/${userId}/${productId}`
       );
       const data = await response.json();
-      console.log("Trạng thái đơn hàng:", data);
 
       if (data.product?.status === "Chưa đánh giá") {
         setOrderStatus("Giao thành công");
@@ -349,7 +348,6 @@ const ProductDetail = () => {
 
   // xóa bình luận
   const handleDeleteComment = async (id) => {
-    console.log(id);
 
     await axios.delete(`${URL_API}/comment/${id}`);
     toast.success("Xóa thành công");
@@ -359,8 +357,6 @@ const ProductDetail = () => {
   // xóa đánh giá
 
   const handleDeleteReview = async (id) => {
-    console.log(id);
-
     await axios.delete(`${URL_API}/review/${id}`);
     toast.success("Xóa thành công");
     fetchReview();
@@ -468,14 +464,14 @@ const ProductDetail = () => {
             />
             <div className="flex items-center gap-8 max-md:gap-2 max-lg:gap-2">
               <div className="text-red">
-                {price1.toLocaleString("vi-VN", {
+                {price2.toLocaleString("vi-VN", {
                   style: "currency",
                   currency: "VND",
                 })}
               </div>
               <div className="flex items-center gap-10 max-lg:gap-4">
                 <div className="line-through">
-                  {price2.toLocaleString("vi-VN", {
+                  {price1.toLocaleString("vi-VN", {
                     style: "currency",
                     currency: "VND",
                   })}
