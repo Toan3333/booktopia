@@ -74,8 +74,6 @@ const Stock = () => {
         const response = await axios.get(`${URL_API}/products`);
         const data = response.data;
         setAllProductList(data);
-        console.log(data);
-
         // Phân trang sau khi lấy dữ liệu sản phẩm
         const endOffset = itemOffset + itemsPerPage;
         setCurrentItems(data.slice(itemOffset, endOffset));
