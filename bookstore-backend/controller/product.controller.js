@@ -36,7 +36,7 @@ module.exports = {
   getPaginatedProductsByAuthorSorted,
   getPaginatedProductsByCategorySorted,
   getPaginatedAndSortedProducts,
-  updateStatusById
+  updateStatusById,
 };
 
 /*Phân trang*/
@@ -174,10 +174,10 @@ async function getPaginatedProductsByAuthorSorted(author, pageNumber, limit, sor
 }
 
 /*Phân trang*/
-async function getPaginatedProductsByPublisherSorted(publisher, pageNumber, limit, sortBy) {
+async function getPaginatedProductsByPublisherSorted(publish, pageNumber, limit, sortBy) {
   try {
     const totalProducts = await productModel.countDocuments({
-      "publisher.publisherId": new mongoose.Types.ObjectId(publisher),
+      "publish.publishId": new mongoose.Types.ObjectId(publish),
     });
 
     // Sắp xếp theo yêu cầu
@@ -191,7 +191,7 @@ async function getPaginatedProductsByPublisherSorted(publisher, pageNumber, limi
     }
 
     const result = await productModel
-      .find({ "publisher.publisherId": new mongoose.Types.ObjectId(publisher) })
+      .find({ "publish.publishId": new mongoose.Types.ObjectId(publish) })
       .sort(sortOption)
       .skip(pageNumber * limit)
       .limit(limit)
@@ -395,11 +395,7 @@ async function updateStatusById(id, isActive) {
     if (!cate) {
       throw new Error("Không tìm thấy sản phẩm");
     }
-    const result = await productModel.findByIdAndUpdate(
-      id,
-      { isActive },
-      { new: true } 
-    );
+    const result = await productModel.findByIdAndUpdate(id, { isActive }, { new: true });
     return result;
   } catch (error) {
     throw error;
@@ -652,7 +648,7 @@ async function search(name) {
       },
       {
         name: 1,
-        category:1,
+        category: 1,
         image1: 1,
         publish: 1,
         author: 1,
