@@ -150,6 +150,7 @@ const Menu = () => {
         console.log("Response data:", response.data);
         setProducts(response.data.products);
         setTotalPages(response.data.totalPages);
+        window.location.reload("true");
       } catch (error) {
         console.error("Lỗi khi fetch tất cả sản phẩm:", error);
       } finally {
