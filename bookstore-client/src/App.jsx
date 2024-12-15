@@ -45,6 +45,8 @@ import Notification from "./pages/Admin/Notification/Notification";
 import Stock from "./pages/Admin/Stock/Stock";
 import ManageComment from "./pages/Admin/ManageComment/ManageComment";
 import ManageReview from "./pages/Admin/ManageReview/ManageReview";
+import DetailComment from "./pages/Admin/DetailComment/DetailComment";
+import DetailReview from "./pages/Admin/DetailReview/DetailReview";
 function App() {
   return (
     // <Fragment>
@@ -145,8 +147,7 @@ function App() {
               <PrivateRoute allowedRoles={[0]}>
                 <Blog />
               </PrivateRoute>
-            }
-          ></Route>
+            }></Route>
           <Route
             path="/blog-detail/:id"
             element={
@@ -229,8 +230,7 @@ function App() {
             <PrivateRoute allowedRoles={[1]}>
               <DashBoard />
             </PrivateRoute>
-          }
-        ></Route>
+          }></Route>
         <Route
           path="/admin/manage-product"
           element={
@@ -300,6 +300,22 @@ function App() {
           element={
             <PrivateRoute allowedRoles={[1]}>
               <DetailOrder />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/admin/detail-comment/:id"
+          element={
+            <PrivateRoute allowedRoles={[1]}>
+              <DetailComment />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/admin/detail-review/:id"
+          element={
+            <PrivateRoute allowedRoles={[1]}>
+              <DetailReview />
             </PrivateRoute>
           }
         />

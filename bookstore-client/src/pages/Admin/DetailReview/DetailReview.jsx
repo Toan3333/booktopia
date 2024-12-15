@@ -1,30 +1,49 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { Sidebar, Menu, MenuItem, SubMenu } from "react-pro-sidebar";
+import Cookies from "js-cookie";
 import {
   FaBook,
   FaClipboardList,
   FaRegEdit,
   FaUser,
-  FaEye,
+  FaImage,
   FaGift,
   FaCommentAlt,
+  FaStar,
 } from "react-icons/fa";
 import { MdLogout, MdOutlinePreview } from "react-icons/md";
 import { AiFillDashboard, AiOutlineBars } from "react-icons/ai";
+import { MdMarkEmailRead } from "react-icons/md";
+import { MdInventory } from "react-icons/md";
+import axios from "axios";
+import Swal from "sweetalert2";
+
 import PageTitle from "../../../components/PageTitle/PageTitle";
 import HeaderAdmin from "../../../components/HeaderAdmin/HeaderAdmin";
-import axios from "axios";
-import { MdInventory } from "react-icons/md";
 import { URL_API } from "../../../constants/constants";
-import { showSwalFireDelete } from "../../../helpers/helpers";
-import { MdMarkEmailRead } from "react-icons/md";
-import Cookies from "js-cookie";
-const ManageComment = () => {
-  const isAdmin = true;
+import Button from "../../../components/Button/Button";
+
+const DetailReview = () => {
   const navigate = useNavigate();
-  const [collapsed, setCollapsed] = useState(false);
   const [user, setUser] = useState({});
+  const { id } = useParams();
+
+  const [collapsed, setCollapsed] = useState(false);
+
+  useEffect(() => {
+    const fetchOrderDetails = async () => {
+      try {
+        const response = await axios.get(`${URL_API}/orders/${id}`);
+        console.log(response.data);
+
+        setOrder(response.data);
+      } catch (error) {
+        console.error("Error fetching order details:", error.response?.data || error.message);
+      }
+    };
+    fetchOrderDetails();
+  }, [id]);
   // Lấy dữ liệu người dùng từ cookie
   useEffect(() => {
     const userData = Cookies.get("user");
@@ -43,29 +62,6 @@ const ManageComment = () => {
     navigate("/sign-in");
     window.location.reload();
   };
-  const [listComment, setListComment] = useState([]);
-  useEffect(() => {
-    const fetchDataComment = async () => {
-      try {
-        const response = await axios.get(`${URL_API}/comment`);
-        const data = response.data;
-        setListComment(data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    fetchDataComment();
-  }, []);
-
-  const handleDelete = async (id) => {
-    try {
-      await axios.delete(`${URL_API}/users/${id}`);
-      showSwalFireDelete("Xóa người dùng thành công");
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   return (
     <div>
       <div className="flex min-h-screen border">
@@ -172,57 +168,116 @@ const ManageComment = () => {
         <div className="flex-1 p-6">
           <HeaderAdmin />
           <div className="flex items-center justify-between pb-8 border-b pt-3">
-            <PageTitle title="Quản lý bình luận" className="text-mainDark" />
+            <PageTitle title={`Chi tiết đánh giá`} className="text-mainDark" />
           </div>
           <div className="mt-6 border rounded-[30px] p-5">
+            <form action="" className="flex flex-col gap-6">
+              <div className="flex items-center justify-between gap-12">
+                <div className="w-full flex flex-col gap-2">
+                  <label htmlFor="">*Mã đơn hàng</label>
+                  <input
+                    type="text"
+                    placeholder="Type here"
+                    value="BOKTOPIA001"
+                    className="input input-bordered w-full"
+                    readOnly
+                  />
+                </div>
+                <div className="w-full flex flex-col gap-2">
+                  <label htmlFor="">*Tên khách hàng</label>
+                  <input
+                    type="text"
+                    placeholder="Trần Anh Toàn"
+                    value="Trần Anh Toàn"
+                    className="input input-bordered w-full"
+                    readOnly
+                  />
+                </div>
+                <div className="w-full flex flex-col gap-2">
+                  <label htmlFor="">Ngày lập</label>
+                  <input
+                    type="date"
+                    value="15/07/2024"
+                    className="input input-bordered w-full"
+                    readOnly
+                  />
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="star-review">*Số sao:</div>
+                <div className="flex items-center">
+                  <FaStar className="text-yellow-500" />
+                  <FaStar className="text-yellow-500" />
+                  <FaStar className="text-yellow-500" />
+                  <FaStar className="text-yellow-500" />
+                  <FaStar className="text-yellow-500" />
+                </div>
+              </div>
+              <div className="w-full flex flex-col gap-2">
+                <label htmlFor="">*Nội dung</label>
+                <input
+                  type="text"
+                  placeholder="Q12, TPHCM"
+                  value="Sách hay, bổ ích"
+                  className="input input-bordered w-full"
+                  readOnly
+                />
+              </div>
+            </form>
+
+            <h1
+              className="text-mainDark"
+              style={{
+                margin: "20px 8px",
+                fontSize: "20px",
+                fontWeight: "bold",
+              }}>
+              Danh sách sản phẩm
+            </h1>
             <table className="table w-full">
               <thead className="text-[16px] font-semibold text-black">
                 <tr>
                   <th>#</th>
-                  <th>Tên người dùng</th>
-                  <th>Nội dung</th>
-                  <th>Ngày</th>
-                  <th className="text-center">Thao tác</th>
+                  <th className="text-center flex items-center justify-center max-w-[150px]">
+                    <FaImage className="w-6 h-6 " />
+                  </th>
+                  <th>Tên sách</th>
+                  <th>Giá</th>
                 </tr>
               </thead>
               <tbody>
-                {listComment && listComment.length > 0 ? (
-                  listComment.map((item, index) => {
-                    const dateObj = new Date(item.day); // Chắc bạn muốn lấy ngày từ `item.date` chứ không phải `order.date`
-                    const formattedDate = dateObj.toLocaleDateString("vi-VN"); // 'vi-VN' for dd/mm/yyyy format
-                    return (
-                      <tr key={item._id}>
-                        <td>{index + 1}</td>
-                        <td>{item?.user?.name}</td>
-                        <td>{item.content}</td>
-                        <td>{formattedDate}</td> {/* Sửa phần hiển thị ngày */}
-                        <td>
-                          <div className="flex items-center justify-center gap-3">
-                            <button>
-                              <Link to={`/admin/detail-comment/${item._id}`}>
-                                <FaEye className="w-5 h-4 text-mainDark" />
-                              </Link>
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    );
-                  })
-                ) : (
-                  <tr>
-                    <td colSpan="5" className="text-center">
-                      Không có bình luận nào.
-                    </td>
-                  </tr>
-                )}
+                <tr>
+                  <td>1</td>
+                  <td className="flex items-center justify-center max-w-[150px]">
+                    <img src={`${URL_API}/images/s44.jpg`} className="w-full" alt="" />
+                  </td>
+                  <td>
+                    <div className="flex flex-col  gap-3">
+                      <div className="" style={{ fontSize: "16px" }}>
+                        <b>
+                          Sử Ký FPT 35 Năm - Từ Tay Trắng Đến Tập Đoàn Toàn Cầu - Bìa Cứng x1 x1
+                        </b>
+                      </div>
+                      <div className="">
+                        Tác giả: Sử Ký FPT 35 Năm - Từ Tay Trắng Đến Tập Đoàn Toàn Cầu - Bìa Cứng 
+                      </div>
+                      <div className="">Thể loại; Tiểu sử - Hồi kí</div>
+                    </div>
+                  </td>
+                  <td>
+                    <div style={{ display: "flex" }}>
+                      <del>199000đ</del>
+                      <div style={{ fontSize: "16px", marginLeft: "10px" }}>199000đ</div>
+                    </div>
+                  </td>
+                </tr>
               </tbody>
             </table>
           </div>
-          {/* Content goes here */}
         </div>
       </div>
     </div>
   );
 };
 
-export default ManageComment;
+export default DetailReview;
