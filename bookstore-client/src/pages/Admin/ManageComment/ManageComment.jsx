@@ -188,14 +188,14 @@ const ManageComment = () => {
               <tbody>
                 {listComment && listComment.length > 0 ? (
                   listComment.map((item, index) => {
-                    const dateObj = new Date(item.day); // Chắc bạn muốn lấy ngày từ `item.date` chứ không phải `order.date`
-                    const formattedDate = dateObj.toLocaleDateString("vi-VN"); // 'vi-VN' for dd/mm/yyyy format
+                    const dateObj = new Date(item.day); 
+                    const formattedDate = dateObj.toLocaleDateString("vi-VN"); 
                     return (
                       <tr key={item._id}>
                         <td>{index + 1}</td>
                         <td>{item?.user?.name}</td>
                         <td>{item.content}</td>
-                        <td>{formattedDate}</td> {/* Sửa phần hiển thị ngày */}
+                        <td>{formattedDate}</td>
                         <td>
                           <div className="flex items-center justify-center gap-3">
                             <button>

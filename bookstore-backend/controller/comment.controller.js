@@ -85,7 +85,7 @@ async function getCommentById(id) {
     const comment = await commentModel
       .findById(id)
       .populate("user", "name image") // Lấy tên và ảnh người dùng
-      .populate("book", "name author price image category") // Lấy thông tin sản phẩm
+      .populate("book", "name author price1 image1 category") // Lấy thông tin sản phẩm
       .exec();
 
     if (!comment) {
@@ -99,11 +99,11 @@ async function getCommentById(id) {
       createdAt: comment.day, // Ngày lập
       content: comment.content, // Nội dung bình luận
       productDetails: {
-        image: comment.book.image, // Hình ảnh sản phẩm
+        image1: comment.book.image1, // Hình ảnh sản phẩm
         name: comment.book.name, // Tên sản phẩm
         author: comment.book.author, // Tác giả
         category: comment.book.category, // Danh mục sản phẩm
-        price: comment.book.price, // Giá sản phẩm
+        price1: comment.book.price1, // Giá sản phẩm
       },
     };
   } catch (error) {
