@@ -25,6 +25,8 @@ const ManageComment = () => {
   const navigate = useNavigate();
   const [collapsed, setCollapsed] = useState(false);
   const [user, setUser] = useState({});
+  const [listComment, setListComment] = useState([]);
+
   // Lấy dữ liệu người dùng từ cookie
   useEffect(() => {
     const userData = Cookies.get("user");
@@ -34,16 +36,6 @@ const ManageComment = () => {
     }
   }, []);
 
-  // Đăng xuất xóa cookie người dùng
-  const handleLogout = () => {
-    // Xử lý logout, ví dụ xóa cookie và chuyển hướng người dùng
-    Cookies.remove("user");
-    setUser(null);
-    // Chuyển hướng hoặc cập nhật state để hiển thị UI phù hợp
-    navigate("/sign-in");
-    window.location.reload();
-  };
-  const [listComment, setListComment] = useState([]);
   useEffect(() => {
     const fetchDataComment = async () => {
       try {
@@ -57,15 +49,15 @@ const ManageComment = () => {
     fetchDataComment();
   }, []);
 
-  const handleDelete = async (id) => {
-    try {
-      await axios.delete(`${URL_API}/users/${id}`);
-      showSwalFireDelete("Xóa người dùng thành công");
-    } catch (error) {
-      console.log(error);
-    }
+  // Đăng xuất xóa cookie người dùng
+  const handleLogout = () => {
+    // Xử lý logout, ví dụ xóa cookie và chuyển hướng người dùng
+    Cookies.remove("user");
+    setUser(null);
+    // Chuyển hướng hoặc cập nhật state để hiển thị UI phù hợp
+    navigate("/sign-in");
+    window.location.reload();
   };
-
   return (
     <div>
       <div className="flex min-h-screen border">
@@ -188,8 +180,8 @@ const ManageComment = () => {
               <tbody>
                 {listComment && listComment.length > 0 ? (
                   listComment.map((item, index) => {
-                    const dateObj = new Date(item.day); 
-                    const formattedDate = dateObj.toLocaleDateString("vi-VN"); 
+                    const dateObj = new Date(item.day);
+                    const formattedDate = dateObj.toLocaleDateString("vi-VN"); // 'vi-VN' for dd/mm/yyyy format
                     return (
                       <tr key={item._id}>
                         <td>{index + 1}</td>

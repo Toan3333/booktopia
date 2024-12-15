@@ -25,9 +25,7 @@ async function getAllComments() {
 // Lấy tất cả bình luận của một sản phẩm
 async function getCommentsByProduct(productId) {
   try {
-    const comments = await commentModel
-      .find({ book: productId })
-      .populate("user", "name image");
+    const comments = await commentModel.find({ book: productId }).populate("user", "name image");
 
     return comments;
   } catch (error) {

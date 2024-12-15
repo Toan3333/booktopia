@@ -74,11 +74,8 @@ const DetailComment = () => {
       <div className="flex min-h-screen border">
         {/* Sidebar */}
         <Sidebar
-          className={`relative border p-3 bg-white ${
-            collapsed ? "collapsed" : "expanded"
-          }`}
-          width={collapsed ? "0px" : "270px"}
-        >
+          className={`relative border p-3 bg-white ${collapsed ? "collapsed" : "expanded"}`}
+          width={collapsed ? "0px" : "270px"}>
           <Menu className="bg-white">
             <div className="flex items-center justify-center mb-6">
               <img src="./images/logo.png" alt="Logo" />
@@ -89,19 +86,12 @@ const DetailComment = () => {
                 Dashboard
               </div>
             </MenuItem>
-            <SubMenu
-              label="Quản lý sản phẩm"
-              icon={<FaBook className="w-5 h-5" />}
-            >
+            <SubMenu label="Quản lý sản phẩm" icon={<FaBook className="w-5 h-5" />}>
               <MenuItem component={<Link to="/admin/manage-product" />}>
                 Danh sách sản phẩm
               </MenuItem>
-              <MenuItem component={<Link to="/admin/manage-author" />}>
-                Tác giả
-              </MenuItem>
-              <MenuItem component={<Link to="/admin/manage-publishes" />}>
-                Nhà xuất bản
-              </MenuItem>
+              <MenuItem component={<Link to="/admin/manage-author" />}>Tác giả</MenuItem>
+              <MenuItem component={<Link to="/admin/manage-publishes" />}>Nhà xuất bản</MenuItem>
             </SubMenu>
             <MenuItem component={<Link to="/admin/manage-category" />}>
               <div className="flex items-center gap-4">
@@ -167,17 +157,13 @@ const DetailComment = () => {
           </Menu>
         </Sidebar>
         {/* Nút toggle nằm bên ngoài Sidebar */}
-        <button
-          onClick={() => setCollapsed(!collapsed)}
-          className="toggle-button"
-        >
+        <button onClick={() => setCollapsed(!collapsed)} className="toggle-button">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
             strokeWidth={1.5}
-            stroke="currentColor"
-          >
+            stroke="currentColor">
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -241,14 +227,12 @@ const DetailComment = () => {
                 margin: "20px 8px",
                 fontSize: "20px",
                 fontWeight: "bold",
-              }}
-            >
+              }}>
               Sản phẩm
             </h1>
             <table className="table w-full">
               <thead className="text-[16px] font-semibold text-black">
                 <tr>
-                  
                   <th className="text-center flex items-center justify-center max-w-[150px]">
                     <FaImage className="w-6 h-6 " />
                   </th>
