@@ -262,7 +262,7 @@ const DetailComment = () => {
                     <td>
                       <div style={{ display: "flex" }}>
                         <div style={{ fontSize: "16px", marginLeft: "10px" }}>
-                          {comment.productDetails.price1}đ
+                          {comment.productDetails.price2}đ
                         </div>
                       </div>
                     </td>

@@ -83,7 +83,7 @@ async function getCommentById(id) {
     const comment = await commentModel
       .findById(id)
       .populate("user", "name image") // Lấy tên và ảnh người dùng
-      .populate("book", "name author price1 image1 category") // Lấy thông tin sản phẩm
+      .populate("book", "name author price2 image1 category") // Lấy thông tin sản phẩm
       .exec();
 
     if (!comment) {
@@ -101,7 +101,7 @@ async function getCommentById(id) {
         name: comment.book.name, // Tên sản phẩm
         author: comment.book.author, // Tác giả
         category: comment.book.category, // Danh mục sản phẩm
-        price1: comment.book.price1, // Giá sản phẩm
+        price2: comment.book.price2, // Giá sản phẩm
       },
     };
   } catch (error) {
