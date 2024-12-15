@@ -28,8 +28,7 @@ const Menu = () => {
   const [pageGroup, setPageGroup] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [totalProducts, setTotalProducts] = useState(0);
-  const [currentCategoryName, setCurrentCategoryName] =
-    useState("Tất cả sản phẩm");
+  const [currentCategoryName, setCurrentCategoryName] = useState("Tất cả sản phẩm");
   const navigate = useNavigate();
   const pagesPerGroup = 3;
 
@@ -41,6 +40,7 @@ const Menu = () => {
       setLoading(true);
       try {
         const url = `${URL_API}/products/search/${searchTerm.trim()}`;
+
         const response = await axios.get(url);
         setProducts(response.data);
         setCategoryId(null); // Xóa bộ lọc hiện tại khi tìm kiếm
@@ -131,6 +131,33 @@ const Menu = () => {
   }, [categoryId, authorId, publishId, currentPage, sortOption, searchTerm]);
 
   const categoryClick = async (newCategoryId, categoryName) => {
+    if (newCategoryId === null) {
+      setCategoryId(null);
+      setAuthorId(null);
+      setPublishId(null);
+      setCurrentCategoryName("Tất cả sản phẩm");
+      setCurrentPage(1);
+      setSortOption("Mới nhất");
+      setProducts([]);
+      setPageGroup(0);
+
+      try {
+        setLoading(true);
+        const limit = 12;
+        const url = `${URL_API}/products/paginated/products?pageNumber=0&limit=${limit}&sortBy=new`;
+        const response = await axios.get(url);
+        console.log("Fetching URL:", url);
+        console.log("Response data:", response.data);
+        setProducts(response.data.products);
+        setTotalPages(response.data.totalPages);
+      } catch (error) {
+        console.error("Lỗi khi fetch tất cả sản phẩm:", error);
+      } finally {
+        setLoading(false);
+      }
+      return;
+    }
+
     if (categoryId === newCategoryId) {
       return;
     }
@@ -139,16 +166,16 @@ const Menu = () => {
     setPublishId(null);
     setCurrentCategoryName(categoryName);
     setCurrentPage(1);
-    setProducts([]); // Xóa sản phẩm cũ trước khi fetch
+    setProducts([]);
     setSortOption("Mới nhất");
     setPageGroup(0);
-
-    // Fetch lại sản phẩm ngay lập tức
     try {
       setLoading(true);
       const limit = 12;
       const url = `${URL_API}/products/paginated/categoryId/${newCategoryId}?pageNumber=0&limit=${limit}&sortBy=new`;
       const response = await axios.get(url);
+      console.log("Fetching URL:", url);
+      console.log("Response data:", response.data);
       setProducts(response.data.products);
       setTotalPages(response.data.totalPages);
     } catch (error) {
@@ -166,14 +193,15 @@ const Menu = () => {
     setSortOption("Mới nhất");
     setPageGroup(0);
     setCurrentPage(1);
-    setProducts([]); // Xóa sản phẩm cũ trước khi fetch
+    setProducts([]);
 
-    // Fetch lại sản phẩm ngay lập tức
     try {
       setLoading(true);
       const limit = 12;
       const url = `${URL_API}/products/paginated/authorId/${newAuthorId}?pageNumber=0&limit=${limit}&sortBy=new`;
       const response = await axios.get(url);
+      console.log("Fetching URL:", url);
+      console.log("Response data:", response.data);
       setProducts(response.data.products);
       setTotalPages(response.data.totalPages);
     } catch (error) {
@@ -197,8 +225,11 @@ const Menu = () => {
     try {
       setLoading(true);
       const limit = 12;
-      const url = `${URL_API}/products/paginated/publisherId/${newPublishId}?pageNumber=0&limit=${limit}&sortBy=new`;
+
+      const url = `${URL_API}/products/paginated/publishId/${newPublishId}?pageNumber=0&limit=${limit}&sortBy=new`;
       const response = await axios.get(url);
+      console.log("Fetching URL:", url);
+      console.log("Response data:", response.data);
       setProducts(response.data.products);
       setTotalPages(response.data.totalPages);
     } catch (error) {
@@ -207,6 +238,7 @@ const Menu = () => {
       setLoading(false);
     }
   };
+
   const handleNextGroup = () => {
     const nextPageGroup = pageGroup + 1;
     const totalPages = Math.ceil(totalProducts / pagesPerGroup);
@@ -243,21 +275,15 @@ const Menu = () => {
   }, []);
   const renderPageButtons = () => {
     const startPage = pageGroup * pagesPerGroup + 1;
-    const pages = Array.from(
-      { length: pagesPerGroup },
-      (_, i) => startPage + i
-    );
+    const pages = Array.from({ length: pagesPerGroup }, (_, i) => startPage + i);
 
     return pages.map((page) => (
       <span
         key={page}
         className={`w-10 h-10 rounded-full flex items-center justify-center ${
-          currentPage === page
-            ? "bg-mainDark text-white"
-            : "border text-grayText"
+          currentPage === page ? "bg-mainDark text-white" : "border text-grayText"
         } text-[20px] font-semibold cursor-pointer`}
-        onClick={() => setCurrentPage(page)}
-      >
+        onClick={() => setCurrentPage(page)}>
         {page}
       </span>
     ));
@@ -291,11 +317,7 @@ const Menu = () => {
                     items={categories}
                     onCategoryClick={categoryClick}
                   />
-                  <CategoryItem
-                    title="Tác giả"
-                    items={authors}
-                    onAuthorClick={authorClick}
-                  />
+                  <CategoryItem title="Tác giả" items={authors} onAuthorClick={authorClick} />
                   <CategoryItem
                     title="Nhà xuất bản"
                     items={publishers}
@@ -311,8 +333,7 @@ const Menu = () => {
                   <select
                     className="select select-bordered w-full max-w-xs custom-select"
                     value={sortOption}
-                    onChange={(e) => setSortOption(e.target.value)}
-                  >
+                    onChange={(e) => setSortOption(e.target.value)}>
                     <option value="Mới nhất">Mới nhất</option>
                     <option value="Giá tăng dần">Giá tăng dần</option>
                     <option value="Giá giảm dần">Giá giảm dần</option>
@@ -336,8 +357,7 @@ const Menu = () => {
               <div className="flex items-center justify-center gap-5 mt-6">
                 <span
                   className="w-10 h-10 rounded-full flex items-center justify-center border text-grayText text-[20px] font-semibold hover:bg-mainDark hover:text-white cursor-pointer"
-                  onClick={handlePrevGroup}
-                >
+                  onClick={handlePrevGroup}>
                   <FaLongArrowAltLeft />
                 </span>
 
