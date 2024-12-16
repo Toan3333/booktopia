@@ -38,6 +38,7 @@ module.exports = {
   getPaginatedAndSortedProducts,
   updateStatusById,
   gettAllAdmin,
+  getStock,
 };
 
 /*Phân trang*/
@@ -589,7 +590,7 @@ async function getProView() {
     const result = await productModel
       .find({ view: { $gte: 50 } })
       .sort({ view: -1 })
-      .limit(4);
+      .limit(5);
     return result;
   } catch (error) {
     console.log("Lỗi lấy sp", error);
@@ -611,7 +612,18 @@ async function getNew() {
 //Sản phẩm hot
 async function getHot() {
   try {
-    const result = await productModel.find().sort({ _id: 1 }).limit(4);
+    const result = await productModel.find().sort({ _id: -1 }).limit(5);
+    return result;
+  } catch (error) {
+    console.log("Lỗi sản phẩm hot", error);
+    throw error;
+  }
+}
+
+//Sản phẩm tồn kho
+async function getStock() {
+  try {
+    const result = await productModel.find().sort({ quantity: 1 });
     return result;
   } catch (error) {
     console.log("Lỗi sản phẩm hot", error);

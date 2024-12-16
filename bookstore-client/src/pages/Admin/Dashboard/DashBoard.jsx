@@ -495,6 +495,7 @@ const DashBoard = () => {
                   <th>Danh mục</th>
                   <th>Nhà xuất bản</th>
                   <th className="text-center">Giá</th>
+                  <th>Số lượt bán</th>
                   <th>Số lượng</th>
                   {/* <th className="text-center">Thao tác</th> */}
                 </tr>
@@ -530,6 +531,7 @@ const DashBoard = () => {
                         </div>
                       </div>
                     </td>
+                    <td className="px-3 text-center">{item.sale}</td>
                     <td className="px-3 text-center">{item.quantity}</td>
                     {/* <td>
                       <div className="flex items-center justify-center gap-3">
@@ -558,6 +560,7 @@ const DashBoard = () => {
                   <th>Danh mục</th>
                   <th>Nhà xuất bản</th>
                   <th className="text-center">Giá</th>
+                  <th>Số lượt xem</th>
                   <th>Số lượng</th>
                   {/* <th className="text-center">Thao tác</th> */}
                 </tr>
@@ -593,6 +596,7 @@ const DashBoard = () => {
                         </div>
                       </div>
                     </td>
+                    <td className="px-3 text-center">{item.view}</td>
                     <td className="px-3 text-center">{item.quantity}</td>
                     {/* <td>
                       <div className="flex items-center justify-center gap-3">

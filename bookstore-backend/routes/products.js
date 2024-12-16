@@ -266,6 +266,18 @@ router.get("/hot", async (req, res) => {
   }
 });
 
+
+//Router hiển thị sản phẩm tồn kho
+router.get("/stock", async (req, res) => {
+  try {
+    const product = await productController.getStock();
+    return res.status(200).json(product);
+  } catch (error) {
+    console.log("Load sản phẩm không thành công", error);
+    res.status(500).json({ mess: error });
+  }
+});
+
 router.put("/:id/status", async (req, res) => {
   const { id } = req.params;
   const { isActive } = req.body;

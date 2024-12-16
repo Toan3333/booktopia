@@ -62,7 +62,7 @@ const Stock = () => {
   useEffect(() => {
     const fetchProductList = async () => {
       try {
-        const response = await axios.get(`${URL_API}/products`);
+        const response = await axios.get(`${URL_API}/products/stock`);
         const data = response.data;
         setAllProductList(data);
         // Phân trang sau khi lấy dữ liệu sản phẩm
