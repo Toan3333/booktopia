@@ -34,7 +34,6 @@ const Checkout = () => {
     [listProducts]
   );
   const address = getValues("address");
-
   const [data, setData] = useState([]);
   const [cities, setCities] = useState([]);
   const [selectedCity, setSelectedCity] = useState("");
@@ -436,6 +435,7 @@ const Checkout = () => {
                         name="giaohang"
                         id="giaohang"
                         className="checkbox-input"
+                        defaultChecked
                       />
                       <div className="checkbox-box"></div>
                     </label>
