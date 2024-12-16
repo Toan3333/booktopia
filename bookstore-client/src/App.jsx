@@ -213,7 +213,7 @@ function App() {
           <Route
             path="/favorites"
             element={
-              <PrivateRoute allowedRoles={[-1]}>
+              <PrivateRoute allowedRoles={[0]}>
                 <Favorite />
               </PrivateRoute>
             }
@@ -221,7 +221,7 @@ function App() {
           <Route
             path="/term-of-use"
             element={
-              <PrivateRoute allowedRoles={[-1]}>
+              <PrivateRoute allowedRoles={[0]}>
                 <TermsOfUse />
               </PrivateRoute>
             }
@@ -229,7 +229,7 @@ function App() {
           <Route
             path="/privacy-policy"
             element={
-              <PrivateRoute allowedRoles={[-1]}>
+              <PrivateRoute allowedRoles={[0]}>
                 <PrivacyPolicy />
               </PrivateRoute>
             }
@@ -237,7 +237,7 @@ function App() {
           <Route
             path="/payment-policy"
             element={
-              <PrivateRoute allowedRoles={[-1]}>
+              <PrivateRoute allowedRoles={[0]}>
                 <PaymentPolicy />
               </PrivateRoute>
             }
@@ -245,7 +245,7 @@ function App() {
           <Route
             path="/warranty-policy"
             element={
-              <PrivateRoute allowedRoles={[-1]}>
+              <PrivateRoute allowedRoles={[0]}>
                 <WarrantyPolicy />
               </PrivateRoute>
             }
@@ -253,7 +253,7 @@ function App() {
           <Route
             path="/return-policy"
             element={
-              <PrivateRoute allowedRoles={[-1]}>
+              <PrivateRoute allowedRoles={[0]}>
                 <ReturnPolicy />
               </PrivateRoute>
             }
@@ -261,7 +261,7 @@ function App() {
           <Route
             path="/shipping-policy"
             element={
-              <PrivateRoute allowedRoles={[-1]}>
+              <PrivateRoute allowedRoles={[0]}>
                 <ShippingPolicy />
               </PrivateRoute>
             }
