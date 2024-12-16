@@ -266,7 +266,6 @@ router.get("/hot", async (req, res) => {
   }
 });
 
-
 //Router hiển thị sản phẩm tồn kho
 router.get("/stock", async (req, res) => {
   try {
@@ -334,6 +333,7 @@ router.put("/:id/quantity", async (req, res) => {
     res.status(500).json({ message: "Lỗi khi cập nhật sản phẩm" });
   }
 });
+
 router.put("/:id/sale", async (req, res) => {
   try {
     const { id } = req.params;
