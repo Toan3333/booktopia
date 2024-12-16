@@ -76,7 +76,7 @@ router.get("/paginated/authorId/:author", async (req, res) => {
     res.status(500).json({ msg: "Xin lỗi, đã xảy ra lỗi" });
   }
 });
-/*Phân trang*/
+
 router.get("/paginated/publishId/:publish", async (req, res) => {
   try {
     const publish = req.params.publish;
@@ -171,6 +171,15 @@ router.post(
 router.get("/", async (req, res) => {
   try {
     const product = await productController.gettAll();
+    return res.status(200).json(product);
+  } catch (error) {
+    console.log("Load sản phẩm không thành công", error);
+    res.status(500).json({ mess: error });
+  }
+});
+router.get("/admin", async (req, res) => {
+  try {
+    const product = await productController.gettAllAdmin();
     return res.status(200).json(product);
   } catch (error) {
     console.log("Load sản phẩm không thành công", error);

@@ -37,6 +37,7 @@ module.exports = {
   getPaginatedProductsByCategorySorted,
   getPaginatedAndSortedProducts,
   updateStatusById,
+  gettAllAdmin,
 };
 
 /*Phân trang*/
@@ -300,6 +301,15 @@ async function insert(body) {
 
 //Hiển thị tất cả sản phẩm
 async function gettAll() {
+  try {
+    const result = await productModel.find({ isActive: true });
+    return result;
+  } catch (error) {
+    console.log("Thêm sản phẩm không thành công", error);
+    throw error;
+  }
+}
+async function gettAllAdmin() {
   try {
     const result = await productModel.find();
     return result;
@@ -663,7 +673,8 @@ async function search(name) {
   try {
     const result = await productModel.find(
       {
-        name: { $regex: name, $options: "i" }, // i :không phân biệt hoa thường
+        name: { $regex: name, $options: "i" },
+        isActive: true, // i :không phân biệt hoa thường
       },
       {
         name: 1,

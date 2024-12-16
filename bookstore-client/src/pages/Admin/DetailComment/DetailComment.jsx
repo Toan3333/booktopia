@@ -142,12 +142,7 @@ const DetailComment = () => {
                 Quản lý bình luận
               </div>
             </MenuItem>
-            <MenuItem component={<Link to="/admin/manage-review" />}>
-              <div className="flex items-center gap-4">
-                <MdOutlinePreview />
-                Quản lý đánh giá
-              </div>
-            </MenuItem>
+
             <MenuItem onClick={handleLogout}>
               <div className="flex items-center gap-4">
                 <MdLogout />
@@ -262,7 +257,10 @@ const DetailComment = () => {
                     <td>
                       <div style={{ display: "flex" }}>
                         <div style={{ fontSize: "16px", marginLeft: "10px" }}>
-                          {comment.productDetails.price2}đ
+                          {comment.productDetails.price2.toLocaleString("vi-VN", {
+                            style: "currency",
+                            currency: "VND",
+                          })}
                         </div>
                       </div>
                     </td>

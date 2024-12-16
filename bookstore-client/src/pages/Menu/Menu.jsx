@@ -28,6 +28,7 @@ const Menu = () => {
   const [pageGroup, setPageGroup] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [totalProducts, setTotalProducts] = useState(0);
+
   const [currentCategoryName, setCurrentCategoryName] =
     useState("Tất cả sản phẩm");
 
@@ -42,6 +43,7 @@ const Menu = () => {
       setLoading(true);
       try {
         const url = `${URL_API}/products/search/${searchTerm.trim()}`;
+
         const response = await axios.get(url);
         setProducts(response.data);
         setCategoryId(null); // Xóa bộ lọc hiện tại khi tìm kiếm
@@ -152,7 +154,7 @@ const Menu = () => {
 
         setProducts(response.data.products);
         setTotalPages(response.data.totalPages);
-        window.location.reload();
+        window.location.reload("true");
       } catch (error) {
         console.error("Lỗi khi fetch tất cả sản phẩm:", error);
       } finally {
@@ -242,6 +244,7 @@ const Menu = () => {
       setLoading(false);
     }
   };
+
   const handleNextGroup = () => {
     const nextPageGroup = pageGroup + 1;
     const totalPages = Math.ceil(totalProducts / pagesPerGroup);
