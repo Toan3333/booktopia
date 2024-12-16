@@ -341,9 +341,7 @@ const Checkout = () => {
                       </option>
                     ))}
                   </select>
-                  {errors.city && (
-                    <p className="errform text-red">{errors.city.message}</p>
-                  )}
+                  {errors.city && <p className="errform text-red">{errors.city.message}</p>}
                 </div>
 
                 {selectedCity && (
@@ -364,9 +362,7 @@ const Checkout = () => {
                       ))}
                     </select>
                     {errors.district && (
-                      <p className="errform text-red">
-                        {errors.district.message}
-                      </p>
+                      <p className="errform text-red">{errors.district.message}</p>
                     )}
                   </div>
                 )}
@@ -388,9 +384,7 @@ const Checkout = () => {
                         </option>
                       ))}
                     </select>
-                    {errors.ward && (
-                      <p className="errform text-red">{errors.ward.message}</p>
-                    )}
+                    {errors.ward && <p className="errform text-red">{errors.ward.message}</p>}
                   </div>
                 )}
               </div>
@@ -419,9 +413,7 @@ const Checkout = () => {
                   <div className="ml-10">30.000đ</div>
                 </div>
                 {errors.shippingMethod && (
-                  <p className="errform text-red">
-                    {errors.shippingMethod.message}
-                  </p>
+                  <p className="errform text-red">{errors.shippingMethod.message}</p>
                 )}
               </div>
 
