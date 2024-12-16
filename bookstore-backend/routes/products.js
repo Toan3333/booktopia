@@ -17,12 +17,11 @@ router.get("/paginated/products", async (req, res) => {
     const limit = parseInt(req.query.limit) || 12;
     const sortBy = req.query.sortBy || "new";
 
-    const paginatedProducts =
-      await productController.getPaginatedAndSortedProducts(
-        pageNumber,
-        limit,
-        sortBy
-      );
+    const paginatedProducts = await productController.getPaginatedAndSortedProducts(
+      pageNumber,
+      limit,
+      sortBy
+    );
 
     return res.status(200).json(paginatedProducts);
   } catch (error) {
@@ -39,13 +38,12 @@ router.get("/paginated/categoryId/:category", async (req, res) => {
     const limit = parseInt(req.query.limit) || 12;
     const sortBy = req.query.sortBy || "new";
 
-    const paginatedProducts =
-      await productController.getPaginatedProductsByCategorySorted(
-        category,
-        pageNumber,
-        limit,
-        sortBy
-      );
+    const paginatedProducts = await productController.getPaginatedProductsByCategorySorted(
+      category,
+      pageNumber,
+      limit,
+      sortBy
+    );
 
     return res.status(200).json(paginatedProducts);
   } catch (error) {
@@ -62,13 +60,12 @@ router.get("/paginated/authorId/:author", async (req, res) => {
     const limit = parseInt(req.query.limit) || 12;
     const sortBy = req.query.sortBy || "new";
 
-    const paginatedProducts =
-      await productController.getPaginatedProductsByAuthorSorted(
-        author,
-        pageNumber,
-        limit,
-        sortBy
-      );
+    const paginatedProducts = await productController.getPaginatedProductsByAuthorSorted(
+      author,
+      pageNumber,
+      limit,
+      sortBy
+    );
 
     return res.status(200).json(paginatedProducts);
   } catch (error) {
@@ -84,13 +81,12 @@ router.get("/paginated/publishId/:publish", async (req, res) => {
     const limit = parseInt(req.query.limit) || 12;
     const sortBy = req.query.sortBy || "new";
 
-    const paginatedProducts =
-      await productController.getPaginatedProductsByPublisherSorted(
-        publish,
-        pageNumber,
-        limit,
-        sortBy
-      );
+    const paginatedProducts = await productController.getPaginatedProductsByPublisherSorted(
+      publish,
+      pageNumber,
+      limit,
+      sortBy
+    );
 
     return res.status(200).json(paginatedProducts);
   } catch (error) {
@@ -281,29 +277,20 @@ router.put("/:id/status", async (req, res) => {
   const { id } = req.params;
   const { isActive } = req.body;
   try {
-    const updatedProduct = await productController.updateStatusById(
-      id,
-      isActive
-    );
+    const updatedProduct = await productController.updateStatusById(id, isActive);
     res.status(200).json({
       message: "Cập nhật trạng thái thành công",
       data: updatedProduct,
     });
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Lỗi khi cập nhật trạng thái", error: error.message });
+    res.status(500).json({ message: "Lỗi khi cập nhật trạng thái", error: error.message });
   }
 });
 
 router.put("/:id/hot", async (req, res) => {
   try {
     const { id } = req.params;
-    const result = await productModel.findByIdAndUpdate(
-      id,
-      { $inc: { hot: 1 } },
-      { new: true }
-    );
+    const result = await productModel.findByIdAndUpdate(id, { $inc: { hot: 1 } }, { new: true });
 
     if (!result) {
       return res.status(404).json({ message: "Không tìm thấy sản phẩm" });
@@ -337,11 +324,7 @@ router.put("/:id/quantity", async (req, res) => {
 router.put("/:id/sale", async (req, res) => {
   try {
     const { id } = req.params;
-    const result = await productModel.findByIdAndUpdate(
-      id,
-      { $inc: { sale: 1 } },
-      { new: true }
-    );
+    const result = await productModel.findByIdAndUpdate(id, { $inc: { sale: 1 } }, { new: true });
 
     if (!result) {
       return res.status(404).json({ message: "Không tìm thấy sản phẩm" });
