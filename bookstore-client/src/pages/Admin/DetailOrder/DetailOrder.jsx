@@ -248,6 +248,16 @@ const DetailOrder = () => {
               </div>
 
               <div className="w-full flex flex-col gap-2">
+                <label htmlFor="">*Số điện thoại</label>
+                <input
+                  type="text"
+                  placeholder="09xxxxxxxx"
+                  value={order.phone || ""}
+                  className="input input-bordered w-full"
+                  readOnly
+                />
+              </div>
+              <div className="w-full flex flex-col gap-2">
                 <label htmlFor="">*Địa chỉ</label>
                 <input
                   type="text"
