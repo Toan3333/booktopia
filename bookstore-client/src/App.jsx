@@ -46,7 +46,7 @@ import Stock from "./pages/Admin/Stock/Stock";
 import ManageComment from "./pages/Admin/ManageComment/ManageComment";
 import DetailComment from "./pages/Admin/DetailComment/DetailComment";
 import DetailReview from "./pages/Admin/DetailReview/DetailReview";
-import TermsOfUse from "./pages/Admin/TermsOfUse/TermsOfUse.JSX";
+import TermsOfUse from "./pages/Admin/TermsOfUse/TermsOfUse";
 import PrivacyPolicy from "./pages/PrivacyPolicy/PrivacyPolicy";
 import PaymentPolicy from "./pages/PaymentPolicy/PaymentPolicy";
 import WarrantyPolicy from "./pages/WarrantyPolicy/WarrantyPolicy";
@@ -152,7 +152,8 @@ function App() {
               <PrivateRoute allowedRoles={[0]}>
                 <Blog />
               </PrivateRoute>
-            }></Route>
+            }
+          ></Route>
           <Route
             path="/blog-detail/:id"
             element={
@@ -284,7 +285,8 @@ function App() {
             <PrivateRoute allowedRoles={[1]}>
               <DashBoard />
             </PrivateRoute>
-          }></Route>
+          }
+        ></Route>
         <Route
           path="/admin/manage-product"
           element={
