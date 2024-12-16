@@ -155,6 +155,11 @@ async function cancelStatusOrder(id) {
     const order = await orderModel.findById(id);
     if (!order) throw new Error("Đơn hàng không tồn tại");
 
+    // Kiểm tra trạng thái thanh toán
+    if (order.paymentStatus === "Đã thanh toán") {
+      throw new Error("Đơn hàng đã được thanh toán không thể hủy");
+    }
+
     // Chỉ cho phép cập nhật trạng thái "Đã hủy" nếu đơn hàng không phải "Đang vận chuyển"
     if (order.status === "Đang vận chuyển") {
       throw new Error("Đơn hàng đang được vận chuyển không thể hủy");
@@ -172,6 +177,7 @@ async function cancelStatusOrder(id) {
     throw new Error(error.message);
   }
 }
+
 
 
 async function getOrdersByUserId(userId) {
