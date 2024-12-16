@@ -219,21 +219,28 @@ const Checkout = () => {
       });
       const res = response.data.data;
       setDiscount(res.voucher.discountValue);
-
+  
       return Swal.fire({
         icon: "success",
         title: "Áp dụng voucher thành công",
       });
     } catch (error) {
-      console.error("Error applying voucher:", error);
+      debugger
+      let errorMessage = "Đã xảy ra lỗi khi áp dụng voucher.";
+      if (error.response && error.response.data && error.response.data.mess) {
+        errorMessage = error.response.data.mess.message;
+      }
+  
       Swal.fire({
         icon: "error",
         title: "Không thành công",
-        text: error.message,
+        text: errorMessage,
       });
-      return 0; // Nếu có lỗi, trả về 0
+  
+      return 0; 
     }
   };
+  
   const handleApplyVoucher = async () => {
     const discount = await applyVoucher(voucherCode);
     if (discount > 0) {

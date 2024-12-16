@@ -106,7 +106,7 @@ const SignInPage = () => {
           }
         }, 2000);
       }
-    } catch (error) {
+    }catch (error) {
       if (error?.response?.status === 400) {
         const errorData = error.response.data;
         if (errorData.message === "Email hoặc mật khẩu không đúng") {
@@ -118,11 +118,21 @@ const SignInPage = () => {
           });
           toast.error(errorData.message || "Đăng nhập thất bại");
         }
+      } else if (error?.response?.status === 403) {
+        // Trường hợp tài khoản bị ngưng hoạt động
+        const errorData = error.response.data;
+        if (errorData.message === "Tài khoản đã ngưng hoạt động") {
+          setError("general", { message: errorData.message });
+          toast.error(errorData.message); // Hiển thị thông báo lỗi
+        } else {
+          setError("general", { message: "Đăng nhập thất bại" });
+          toast.error("Đăng nhập thất bại");
+        }
       } else {
         setError("general", { message: "Đăng nhập thất bại" });
         toast.error("Đăng nhập thất bại");
       }
-    }
+    }    
   };
 
   return (
@@ -165,7 +175,6 @@ const SignInPage = () => {
                   children="ĐĂNG NHẬP"
                   className="w-full"
                   disabled={isSubmitting}></Button>
-                {errors.general && <p className="my-3 text-danger">{errors.general.message}</p>}
               </div>
               <div className="text-center">Hoặc đăng nhập bằng</div>
               <div className="flex items-center gap-5">
