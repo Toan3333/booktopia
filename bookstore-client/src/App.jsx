@@ -46,6 +46,12 @@ import Stock from "./pages/Admin/Stock/Stock";
 import ManageComment from "./pages/Admin/ManageComment/ManageComment";
 import DetailComment from "./pages/Admin/DetailComment/DetailComment";
 import DetailReview from "./pages/Admin/DetailReview/DetailReview";
+import TermsOfUse from "./pages/Admin/TermsOfUse/TermsOfUse.JSX";
+import PrivacyPolicy from "./pages/PrivacyPolicy/PrivacyPolicy";
+import PaymentPolicy from "./pages/PaymentPolicy/PaymentPolicy";
+import WarrantyPolicy from "./pages/WarrantyPolicy/WarrantyPolicy";
+import ReturnPolicy from "./pages/ReturnPolicy/ReturnPolicy";
+import ShippingPolicy from "./pages/ShippingPolicy/ShippingPolicy";
 function App() {
   return (
     // <Fragment>
@@ -213,6 +219,54 @@ function App() {
             }
           />
           <Route
+            path="/term-of-use"
+            element={
+              <PrivateRoute allowedRoles={[-1]}>
+                <TermsOfUse />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/privacy-policy"
+            element={
+              <PrivateRoute allowedRoles={[-1]}>
+                <PrivacyPolicy />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/payment-policy"
+            element={
+              <PrivateRoute allowedRoles={[-1]}>
+                <PaymentPolicy />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/warranty-policy"
+            element={
+              <PrivateRoute allowedRoles={[-1]}>
+                <WarrantyPolicy />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/return-policy"
+            element={
+              <PrivateRoute allowedRoles={[-1]}>
+                <ReturnPolicy />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/shipping-policy"
+            element={
+              <PrivateRoute allowedRoles={[-1]}>
+                <ShippingPolicy />
+              </PrivateRoute>
+            }
+          />
+          <Route
             path="/product-detail/:id"
             element={
               <PrivateRoute allowedRoles={[0]}>
@@ -221,6 +275,7 @@ function App() {
             }
           />
         </Route>
+
         {/* admin */}
 
         <Route
