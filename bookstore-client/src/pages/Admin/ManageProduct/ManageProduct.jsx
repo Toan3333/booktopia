@@ -67,7 +67,7 @@ const ManageProduct = () => {
       try {
         const url = searchTerm.trim()
           ? `${URL_API}/products/search/${searchTerm.trim()}`
-          : `${URL_API}/products`;
+          : `${URL_API}/products/admin`;
         const response = await axios.get(url);
         setProducts(response.data);
 
@@ -118,7 +118,9 @@ const ManageProduct = () => {
       Swal.fire({
         icon: "success",
         title: "Cập nhật trạng thái thành công!",
-        text: `Sản phẩm đã được ${updatedStatus ? "kích hoạt" : "ẩn"} thành công.`,
+        text: `Sản phẩm đã được ${
+          updatedStatus ? "kích hoạt" : "ẩn"
+        } thành công.`,
       });
     } catch (error) {
       console.error("Lỗi khi cập nhật trạng thái sản phẩm", error);
@@ -135,8 +137,11 @@ const ManageProduct = () => {
       <div className="flex min-h-screen border">
         {/* Sidebar */}
         <Sidebar
-          className={`relative border p-3 bg-white ${collapsed ? "collapsed" : "expanded"}`}
-          width={collapsed ? "0px" : "270px"}>
+          className={`relative border p-3 bg-white ${
+            collapsed ? "collapsed" : "expanded"
+          }`}
+          width={collapsed ? "0px" : "270px"}
+        >
           <Menu className="bg-white">
             <div className="flex items-center justify-center mb-6">
               <img src="./images/logo.png" alt="Logo" />
@@ -147,12 +152,19 @@ const ManageProduct = () => {
                 Dashboard
               </div>
             </MenuItem>
-            <SubMenu label="Quản lý sản phẩm" icon={<FaBook className="w-5 h-5" />}>
+            <SubMenu
+              label="Quản lý sản phẩm"
+              icon={<FaBook className="w-5 h-5" />}
+            >
               <MenuItem component={<Link to="/admin/manage-product" />}>
                 Danh sách sản phẩm
               </MenuItem>
-              <MenuItem component={<Link to="/admin/manage-author" />}>Tác giả</MenuItem>
-              <MenuItem component={<Link to="/admin/manage-publishes" />}>Nhà xuất bản</MenuItem>
+              <MenuItem component={<Link to="/admin/manage-author" />}>
+                Tác giả
+              </MenuItem>
+              <MenuItem component={<Link to="/admin/manage-publishes" />}>
+                Nhà xuất bản
+              </MenuItem>
             </SubMenu>
             <MenuItem component={<Link to="/admin/manage-category" />}>
               <div className="flex items-center gap-4">
@@ -213,13 +225,17 @@ const ManageProduct = () => {
           </Menu>
         </Sidebar>
         {/* Nút toggle nằm bên ngoài Sidebar */}
-        <button onClick={() => setCollapsed(!collapsed)} className="toggle-button">
+        <button
+          onClick={() => setCollapsed(!collapsed)}
+          className="toggle-button"
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
             strokeWidth={1.5}
-            stroke="currentColor">
+            stroke="currentColor"
+          >
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -292,11 +308,16 @@ const ManageProduct = () => {
                       <div className="flex items-center justify-center gap-3">
                         <button
                           type="button"
-                          onClick={() => handleUpdateStatus(item._id, item.isActive)}
+                          onClick={() =>
+                            handleUpdateStatus(item._id, item.isActive)
+                          }
                           className="w-28 text-[12px] justify-items-center p-2 rounded-lg text-white cursor-pointer flex items-center justify-center gap-2"
                           style={{
-                            backgroundColor: item.isActive ? "#166534" : "#ef4444",
-                          }}>
+                            backgroundColor: item.isActive
+                              ? "#166534"
+                              : "#ef4444",
+                          }}
+                        >
                           {item.isActive ? "Đang hoạt động" : "Ngưng hoạt động"}
                         </button>
                       </div>
@@ -319,7 +340,11 @@ const ManageProduct = () => {
             <ReactPaginate
               previousLabel={"Trước"}
               nextLabel={"Sau"}
-              breakLabel={<span className="px-3 py-2 leading-tight text-gray-500">...</span>} // Thêm style cho breakLabel
+              breakLabel={
+                <span className="px-3 py-2 leading-tight text-gray-500">
+                  ...
+                </span>
+              } // Thêm style cho breakLabel
               pageCount={pageCount}
               marginPagesDisplayed={1} //xác định số lượng nút số trang hiển thị ở đầu và cuối danh sách phân trang
               pageRangeDisplayed={3} //xác định số lượng nút số trang hiển thị xung quanh trang hiện tại.

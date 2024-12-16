@@ -155,7 +155,6 @@ const Menu = () => {
         setProducts(response.data.products);
         setTotalPages(response.data.totalPages);
         window.location.reload("true");
-
       } catch (error) {
         console.error("Lỗi khi fetch tất cả sản phẩm:", error);
       } finally {
@@ -282,15 +281,21 @@ const Menu = () => {
   }, []);
   const renderPageButtons = () => {
     const startPage = pageGroup * pagesPerGroup + 1;
-    const pages = Array.from({ length: pagesPerGroup }, (_, i) => startPage + i);
+    const pages = Array.from(
+      { length: pagesPerGroup },
+      (_, i) => startPage + i
+    );
 
     return pages.map((page) => (
       <span
         key={page}
         className={`w-10 h-10 rounded-full flex items-center justify-center ${
-          currentPage === page ? "bg-mainDark text-white" : "border text-grayText"
+          currentPage === page
+            ? "bg-mainDark text-white"
+            : "border text-grayText"
         } text-[20px] font-semibold cursor-pointer`}
-        onClick={() => setCurrentPage(page)}>
+        onClick={() => setCurrentPage(page)}
+      >
         {page}
       </span>
     ));
@@ -324,7 +329,11 @@ const Menu = () => {
                     items={categories}
                     onCategoryClick={categoryClick}
                   />
-                  <CategoryItem title="Tác giả" items={authors} onAuthorClick={authorClick} />
+                  <CategoryItem
+                    title="Tác giả"
+                    items={authors}
+                    onAuthorClick={authorClick}
+                  />
                   <CategoryItem
                     title="Nhà xuất bản"
                     items={publishers}
@@ -335,7 +344,6 @@ const Menu = () => {
             </div>
             <div className="w-full">
               <div className="flex items-center justify-between mb-6">
-
                 {searchTerm.trim() ? (
                   <PageTitle title="Kết quả tìm kiếm" />
                 ) : (
@@ -356,7 +364,6 @@ const Menu = () => {
                     </div>
                   </>
                 )}
-
               </div>
 
               {loading ? (
@@ -373,7 +380,6 @@ const Menu = () => {
                 </div>
               )}
               <div className="flex items-center justify-center gap-5 mt-6">
-
                 {searchTerm.trim() && products.length === 0 ? (
                   <span className="text-gray-500">
                     Không tìm thấy sản phẩm nào.
@@ -403,7 +409,6 @@ const Menu = () => {
                     </>
                   )
                 )}
-               
               </div>
             </div>
           </div>
