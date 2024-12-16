@@ -36,7 +36,7 @@ module.exports = {
   getPaginatedProductsByAuthorSorted,
   getPaginatedProductsByCategorySorted,
   getPaginatedAndSortedProducts,
-  updateStatusById
+  updateStatusById,
 };
 
 /*Phân trang*/
@@ -79,7 +79,12 @@ async function getPaginatedAndSortedProducts(pageNumber, limit, sortBy) {
 }
 
 /*Phân trang*/
-async function getPaginatedProductsByCategorySorted(category, pageNumber, limit, sortBy) {
+async function getPaginatedProductsByCategorySorted(
+  category,
+  pageNumber,
+  limit,
+  sortBy
+) {
   try {
     // Kiểm tra category xem có hợp lệ không
     const categoryObjectId = mongoose.Types.ObjectId.isValid(category)
@@ -135,7 +140,12 @@ async function getPaginatedProductsByCategorySorted(category, pageNumber, limit,
 }
 
 /*Phân trang*/
-async function getPaginatedProductsByAuthorSorted(author, pageNumber, limit, sortBy) {
+async function getPaginatedProductsByAuthorSorted(
+  author,
+  pageNumber,
+  limit,
+  sortBy
+) {
   try {
     const totalProducts = await productModel.countDocuments({
       "author.authorId": new mongoose.Types.ObjectId(author),
@@ -174,10 +184,15 @@ async function getPaginatedProductsByAuthorSorted(author, pageNumber, limit, sor
 }
 
 /*Phân trang*/
-async function getPaginatedProductsByPublisherSorted(publisher, pageNumber, limit, sortBy) {
+async function getPaginatedProductsByPublisherSorted(
+  publish,
+  pageNumber,
+  limit,
+  sortBy
+) {
   try {
     const totalProducts = await productModel.countDocuments({
-      "publisher.publisherId": new mongoose.Types.ObjectId(publisher),
+      "publish.publishId": new mongoose.Types.ObjectId(publish),
     });
 
     // Sắp xếp theo yêu cầu
@@ -191,7 +206,7 @@ async function getPaginatedProductsByPublisherSorted(publisher, pageNumber, limi
     }
 
     const result = await productModel
-      .find({ "publisher.publisherId": new mongoose.Types.ObjectId(publisher) })
+      .find({ "publish.publishId": new mongoose.Types.ObjectId(publish) })
       .sort(sortOption)
       .skip(pageNumber * limit)
       .limit(limit)
@@ -398,7 +413,7 @@ async function updateStatusById(id, isActive) {
     const result = await productModel.findByIdAndUpdate(
       id,
       { isActive },
-      { new: true } 
+      { new: true }
     );
     return result;
   } catch (error) {
@@ -652,7 +667,7 @@ async function search(name) {
       },
       {
         name: 1,
-        category:1,
+        category: 1,
         image1: 1,
         publish: 1,
         author: 1,

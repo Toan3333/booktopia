@@ -77,16 +77,16 @@ router.get("/paginated/authorId/:author", async (req, res) => {
   }
 });
 /*Phân trang*/
-router.get("/paginated/publisherId/:publisher", async (req, res) => {
+router.get("/paginated/publishId/:publish", async (req, res) => {
   try {
-    const publisher = req.params.publisher;
+    const publish = req.params.publish;
     const pageNumber = parseInt(req.query.pageNumber) || 0;
     const limit = parseInt(req.query.limit) || 12;
     const sortBy = req.query.sortBy || "new";
 
     const paginatedProducts =
       await productController.getPaginatedProductsByPublisherSorted(
-        publisher,
+        publish,
         pageNumber,
         limit,
         sortBy
